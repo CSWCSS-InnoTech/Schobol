@@ -1,10 +1,11 @@
 ﻿using System;
+using System.IO;
 
 namespace eLearning
 {
-	public class MyClass
+	public class Shared
 	{
-		public MyClass ()
+		public Shared ()
 		{
 		}
 	}

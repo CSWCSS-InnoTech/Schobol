@@ -41,6 +41,76 @@ namespace eLearning.Droid
 			}
 		}
 		
+		public partial class Color
+		{
+			
+			// aapt resource value: 0x7f060010
+			public const int basic_black = 2131099664;
+			
+			// aapt resource value: 0x7f06000d
+			public const int basic_blue = 2131099661;
+			
+			// aapt resource value: 0x7f06000c
+			public const int basic_dark_blue__navy = 2131099660;
+			
+			// aapt resource value: 0x7f060004
+			public const int basic_dark_red__maroon = 2131099652;
+			
+			// aapt resource value: 0x7f060008
+			public const int basic_green = 2131099656;
+			
+			// aapt resource value: 0x7f06000a
+			public const int basic_green_blue__teal = 2131099658;
+			
+			// aapt resource value: 0x7f060002
+			public const int basic_grey = 2131099650;
+			
+			// aapt resource value: 0x7f06000b
+			public const int basic_light_blue__aqua = 2131099659;
+			
+			// aapt resource value: 0x7f060009
+			public const int basic_light_green__lime = 2131099657;
+			
+			// aapt resource value: 0x7f06000f
+			public const int basic_light_purple__fuchsia = 2131099663;
+			
+			// aapt resource value: 0x7f06000e
+			public const int basic_purple = 2131099662;
+			
+			// aapt resource value: 0x7f060005
+			public const int basic_red = 2131099653;
+			
+			// aapt resource value: 0x7f060003
+			public const int basic_silver = 2131099651;
+			
+			// aapt resource value: 0x7f060001
+			public const int basic_white = 2131099649;
+			
+			// aapt resource value: 0x7f060007
+			public const int basic_yellow = 2131099655;
+			
+			// aapt resource value: 0x7f060006
+			public const int basic_yellow_green__olive = 2131099654;
+			
+			// aapt resource value: 0x7f060011
+			public const int extended__dark_grey = 2131099665;
+			
+			// aapt resource value: 0x7f060012
+			public const int extended__transparent = 2131099666;
+			
+			// aapt resource value: 0x7f060000
+			public const int theme_devicedefault_background = 2131099648;
+			
+			static Color()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Color()
+			{
+			}
+		}
+		
 		public partial class Drawable
 		{
 			
@@ -60,8 +130,11 @@ namespace eLearning.Droid
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050000
-			public const int myButton = 2131034112;
+			// aapt resource value: 0x7f080000
+			public const int Title = 2131230720;
+			
+			// aapt resource value: 0x7f080001
+			public const int myButton = 2131230721;
 			
 			static Id()
 			{
@@ -69,6 +142,31 @@ namespace eLearning.Droid
 			}
 			
 			private Id()
+			{
+			}
+		}
+		
+		public partial class Integer
+		{
+			
+			// aapt resource value: 0x7f050001
+			public const int one = 2131034113;
+			
+			// aapt resource value: 0x7f050003
+			public const int three = 2131034115;
+			
+			// aapt resource value: 0x7f050002
+			public const int two = 2131034114;
+			
+			// aapt resource value: 0x7f050000
+			public const int zero = 2131034112;
+			
+			static Integer()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Integer()
 			{
 			}
 		}
@@ -104,6 +202,22 @@ namespace eLearning.Droid
 			}
 			
 			private String()
+			{
+			}
+		}
+		
+		public partial class Style
+		{
+			
+			// aapt resource value: 0x7f070000
+			public const int Theme_Custom = 2131165184;
+			
+			static Style()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Style()
 			{
 			}
 		}

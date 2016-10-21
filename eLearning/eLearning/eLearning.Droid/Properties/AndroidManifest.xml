@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<uses-sdk android:minSdkVersion="15" />
-	<application android:label="eLearning.Droid"></application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" package="InnoTech.eLearning" android:versionName="Beta 0.10.0 (Xamarin Update)" android:versionCode="2">
+	<uses-sdk android:minSdkVersion="14" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<application android:label="eLearning"></application>
 </manifest>

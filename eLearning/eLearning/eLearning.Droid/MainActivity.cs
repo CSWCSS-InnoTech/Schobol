@@ -6,10 +6,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using System.Reflection.Emit;
 
 namespace eLearning.Droid
 {
-	[Activity (Label = "eLearning.Droid", MainLauncher = true, Icon = "@drawable/icon")]
+	[Activity (Label = "CSWCSS eLearning App", MainLauncher = true, Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
 		int count = 1;
@@ -27,9 +28,24 @@ namespace eLearning.Droid
 			
 			button.Click += delegate {
 				button.Text = string.Format ("{0} clicks!", count++);
-			};
+
+                Label labelBoldItalic = new Label();
+                var fs = new FormattedString();
+                fs.Spans.Add(new Span { Text = "bold", Font = Font.SystemFontOfSize(14, FontAttributes.Bold) });
+                fs.Spans.Add(new Span { Text = " italic", Font = Font.SystemFontOfSize(14, FontAttributes.Italic) });
+                labelBoldItalic.FormattedText = fs;
+            };
 		}
-	}
+
+        public string GetVersionName()
+        {
+            return Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionName;
+        }
+        public int GetVersionCode()
+        {
+            return Application.Context.ApplicationContext.PackageManager.GetPackageInfo(Application.Context.ApplicationContext.PackageName, 0).VersionCode;
+        }
+    }
 }
 
 

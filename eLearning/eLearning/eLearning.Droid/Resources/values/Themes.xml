@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="zero">0</integer>
+  <integer name="one">1</integer>
+  <integer name="two">2</integer>
+  <integer name="three">3</integer>
+  <color name="theme_devicedefault_background">#ffffffff</color>
+  <color name="basic_white">#ffffffff</color>
+  <color name="basic_grey">#ff808080</color>
+  <color name="basic_silver">#ffc0c0c0</color>
+  <color name="basic_dark_red__maroon">#ff800000</color>
+  <color name="basic_red">#ffff0000</color>
+  <color name="basic_yellow_green__olive">#ff808000</color>
+  <color name="basic_yellow">#ffffff00</color>
+  <color name="basic_green">#ff008000</color>
+  <color name="basic_light_green__lime">#ff00ff00</color>
+  <color name="basic_green_blue__teal">#ff008080</color>
+  <color name="basic_light_blue__aqua">#ff00ffff</color>
+  <color name="basic_dark_blue__navy">#ff000080</color>
+  <color name="basic_blue">#ff0000ff</color>
+  <color name="basic_purple">#800080</color>
+  <color name="basic_light_purple__fuchsia">#ffff00ff</color>
+  <color name="basic_black">#ff000000</color>
+  <color name="extended__dark_grey">#ff404040</color>
+  <color name="extended__transparent">#00000000</color>
+  <style name="Theme.Custom" parent="@android:style/Theme.DeviceDefault">
+    <item name="android:colorBackground">@color/theme_devicedefault_background</item>
+    <item name="android:windowBackground">?android:attr/colorBackground</item>
+  </style>
+</resources>
