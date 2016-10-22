@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="hello">Hello World, Click M!</string>
-	<string name="app_name">CSWCSS eLearning App</string>
+	<string name="app_name">&lt;b&gt;CSWCSS&lt;/b&gt; eLearning App</string>
+<string name="innotech">Developed by the&lt;br /&gt;&lt;b&gt;Innovative Technology Society of CSWCSS&lt;/b&gt;</string>
 </resources>

@@ -6,7 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-using System.Reflection.Emit;
+using Android.Text;
 
 namespace eLearning.Droid
 {
@@ -24,18 +24,20 @@ namespace eLearning.Droid
 
 			// Get our button from the layout resource,
 			// and attach an event to it
-			Button button = FindViewById<Button> (Resource.Id.myButton);
-			
-			button.Click += delegate {
-				button.Text = string.Format ("{0} clicks!", count++);
-
-                Label labelBoldItalic = new Label();
-                var fs = new FormattedString();
-                fs.Spans.Add(new Span { Text = "bold", Font = Font.SystemFontOfSize(14, FontAttributes.Bold) });
-                fs.Spans.Add(new Span { Text = " italic", Font = Font.SystemFontOfSize(14, FontAttributes.Italic) });
-                labelBoldItalic.FormattedText = fs;
+			Button Button = FindViewById<Button> (Resource.Id.myButton);
+			Button.Click += delegate {
+				Button.Text = string.Format ("{0} clicks!", count++);
             };
+            TextView Title = FindViewById<TextView>(Resource.Id.Title);
+            Title.TextFormatted = HTMLMarkup(Resource.String.app_name);
+            Title.TextAlignment = TextAlignment.Center;
+            TextView InnoTech = FindViewById<TextView>(Resource.Id.InnoTech);
+            InnoTech.TextFormatted = HTMLMarkup(Resource.String.innotech);
+            InnoTech.TextAlignment = TextAlignment.Center;
 		}
+
+        public ISpanned HTMLMarkup(int ResourceId)
+        { return Html.FromHtml(Resources.GetString(ResourceId).ToString()); }
 
         public string GetVersionName()
         {

@@ -13,11 +13,20 @@
         android:id="@+id/Title"
         android:textColor="@color/basic_white"
         android:textAlignment="center"
-        android:background="@color/extended__dark_grey" />
+        android:background="@color/extended__dark_grey"
+        android:textSize="25"
+        android:typeface="sans" />
+    <TextView
+        android:text="@string/innotech"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/InnoTech"
+        android:textColor="@color/basic_black"
+        android:textAlignment="center" />
     <Button
         android:id="@+id/myButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/hello" />
-  
 </LinearLayout>
