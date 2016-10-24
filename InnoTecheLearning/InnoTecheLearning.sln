@@ -16,8 +16,10 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.projitems*{72f32bb1-e28a-4683-885a-1c58521562e1}*SharedItemsImports = 4
+		InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.projitems*{ae740765-27e9-40a5-b71b-63416ab07b20}*SharedItemsImports = 4
 		InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.projitems*{ca86097f-6b9e-4d80-bbe3-3334acb33c86}*SharedItemsImports = 13
 		InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.projitems*{d05f0700-263d-4e6e-9e7d-64ab972068f9}*SharedItemsImports = 4
+		InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.projitems*{fb88a940-9319-466d-aa68-916d8e873004}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
