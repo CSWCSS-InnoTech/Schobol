@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using static InnoTecheLearning.Utils;
+using static InnoTecheLearning.Utils.Create;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
 {
-	public class Main : ContentPage
-	{
-		public Main ()
-		{
+    public class Main : ContentPage
+    {
+        public Main()
+        {
             Content = new StackLayout
             {
                 VerticalOptions = LayoutOptions.Start,
                 BackgroundColor = Color.White,
+                WidthRequest = App.Current.MainPage.Width,
+                HeightRequest = App.Current.MainPage.Height,
                 Children = {
                  new Label {FontSize = 25,
                             BackgroundColor = Color.FromUint(4285098345),
@@ -23,15 +26,11 @@ namespace InnoTecheLearning
                             HorizontalTextAlignment = TextAlignment.Center,
                             Text = "CSWCSS eLearning App"
               }, new Label {HorizontalTextAlignment = TextAlignment.Center,
-                            Text = "Developed by the"
-              }, new Label {HorizontalTextAlignment = TextAlignment.Center,
-                            FontAttributes = FontAttributes.Bold,
-                            Text = "Innovative Technology Society of CSWCSS" },
-           new StackLayout {HorizontalOptions = LayoutOptions.Start,
-                Children = { new StackLayout {VerticalOptions = LayoutOptions.Start,
-                            Children = { new Button {Image = (FileImageSource)ImageSource.FromFile("forum-message-3.png")} } }} }
-                    }
+                            FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
+                            },
+           MainScreenRow(MainScreenItem("forum-message-3.png",delegate{}, "Forum" ))
+                }
             };
-		}
-	}
+        }
+    };
 }

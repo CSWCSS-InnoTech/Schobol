@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 
 namespace InnoTecheLearning
 {
 	public class App : Application
-	{
-		public App ()
+    {
+        public static Size ScreenSize { get; set; }
+        public App ()
 		{
             // The root page of your application
             MainPage = new Main();
