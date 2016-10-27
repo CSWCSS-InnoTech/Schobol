@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -47,50 +48,69 @@ namespace InnoTecheLearning
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
-            
-       public static ImageSource Image(string FileName)
-       { return ImageSource.FromResource("InnoTecheLearning.Images." + FileName); }
 
-       public enum ImageFile : int
-       {Forum = 1,
-       Translate = 2,
-       VocabBook = 3,
-       MathConverter = 4,
-       MathConverter_Duo = 5,
-       Factorizer = 6,
-       Sports = 7,
-       MusicTuner = 8,
-       MathSolver = 9}
+            public static ImageSource Image(string FileName)
+            { return ImageSource.FromResource("InnoTecheLearning.Images." + FileName); }
 
-       public static FileImageSource Image(ImageFile File)
-       {   Text ActualFile;
-           switch (File)
-           {
-               case ImageFile.Forum:
-                   ActualFile = "forum-message-3.png";
-                   break;
-             /*case ImageFile.Translate:
-                   break;
-               case ImageFile.VocabBook:
-                   break;
-               case ImageFile.MathConverter:
-                   break;
-               case ImageFile.MathConverter_Duo:
-                   break;
-               case ImageFile.Factorizer:
-                   break;
-               case ImageFile.Sports:
-                   break;
-               case ImageFile.MusicTuner:
-                   break;
-               case ImageFile.MathSolver:
-                   break;*/
-               default:
-                   ActualFile = "";
-                   break;
-           }
-           return (string)ActualFile;
-       }
+            public enum ImageFile : int
+            {
+                Forum = 1,
+                Translate = 2,
+                VocabBook = 3,
+                MathConverter = 4,
+                MathConverter_Duo = 5,
+                Factorizer = 6,
+                Sports = 7,
+                MusicTuner = 8,
+                MathSolver = 9
+            }
+
+
+            public static FileImageSource Image(ImageFile File)
+            {
+                Text ActualFile;
+                switch (File)
+                {
+                    case ImageFile.Forum:
+                        ActualFile = "forum-message-3.png";
+                        break;
+                    /*case ImageFile.Translate:
+                          break;
+                      case ImageFile.VocabBook:
+                          break;
+                      case ImageFile.MathConverter:
+                          break;
+                      case ImageFile.MathConverter_Duo:
+                          break;
+                      case ImageFile.Factorizer:
+                          break;
+                      case ImageFile.Sports:
+                          break;
+                      case ImageFile.MusicTuner:
+                          break;
+                      case ImageFile.MathSolver:
+                          break;*/
+                    default:
+                        ActualFile = "";
+                        break;
+                }
+                return (string)ActualFile;
+            }
+        }
+
+        public async static Task<T> AlertAsync<T>(T Return,Page Page, Text Message = default(Text),string Title = "Alert", string Cancel = "OK")
+        {   await Page.DisplayAlert(Title, Message, Cancel);
+            return Return; }
+
+        public static T Alert<T>(T Return, Page Page,  Text Message = default(Text), string Title = "Alert", string Cancel = "OK")
+        {   Task<T> Task = AlertAsync(Return, Page, Title, Message, Cancel);
+            Task.Wait();
+            return Return;
+        }
+
+        public async static void Alert(Page Page, Text Message = default(Text), string Title = "Alert", string Cancel = "OK")
+        {
+            await Page.DisplayAlert(Title, Message, Cancel);
         }
 
         /// <summary>
@@ -120,10 +140,32 @@ namespace InnoTecheLearning
         { return new Span { Text = Text, FontAttributes = FontAttributes.Bold }; }
 
         /// <summary>
+        /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
+        /// <param name="Object">The <see cref="object"/> instance to convert.</param>
+        /// <param name="Result">The result of conversion if successful. If not it will be the default value of the <see cref="Type"/> to convert to.</param>
+        /// <returns>Whether the conversion has succeeded.</returns>
+        public static bool TryCast<T>(object Object, out T Result)
+        {
+            try
+            {
+                Result = (T)Object;
+                return true;
+            }
+            catch (InvalidCastException)
+            {
+                Result = default(T);
+                return false;
+            }
+        }
+        /// <summary>
         /// A piece of ordinary text which is interchangable with a label, span, string and array of chars.
         /// </summary>
         public struct Text : IComparable
         {
+            public static Text Null { get { return (string)null; } }
+            public static Text Empty { get { return ""; } }
             public string Value { get; set; }
             public Text(string Text)
             { Value = Text; }
@@ -169,26 +211,6 @@ namespace InnoTecheLearning
             {
                 Value = Value.Trim(TrimChars);
                 return this;
-            }
-            /// <summary>
-            /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
-            /// </summary>
-            /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
-            /// <param name="Object">The <see cref="object"/> instance to convert.</param>
-            /// <param name="Result">The result of conversion if successful. If not it will be the default value of the <see cref="Type"/> to convert to.</param>
-            /// <returns>Whether the conversion has succeeded.</returns>
-            public static bool TryCast<T>(object Object, out T Result)
-            {
-                try
-                {
-                    Result = (T)Object;
-                    return true;
-                }
-                catch (InvalidCastException)
-                {
-                    Result = default(T);
-                    return false;
-                }
             }
             /// <summary>
             /// Removes a string of characters from the end of this <see cref="Text"/>.
@@ -284,9 +306,73 @@ namespace InnoTecheLearning
             public static implicit operator Text(char[] Char)
             { return new Text(new string(Char)); }
             public static explicit operator Button(Text Text)
-            { return new Button{ Text = Text};}
+            { return new Button { Text = Text }; }
             public static implicit operator Text(Button Button)
-            { return new Text(Button.Text);}
+            { return new Text(Button.Text); }
+            public static explicit operator SByte(Text Text)
+            { return SByte.Parse(Text.Value); }
+            public static implicit operator Text(SByte SByte)
+            { return new Text(SByte.ToString()); }
+            public static implicit operator Byte(Text Text)
+            { return Byte.Parse(Text.Value); }
+            public static implicit operator Text(Byte Byte)
+            { return new Text(Byte.ToString()); }
+            public static implicit operator Int16(Text Text)
+            { return Int16.Parse(Text.Value); }
+            public static implicit operator Text(Int16 Int16)
+            { return new Text(Int16.ToString()); }
+            public static implicit operator UInt16(Text Text)
+            { return UInt16.Parse(Text.Value); }
+            public static implicit operator Text(UInt16 UInt16)
+            { return new Text(UInt16.ToString()); }
+            public static implicit operator Int32(Text Text)
+            { return Int32.Parse(Text.Value); }
+            public static implicit operator Text(Int32 Int32)
+            { return new Text(Int32.ToString()); }
+            public static implicit operator UInt32(Text Text)
+            { return UInt32.Parse(Text.Value); }
+            public static implicit operator Text(UInt32 UInt32)
+            { return new Text(UInt32.ToString()); }
+            public static implicit operator Int64(Text Text)
+            { return Int64.Parse(Text.Value); }
+            public static implicit operator Text(Int64 Int64)
+            { return new Text(Int64.ToString()); }
+            public static implicit operator UInt64(Text Text)
+            { return UInt64.Parse(Text.Value); }
+            public static implicit operator Text(UInt64 UInt64)
+            { return new Text(UInt64.ToString()); }
+            public static implicit operator Single(Text Text)
+            { return Single.Parse(Text.Value); }
+            public static implicit operator Text(Single Single)
+            { return new Text(Single.ToString()); }
+            public static implicit operator Double(Text Text)
+            { return Double.Parse(Text.Value); }
+            public static implicit operator Text(Double Double)
+            { return new Text(Double.ToString()); }
+            public static implicit operator Decimal(Text Text)
+            { return Decimal.Parse(Text.Value); }
+            public static implicit operator Text(Decimal Decimal)
+            { return new Text(Decimal.ToString()); }
+            public static implicit operator Boolean(Text Text)
+            { return Boolean.Parse(Text.Value); }
+            public static implicit operator Text(Boolean Boolean)
+            { return new Text(Boolean.ToString()); }
+            public static implicit operator DateTime(Text Text)
+            { return DateTime.Parse(Text.Value); }
+            public static implicit operator Text(DateTime DateTime)
+            { return new Text(DateTime.ToString()); }
+            public static implicit operator TimeSpan(Text Text)
+            { return TimeSpan.Parse(Text.Value); }
+            public static implicit operator Text(TimeSpan TimeSpan)
+            { return new Text(TimeSpan.ToString()); }
+            public static implicit operator IntPtr(Text Text)
+            { return new IntPtr(Int32.Parse(Text.Value)); }
+            public static implicit operator Text(IntPtr IntPtr)
+            { return new Text(IntPtr.ToInt32().ToString()); }
+            public static implicit operator UIntPtr(Text Text)
+            { return new UIntPtr(UInt32.Parse(Text.Value)); }
+            public static implicit operator Text(UIntPtr UIntPtr)
+            { return new Text(UIntPtr.ToUInt32().ToString()); }
             public static implicit operator Array(Text Text)
             { return Text.Value.ToCharArray(); }
             public static implicit operator Text(Array Array)
@@ -305,20 +391,16 @@ namespace InnoTecheLearning
             public int CompareTo(object value)
             {
                 if (value == null)
-                {
                     return 1;
-                }
                 Text Convert = new Text();
-                if (value is string) { }
-                else if (TryCast(value, out Convert))
-                { value = Convert; }
-                else{
+                if (!(value is string))
+                    if (TryCast(value, out Convert))
+                    { value = Convert; }
+                    else
                         throw new ArgumentException("Value must be convertible to string.", "value");
-                    }
-
                 return string.Compare(Value, (string)value, StringComparison.CurrentCulture);
-                }
             }
+        }
         /*
         public string TransformForCurrentPlatform(string url)
         {
