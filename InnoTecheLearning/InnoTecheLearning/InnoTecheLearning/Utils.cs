@@ -20,14 +20,23 @@ namespace InnoTecheLearning
         {
             public static Button Button(FileImageSource Image, EventHandler OnClick)
             {
-                Button Button = new Button { Image = Image };
+                return Button(Image, OnClick, new Size(50, 50));
+            }
+            public static Button Button(FileImageSource Image, EventHandler OnClick, Size Size)
+            {
+                Button Button = new Button { Image = Image, WidthRequest = Size.Width, HeightRequest = Size.Height };
                 Button.Clicked += OnClick;
                 return Button;
             }
 
             public static Button Button(Text Text, EventHandler OnClick, Color TextColor = default(Color))
             {
-                Button Button = new Button { Text = Text };
+                return Button(Text, OnClick, TextColor, new Size(50, 50));
+            }
+            public static Button Button(Text Text, EventHandler OnClick, Color TextColor, Size Size)
+            {
+                Button Button = new Button { Text = Text, TextColor = TextColor,
+                    WidthRequest = Size.Width, HeightRequest = Size.Height };
                 Button.Clicked += OnClick;
                 return Button;
             }
@@ -36,14 +45,16 @@ namespace InnoTecheLearning
             {
                 return new StackLayout
                 {
-                    VerticalOptions = LayoutOptions.Start,
+                    Orientation = StackOrientation.Vertical,
+                    VerticalOptions = LayoutOptions.Center,
                     Children = { Button(Image: Image, OnClick: OnClick), Display }
                 };
             }
 
             public static StackLayout MainScreenRow(params StackLayout[] MainScreenItems)
             {
-                StackLayout MenuScreenRow = new StackLayout { HorizontalOptions = LayoutOptions.Start, Children = { } };
+                StackLayout MenuScreenRow = new StackLayout {Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand, Children = { } };
                 foreach (StackLayout MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
@@ -68,7 +79,7 @@ namespace InnoTecheLearning
 
             public static FileImageSource Image(ImageFile File)
             {
-                Text ActualFile;
+                string ActualFile;
                 switch (File)
                 {
                     case ImageFile.Forum:
@@ -94,7 +105,7 @@ namespace InnoTecheLearning
                         ActualFile = "";
                         break;
                 }
-                return (string)ActualFile;
+                return (FileImageSource)Image(ActualFile);
             }
         }
 
@@ -298,7 +309,7 @@ namespace InnoTecheLearning
             public static implicit operator Text(string String)
             { return new Text(String); }
             public static implicit operator Label(Text Text)
-            { return new Label { Text = Text }; }
+            { return new Label { Text = Text, TextColor = Color.Black }; }
             public static implicit operator Text(Label Label)
             { return new Text(Label.Text); }
             public static implicit operator char[] (Text Text)
@@ -306,7 +317,7 @@ namespace InnoTecheLearning
             public static implicit operator Text(char[] Char)
             { return new Text(new string(Char)); }
             public static explicit operator Button(Text Text)
-            { return new Button { Text = Text }; }
+            { return new Button { Text = Text,TextColor = Color.Black }; }
             public static implicit operator Text(Button Button)
             { return new Text(Button.Text); }
             public static explicit operator SByte(Text Text)

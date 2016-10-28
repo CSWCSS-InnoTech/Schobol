@@ -12,24 +12,23 @@ namespace InnoTecheLearning
     {
         public Main()
         {
-            Alert(this, "Main constructor");
+            BackgroundColor = Color.White;
+            //Alert(this, "Main constructor");
             Content = new StackLayout
             {
-                VerticalOptions = Alert(LayoutOptions.Start, this, "Content.VerticalOptions"),
-                BackgroundColor = Color.White,
-                WidthRequest = App.Current.MainPage.Width,
-                HeightRequest = Alert(App.Current.MainPage.Height, this, "Content.HeightRequest"),
+                Orientation  = StackOrientation.Vertical,
                 Children = {
-                 new Label {FontSize = Alert(25, this, "Label1.FontSize"),
+                 new Label {FontSize = 25,
                             BackgroundColor = Color.FromUint(4285098345),
                             FontAttributes = FontAttributes.Bold,
                             TextColor = Color.White,
                             HorizontalTextAlignment = TextAlignment.Center,
-                            Text = Alert("CSWCSS eLearning App", this, "Label1.Text")
-              }, new Label {HorizontalTextAlignment = Alert(TextAlignment.Center, this, "Label2.TextAlign"),
+                            Text = "CSWCSS eLearning App"
+              }, new Label {HorizontalTextAlignment = TextAlignment.Center,
+                            TextColor = Color.Black,
                             FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
                             },
-           MainScreenRow(Alert(MainScreenItem(Alert("forum-message-3.png",this,"1"),delegate{}, "Forum" ),this,"2"))
+           MainScreenRow(MainScreenItem("forum-message-3.png",delegate{}, "Forum" ))
                 }
             };
         }

@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>InnoTecheLearning.Droid</RootNamespace>
-    <AssemblyName>InnoTecheLearning.Droid</AssemblyName>
+    <AssemblyName>CSWCSS eLearning App</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidApplication>true</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -138,7 +138,7 @@
     <AndroidResource Include="Resources\Drawable\forum-message-3.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\Icon.png" />
+    <AndroidResource Include="Resources\Drawable\icon.png" />
   </ItemGroup>
   <Import Project="..\InnoTecheLearning\InnoTecheLearning.projitems" Label="Shared" Condition="Exists('..\InnoTecheLearning\InnoTecheLearning.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
