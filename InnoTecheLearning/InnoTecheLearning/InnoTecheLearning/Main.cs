@@ -28,7 +28,7 @@ namespace InnoTecheLearning
                             TextColor = Color.Black,
                             FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
                             },
-           MainScreenRow(MainScreenItem("forum-message-3.png",delegate{}, "Forum" ))
+           MainScreenRow(MainScreenItem("forum-message-3.png",delegate{Alert(this,"Test for button"); }, "Forum" ))
                 }
             };
         }

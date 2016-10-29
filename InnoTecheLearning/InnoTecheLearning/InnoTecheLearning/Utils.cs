@@ -83,7 +83,7 @@ namespace InnoTecheLearning
                 switch (File)
                 {
                     case ImageFile.Forum:
-                        ActualFile = "forum-message-3.png";
+                        ActualFile = "forum_message_3.png";
                         break;
                     /*case ImageFile.Translate:
                           break;
