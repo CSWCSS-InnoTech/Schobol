@@ -19,5 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)cswcss.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Notes.txt" />
   </ItemGroup>
 </Project>

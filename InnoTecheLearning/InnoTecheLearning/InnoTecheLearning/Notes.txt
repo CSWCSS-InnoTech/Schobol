@@ -1,0 +1,5 @@
+﻿InnoTecheLearning.Droid:
+	Do not change Application->Assembly Name
+	It will mess up the app's loading sequence and throw an exception and therefore make it stop
+	That bugged me from 0.10.0a7 all the way towards 0.10.0a24
+	(2016-10-30)
