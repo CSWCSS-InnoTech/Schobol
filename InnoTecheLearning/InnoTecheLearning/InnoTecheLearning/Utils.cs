@@ -46,7 +46,8 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
                     Children = { Button(Image: Image, OnClick: OnClick), Display }
                 };
             }
@@ -54,7 +55,8 @@ namespace InnoTecheLearning
             public static StackLayout MainScreenRow(params StackLayout[] MainScreenItems)
             {
                 StackLayout MenuScreenRow = new StackLayout {Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand, Children = { } };
+                    HorizontalOptions = LayoutOptions.StartAndExpand,
+                    VerticalOptions = LayoutOptions.CenterAndExpand, Children = { } };
                 foreach (StackLayout MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
@@ -79,7 +81,7 @@ namespace InnoTecheLearning
 
             public static FileImageSource Image(ImageFile File)
             {
-                string ActualFile;
+                string ActualFile = "";
                 switch (File)
                 {
                     case ImageFile.Forum:
@@ -131,7 +133,7 @@ namespace InnoTecheLearning
         /// <returns></returns>
         public static FormattedString Format(params Span[] Spans)
         {
-            var fs = new FormattedString();
+            FormattedString fs = new FormattedString();
             foreach (Span Span in Spans)
             {
                 fs.Spans.Add(Span);

@@ -6,7 +6,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
-
+[assembly: Application(Icon = "@drawable/icon")]
 namespace InnoTecheLearning.Droid
 {
 	[Activity (Label = "InnoTecheLearning", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
