@@ -87,9 +87,10 @@ namespace InnoTecheLearning
                     case ImageFile.Forum:
                         ActualFile = "forum_message_3.png";
                         break;
-                    /*case ImageFile.Translate:
-                          break;
-                      case ImageFile.VocabBook:
+                    case ImageFile.Translate:
+                        ActualFile = "translator_tool_3.png";
+                        break;
+                      /*case ImageFile.VocabBook:
                           break;
                       case ImageFile.MathConverter:
                           break;

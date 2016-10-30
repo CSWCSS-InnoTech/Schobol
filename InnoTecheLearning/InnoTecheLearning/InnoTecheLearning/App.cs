@@ -17,7 +17,7 @@ namespace InnoTecheLearning
 		{
             // The root page of your application
             MainPage = new Main();
-            
+            MainPage.DisplayAlert(GetResources(),"Alert", "OK");
 		}
 
         protected override void OnStart ()
@@ -35,6 +35,15 @@ namespace InnoTecheLearning
 			// Handle when your app resumes
 		}
 
-      
+        public string GetResources()
+        {
+            string Return = "";
+            foreach (var s in
+       typeof(Main).Assembly.GetManifestResourceNames())
+            {
+                Return += s;
+            }
+            return Return;
+        }
 	}
 }

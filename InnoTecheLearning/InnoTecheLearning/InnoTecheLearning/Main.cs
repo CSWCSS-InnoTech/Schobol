@@ -14,7 +14,7 @@ namespace InnoTecheLearning
         {
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
-            Content = new StackLayout
+            /*Content = new StackLayout
             {
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Orientation  = StackOrientation.Vertical,
@@ -29,9 +29,12 @@ namespace InnoTecheLearning
                             TextColor = Color.Black,
                             FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
                             },
-           MainScreenRow(MainScreenItem("forum-message-3.png",delegate{Alert(this,"Test for button"); }, "Forum" ))
+           MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{Alert(this,"Test for button"); }, "Forum" ),
+                         MainScreenItem(Image(ImageFile.Translate),delegate{Alert(this,
+                             "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"
+                             ); }, "Forum" ))
                 }
-            };
+            };*/
         }
     };
 }

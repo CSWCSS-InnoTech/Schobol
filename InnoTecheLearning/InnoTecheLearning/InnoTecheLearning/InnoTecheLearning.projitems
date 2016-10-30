@@ -19,6 +19,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)cswcss.gif" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\book-2.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\translator_tool_3.png" />
     <Content Include="$(MSBuildThisFileDirectory)Notes.txt" />
   </ItemGroup>
 </Project>
