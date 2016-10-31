@@ -1,6 +1,7 @@
 ﻿using InnoTecheLearning;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -47,6 +48,31 @@ namespace InnoTecheLearning
             WinPhone81,
             Win81
         }
+#if !(WINDOWS_APP || WINDOWS_PHONE_APP || WINDOWS_UWP)
+        public class IO
+        {
+            public IO(string FileName,FileMode Mode = FileMode.Create)
+            {
+                this.FileName = FileName;
+                FileStream = new System.IO.IsolatedStorage.IsolatedStorageFileStream(FileName, Mode);
+            }
+            //var a = new FileImageSourceConverter();
+            //var uri = new Image().Source.GetValue(UriImageSource.UriProperty);
+            public string FileName { get; }
+            public string FilePath { get; }
+            public System.IO.IsolatedStorage.IsolatedStorageFileStream FileStream { get; }
+            public int Read(byte[] Buffer,int Offset, int Count)
+            { return FileStream.Read(Buffer, Offset, Count); }
+            public void Write(byte[] Buffer, int Offset, int Count)
+            { FileStream.Write(Buffer, Offset, Count); }
+            public void Dispose(bool Delete = false)
+            { FileStream.Dispose();
+              if (Delete)
+                  File.Delete(FilePath); }
+            ~IO()
+            { try { Dispose(); } catch { } }
+        }
+#endif
         /// <summary>
         /// A class that provides methods to help create the UI.
         /// </summary>
@@ -58,7 +84,8 @@ namespace InnoTecheLearning
             }
             public static Button Button(FileImageSource Image, EventHandler OnClick, Size Size)
             {
-                Button Button = new Button { Image = Image, WidthRequest = Size.Width, HeightRequest = Size.Height };
+                Button Button = new Button { Image = (FileImageSource)Image,
+                    WidthRequest = Size.Width, HeightRequest = Size.Height };
                 Button.Clicked += OnClick;
                 return Button;
             }
@@ -75,7 +102,7 @@ namespace InnoTecheLearning
                 return Button;
             }
 
-            public static StackLayout MainScreenItem(FileImageSource Image, EventHandler OnClick, Text Display)
+            public static StackLayout MainScreenItemB(FileImageSource Image, EventHandler OnClick, Text Display)
             {
                 return new StackLayout
                 {
@@ -83,6 +110,17 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     HorizontalOptions = LayoutOptions.CenterAndExpand,
                     Children = { Button(Image: Image, OnClick: OnClick), Display }
+                };
+            }
+
+            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Text Display)
+            {
+                return new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    Children = { Image(Source: Source, OnTap: OnTap), Display }
                 };
             }
 
@@ -114,7 +152,7 @@ namespace InnoTecheLearning
             }
 
 
-            public static FileImageSource Image(ImageFile File)
+            public static ImageSource Image(ImageFile File)
             {
                 string ActualFile = "";
                 switch (File)
@@ -144,12 +182,41 @@ namespace InnoTecheLearning
                         ActualFile = "";
                         break;
                 }
-                return (FileImageSource)Image(ActualFile);
+                return Image(ActualFile);
+               ;
             }
-        }
 
+            public static Image Image(ImageSource Source, Action OnTap)
+            {
+                return Image(Source, OnTap, new Size(50, 50));
+            }
+            public static Image Image(ImageSource Source, Action OnTap, Size Size)
+            {
+                Image Image = new Image
+                {
+                    Source = Source,
+                    WidthRequest = Size.Width,
+                    HeightRequest = Size.Height
+                };
+                var Tap = new TapGestureRecognizer();
+                Tap.Command = new Command(OnTap);
+                Image.GestureRecognizers.Add(Tap);
+                return Image;
+            }
+
+        }
+        /// <summary>
+        /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.></typeparam>
+        /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
+        /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
+        /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
+        /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
+        /// <param name="Default">The value to return if no value was provided for the current OS.</param>
+        /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
         public static T OnPlatform<T>(Func<T> iOS = null, Func<T> Android = null,
-            Func<T> Windows = null, Func<T> WinPhone81 = null, Func<T> Default = null)
+            Func<T> Windows = null, Func<T> WinPhone = null, Func<T> Default = null)
         {
             switch (Device.OS)
             {
@@ -162,8 +229,8 @@ namespace InnoTecheLearning
                         return (T)Android.DynamicInvoke();
                     break;
                 case TargetPlatform.WinPhone:
-                    if(WinPhone81 != null)
-                        return (T)WinPhone81.DynamicInvoke();
+                    if(WinPhone != null)
+                        return (T)WinPhone.DynamicInvoke();
                     break;
                 case TargetPlatform.Windows:
                     if(Windows != null)
@@ -175,8 +242,18 @@ namespace InnoTecheLearning
             }
             return Default == null ? default(T) : (T)Default.DynamicInvoke();
         }
+        /// <summary>
+        /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.></typeparam>
+        /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
+        /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
+        /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
+        /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
+        /// <param name="Default">The value to return if no value was provided for the current OS.</param>
+        /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
         public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
-                                      T WinPhone81 = default(T), T Default = default(T))
+                                      T WinPhone = default(T), T Default = default(T))
         {
             switch (Device.OS)
             {
@@ -189,8 +266,8 @@ namespace InnoTecheLearning
                         return Android;
                     break;
                 case TargetPlatform.WinPhone:
-                    if (!WinPhone81.Equals(default(T)))
-                        return WinPhone81;
+                    if (!WinPhone.Equals(default(T)))
+                        return WinPhone;
                     break;
                 case TargetPlatform.Windows:
                     if (!Windows.Equals(default(T)))

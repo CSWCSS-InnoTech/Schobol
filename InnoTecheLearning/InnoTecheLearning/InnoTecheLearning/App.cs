@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using Xamarin.Forms;
@@ -17,7 +18,7 @@ namespace InnoTecheLearning
 		{
             // The root page of your application
             MainPage = new Main();
-		}
+        }
 
         protected override void OnStart ()
 		{
@@ -33,8 +34,7 @@ namespace InnoTecheLearning
 		{
 			// Handle when your app resumes
 		}
-#if __IOS__ || __ANDROID__ 
-        public static ContentPage ResourceView
+        public ContentPage ResourceView
         {
             get
             {
@@ -42,16 +42,14 @@ namespace InnoTecheLearning
                     Content = new Label { Text = GetResources(), TextColor = Color.Black } };
             }
         }
-        public static string GetResources()
+        public string GetResources()
         {
             string Return = "";
-            foreach (var s in
-       typeof(Main).Assembly.GetManifestResourceNames())
+            foreach (var s in GetType().GetTypeInfo().Assembly.GetManifestResourceNames())
             {
                 Return += s + '\n';
             }
             return Return;
         }
-#endif
     }
 }
