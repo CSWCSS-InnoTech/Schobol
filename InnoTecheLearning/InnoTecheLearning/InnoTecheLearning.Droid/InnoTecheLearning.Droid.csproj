@@ -135,7 +135,7 @@
     <AndroidResource Include="Resources\Drawable\cswcss.gif" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\forum-message-3.png" />
+    <AndroidResource Include="Resources\Drawable\forum_message_3.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\icon.png" />

@@ -17,7 +17,7 @@ namespace InnoTecheLearning
             Content = new StackLayout
             {
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                Orientation  = StackOrientation.Vertical,
+                Orientation = StackOrientation.Vertical,
                 Children = {
                  new Label {FontSize = 25,
                             BackgroundColor = Color.FromUint(4285098345),
@@ -29,10 +29,21 @@ namespace InnoTecheLearning
                             TextColor = Color.Black,
                             FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
                             },
-           MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{Alert(this,"Test for button"); }, "Forum" ),
-                         MainScreenItem(Image(ImageFile.Translate),delegate{Alert(this,
-                             "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"
-                             ); }, "Forum" ))
+           MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{Alert(this,"Test for button"); }, BoldLabel("Forum") ),
+                         MainScreenItem(Image(ImageFile.Translate), delegate{Alert(this,
+                          "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"); },
+                         BoldLabel("Translator") ),
+                         MainScreenItem(Image(ImageFile.VocabBook),delegate {Alert(this,"Ida = 捱打，伸張靜儀、儆惡懲奸，\n" +
+"      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
+
+           MainScreenRow(MainScreenItem(Image(ImageFile.MathConverter),delegate {Alert(this, "1+1=2"); },BoldLabel("Math Converter")),
+                         MainScreenItem(Image(ImageFile.MathConverter_Duo),delegate {Alert(this,
+                             "Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³ = 𝐗(𝐗−1)²(5𝐗−2)"
+                             ); },BoldLabel("Math Converter Duo"))),
+           MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
+                         MainScreenItem(Image(ImageFile.MusicTuner), delegate { Alert(this,"𝄞𝅘𝅥𝅘𝅥𝅘𝅥𝅯𝅘𝅥𝅯𝅘𝅥𝅲𝅘𝅥𝅲𝅂𝆕𝄇"); },BoldLabel("Music Tuner")),
+                         MainScreenItem(Image(ImageFile.MathSolver), delegate { Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
+                         )
                 }
             };
         }

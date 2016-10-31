@@ -11,16 +11,25 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cswcss.gif" />
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\book-2.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\translator-tool-3.png" />
     <None Include="$(MSBuildThisFileDirectory)Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\japanese-dragon.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\man-sprinting.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\mathematical-operation.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\square-root-of-x-mathematical-signs.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\treble-clef-2.png" />
   </ItemGroup>
 </Project>
