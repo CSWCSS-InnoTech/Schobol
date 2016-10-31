@@ -62,7 +62,7 @@ namespace InnoTecheLearning
                 {
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.Center,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 };
             }
@@ -158,10 +158,14 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
-            public static Label BoldLabel(Text Text)
-            { return new Label { Text = Text ,FontAttributes = FontAttributes.Bold, TextColor = Color.Black}; }
             public static Label BoldLabel2(Text Text)
-            { return new Label { FormattedText = Format(Bold(Text)),  TextColor = Color.Black }; }
+            { return new Label { Text = Text ,FontAttributes = FontAttributes.Bold, TextColor = Color.Black,
+				VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Center
+            }; }
+            public static Label BoldLabel(Text Text)
+            { return new Label { FormattedText = Format(Bold(Text)),  TextColor = Color.Black,
+                VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Center
+            }; }
         }
     }
 }
