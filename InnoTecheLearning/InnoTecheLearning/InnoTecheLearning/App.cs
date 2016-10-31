@@ -16,8 +16,7 @@ namespace InnoTecheLearning
         public App ()
 		{
             // The root page of your application
-            MainPage = new Main();
-            MainPage.DisplayAlert(GetResources(),"Alert", "OK");
+            MainPage = ResourceView;
 		}
 
         protected override void OnStart ()
@@ -34,16 +33,25 @@ namespace InnoTecheLearning
 		{
 			// Handle when your app resumes
 		}
-
-        public string GetResources()
+#if __IOS__ || __ANDROID__
+        public static ContentPage ResourceView
+        {
+            get
+            {
+               return new ContentPage { BackgroundColor = Color.Black,
+                    Content = new Label { Text = GetResources(), TextColor = Color.Black } };
+            }
+        }
+        public static string GetResources()
         {
             string Return = "";
             foreach (var s in
        typeof(Main).Assembly.GetManifestResourceNames())
             {
-                Return += s;
+                Return += s + '\n';
             }
             return Return;
         }
-	}
+#endif
+    }
 }

@@ -15,12 +15,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum_message_3.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)cswcss.gif" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)cswcss.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\book-2.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\translator_tool_3.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Notes.txt" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\translator-tool-3.png" />
+    <None Include="$(MSBuildThisFileDirectory)Notes.txt" />
   </ItemGroup>
 </Project>

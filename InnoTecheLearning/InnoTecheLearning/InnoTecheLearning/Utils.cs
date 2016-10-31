@@ -13,9 +13,43 @@ namespace InnoTecheLearning
 /// A class that provides methods to help run the App.
 /// </summary>
     public static class Utils
-    {/// <summary>
-/// A class that provides methods to help create the UI.
-/// </summary>
+    {   /// <summary>
+        /// Which project is the app built in?
+        /// </summary>
+        public static ProjectType Project
+        {
+            get
+            {
+#if __ANDROID__
+                return ProjectType.Android;
+#elif __IOS__
+                return ProjectType.iOS;
+#elif WINDOWS_UWP
+                return ProjectType.UWP10;
+#elif WINDOWS_APP
+                return ProjectType.Win81;
+#elif WINDOWS_PHONE_APP
+                return ProjectType.WinPhone81;
+#else
+                return ProjectType.Undefined;
+#endif
+            }
+        }
+        /// <summary>
+        /// All project types.
+        /// </summary>
+        public enum ProjectType : sbyte
+        {
+            Undefined = -1,
+            iOS,
+            Android,
+            UWP10,
+            WinPhone81,
+            Win81
+        }
+        /// <summary>
+        /// A class that provides methods to help create the UI.
+        /// </summary>
         public static class Create
         {
             public static Button Button(FileImageSource Image, EventHandler OnClick)
@@ -63,7 +97,8 @@ namespace InnoTecheLearning
             }
 
             public static ImageSource Image(string FileName)
-            { return ImageSource.FromResource("InnoTecheLearning.Images." + FileName); }
+            { return ImageSource.FromResource("InnoTecheLearning."+ On +".Images." + FileName);
+            }
 
             public enum ImageFile : int
             {
@@ -112,6 +147,33 @@ namespace InnoTecheLearning
             }
         }
 
+        public static T OnPlatform<T>(Func<T> iOS = null, Func<T> Android = null,
+            Func<T> Windows = null, Func<T> WinPhone81 = null, Func<T> Default = null)
+        {
+            switch (Device.OS)
+            {
+                case TargetPlatform.iOS:
+                    if(iOS != null)
+                        return (T)iOS.DynamicInvoke();
+                    break;
+                case TargetPlatform.Android:
+                    if(Android != null)
+                        return (T)Android.DynamicInvoke();
+                    break;
+                case TargetPlatform.WinPhone:
+                    if(WinPhone81 != null)
+                        return (T)WinPhone81.DynamicInvoke();
+                    break;
+                case TargetPlatform.Windows:
+                    if(Windows != null)
+                        return (T)Windows.DynamicInvoke();
+                    break;
+                case TargetPlatform.Other:
+                default:
+                    break;
+            }
+            return Default == null ? default(T) : (T)Default.DynamicInvoke();
+        }
         public async static Task<T> AlertAsync<T>(T Return,Page Page, Text Message = default(Text),string Title = "Alert", string Cancel = "OK")
         {   await Page.DisplayAlert(Title, Message, Cancel);
             return Return; }
