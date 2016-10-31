@@ -37,9 +37,10 @@ namespace InnoTecheLearning
 "      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
 
            MainScreenRow(MainScreenItem(Image(ImageFile.MathConverter),delegate {Alert(this, "1+1=2"); },BoldLabel("Math Converter")),
-                         MainScreenItem(Image(ImageFile.MathConverter_Duo),delegate {Alert(this,
+                         MainScreenItem(Image(ImageFile.MathConverter_Duo),delegate { Alert(this, ""); },BoldLabel("Math Converter Duo")),
+                         MainScreenItem(Image(ImageFile.Factorizer),delegate {Alert(this,
                              "Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³ = 𝐗(𝐗−1)²(5𝐗−2)"
-                             ); },BoldLabel("Math Converter Duo"))),
+                             ); },BoldLabel("Quadratic Factorizer"))),
            MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
                          MainScreenItem(Image(ImageFile.MusicTuner), delegate { Alert(this,"𝄞𝅘𝅥𝅘𝅥𝅘𝅥𝅯𝅘𝅥𝅯𝅘𝅥𝅲𝅘𝅥𝅲𝅂𝆕𝄇"); },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate { Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))

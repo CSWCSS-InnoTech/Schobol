@@ -27,9 +27,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\japanese-dragon.png" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\man-sprinting.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\mathematical-operation.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\square-root-of-x-mathematical-signs.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\treble-clef-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\man-sprinting.png" />
   </ItemGroup>
 </Project>

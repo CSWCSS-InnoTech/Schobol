@@ -159,9 +159,9 @@ namespace InnoTecheLearning
                 return Image;
             }
             public static Label BoldLabel(Text Text)
-            { return new Label { FormattedText = Format(Bold(Text)) , TextColor = Color.Black}; }
+            { return new Label { Text = Text ,FontAttributes = FontAttributes.Bold, TextColor = Color.Black}; }
             public static Label BoldLabel2(Text Text)
-            { return new Label { FormattedText = Format(Bold(Text)), FontAttributes = FontAttributes.Bold, TextColor = Color.Black }; }
+            { return new Label { FormattedText = Format(Bold(Text)),  TextColor = Color.Black }; }
         }
     }
 }
