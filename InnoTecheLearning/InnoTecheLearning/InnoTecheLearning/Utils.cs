@@ -97,7 +97,7 @@ namespace InnoTecheLearning
             }
 
             public static ImageSource Image(string FileName)
-            { return ImageSource.FromResource("InnoTecheLearning."+ On +".Images." + FileName);
+            { return ImageSource.FromResource(CurrentNamespace +".Images." + FileName);
             }
 
             public enum ImageFile : int
@@ -120,14 +120,15 @@ namespace InnoTecheLearning
                 switch (File)
                 {
                     case ImageFile.Forum:
-                        ActualFile = "forum_message_3.png";
+                        ActualFile = "forum-message-3.png";
                         break;
                     case ImageFile.Translate:
-                        ActualFile = "translator_tool_3.png";
+                        ActualFile = "translator-tool-3.png";
                         break;
-                      /*case ImageFile.VocabBook:
+                      case ImageFile.VocabBook:
+                        ActualFile = "book-2.png";
                           break;
-                      case ImageFile.MathConverter:
+                      /*case ImageFile.MathConverter:
                           break;
                       case ImageFile.MathConverter_Duo:
                           break;
@@ -174,7 +175,102 @@ namespace InnoTecheLearning
             }
             return Default == null ? default(T) : (T)Default.DynamicInvoke();
         }
-        public async static Task<T> AlertAsync<T>(T Return,Page Page, Text Message = default(Text),string Title = "Alert", string Cancel = "OK")
+        public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
+                                      T WinPhone81 = default(T), T Default = default(T))
+        {
+            switch (Device.OS)
+            {
+                case TargetPlatform.iOS:
+                    if (!iOS.Equals(default(T)))
+                        return iOS;
+                    break;
+                case TargetPlatform.Android:
+                    if (!Android.Equals(default(T)))
+                        return Android;
+                    break;
+                case TargetPlatform.WinPhone:
+                    if (!WinPhone81.Equals(default(T)))
+                        return WinPhone81;
+                    break;
+                case TargetPlatform.Windows:
+                    if (!Windows.Equals(default(T)))
+                        return Windows;
+                    break;
+                case TargetPlatform.Other:
+                default:
+                    break;
+            }
+            return Default;
+        }
+
+        public static T OnProject<T>(Func<T> iOS = null, Func<T> Android = null, Func<T> UWP10 = null,
+            Func<T> Win81 = null, Func<T> WinPhone81 = null, Func<T> Default = null)
+        {
+            switch (Project)
+            {
+                case ProjectType.iOS:
+                    if (iOS != null)
+                        return (T)iOS.DynamicInvoke();
+                    break;
+                case ProjectType.Android:
+                    if (Android != null)
+                        return (T)Android.DynamicInvoke();
+                    break;
+                case ProjectType.UWP10:
+                    if (UWP10 != null)
+                        return (T)UWP10.DynamicInvoke();
+                    break;
+                case ProjectType.Win81:
+                    if (Win81 != null)
+                        return (T)Win81.DynamicInvoke();
+                    break;
+                case ProjectType.WinPhone81:
+                    if (WinPhone81 != null)
+                        return (T)WinPhone81.DynamicInvoke();
+                    break;
+                case ProjectType.Undefined:
+                default:
+                    break;
+            }
+            return Default == null ? default(T) : (T)Default.DynamicInvoke();
+        }
+        public static T OnProject<T>(T iOS = default(T), T Android = default(T), T UWP10 = default(T),
+                                      T Win81 = default(T), T WinPhone81 = default(T), T Default = default(T))
+        {
+            switch (Project)
+            {
+                case ProjectType.iOS:
+                    if (!iOS.Equals(default(T)))
+                        return iOS;
+                    break;
+                case ProjectType.Android:
+                    if (!Android.Equals(default(T)))
+                        return Android;
+                    break;
+                case ProjectType.UWP10:
+                    if (!UWP10.Equals(default(T)))
+                        return UWP10;
+                    break;
+                case ProjectType.Win81:
+                    if (!Win81.Equals(default(T)))
+                        return Win81;
+                    break;
+                case ProjectType.WinPhone81:
+                    if (!WinPhone81.Equals(default(T)))
+                        return WinPhone81;
+                    break;
+                case ProjectType.Undefined:
+                default:
+                    break;
+            }
+            return Default;
+        }
+
+        public static string CurrentNamespace
+        {   get {return "InnoTecheLearning." + OnProject("iOS", "Droid", "UWP", "Windows", "WinPhone");}}
+
+        public async static Task<T> AlertAsync<T>(T Return,Page Page, Text Message = default(Text),
+                                                  string Title = "Alert", string Cancel = "OK")
         {   await Page.DisplayAlert(Title, Message, Cancel);
             return Return; }
 

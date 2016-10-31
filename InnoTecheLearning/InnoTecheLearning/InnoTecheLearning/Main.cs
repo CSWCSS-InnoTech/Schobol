@@ -14,7 +14,7 @@ namespace InnoTecheLearning
         {
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
-            /*Content = new StackLayout
+            Content = new StackLayout
             {
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Orientation  = StackOrientation.Vertical,
@@ -34,7 +34,7 @@ namespace InnoTecheLearning
                              "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"
                              ); }, "Forum" ))
                 }
-            };*/
+            };
         }
     };
 }

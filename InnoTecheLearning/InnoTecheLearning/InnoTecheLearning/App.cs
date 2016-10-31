@@ -16,7 +16,7 @@ namespace InnoTecheLearning
         public App ()
 		{
             // The root page of your application
-            MainPage = ResourceView;
+            MainPage = new Main();
 		}
 
         protected override void OnStart ()
@@ -33,7 +33,7 @@ namespace InnoTecheLearning
 		{
 			// Handle when your app resumes
 		}
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ 
         public static ContentPage ResourceView
         {
             get
