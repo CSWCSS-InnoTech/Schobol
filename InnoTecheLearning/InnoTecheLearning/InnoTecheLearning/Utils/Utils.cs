@@ -248,13 +248,35 @@ namespace InnoTecheLearning
         }
 
         /// <summary>
-        /// Returns bolded text.
+        /// Returns bolded <see cref="Text"/>.
         /// </summary>
-        /// <param name="Text">Text to make bold.</param>
+        /// <param name="Text"><see cref="Text"/> to make bold.</param>
         /// <returns></returns>
         public static Span Bold(Text Text)
         { return new Span { Text = Text, FontAttributes = FontAttributes.Bold }; }
-
+        /// <summary>
+        /// Returns a <see cref="string"/> consisting of the specified
+        /// <see cref="char"/> repeated the specified number of times.
+        /// </summary>
+        /// <param name="Char">The <see cref="char"/> that you want to duplicate. </param>
+        /// <param name="Count">Number of times to duplicate the <see cref="char"/>.</param>
+        /// <returns>Returns a <see cref="string"/> consisting of the specified
+        /// <see cref="char"/> repeated the specified number of times. </returns>
+        public static string StrDup(char Char, int Count)
+        { return new string(Char, Count); }
+        /// <summary>
+        /// Returns a <see cref="string"/> consisting of the specified
+        /// <see cref="string"/> repeated the specified number of times.
+        /// </summary>
+        /// <param name="String">The <see cref="string"/> that you want to duplicate. </param>
+        /// <param name="Count">Number of times to duplicate the <see cref="string"/>.</param>
+        /// <returns>Returns a <see cref="string"/> consisting of the specified
+        /// <see cref="string"/> repeated the specified number of times. </returns>
+        public static string StrDup(string String, int Count)
+        { string Return = "";
+          for (int i = 0; i < Count; i++)
+                Return += String;
+          return Return;}
         /// <summary>
         /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
         /// </summary>

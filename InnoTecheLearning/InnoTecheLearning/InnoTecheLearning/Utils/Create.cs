@@ -56,7 +56,7 @@ namespace InnoTecheLearning
                 };
             }
 
-            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Text Display)
+            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display)
             {
                 return new StackLayout
                 {
@@ -158,14 +158,19 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
-            public static Label BoldLabel2(Text Text)
-            { return new Label { Text = Text ,FontAttributes = FontAttributes.Bold, TextColor = Color.Black,
-				VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Center
-            }; }
             public static Label BoldLabel(Text Text)
-            { return new Label { FormattedText = Format(Bold(Text)),  TextColor = Color.Black,
-                VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Center
-            }; }
+            {   return new Label
+                {   Text = Text,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.Black,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center}; }
+            public static Label BoldLabel2(Text Text)
+            {   return new Label
+                {   FormattedText = Format(Bold(Text)),
+                    TextColor = Color.Black,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center}; }
         }
     }
 }
