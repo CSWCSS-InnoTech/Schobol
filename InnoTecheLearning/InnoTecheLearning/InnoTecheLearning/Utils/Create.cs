@@ -12,15 +12,15 @@ namespace InnoTecheLearning
         /// </summary>
         public static class Create
         {
+            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
             public static Button Button(FileImageSource Image, EventHandler OnClick)
-            {
-                return Button(Image, OnClick, new Size(50, 50));
-            }
+            {   return Button(Image, OnClick, new Size(50, 50));}
+            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
             public static Button Button(FileImageSource Image, EventHandler OnClick, Size Size)
             {
                 Button Button = new Button
                 {
-                    Image = (FileImageSource)Image,
+                    Image = Image,
                     WidthRequest = Size.Width,
                     HeightRequest = Size.Height
                 };
@@ -29,9 +29,7 @@ namespace InnoTecheLearning
             }
 
             public static Button Button(Text Text, EventHandler OnClick, Color TextColor = default(Color))
-            {
-                return Button(Text, OnClick, TextColor, new Size(50, 50));
-            }
+            {   return Button(Text, OnClick, TextColor, new Size(50, 50));}
             public static Button Button(Text Text, EventHandler OnClick, Color TextColor, Size Size)
             {
                 Button Button = new Button
@@ -44,14 +42,14 @@ namespace InnoTecheLearning
                 Button.Clicked += OnClick;
                 return Button;
             }
-
+            [Obsolete("Use MainScreenItem(ImageSource Source, Action OnTap, Label Display) instead.\nDeprecated in 0.10.0a46")]
             public static StackLayout MainScreenItemB(FileImageSource Image, EventHandler OnClick, Text Display)
             {
                 return new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.Center,
                     Children = { Button(Image: Image, OnClick: OnClick), Display }
                 };
             }
@@ -63,6 +61,7 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     HorizontalOptions = LayoutOptions.Center,
+                    WidthRequest = 70,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 };
             }
@@ -72,7 +71,7 @@ namespace InnoTecheLearning
                 StackLayout MenuScreenRow = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.StartAndExpand,
 					Spacing = 50,
                     Children = { }

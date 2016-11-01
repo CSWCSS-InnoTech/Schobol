@@ -15,9 +15,9 @@ namespace InnoTecheLearning.Droid
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-
 			global::Xamarin.Forms.Forms.Init (this, bundle);
-			LoadApplication (new InnoTecheLearning.App ());
+            TextToSpeechImplementation.Bundle = bundle;
+			LoadApplication (new App());
 		}
         
 	}

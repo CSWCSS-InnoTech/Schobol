@@ -51,7 +51,7 @@ namespace InnoTecheLearning
            MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {
                              Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
                          MainScreenItem(Image(ImageFile.MusicTuner), delegate {
-                             Alert(this,"🎼♯♩♪♫♬♭🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸"); },BoldLabel("Music Tuner")),
+                             Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸"); },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate {
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
                          )
@@ -60,60 +60,3 @@ namespace InnoTecheLearning
         }
     };
 }
-/*otes 𝅜 𝅝 𝅗𝅥 𝅘𝅥 𝅘𝅥𝅮 𝅘𝅥𝅯 𝅘𝅥𝅰 𝅘𝅥𝅱 𝅘𝅥𝅲
-
-rest stops 𝄺 𝄻 𝄼 𝄽 𝄾 𝄿 𝅀 𝅁 𝅂 𝄩
-
-pause 𝄒 𝄓 𝄐 𝄑
-
-sound level 𝆏 𝆐 𝆑 𝆒 𝆓
-
-bar line 𝄀 𝄁 𝄂 𝄃 𝄄 𝄅 𝄔 𝄕
-
-repeat 𝄆 𝄇 𝄈 𝄉 𝄊 𝄋 𝄌 𝄍 𝄎 𝄏
-
-staff 𝄖 𝄗 𝄘 𝄙 𝄚 𝄛
-
-clef 𝄞 𝄟 𝄠 𝄡 𝄢 𝄣 𝄤 𝄥 𝄦
-
-sharp ＆ flats  𝄪 𝄰 𝄱 𝄲 𝄳  𝄫 𝄬 𝄭  𝄮 𝄯
-
-𝄶 𝄷 𝄸 𝄹
-
-time 𝄴 𝄵
-
-𝆌 𝆍 𝆎
-
-ornament 𝆔 𝆕 𝆖 𝆛 𝆜 𝆝 𝆞 𝆟 𝆠 𝆡 𝆢 𝆣 𝆤 𝆥 𝆃 𝆄 𝆱 𝆲 𝆗 𝆘 𝆙 𝆚
-
-𝆦 𝆧 𝆨 𝆩
-
-pedal 𝆮 𝆯 𝆰
-
-fret 𝄜 𝄝
-
-𝆳 𝆴 𝆵 𝆶 𝆷 𝆸
-
-𝆹 𝆺 𝆹𝅥 𝆺𝅥 𝆹𝅥𝅮 𝆺𝅥𝅮 𝆹𝅥𝅯 𝆺𝅥𝅯
-
-𝇁 𝇂 𝇃 𝇄 𝇅 𝇆 𝇇 𝇈 𝇉 𝇊 𝇋 𝇌 𝇍 𝇎 𝇏 𝇐 𝇑 𝇒 𝇓 𝇔 𝇕 𝇖 𝇗 𝇘 𝇙 𝇚 𝇛 𝇜 𝇝
-noteheads (for use with combining chars of stem and tail)
-
-𝅃 𝅄 𝅅 𝅆 𝅇 𝅈 𝅉 𝅊 𝅋 𝅌 𝅍 𝅎 𝅏 𝅐 𝅑 𝅒 𝅓 𝅔 𝅕 𝅖 𝅗 𝅘 𝅙 𝅚 𝅛
-combining characters
-
-stem 𝅥 𝅦
-
-tremolo 𝅧 𝅨 𝅩 𝅪 𝅫 𝅬
-
-tail 𝅮 𝅯 𝅰 𝅱 𝅲
-
-beam, tie, slur, phrase 𝅳 𝅴 𝅵 𝅶 𝅷 𝅸 𝅹 𝅺
-
-𝅭
-
-𝅻 𝅼 𝅽 𝅾 𝅿 𝆀 𝆁 𝆂 𝆅 𝆆 𝆇 𝆈 𝆉 𝆊 𝆋
-
-𝆪 𝆫 𝆬 𝆭
-
-Example of combined character 「𝅘𝅥𝅰」*/

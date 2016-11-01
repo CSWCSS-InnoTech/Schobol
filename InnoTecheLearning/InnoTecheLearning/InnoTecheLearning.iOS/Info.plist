@@ -22,7 +22,7 @@
 	<key>MinimumOSVersion</key>
 	<string>6.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>InnoTecheLearning</string>
+	<string>CSWCSS eLearning App</string>
 	<key>CFBundleIdentifier</key>
 	<string>edu.cswcss.eLearning</string>
 	<key>CFBundleVersion</key>
