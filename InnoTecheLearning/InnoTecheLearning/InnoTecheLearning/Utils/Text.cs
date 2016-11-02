@@ -13,7 +13,8 @@ namespace InnoTecheLearning
         public struct Text : IComparable
         {
             public static Text Null { get { return (string)null; } }
-            public static Text Empty { get { return ""; } }
+            public static Text Empty { get { return string.Empty; } }
+            public static Text Default { get { return default(Text); } }
             public string Value { get; set; }
             public Text(string Text)
             { Value = Text; }
@@ -236,7 +237,7 @@ namespace InnoTecheLearning
             {
                 return Value.CompareTo(String);
             }
-            public int CompareTo(object value)
+            public int CompareTo(dynamic value)
             {
                 if (value == null)
                     return 1;

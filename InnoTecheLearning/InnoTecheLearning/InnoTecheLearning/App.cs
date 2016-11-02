@@ -13,7 +13,6 @@ namespace InnoTecheLearning
 {
 	public class App : Application
     {
-        public static Size ScreenSize { get; set; }
         public App ()
 		{
             // The root page of your application

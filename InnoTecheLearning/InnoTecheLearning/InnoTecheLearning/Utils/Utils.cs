@@ -284,7 +284,7 @@ namespace InnoTecheLearning
         /// <param name="Object">The <see cref="object"/> instance to convert.</param>
         /// <param name="Result">The result of conversion if successful. If not it will be the default value of the <see cref="Type"/> to convert to.</param>
         /// <returns>Whether the conversion has succeeded.</returns>
-        public static bool TryCast<T>(object Object, out T Result)
+        public static bool TryCast<T>(dynamic Object, out T Result)
         {
             try
             {
@@ -296,6 +296,16 @@ namespace InnoTecheLearning
                 Result = default(T);
                 return false;
             }
+        }
+
+        public static char[] CharGen(char Start, char End, params char[] Exclude)
+        {   string Return = "";
+            for (char i = Start; i < End+1; i++)
+            {
+                if (Array.Exists(Exclude,x=>x!=i))
+                Return += i;
+            }
+            return Return.ToCharArray();
         }
         /*
         public string TransformForCurrentPlatform(string url)

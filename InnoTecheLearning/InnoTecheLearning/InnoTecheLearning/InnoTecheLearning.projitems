@@ -12,11 +12,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextToSpeech.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cswcss.gif" />
+    <None Include="$(MSBuildThisFileDirectory)Change.log" />
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.cs" />

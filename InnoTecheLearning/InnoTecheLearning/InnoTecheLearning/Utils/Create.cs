@@ -29,9 +29,17 @@ namespace InnoTecheLearning
             }
 
             public static Button Button(Text Text, EventHandler OnClick, Color TextColor = default(Color))
-            {   return Button(Text, OnClick, TextColor, new Size(50, 50));}
-            public static Button Button(Text Text, EventHandler OnClick, Color TextColor, Size Size)
             {
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button{Text = Text, TextColor = TextColor};
+                Button.Clicked += OnClick;
+                return Button;
+            }
+            public static Button Button(Text Text, EventHandler OnClick, Size Size, Color TextColor = default(Color))
+            {
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
                 Button Button = new Button
                 {
                     Text = Text,
@@ -157,19 +165,37 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
-            public static Label BoldLabel(Text Text)
-            {   return new Label
+            public static Label BoldLabel(Text Text, Color TextColor = default(Color))
+            {   if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                return new Label
                 {   Text = Text,
                     FontAttributes = FontAttributes.Bold,
-                    TextColor = Color.Black,
+                    TextColor = TextColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center}; }
-            public static Label BoldLabel2(Text Text)
-            {   return new Label
+            public static Label BoldLabel2(Text Text, Color TextColor = default(Color))
+            {   if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                return new Label
                 {   FormattedText = Format(Bold(Text)),
-                    TextColor = Color.Black,
+                    TextColor = TextColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center}; }
+            public static ScrollView Changelog
+            {get{   var Return = new ScrollView { Content = new Label { Text = Resources.GetString("Change.log"),
+                VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand },
+                VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
+                    /*Return.SizeChanged += (object sender, EventArgs e) =>
+                    {
+                        var View = (View)sender;
+                        if (View.Width <= 0 || View.Height <= 0) return;
+                        Return.WidthRequest = View.Width; Return.HeightRequest = View.Height;
+                    };*/
+                    return Return;}}
+            public static Label Version
+            { get { return new Label {Text = "Version: " + VersionFull, HorizontalTextAlignment = TextAlignment.End,
+                VerticalTextAlignment = TextAlignment.Start, LineBreakMode = LineBreakMode.NoWrap}; } }
         }
     }
 }

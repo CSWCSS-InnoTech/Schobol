@@ -10,15 +10,20 @@ namespace InnoTecheLearning
 {
     public class Main : ContentPage
     {
+        ScrollView Changelog = Create.Changelog;
+        Button Back;
         public Main()
-        {
+        {   Back = Button((Text)"Back", delegate { SendBackButtonPressed(); });
+            Back.IsVisible = false;
+            Changelog.IsVisible = false;
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Content = new StackLayout
             {
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 Orientation = StackOrientation.Vertical,
-                Children = {
+                Children = {Back,
+                            Changelog,
                  new Label {FontSize = 25,
                             BackgroundColor = Color.FromUint(4285098345),
                             FontAttributes = FontAttributes.Bold,
@@ -54,9 +59,22 @@ namespace InnoTecheLearning
                              Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸"); },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate {
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
-                         )
+                         ),
+
+                Button((Text)"Changelog", delegate {Changelog.IsVisible = !Changelog.IsVisible;  }),
+                Create.Version
                 }
             };
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            if (Changelog.IsVisible)
+            {
+                Changelog.IsVisible = false;
+                return true;
+            } else
+            return base.OnBackButtonPressed();
         }
     };
 }
