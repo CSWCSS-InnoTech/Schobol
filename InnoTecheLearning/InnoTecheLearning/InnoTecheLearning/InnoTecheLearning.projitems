@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextToSpeech.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
