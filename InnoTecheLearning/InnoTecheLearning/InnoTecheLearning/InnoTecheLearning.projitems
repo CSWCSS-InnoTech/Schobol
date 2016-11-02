@@ -19,7 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cswcss.gif" />
-    <None Include="$(MSBuildThisFileDirectory)Change.log" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Change.log" />
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.cs" />

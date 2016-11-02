@@ -28,16 +28,22 @@ namespace InnoTecheLearning
                 return Button;
             }
 
-            public static Button Button(Text Text, EventHandler OnClick, Color TextColor = default(Color))
+            public static Button Button(Text Text, EventHandler OnClick,Color BackColor =
+                default(Color), Color TextColor = default(Color))
             {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Button = new Button{Text = Text, TextColor = TextColor};
+                Button Button = new Button{Text = Text, TextColor = TextColor, BackgroundColor = BackColor};
                 Button.Clicked += OnClick;
                 return Button;
             }
-            public static Button Button(Text Text, EventHandler OnClick, Size Size, Color TextColor = default(Color))
+            public static Button Button(Text Text, EventHandler OnClick, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color))
             {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
                 Button Button = new Button
@@ -45,7 +51,8 @@ namespace InnoTecheLearning
                     Text = Text,
                     TextColor = TextColor,
                     WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
+                    HeightRequest = Size.Height,
+                    BackgroundColor = BackColor
                 };
                 Button.Clicked += OnClick;
                 return Button;
@@ -184,6 +191,7 @@ namespace InnoTecheLearning
                     HorizontalTextAlignment = TextAlignment.Center}; }
             public static ScrollView Changelog
             {get{   var Return = new ScrollView { Content = new Label { Text = Resources.GetString("Change.log"),
+                TextColor = Color.Black, LineBreakMode = LineBreakMode.WordWrap,
                 VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand },
                 VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
                     /*Return.SizeChanged += (object sender, EventArgs e) =>
@@ -195,7 +203,15 @@ namespace InnoTecheLearning
                     return Return;}}
             public static Label Version
             { get { return new Label {Text = "Version: " + VersionFull, HorizontalTextAlignment = TextAlignment.End,
-                VerticalTextAlignment = TextAlignment.Start, LineBreakMode = LineBreakMode.NoWrap}; } }
+                VerticalTextAlignment = TextAlignment.Start, LineBreakMode = LineBreakMode.NoWrap, TextColor = Color.Black}; } }
+            public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
+            {   Button Back = Button((Text)"Back", delegate { Page.SendBackButtonPressed(); },Color.Silver);
+                ScrollView Changelog = Create.Changelog;
+                if (BackColor == default(Color))
+                    BackColor = Color.White;
+                return new StackLayout { Children = { Changelog, Back} , BackgroundColor = BackColor,
+                HorizontalOptions = LayoutOptions.Fill, VerticalOptions = LayoutOptions.Fill
+                };} 
         }
     }
 }

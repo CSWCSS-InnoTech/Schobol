@@ -5,25 +5,48 @@ using System.Text;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
 using Xamarin.Forms;
+using System.Runtime.CompilerServices;
 
 namespace InnoTecheLearning
 {
     public class Main : ContentPage
     {
-        ScrollView Changelog = Create.Changelog;
-        Button Back;
+        public enum Pages : sbyte
+        {
+            Changelog = -1,
+            Main,
+
+        }
+#pragma warning disable 414
+        Pages Showing;
+#pragma warning restore 414
+        bool ChangelogShowing;
         public Main()
-        {   Back = Button((Text)"Back", delegate { SendBackButtonPressed(); });
-            Back.IsVisible = false;
-            Changelog.IsVisible = false;
+        {
+            Assign(Showing,out Showing);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
-            Content = new StackLayout
+            Content = MainView;
+            Showing = Pages.Main;
+        }
+        protected override bool OnBackButtonPressed()
+        {
+            if (ChangelogShowing && Showing == Pages.Changelog)
             {
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                Orientation = StackOrientation.Vertical,
-                Children = {Back,
-                            Changelog,
+                Content = MainView;
+                Showing = Pages.Changelog;
+                ChangelogShowing = false;
+                return true;
+            } else
+                return base.OnBackButtonPressed();
+        }
+        public StackLayout MainView { get
+            {
+                return new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Orientation = StackOrientation.Vertical,
+                    Children = {
                  new Label {FontSize = 25,
                             BackgroundColor = Color.FromUint(4285098345),
                             FontAttributes = FontAttributes.Bold,
@@ -34,6 +57,7 @@ namespace InnoTecheLearning
                             TextColor = Color.Black,
                             FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
                             },
+
            MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{Alert(this,"[2016-11-1 18:00:00] 1E03: Hi\n"+
                "[2016-11-1 18:00:09] 3F43: No one likes you loser\n[2016-11-1 18:00:16] 1E03: 😢😭😢😭😢😭😢😭😢\n"+
                "[2016-11-1 18:00:22] 2E12: Hey don't bully him!\n[2016-11-1 18:00:28] 3F43: Go kill yourself because you"+
@@ -61,20 +85,12 @@ namespace InnoTecheLearning
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
                          ),
 
-                Button((Text)"Changelog", delegate {Changelog.IsVisible = !Changelog.IsVisible;  }),
+                Button((Text)"Changelog", delegate {Content = ChangelogView(this);ChangelogShowing = true;
+                    Showing = Pages.Changelog; }),
                 Create.Version
                 }
-            };
+                };
+            }
         }
-
-        protected override bool OnBackButtonPressed()
-        {
-            if (Changelog.IsVisible)
-            {
-                Changelog.IsVisible = false;
-                return true;
-            } else
-            return base.OnBackButtonPressed();
-        }
-    };
+    }
 }

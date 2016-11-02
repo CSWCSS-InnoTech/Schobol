@@ -307,6 +307,15 @@ namespace InnoTecheLearning
             }
             return Return.ToCharArray();
         }
+
+        public static void DoNothing(params dynamic[] Params)
+        { }
+
+        public static T Return<T>(T Return)
+        { return Return; }
+
+        public static T Assign<T>(T Value, out T Object)
+        { return Object = Value; }
         /*
         public string TransformForCurrentPlatform(string url)
         {
