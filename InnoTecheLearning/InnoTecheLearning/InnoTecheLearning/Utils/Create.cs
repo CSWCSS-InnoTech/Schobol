@@ -58,7 +58,7 @@ namespace InnoTecheLearning
                 return Button;
             }
             [Obsolete("Use MainScreenItem(ImageSource Source, Action OnTap, Label Display) instead.\nDeprecated in 0.10.0a46")]
-            public static StackLayout MainScreenItemB(FileImageSource Image, EventHandler OnClick, Text Display)
+            public static StackLayout MainScreenItemB/*B = Button*/(FileImageSource Image, EventHandler OnClick, Text Display)
             {
                 return new StackLayout
                 {
@@ -111,7 +111,9 @@ namespace InnoTecheLearning
                 Factorizer = 6,
                 Sports = 7,
                 MusicTuner = 8,
-                MathSolver = 9
+                MathSolver = 9,
+                Cello = 10,
+                Violin = 11
             }
 
 
@@ -147,6 +149,12 @@ namespace InnoTecheLearning
                     case ImageFile.MathSolver:
                         ActualFile = "japanese-dragon.png";
                         break;
+                    case ImageFile.Cello:
+                        ActualFile = "cello-icon.png";
+                        break;
+                    case ImageFile.Violin:
+                        ActualFile = "violin-icon.png";
+                        break;
                     default:
                         ActualFile = "";
                         break;
@@ -154,7 +162,20 @@ namespace InnoTecheLearning
                 return Image(ActualFile);
                 ;
             }
-
+            public static Image Image(ImageFile File, Action OnTap)
+            { return Image(Image(File), OnTap); }
+            public static Image Image(ImageFile File, Action OnTap, Size Size)
+            { return Image(Image(File), OnTap, Size); }
+            public static Image ImageD/*D = Default (size)*/(ImageFile File, Action OnTap)
+            { return ImageD(Image(File), OnTap); }
+            public static Image ImageD/*D = Default (size)*/(ImageSource Source, Action OnTap)
+            {
+                Image Image = new Image{Source = Source};
+                var Tap = new TapGestureRecognizer();
+                Tap.Command = new Command(OnTap);
+                Image.GestureRecognizers.Add(Tap);
+                return Image;
+            }
             public static Image Image(ImageSource Source, Action OnTap)
             {
                 return Image(Source, OnTap, new Size(50, 50));
@@ -173,45 +194,136 @@ namespace InnoTecheLearning
                 return Image;
             }
             public static Label BoldLabel(Text Text, Color TextColor = default(Color))
-            {   if (TextColor == default(Color))
+            {
+                if (TextColor == default(Color))
                     TextColor = Color.Black;
                 return new Label
-                {   Text = Text,
+                {
+                    Text = Text,
                     FontAttributes = FontAttributes.Bold,
                     TextColor = TextColor,
                     VerticalTextAlignment = TextAlignment.Start,
-                    HorizontalTextAlignment = TextAlignment.Center}; }
+                    HorizontalTextAlignment = TextAlignment.Center
+                };
+            }
             public static Label BoldLabel2(Text Text, Color TextColor = default(Color))
-            {   if (TextColor == default(Color))
+            {
+                if (TextColor == default(Color))
                     TextColor = Color.Black;
                 return new Label
-                {   FormattedText = Format(Bold(Text)),
+                {
+                    FormattedText = Format(Bold(Text)),
                     TextColor = TextColor,
                     VerticalTextAlignment = TextAlignment.Start,
-                    HorizontalTextAlignment = TextAlignment.Center}; }
+                    HorizontalTextAlignment = TextAlignment.Center
+                };
+            }
             public static ScrollView Changelog
-            {get{   var Return = new ScrollView { Content = new Label { Text = Resources.GetString("Change.log"),
-                TextColor = Color.Black, LineBreakMode = LineBreakMode.WordWrap,
-                VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand },
-                VerticalOptions = LayoutOptions.FillAndExpand, HorizontalOptions = LayoutOptions.FillAndExpand };
+            {
+                get
+                {
+                    var Return = new ScrollView
+                    {
+                        Content = new Label
+                        {
+                            Text = Resources.GetString("Change.log"),
+                            TextColor = Color.Black,
+                            LineBreakMode = LineBreakMode.WordWrap,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
+                            HorizontalOptions = LayoutOptions.FillAndExpand
+                        },
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.FillAndExpand
+                    };
                     /*Return.SizeChanged += (object sender, EventArgs e) =>
                     {
                         var View = (View)sender;
                         if (View.Width <= 0 || View.Height <= 0) return;
                         Return.WidthRequest = View.Width; Return.HeightRequest = View.Height;
                     };*/
-                    return Return;}}
+                    return Return;
+                }
+            }
             public static Label Version
-            { get { return new Label {Text = "Version: " + VersionFull, HorizontalTextAlignment = TextAlignment.End,
-                VerticalTextAlignment = TextAlignment.Start, LineBreakMode = LineBreakMode.NoWrap, TextColor = Color.Black}; } }
+            {
+                get
+                {
+                    return new Label
+                    {
+                        Text = "Version: " + VersionFull,
+                        HorizontalTextAlignment = TextAlignment.End,
+                        VerticalTextAlignment = TextAlignment.Start,
+                        LineBreakMode = LineBreakMode.NoWrap,
+                        TextColor = Color.Black
+                    };
+                }
+            }
             public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
-            {   Button Back = Button((Text)"Back", delegate { Page.SendBackButtonPressed(); },Color.Silver);
+            {
+                Button Back = Button("Back", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
                 ScrollView Changelog = Create.Changelog;
                 if (BackColor == default(Color))
                     BackColor = Color.White;
-                return new StackLayout { Children = { Changelog, Back} , BackgroundColor = BackColor,
-                HorizontalOptions = LayoutOptions.Fill, VerticalOptions = LayoutOptions.Fill
-                };} 
+                return new StackLayout
+                {
+                    Children = { Changelog, Back },
+                    BackgroundColor = BackColor,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill
+                };
+            }
+            public static Label Title(Text Text)
+            {
+                return new Label
+                {
+                    FontSize = 25,
+                    BackgroundColor = Color.FromUint(4285098345),
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.White,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalOptions = LayoutOptions.Start,
+                    Text = Text
+                };
+            }
+            public static Label Society
+            {
+                get
+                {
+                    return new Label
+                    {
+                        HorizontalTextAlignment = TextAlignment.Center,
+                        TextColor = Color.Black,
+                        FormattedText = Format((Text)"Developed by the\n", Bold("Innovative Technology Society of CSWCSS"))
+                    };
+                }
+            }
+
+            public static StackLayout Row(params View[] Items)
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = { }
+                };
+                foreach (StackLayout MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+            public static StackLayout Column(params View[] Items)
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = { }
+                };
+                foreach (StackLayout MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
         }
     }
 }

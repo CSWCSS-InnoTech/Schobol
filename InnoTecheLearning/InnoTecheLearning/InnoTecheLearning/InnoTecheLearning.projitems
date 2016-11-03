@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SoundPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SoundRecorder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TempIO.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextToSpeech.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
@@ -39,5 +40,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\man-sprinting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\violin-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Images\cello-icon.png" />
   </ItemGroup>
 </Project>

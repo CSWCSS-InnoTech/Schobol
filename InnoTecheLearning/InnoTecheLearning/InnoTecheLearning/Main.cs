@@ -15,48 +15,84 @@ namespace InnoTecheLearning
         {
             Changelog = -1,
             Main,
-
+            Forum,
+            Translate,
+            VocabBook,
+            MathConverter,
+            MathConverter_Duo,
+            Factorizer,
+            Sports,
+            MusicTuner,
+            MathSolver
         }
-#pragma warning disable 414
-        Pages Showing;
-#pragma warning restore 414
-        bool ChangelogShowing;
+        Pages _Showing;
+        Pages Showing
+        {
+            get { return _Showing; }
+            set
+            {
+                switch (value)
+                {
+                    case Pages.Changelog:
+                        Content = ChangelogView(this);
+                        break;
+                    case Pages.Main:
+                        Content = MainView;
+                        break;
+                    case Pages.Forum:
+                        break;
+                    case Pages.Translate:
+                        break;
+                    case Pages.VocabBook:
+                        break;
+                    case Pages.MathConverter:
+                        break;
+                    case Pages.MathConverter_Duo:
+                        break;
+                    case Pages.Factorizer:
+                        break;
+                    case Pages.Sports:
+                        break;
+                    case Pages.MusicTuner:
+                        break;
+                    case Pages.MathSolver:
+                        break;
+                    default:
+                        break;
+                }
+                _Showing = value;
+            }
+        }
         public Main()
         {
-            Assign(Showing,out Showing);
+            MainView = _MainView;
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
-            Content = MainView;
             Showing = Pages.Main;
         }
         protected override bool OnBackButtonPressed()
         {
-            if (ChangelogShowing && Showing == Pages.Changelog)
+            if (Showing != Pages.Main)
             {
-                Content = MainView;
-                Showing = Pages.Changelog;
-                ChangelogShowing = false;
+                Showing = Pages.Main;
                 return true;
-            } else
+            }
+            else
                 return base.OnBackButtonPressed();
         }
-        public StackLayout MainView { get
+
+        public StackLayout MainView { get; }
+        public StackLayout _MainView
+        {
+            get
             {
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     Orientation = StackOrientation.Vertical,
                     Children = {
-                 new Label {FontSize = 25,
-                            BackgroundColor = Color.FromUint(4285098345),
-                            FontAttributes = FontAttributes.Bold,
-                            TextColor = Color.White,
-                            HorizontalTextAlignment = TextAlignment.Center,
-                            Text = "CSWCSS eLearning App"
-              }, new Label {HorizontalTextAlignment = TextAlignment.Center,
-                            TextColor = Color.Black,
-                            FormattedText = Format((Text)"Developed by the\n",Bold("Innovative Technology Society of CSWCSS"))
-                            },
+                        Title("CSWCSS eLearning App"),
+                        Society,
 
            MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{Alert(this,"[2016-11-1 18:00:00] 1E03: Hi\n"+
                "[2016-11-1 18:00:09] 3F43: No one likes you loser\n[2016-11-1 18:00:16] 1E03: 😢😭😢😭😢😭😢😭😢\n"+
@@ -85,10 +121,27 @@ namespace InnoTecheLearning
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
                          ),
 
-                Button((Text)"Changelog", delegate {Content = ChangelogView(this);ChangelogShowing = true;
-                    Showing = Pages.Changelog; }),
+                Button((Text)"Changelog", delegate {Showing = Pages.Changelog; }),
                 Create.Version
-                }
+                    }
+                };
+            }
+        }
+
+        public StackLayout MusicTuner
+        {
+            get
+            {
+                return new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Orientation = StackOrientation.Vertical,
+                    Children = {
+                        Title("CSWCSS Music Tuner"),
+
+                        Row(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        , (Text)"Violin and Viola")
+                    }
                 };
             }
         }
