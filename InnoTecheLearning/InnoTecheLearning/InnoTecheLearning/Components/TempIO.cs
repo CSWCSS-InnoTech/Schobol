@@ -31,31 +31,30 @@ namespace InnoTecheLearning
         Stream LoadStream(string FileName);
         Task SaveStreamAsync(string FileName, Stream Stream);
         Task<Stream> LoadStreamAsync(string FileName);
+        void Delete(string FileName);
+        Task DeleteAsync(string FileName);
     }
     public class TempIO : ITempIO
     {
         protected internal TempIO(){ }
-        public static byte[] ToBytes(Stream input)
+        public byte[] ToBytes(Stream Input) // Designed for when Input.Length is untrustable
         {
             byte[] buffer = new byte[16 * 1024];
             using (MemoryStream ms = new MemoryStream())
             {
                 int read;
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                while ((read = Input.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     ms.Write(buffer, 0, read);
                 }
                 return ms.ToArray();
             }
         }
-        public static Stream FromBytes(byte[] Bytes)
+        public MemoryStream FromBytes(byte[] Bytes) // Enables MemoryStream.GetBuffer()
         {
-            using (var streamReader = new MemoryStream())
-            {
-                Bytes.CopyTo(streamReader, 0);
-                result = streamReader.WriteTo();
-                
-            }
+            MemoryStream stream = new MemoryStream();
+            stream.Write(Bytes, 0, Bytes.Length);
+            return stream;
         }
         public void SaveStream(string FileName, Stream Stream)
         {
@@ -63,15 +62,15 @@ namespace InnoTecheLearning
         }
         public Stream LoadStream(string FileName)
         {
-            return LoadBytes(FileName);
+            return FromBytes(LoadBytes(FileName));
         }
         public async Task SaveStreamAsync(string FileName, Stream Stream)
         {
-            await Task.Run(async () => { await SaveBytesAsync(FileName, ToBytes(Stream)); });
+            await SaveBytesAsync(FileName, ToBytes(Stream));
         }
         public async Task<Stream> LoadStreamAsync(string FileName)
         {
-            return await Task.Run(() => { return LoadStream(FileName); });
+            return FromBytes(await LoadBytesAsync(FileName));
         }
 
 #if __IOS__ || __ANDROID__ || WINDOWS_UWP
@@ -136,6 +135,14 @@ namespace InnoTecheLearning
         public async Task<byte[]> LoadBytesAsync(string FileName)
         {
             return await Task.Run(() => { return LoadBytes(FileName); });
+        }
+        public void Delete(string FileName)
+        {
+            File.Delete(Path.Combine(TempPath, FileName));
+        }
+        public async Task DeleteAsync(string FileName)
+        {
+           await Task.Run(() => { Delete(FileName); });
         }
 #elif WINDOWS_APP || WINDOWS_PHONE_APP
         public string TempPath { get { return TempFolder.Path; } }
@@ -217,6 +224,17 @@ namespace InnoTecheLearning
             StorageFile sampleFile = await storageFolder.GetFileAsync(FileName);
             IBuffer buffer = await FileIO.ReadBufferAsync(sampleFile);
             return buffer.ToArray();
+        }
+        public void Delete(string FileName)
+        {
+            Task Task = DeleteAsync(FileName);
+            Task.Wait(); // HACK: to keep Interface return types simple (sorry!)
+        }
+        public async Task DeleteAsync(string FileName)
+        {
+            StorageFolder storageFolder = TempFolder;
+            StorageFile sampleFile = await storageFolder.GetFileAsync(FileName);
+            await sampleFile.DeleteAsync();
         }
 #endif
     }

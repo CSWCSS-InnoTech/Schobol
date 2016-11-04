@@ -43,7 +43,7 @@ namespace InnoTecheLearning
     /// <summary>
     /// The platform-specific implementation of <see cref="ISoundPlayer"/>, but cross-platform.
     /// </summary>
-    class SoundPlayer : ISoundPlayer
+    public class SoundPlayer : ISoundPlayer
     {
         private SoundPlayer() : base()
         { }
@@ -58,8 +58,8 @@ namespace InnoTecheLearning
         protected async Task Init(string FilePath, bool Loop, double Volume)
         {
             await new Task(() => {
-            var url = NSUrl.FromString(FilePath);
-            _player = AVAudioPlayer.FromUrl(url);
+                using (NSUrl url = NSUrl.FromString(FilePath))
+                    _player = AVAudioPlayer.FromUrl(url);
             _player.NumberOfLoops = Loop? 0: -1;
             _player.Volume = System.Convert.ToSingle(Volume);
             //_player.FinishedPlaying += (object sender, AVStatusEventArgs e) => { _player = null; };
@@ -77,6 +77,8 @@ namespace InnoTecheLearning
         {
             await new Task(() => { _player.Stop(); });
         }
+        ~SoundPlayer()
+        { _player.Dispose(); }
 #elif __ANDROID__
         MediaPlayer _player;
         public async static Task<SoundPlayer> Create(string FilePath, bool Loop = false, double Volume = 1)
@@ -102,8 +104,10 @@ namespace InnoTecheLearning
         {
             await new Task(() => { _player.Stop(); });
         }
+        ~SoundPlayer()
+        { _player.Dispose(); }
 #elif NETFX_CORE
-        MediaElement _mediaElement;
+        MediaElement _player;
         public async static Task<SoundPlayer> Create(string FilePath, bool Loop = false, double Volume = 1)
         { var Return = new SoundPlayer();
           await Return.Init(FilePath, Loop, Volume);
@@ -114,31 +118,31 @@ namespace InnoTecheLearning
             StorageFile file = await StorageFile.GetFileFromPathAsync(FilePath);
             IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
 
-            _mediaElement = new MediaElement
+            _player = new MediaElement
             {
                 IsMuted = false,
                 Position = new TimeSpan(0, 0, 0),
                 Volume = Volume,
                 IsLooping = Loop
             };
-            _mediaElement.SetSource(stream, file.ContentType);
+            _player.SetSource(stream, file.ContentType);
             
         }
         /*public void Play()
         {
-             _mediaElement.Play();
+             _player.Play();
         }*/
         public async Task Play()
         {
-            await new Task( () => {_mediaElement.Play();} );
+            await new Task( () => {_player.Play();} );
         }
         public async Task Pause()
         {
-            await new Task(() => { _mediaElement.Pause(); });
+            await new Task(() => { _player.Pause(); });
         }
         public async Task Stop()
         {
-            await new Task(() => { _mediaElement.Stop(); });
+            await new Task(() => { _player.Stop(); });
         }
 #endif
     }
