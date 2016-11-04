@@ -1,14 +1,20 @@
 ﻿using System.Threading.Tasks;
+using System.IO;
 #if WINDOWS_APP || WINDOWS_PHONE_APP
 using System;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.Foundation;
 using System.Runtime.InteropServices.WindowsRuntime;
 #endif
 namespace InnoTecheLearning
 {
+    partial class Utils
+    { public static TempIO IO { get; } = new TempIO(); }
     public interface ITempIO
     {
+        string TempPath { get; }
+        string TempFile { get; }
         void SaveLines(string FileName, string[] Lines);
         string[] LoadLines(string FileName);
         Task SaveLinesAsync(string FileName, string[] Lines);
@@ -21,22 +27,67 @@ namespace InnoTecheLearning
         byte[] LoadBytes(string FileName);
         Task SaveBytesAsync(string FileName, byte[] Bytes);
         Task<byte[]> LoadBytesAsync(string FileName);
+        void SaveStream(string FileName, Stream Stream);
+        Stream LoadStream(string FileName);
+        Task SaveStreamAsync(string FileName, Stream Stream);
+        Task<Stream> LoadStreamAsync(string FileName);
     }
-    class TempIO : ITempIO
+    public class TempIO : ITempIO
     {
+        protected internal TempIO(){ }
+        public static byte[] ToBytes(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
+            }
+        }
+        public static Stream FromBytes(byte[] Bytes)
+        {
+            using (var streamReader = new MemoryStream())
+            {
+                Bytes.CopyTo(streamReader, 0);
+                result = streamReader.WriteTo();
+                
+            }
+        }
+        public void SaveStream(string FileName, Stream Stream)
+        {
+            SaveBytes(FileName, ToBytes(Stream));
+        }
+        public Stream LoadStream(string FileName)
+        {
+            return LoadBytes(FileName);
+        }
+        public async Task SaveStreamAsync(string FileName, Stream Stream)
+        {
+            await Task.Run(async () => { await SaveBytesAsync(FileName, ToBytes(Stream)); });
+        }
+        public async Task<Stream> LoadStreamAsync(string FileName)
+        {
+            return await Task.Run(() => { return LoadStream(FileName); });
+        }
+
 #if __IOS__ || __ANDROID__ || WINDOWS_UWP
-        static string TempPath { get { return System.IO.Path.GetTempPath(); } }
+        public string TempPath { get { return Path.GetTempPath(); } }
+        public string TempFile { get { return Path.GetTempFileName(); } }
         public void SaveLines(string FileName, string[] Lines)
         {
             var documentsPath = TempPath; //Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = System.IO.Path.Combine(documentsPath, FileName);
-            System.IO.File.WriteAllLines(filePath, Lines);
+            var filePath = Path.Combine(documentsPath, FileName);
+            File.WriteAllLines(filePath, Lines);
         }
         public string[] LoadLines(string FileName)
         {
             var documentsPath = TempPath;//Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = System.IO.Path.Combine(documentsPath, FileName);
-            return System.IO.File.ReadAllLines(filePath);
+            var filePath = Path.Combine(documentsPath, FileName);
+            return File.ReadAllLines(filePath);
         }
         public async Task SaveLinesAsync(string FileName, string[] Lines)
         {
@@ -49,14 +100,14 @@ namespace InnoTecheLearning
         public void SaveText(string FileName, string Text)
         {
             var documentsPath = TempPath; //Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = System.IO.Path.Combine(documentsPath, FileName);
-            System.IO.File.WriteAllText(filePath, Text);
+            var filePath = Path.Combine(documentsPath, FileName);
+            File.WriteAllText(filePath, Text);
         }
         public string LoadText(string FileName)
         {
             var documentsPath = TempPath;//Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = System.IO.Path.Combine(documentsPath, FileName);
-            return System.IO.File.ReadAllText(filePath);
+            var filePath = Path.Combine(documentsPath, FileName);
+            return File.ReadAllText(filePath);
         }
         public async Task SaveTextAsync(string FileName, string Text)
         {
@@ -69,14 +120,14 @@ namespace InnoTecheLearning
         public void SaveBytes(string FileName, byte[] Bytes)
         {
             var documentsPath = TempPath; //Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = System.IO.Path.Combine(documentsPath, FileName);
-            System.IO.File.WriteAllBytes(filePath, Bytes);
+            var filePath = Path.Combine(documentsPath, FileName);
+            File.WriteAllBytes(filePath, Bytes);
         }
         public byte[] LoadBytes(string FileName)
         {
             var documentsPath = TempPath;//Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            var filePath = System.IO.Path.Combine(documentsPath, FileName);
-            return System.IO.File.ReadAllBytes(filePath);
+            var filePath = Path.Combine(documentsPath, FileName);
+            return File.ReadAllBytes(filePath);
         }
         public async Task SaveBytesAsync(string FileName, byte[] Bytes)
         {
@@ -87,7 +138,14 @@ namespace InnoTecheLearning
             return await Task.Run(() => { return LoadBytes(FileName); });
         }
 #elif WINDOWS_APP || WINDOWS_PHONE_APP
-        static StorageFolder TempPath { get { return ApplicationData.Current.TemporaryFolder; } }
+        public string TempPath { get { return TempFolder.Path; } }
+        StorageFolder TempFolder { get { return ApplicationData.Current.TemporaryFolder; } }
+        public string TempFile { get
+            { // generate unique filename
+                var filename = Guid.NewGuid().ToString();
+                IAsyncOperation<StorageFile> Task = TempFolder.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
+                return Task.AsTask().Result.ToString();
+            } }
         public void SaveLines(string FileName, string[] Lines)
         {
             Task Task = SaveLinesAsync(FileName, Lines);
@@ -101,13 +159,13 @@ namespace InnoTecheLearning
         }
         public async Task SaveLinesAsync(string FileName, string[] Lines)
         {
-            StorageFolder localFolder = TempPath;
+            StorageFolder localFolder = TempFolder;
             StorageFile sampleFile = await localFolder.CreateFileAsync(FileName, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteLinesAsync(sampleFile, Lines);
         }
         public async Task<string[]> LoadLinesAsync(string FileName)
         {
-            StorageFolder storageFolder = TempPath;
+            StorageFolder storageFolder = TempFolder;
             StorageFile sampleFile = await storageFolder.GetFileAsync(FileName);
             string[] Lines = (string[])await FileIO.ReadLinesAsync(sampleFile);
             return Lines;
@@ -125,13 +183,13 @@ namespace InnoTecheLearning
         }
         public async Task SaveTextAsync(string FileName, string Text)
         {
-            StorageFolder localFolder = TempPath;
+            StorageFolder localFolder = TempFolder;
             StorageFile sampleFile = await localFolder.CreateFileAsync(FileName, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteTextAsync(sampleFile, Text);
         }
         public async Task<string> LoadTextAsync(string FileName)
         {
-            StorageFolder storageFolder = TempPath;
+            StorageFolder storageFolder = TempFolder;
             StorageFile sampleFile = await storageFolder.GetFileAsync(FileName);
             string Text = await FileIO.ReadTextAsync(sampleFile);
             return Text;
@@ -149,13 +207,13 @@ namespace InnoTecheLearning
         }
         public async Task SaveBytesAsync(string FileName, byte[] Bytes)
         {
-            StorageFolder localFolder = TempPath;
+            StorageFolder localFolder = TempFolder;
             StorageFile sampleFile = await localFolder.CreateFileAsync(FileName, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteBytesAsync(sampleFile, Bytes);
         }
         public async Task<byte[]> LoadBytesAsync(string FileName)
         {
-            StorageFolder storageFolder = TempPath;
+            StorageFolder storageFolder = TempFolder;
             StorageFile sampleFile = await storageFolder.GetFileAsync(FileName);
             IBuffer buffer = await FileIO.ReadBufferAsync(sampleFile);
             return buffer.ToArray();

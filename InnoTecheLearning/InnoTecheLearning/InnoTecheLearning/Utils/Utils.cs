@@ -49,9 +49,9 @@ namespace InnoTecheLearning
             Win81
         }
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP || WINDOWS_UWP)
-        public class IO
+        public class FileIO
         {
-            public IO(string FileName,FileMode Mode = FileMode.Create)
+            public FileIO(string FileName,FileMode Mode = FileMode.Create)
             {
                 this.FileName = FileName;
                 FileStream = new System.IO.IsolatedStorage.IsolatedStorageFileStream(FileName, Mode);
@@ -69,7 +69,7 @@ namespace InnoTecheLearning
             { FileStream.Dispose();
               if (Delete)
                   File.Delete(FilePath); }
-            ~IO()
+            ~FileIO()
             { try { Dispose(); } catch { } }
         }
 #endif
@@ -316,6 +316,7 @@ namespace InnoTecheLearning
 
         public static T Assign<T>(T Value, out T Object)
         { return Object = Value; }
+
         /*
         public string TransformForCurrentPlatform(string url)
         {
