@@ -4,8 +4,56 @@ using static InnoTecheLearning.Utils;
 
 namespace InnoTecheLearning
 {
-    public class StreamPlayer : ISoundPlayer
+    public class StreamPlayer : ISoundPlayer, System.IDisposable
     {
+        public enum Sounds : byte
+        {Violin_G,
+        Violin_D,
+        Violin_A,
+        Violin_E,
+        Cello_C,
+        Cello_G,
+        Cello_D,
+        Cello_A}
+        public static async Task<StreamPlayer> Play(Sounds Sound, double Volume = 1)
+        {
+            string Name = "";
+            switch (Sound)
+            {
+                case Sounds.Violin_G:
+                    Name = "ViolinG.wav";
+                    break;
+                case Sounds.Violin_D:
+                    Name = "ViolinD.wav";
+                    break;
+                case Sounds.Violin_A:
+                    Name = "ViolinA.wav";
+                    break;
+                case Sounds.Violin_E:
+                    Name = "ViolinE.wav";
+                    break;
+                case Sounds.Cello_C:
+                    Name = "CelloCC.wav";
+                    break;
+                case Sounds.Cello_G:
+                    Name = "CelloGG.wav";
+                    break;
+                case Sounds.Cello_D:
+                    Name = "CelloD.wav";
+                    break;
+                case Sounds.Cello_A:
+                    Name = "CelloA.wav";
+                    break;
+                default:
+                    break;
+            }
+            var Return = await Create(Resources.GetStream("Sounds." + Name), true, Volume);
+            Alert(App.Current.MainPage, "After StreamPlayer.Create");
+            await Return.Play();
+            Alert(App.Current.MainPage, "After StreamPlayer.Play");
+            return Return;
+        }
+
         private StreamPlayer() { }
         SoundPlayer _Player;
         string File;
@@ -17,8 +65,8 @@ namespace InnoTecheLearning
         }
         protected async Task Init(Stream Stream, bool Loop, double Volume)
         {
-            File = IO.TempFile;
-            IO.SaveStream(File, Stream);
+            File = Temp.TempFile;
+            Temp.SaveStream(File, Stream);
             _Player = await SoundPlayer.Create(File, Loop, Volume);
         }
         public async Task Play()
@@ -33,8 +81,41 @@ namespace InnoTecheLearning
         {
             await _Player.Stop();
         }
-        ~StreamPlayer()
-        { _Player = null;
-          IO.Delete(File); }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                }
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                Temp.Delete(File);
+                // TODO: set large fields to null.
+                _Player = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+         ~StreamPlayer() {
+           // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+           Dispose(false);
+         }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // System.GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

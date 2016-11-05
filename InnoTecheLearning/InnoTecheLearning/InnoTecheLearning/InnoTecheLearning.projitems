@@ -47,5 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Images\cello-icon.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloA.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloCC.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloD.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloGG.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinA.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinD.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinE.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinG.wav" />
   </ItemGroup>
 </Project>

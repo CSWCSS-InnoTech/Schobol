@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
+using static InnoTecheLearning.StreamPlayer;
 using Xamarin.Forms;
-using System.Runtime.CompilerServices;
 
 namespace InnoTecheLearning
 {
@@ -54,6 +56,7 @@ namespace InnoTecheLearning
                     case Pages.Sports:
                         break;
                     case Pages.MusicTuner:
+                        Content = MusicTuner;
                         break;
                     case Pages.MathSolver:
                         break;
@@ -66,6 +69,7 @@ namespace InnoTecheLearning
         public Main()
         {
             MainView = _MainView;
+            MusicTuner = _MusicTuner;
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
@@ -116,19 +120,21 @@ namespace InnoTecheLearning
            MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {
                              Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
                          MainScreenItem(Image(ImageFile.MusicTuner), delegate {
-                             Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸"); },BoldLabel("Music Tuner")),
+                             Showing = Pages.MusicTuner;Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
+                         },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate {
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
                          ),
 
                 Button((Text)"Changelog", delegate {Showing = Pages.Changelog; }),
-                Create.Version
+                Utils.Create.Version
                     }
                 };
             }
         }
         StreamPlayer MusicSound { get; set; }
-        public StackLayout MusicTuner
+        public StackLayout MusicTuner { get; }
+        public StackLayout _MusicTuner
         {
             get
             {
@@ -140,7 +146,20 @@ namespace InnoTecheLearning
                         Title("CSWCSS Music Tuner"),
 
                         Row(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
-                        , (Text)"Violin and Viola")
+                        , (Text)"Violin and Viola"),
+
+                        Row(Button((Text)"G", async delegate {MusicSound = await Play(Sounds.Violin_G); }),
+                        Button((Text)"D", async delegate {MusicSound = await Play(Sounds.Violin_D); }),
+                        Button((Text)"A", async delegate {MusicSound = await Play(Sounds.Violin_A); }),
+                        Button((Text)"E", async delegate {MusicSound = await Play(Sounds.Violin_E); })),
+
+                        Row(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        , (Text)"Cello and Double Bass"),
+
+                        Row(Button((Text)"'C", async delegate {MusicSound = await Play(Sounds.Cello_C); }),
+                        Button((Text)"'G", async delegate {MusicSound = await Play(Sounds.Cello_G); }),
+                        Button((Text)"D", async delegate {MusicSound = await Play(Sounds.Cello_D); }),
+                        Button((Text)"A", async delegate {MusicSound = await Play(Sounds.Cello_A); }))
                     }
                 };
             }

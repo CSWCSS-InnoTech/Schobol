@@ -16,7 +16,7 @@ namespace InnoTecheLearning
         public App ()
 		{
             // The root page of your application
-            MainPage = new Main();
+            MainPage = new Main();//ResourceView;
         }
 
         protected override void OnStart ()
@@ -37,7 +37,7 @@ namespace InnoTecheLearning
         {
             get
             {
-               return new ContentPage { BackgroundColor = Color.Black,
+               return new ContentPage { BackgroundColor = Color.White,
                     Content = new Label { Text = GetResources(), TextColor = Color.Black } };
             }
         }

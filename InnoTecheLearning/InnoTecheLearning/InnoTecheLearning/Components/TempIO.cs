@@ -10,11 +10,12 @@ using System.Runtime.InteropServices.WindowsRuntime;
 namespace InnoTecheLearning
 {
     partial class Utils
-    { public static TempIO IO { get; } = new TempIO(); }
+    { public static TempIO Temp { get; } = new TempIO(); }
     public interface ITempIO
     {
         string TempPath { get; }
         string TempFile { get; }
+        string GetFile(string FileName);
         void SaveLines(string FileName, string[] Lines);
         string[] LoadLines(string FileName);
         Task SaveLinesAsync(string FileName, string[] Lines);
@@ -37,6 +38,8 @@ namespace InnoTecheLearning
     public class TempIO : ITempIO
     {
         protected internal TempIO(){ }
+        public string GetFile(string FileName)
+        { return Path.Combine(TempPath, FileName); }
         public byte[] ToBytes(Stream Input) // Designed for when Input.Length is untrustable
         {
             byte[] buffer = new byte[16 * 1024];

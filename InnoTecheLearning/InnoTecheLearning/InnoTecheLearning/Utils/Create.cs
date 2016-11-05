@@ -307,7 +307,7 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     Children = { }
                 };
-                foreach (StackLayout MenuScreenItem in Items)
+                foreach (View MenuScreenItem in Items)
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
@@ -320,7 +320,7 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     Children = { }
                 };
-                foreach (StackLayout MenuScreenItem in Items)
+                foreach (View MenuScreenItem in Items)
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
