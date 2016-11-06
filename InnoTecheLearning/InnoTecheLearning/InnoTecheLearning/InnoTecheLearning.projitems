@@ -46,7 +46,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\violin-icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Images\cello-icon.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cello-icon.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloA.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloCC.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloD.wav" />

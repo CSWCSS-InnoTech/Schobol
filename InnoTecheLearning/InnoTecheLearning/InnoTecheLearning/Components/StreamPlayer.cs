@@ -15,7 +15,7 @@ namespace InnoTecheLearning
         Cello_G,
         Cello_D,
         Cello_A}
-        public static async Task<StreamPlayer> Play(Sounds Sound, double Volume = 1)
+        public static async Task<StreamPlayer> PlayAsync(Sounds Sound, double Volume = 1)
         {
             string Name = "";
             switch (Sound)
@@ -53,7 +53,11 @@ namespace InnoTecheLearning
             Alert(App.Current.MainPage, "After StreamPlayer.Play");
             return Return;
         }
-
+        public static StreamPlayer Play(Sounds Sound, double Volume = 1)
+        {   Task<StreamPlayer> Task = PlayAsync(Sound, Volume);
+            Task.Wait();
+            return Task.Result;
+        }
         private StreamPlayer() { }
         SoundPlayer _Player;
         string File;

@@ -148,18 +148,18 @@ namespace InnoTecheLearning
                         Row(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
 
-                        Row(Button((Text)"G", async delegate {MusicSound = await Play(Sounds.Violin_G); }),
-                        Button((Text)"D", async delegate {MusicSound = await Play(Sounds.Violin_D); }),
-                        Button((Text)"A", async delegate {MusicSound = await Play(Sounds.Violin_A); }),
-                        Button((Text)"E", async delegate {MusicSound = await Play(Sounds.Violin_E); })),
+                        Row(Button((Text)"G",  delegate {MusicSound =  Play(Sounds.Violin_G); }),
+                        Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Violin_D); }),
+                        Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Violin_A); }),
+                        Button((Text)"E",  delegate {MusicSound =  Play(Sounds.Violin_E); })),
 
                         Row(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
 
-                        Row(Button((Text)"'C", async delegate {MusicSound = await Play(Sounds.Cello_C); }),
-                        Button((Text)"'G", async delegate {MusicSound = await Play(Sounds.Cello_G); }),
-                        Button((Text)"D", async delegate {MusicSound = await Play(Sounds.Cello_D); }),
-                        Button((Text)"A", async delegate {MusicSound = await Play(Sounds.Cello_A); }))
+                        Row(Button((Text)"'C",  delegate {MusicSound =  Play(Sounds.Cello_C); }),
+                        Button((Text)"'G",  delegate {MusicSound =  Play(Sounds.Cello_G); }),
+                        Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
+                        Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Cello_A); }))
                     }
                 };
             }
