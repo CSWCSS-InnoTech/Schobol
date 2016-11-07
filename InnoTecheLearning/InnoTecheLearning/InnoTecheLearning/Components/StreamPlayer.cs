@@ -48,9 +48,7 @@ namespace InnoTecheLearning
                     break;
             }
             var Return = await Create(Resources.GetStream("Sounds." + Name), true, Volume);
-            Alert(App.Current.MainPage, "After StreamPlayer.Create");
             await Return.Play();
-            Alert(App.Current.MainPage, "After StreamPlayer.Play");
             return Return;
         }
         public static StreamPlayer Play(Sounds Sound, double Volume = 1)
@@ -85,7 +83,8 @@ namespace InnoTecheLearning
         {
             await _Player.Stop();
         }
-
+        public event System.EventHandler Complete
+        { add { _Player.Complete += value; } remove { _Player.Complete -= value; } } 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 

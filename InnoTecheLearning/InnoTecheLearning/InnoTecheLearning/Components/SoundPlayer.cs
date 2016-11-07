@@ -38,6 +38,11 @@ namespace InnoTecheLearning
         /// </summary>
         /// <returns>The task to wait because the method is asynchronous.</returns>
         /*public */ Task Stop();
+        /// <summary>
+        /// Occurs when the audio has completed playing.
+        /// </summary>
+        /// <returns></returns>
+        event System.EventHandler Complete;
     }
 
     /// <summary>
@@ -77,6 +82,9 @@ namespace InnoTecheLearning
         {
             await new Task(() => { _player.Stop(); });
         }
+        public event System.EventHandler Complete
+        { add { _player.FinishedPlaying += (System.EventHandler<AVFoundation.AVStatusEventArgs>)(System.MulticastDelegate)value; }
+        remove { _player.FinishedPlaying -= (System.EventHandler<AVFoundation.AVStatusEventArgs>)(System.MulticastDelegate)value; } }
         ~SoundPlayer()
         { _player.Dispose(); }
 #elif __ANDROID__
@@ -104,6 +112,8 @@ namespace InnoTecheLearning
         {
             await new Task(() => { _player.Stop(); });
         }
+        public event System.EventHandler Complete
+        { add { _player.Completion += value; } remove { _player.Completion -= value; } }
         ~SoundPlayer()
         { _player.Dispose(); }
 #elif NETFX_CORE
@@ -144,6 +154,9 @@ namespace InnoTecheLearning
         {
             await new Task(() => { _player.Stop(); });
         }
+        public event System.EventHandler Complete
+        { add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; }
+        remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; } }
 #endif
     }
 }
