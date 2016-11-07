@@ -47,15 +47,10 @@ namespace InnoTecheLearning
                 default:
                     break;
             }
-            var Return = await Create(Resources.GetStream("Sounds." + Name), true, Volume);
-            await Return.Play();
-            return Return;
+           return await Create(Resources.GetStream("Sounds." + Name), true, Volume);
         }
         public static StreamPlayer Play(Sounds Sound, double Volume = 1)
-        {   Task<StreamPlayer> Task = PlayAsync(Sound, Volume);
-            Task.Wait();
-            return Task.Result;
-        }
+        { return Do(PlayAsync(Sound, Volume));}
         private StreamPlayer() { }
         SoundPlayer _Player;
         string File;

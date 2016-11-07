@@ -219,10 +219,7 @@ namespace InnoTecheLearning
             return Return; }
 
         public static T Alert<T>(T Return, Page Page,  Text Message = default(Text), string Title = "Alert", string Cancel = "OK")
-        {   Task<T> Task = AlertAsync(Return, Page, Title, Message, Cancel);
-            Task.Wait();
-            return Return;
-        }
+        {  return Do(AlertAsync(Return, Page, Title, Message, Cancel)); }
 
         public async static void Alert(Page Page, Text Message = default(Text), string Title = "Alert", string Cancel = "OK")
         {
@@ -317,6 +314,13 @@ namespace InnoTecheLearning
         public static T Assign<T>(T Value, out T Object)
         { return Object = Value; }
 
+        public static T Do<T>(Task<T> Task)
+        { var Return = System.Threading.Tasks.Task.Run(async () => { return await Task; });
+          Return.Wait();
+          return Return.Result;}
+
+        public static void Do(Task Task)
+        { Task.Run(async () => { await Task; }).Wait(); }
         /*
         public string TransformForCurrentPlatform(string url)
         {
