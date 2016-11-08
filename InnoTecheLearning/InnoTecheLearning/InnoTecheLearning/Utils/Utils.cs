@@ -315,12 +315,15 @@ namespace InnoTecheLearning
         { return Object = Value; }
 
         public static T Do<T>(Task<T> Task)
-        { var Return = System.Threading.Tasks.Task.Run(async () => { return await Task; });
-          while (!(Return.IsCompleted || Return.IsFaulted || Return.IsCanceled)) {}
-          return Return.Result;}
+        {
+            return Task.GetAwaiter().GetResult();
+        }
 
         public static void Do(Task Task)
-        { Task.Run(async () => { await Task; }).Wait(); }
+        {
+            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                Helper.Run(Task);
+        }
         /*
         public string TransformForCurrentPlatform(string url)
         {
