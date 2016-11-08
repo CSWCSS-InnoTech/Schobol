@@ -23,21 +23,19 @@ namespace InnoTecheLearning
     {
         //static Task<ISoundPlayer> Create(string FilePath, bool Loop = false, double Volume = 1);
         //protected Task Init(string FilePath, bool Loop = false, double Volume = 1);
+        //The task to wait because the method is asynchronous.
         /// <summary>
         /// Plays the sound.
         /// </summary>
-        /// <returns>The task to wait because the method is asynchronous.</returns>
-        /*public */ Task Play();
+        /*public */ void Play();
         /// <summary>
         /// Pauses the sound.
         /// </summary>
-        /// <returns>The task to wait because the method is asynchronous.</returns>
-        /*public */ Task Pause();
+        /*public */ void Pause();
         /// <summary>
         /// Stops the sound.
         /// </summary>
-        /// <returns>The task to wait because the method is asynchronous.</returns>
-        /*public */ Task Stop();
+        /*public */ void Stop();
         /// <summary>
         /// Occurs when the audio has completed playing.
         /// </summary>
@@ -48,40 +46,32 @@ namespace InnoTecheLearning
     /// <summary>
     /// The platform-specific implementation of <see cref="ISoundPlayer"/>, but cross-platform.
     /// </summary>
-    public class SoundPlayer : ISoundPlayer
+    public class SoundPlayer : ISoundPlayer 
     {
         private SoundPlayer() : base()
         { }
 #if __IOS__
         AVAudioPlayer _player;
-        public async static Task<SoundPlayer> Create(string FilePath, bool Loop = false, double Volume = 1)
+        public static SoundPlayer Create(string FilePath, bool Loop = false, double Volume = 1)
         {
             var Return = new SoundPlayer();
-            await Return.Init(FilePath, Loop, Volume);
+            Return.Init(FilePath, Loop, Volume);
             return Return;
         }
-        protected async Task Init(string FilePath, bool Loop, double Volume)
+        protected void Init(string FilePath, bool Loop, double Volume)
         {
-            await new Task(() => {
-                using (NSUrl url = NSUrl.FromString(FilePath))
-                    _player = AVAudioPlayer.FromUrl(url);
+            using (NSUrl url = NSUrl.FromString(FilePath))
+                _player = AVAudioPlayer.FromUrl(url);
             _player.NumberOfLoops = Loop? 0: -1;
             _player.Volume = System.Convert.ToSingle(Volume);
             //_player.FinishedPlaying += (object sender, AVStatusEventArgs e) => { _player = null; };
-            });
         }
-        public async Task Play()
-        {
-            await new Task(() => { _player.Play(); });
-        }
-        public async Task Pause()
-        {
-            await new Task(() => { _player.Pause(); });
-        }
-        public async Task Stop()
-        {
-            await new Task(() => { _player.Stop(); });
-        }
+        public void Play()
+        { _player.Play(); }
+        public void Pause()
+        { _player.Pause(); }
+        public void Stop()
+        { _player.Stop(); }
         public event System.EventHandler Complete
         { add { _player.FinishedPlaying += (System.EventHandler<AVFoundation.AVStatusEventArgs>)(System.MulticastDelegate)value; }
         remove { _player.FinishedPlaying -= (System.EventHandler<AVFoundation.AVStatusEventArgs>)(System.MulticastDelegate)value; } }
@@ -89,38 +79,33 @@ namespace InnoTecheLearning
         { _player.Dispose(); }
 #elif __ANDROID__
         MediaPlayer _player;
-        public async static Task<SoundPlayer> Create(string FilePath, bool Loop = false, double Volume = 1)
+        public static SoundPlayer Create(string FilePath, bool Loop = false, double Volume = 1)
         {
             var Return = new SoundPlayer();
-            await Return.Init(FilePath, Loop, Volume);
+            Return.Init(FilePath, Loop, Volume);
             return Return;
         }
-        protected async Task Init(string FilePath, bool Loop, double Volume)
+        protected void Init(string FilePath, bool Loop, double Volume)
         {
-            await new Task(() => { _player = MediaPlayer.Create(Forms.Context,
-                Uri.FromFile(new File(FilePath))); });
+            _player = MediaPlayer.Create(Forms.Context, Uri.FromFile(new File(FilePath))); 
         }
-        public async Task Play()
-        {
-            await new Task(() => { _player.Start(); });
-        }
-        public async Task Pause()
-        {
-            await new Task(() => { _player.Pause(); });
-        }
-        public async Task Stop()
-        {
-            await new Task(() => { _player.Stop(); });
-        }
+        public void Play()
+        { _player.Start(); }
+        public void Pause()
+        { _player.Pause(); }
+        public void Stop()
+        { _player.Stop(); }
         public event System.EventHandler Complete
         { add { _player.Completion += value; } remove { _player.Completion -= value; } }
         ~SoundPlayer()
         { _player.Dispose(); }
 #elif NETFX_CORE
         MediaElement _player;
-        public async static Task<SoundPlayer> Create(string FilePath, bool Loop = false, double Volume = 1)
+        public static SoundPlayer Create(string FilePath, bool Loop = false, double Volume = 1)
         { var Return = new SoundPlayer();
-          await Return.Init(FilePath, Loop, Volume);
+#pragma warning disable 4014
+          /*await*/Return.Init(FilePath, Loop, Volume);
+#pragma warning restore 4014
           return Return; }
         protected async Task Init(string FilePath, bool Loop, double Volume)
         {
@@ -142,19 +127,13 @@ namespace InnoTecheLearning
         {
              _player.Play();
         }*/
-        public async Task Play()
-        {
-            await new Task( () => {_player.Play();} );
-        }
-        public async Task Pause()
-        {
-            await new Task(() => { _player.Pause(); });
-        }
-        public async Task Stop()
-        {
-            await new Task(() => { _player.Stop(); });
-        }
-        public event System.EventHandler Complete
+        public void Play()
+        { _player.Play(); }
+        public void Pause()
+        { _player.Pause(); }
+        public void Stop()
+        { _player.Stop(); }
+        public event EventHandler Complete
         { add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; }
         remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; } }
 #endif

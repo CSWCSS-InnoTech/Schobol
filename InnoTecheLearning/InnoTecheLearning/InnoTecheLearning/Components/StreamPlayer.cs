@@ -15,7 +15,7 @@ namespace InnoTecheLearning
         Cello_G,
         Cello_D,
         Cello_A}
-        public static async Task<StreamPlayer> PlayAsync(Sounds Sound, double Volume = 1)
+        public static StreamPlayer PlayAsync(Sounds Sound, double Volume = 1)
         {
             string Name = "";
             switch (Sound)
@@ -47,37 +47,31 @@ namespace InnoTecheLearning
                 default:
                     break;
             }
-           return await Create(Resources.GetStream("Sounds." + Name), true, Volume);
+           return  Create(Resources.GetStream("Sounds." + Name), true, Volume);
         }
         public static StreamPlayer Play(Sounds Sound, double Volume = 1)
-        { return Do(PlayAsync(Sound, Volume));}
+        { return Play(Sound, Volume);}
         private StreamPlayer() { }
         SoundPlayer _Player;
         string File;
-        public async static Task<StreamPlayer> Create(Stream Stream, bool Loop = false, double Volume = 1)
+        public static StreamPlayer Create(Stream Stream, bool Loop = false, double Volume = 1)
         {
             var Return = new StreamPlayer();
-            await Return.Init(Stream, Loop, Volume);
+            Return.Init(Stream, Loop, Volume);
             return Return;
         }
-        protected async Task Init(Stream Stream, bool Loop, double Volume)
+        protected void Init(Stream Stream, bool Loop, double Volume)
         {
             File = Temp.TempFile;
             Temp.SaveStream(File, Stream);
-            _Player = await SoundPlayer.Create(File, Loop, Volume);
+            _Player = SoundPlayer.Create(File, Loop, Volume);
         }
-        public async Task Play()
-        {
-            await  _Player.Play();
-        }
-        public async Task Pause()
-        {
-            await _Player.Pause();
-        }
-        public async Task Stop()
-        {
-            await _Player.Stop();
-        }
+        public void Play()
+        { _Player.Play(); }
+        public void Pause()
+        { _Player.Pause(); }
+        public void Stop()
+        { _Player.Stop(); }
         public event System.EventHandler Complete
         { add { _Player.Complete += value; } remove { _Player.Complete -= value; } } 
         #region IDisposable Support

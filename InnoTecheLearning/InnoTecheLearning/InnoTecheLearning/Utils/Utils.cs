@@ -316,7 +316,7 @@ namespace InnoTecheLearning
 
         public static T Do<T>(Task<T> Task)
         { var Return = System.Threading.Tasks.Task.Run(async () => { return await Task; });
-          Return.Wait();
+          while (!(Return.IsCompleted || Return.IsFaulted || Return.IsCanceled)) {}
           return Return.Result;}
 
         public static void Do(Task Task)
