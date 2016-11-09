@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
-using static InnoTecheLearning.StreamPlayer;
+using static InnoTecheLearning.StreamPlayerLegacy;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
@@ -132,7 +132,7 @@ namespace InnoTecheLearning
                 };
             }
         }
-        StreamPlayer MusicSound { get; set; }
+        StreamPlayerLegacy MusicSound { get; set; }
         public StackLayout MusicTuner { get; }
         public StackLayout _MusicTuner
         {
