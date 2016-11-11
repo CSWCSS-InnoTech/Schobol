@@ -23,6 +23,51 @@ namespace InnoTecheLearning
     /// </summary>
     class StreamPlayer : ISoundPlayer
     {
+        public enum Sounds : byte
+        {
+            Violin_G,
+            Violin_D,
+            Violin_A,
+            Violin_E,
+            Cello_C,
+            Cello_G,
+            Cello_D,
+            Cello_A
+        }
+        public static StreamPlayer Create(Sounds Sound, double Volume = 1)
+        {
+            string Name = "";
+            switch (Sound)
+            {
+                case Sounds.Violin_G:
+                    Name = "ViolinG.wav";
+                    break;
+                case Sounds.Violin_D:
+                    Name = "ViolinD.wav";
+                    break;
+                case Sounds.Violin_A:
+                    Name = "ViolinA.wav";
+                    break;
+                case Sounds.Violin_E:
+                    Name = "ViolinE.wav";
+                    break;
+                case Sounds.Cello_C:
+                    Name = "CelloCC.wav";
+                    break;
+                case Sounds.Cello_G:
+                    Name = "CelloGG.wav";
+                    break;
+                case Sounds.Cello_D:
+                    Name = "CelloD.wav";
+                    break;
+                case Sounds.Cello_A:
+                    Name = "CelloA.wav";
+                    break;
+                default:
+                    break;
+            }
+            return Create(Content: Utils.Resources.GetStream("Sounds." + Name), Loop: true,Volume: Volume);
+        }
 #if __IOS__
         AVAudioPlayer _player;
         public static StreamPlayer Create(Stream Content, bool Loop = false, double Volume = 1)
@@ -59,6 +104,11 @@ namespace InnoTecheLearning
         }
         protected void Init(Stream Content, bool Loop, double Volume)
         {
+#if true
+            _player.Reset();
+            _player.SetDataSource(new ByteArrayMediaDataSource(Utils.Temp.ToBytes(Content)));
+            _player.Prepare();
+#else
             const string FileName = "playertemp";
             Utils.Temp.SaveStream(FileName, Content);
 
@@ -76,7 +126,8 @@ namespace InnoTecheLearning
 
             _player.Prepare();
             _player.SetOnPreparedListener(new ByteArrayMediaDataSource(new byte[]{ }));
-            _player.Start();
+            //_player.Start();
+#endif
         }
         public void Play()
         { _player.Start(); }
@@ -125,19 +176,21 @@ namespace InnoTecheLearning
         }
 #elif NETFX_CORE
         MediaElement _player;
-        public static StreamPlayer Create(string FilePath, bool Loop = false, double Volume = 1)
+        public static StreamPlayer Create(Stream Content, bool Loop = false, double Volume = 1)
         {
             var Return = new StreamPlayer();
-#pragma warning disable 4014
+//#pragma warning disable 4014
             /*await*/
-            Return.Init(FilePath, Loop, Volume);
-#pragma warning restore 4014
+            Utils.Do(Return.Init(Content, Loop, Volume));
+//#pragma warning restore 4014
             return Return;
         }
-        protected async Task Init(string FilePath, bool Loop, double Volume)
+        protected async Task Init(Stream Content, bool Loop, double Volume)
         {
+            const string FileName = "TempContent";
+            Utils.Temp.SaveStream(FileName, Content);
             // await Current.InstalledLocation.GetFolderAsync(FolderName);
-            StorageFile file = await StorageFile.GetFileFromPathAsync(FilePath);
+            StorageFile file = await StorageFile.GetFileFromPathAsync(Utils.Temp.GetFile(FileName));
             IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
 
             _player = new MediaElement
@@ -162,8 +215,8 @@ namespace InnoTecheLearning
         { _player.Stop(); }
         public event EventHandler Complete
         {
-            add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; }
-            remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; }
+            add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
+            remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
         }
 #endif
         private StreamPlayer() : base()

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
-using static InnoTecheLearning.StreamPlayerLegacy;
+using static InnoTecheLearning.StreamPlayer;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
