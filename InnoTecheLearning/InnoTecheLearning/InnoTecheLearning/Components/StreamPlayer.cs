@@ -23,8 +23,6 @@ namespace InnoTecheLearning
     /// </summary>
     class StreamPlayer : ISoundPlayer
     {
-        private StreamPlayer() : base()
-        { }
 #if __IOS__
         AVAudioPlayer _player;
         public static StreamPlayer Create(Stream Content, bool Loop = false, double Volume = 1)
@@ -61,7 +59,8 @@ namespace InnoTecheLearning
         }
         protected void Init(Stream Content, bool Loop, double Volume)
         {
-            Utils.Temp.SaveStream("")
+            const string FileName = "playertemp";
+            Utils.Temp.SaveStream(FileName, Content);
 
             // resetting _player instance to evade problems
             _player.Reset();
@@ -72,10 +71,11 @@ namespace InnoTecheLearning
             // Tried passing path directly, but kept getting 
             // "Prepare failed.: status=0x1"
             // so using file descriptor instead
-            FileInputStream fis = new FileInputStream(tempMp3);
+            FileInputStream fis = new FileInputStream(Utils.Temp.GetFile(FileName));
             _player.SetDataSource(fis.FD);
 
             _player.Prepare();
+            _player.SetOnPreparedListener(new ByteArrayMediaDataSource(new byte[]{ }));
             _player.Start();
         }
         public void Play()
@@ -88,32 +88,41 @@ namespace InnoTecheLearning
         { add { _player.Completion += value; } remove { _player.Completion -= value; } }
         ~StreamPlayer()
         { _player.Dispose(); }
-        public class ByteArrayMediaDataSource : MediaDataSource
+        public class ByteArrayMediaDataSource : Android.Media.MediaDataSource,
+            Android.Media.MediaPlayer.IOnPreparedListener
         {
 
-    private readonly byte[] data;
+            private readonly byte[] data;
 
-        public ByteArrayMediaDataSource(byte[] data)
-        {
-            if( data != null)
-            this.data = data;
+            public ByteArrayMediaDataSource(byte[] data)
+            {
+                if (data != null)
+                    this.data = data;
+            }
+            public override int ReadAt(long position, byte[] buffer, int offset = 0, int size = 1)
+            {
+                //data.CopyTo(buffer, offset);
+                for (int i = 0; i < size; i++)
+                    buffer[offset+i] = data[position+i];
+                return size;
+            }
+
+            public override long Size
+            {
+                get { return data.Length; }
+            }
+
+            public override void Close()
+            {
+                // Nothing to do here
+            }
+
+            //Implement OnPreparedListener 
+            public void OnPrepared(Android.Media.MediaPlayer _player)
+            {
+                _player.Start();
+            }
         }
-    public int readAt(long position, byte[] buffer, int offset, int size)
-        {
-            Copy(data, (int)position, buffer, offset, size);
-        return size;
-    }
-    
-    public long getSize()
-    {
-        return data.length;
-    }
-    
-    public override void close()
-    {
-        // Nothing to do here
-    }
-}
 #elif NETFX_CORE
         MediaElement _player;
         public static StreamPlayer Create(string FilePath, bool Loop = false, double Volume = 1)
@@ -157,5 +166,7 @@ namespace InnoTecheLearning
             remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(System.MulticastDelegate)value; }
         }
 #endif
+        private StreamPlayer() : base()
+        { }
     }
 }
