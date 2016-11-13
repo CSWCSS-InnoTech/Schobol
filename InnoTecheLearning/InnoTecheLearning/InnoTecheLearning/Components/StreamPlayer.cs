@@ -68,6 +68,11 @@ namespace InnoTecheLearning
             }
             return Create(Content: Utils.Resources.GetStream("Sounds." + Name), Loop: true,Volume: Volume);
         }
+        public static StreamPlayer Play(Sounds Sound, double Volume = 1)
+        {   var Return = Create(Sound, Volume);
+            Return.Play();
+            return Return;
+        }
 #if __IOS__
         AVAudioPlayer _player;
         public static StreamPlayer Create(Stream Content, bool Loop = false, double Volume = 1)

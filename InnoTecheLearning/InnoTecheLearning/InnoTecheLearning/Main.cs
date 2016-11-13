@@ -132,7 +132,7 @@ namespace InnoTecheLearning
                 };
             }
         }
-        StreamPlayerLegacy MusicSound { get; set; }
+        StreamPlayer MusicSound { get; set; }
         public StackLayout MusicTuner { get; }
         public StackLayout _MusicTuner
         {
