@@ -323,7 +323,7 @@ namespace InnoTecheLearning
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task);
-        }
+        } 
         /*
         public string TransformForCurrentPlatform(string url)
         {

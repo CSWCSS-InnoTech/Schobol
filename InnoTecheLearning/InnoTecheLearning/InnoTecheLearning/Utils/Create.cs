@@ -258,15 +258,25 @@ namespace InnoTecheLearning
                     };
                 }
             }
+            public static Button Back(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Return = Button("Back", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
+                Return.HorizontalOptions = LayoutOptions.End;
+                Return.VerticalOptions = LayoutOptions.Fill;
+                return Return;
+            }
             public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
             {
-                Button Back = Button("Back", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
                 ScrollView Changelog = Create.Changelog;
                 if (BackColor == default(Color))
                     BackColor = Color.White;
                 return new StackLayout
                 {
-                    Children = { Changelog, Back },
+                    Children = { Changelog, Back(Page) },
                     BackgroundColor = BackColor,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill

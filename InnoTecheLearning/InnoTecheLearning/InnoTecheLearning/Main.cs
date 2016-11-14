@@ -159,10 +159,21 @@ namespace InnoTecheLearning
                         Row(Button((Text)"'C",  delegate {MusicSound =  Play(Sounds.Cello_C); }),
                         Button((Text)"'G",  delegate {MusicSound =  Play(Sounds.Cello_G); }),
                         Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
-                        Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Cello_A); }))
+                        Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Cello_A); })),
+
+                        BoldLabel("Sorry, but Android 6.0+ only!"),
+                        Back(this)
                     }
                 };
             }
         }
+        public StackLayout CloudTest
+        { get {
+                Entry E = new Entry();
+                Label L1 = BoldLabel("");
+                Label L2 = BoldLabel("");
+                Label L3 = BoldLabel("");
+                Label L4 = BoldLabel("");
+                return new StackLayout { Children = {E, Button("Test the Cloud", delegate { var Response = POST()}) } }; } }
     }
 }
