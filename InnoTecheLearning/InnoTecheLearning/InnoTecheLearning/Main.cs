@@ -15,6 +15,7 @@ namespace InnoTecheLearning
     {
         public enum Pages : sbyte
         {
+            CloudTest = -2,
             Changelog = -1,
             Main,
             Forum,
@@ -35,6 +36,9 @@ namespace InnoTecheLearning
             {
                 switch (value)
                 {
+                    case Pages.CloudTest:
+                        Content = CloudTest;
+                        break;
                     case Pages.Changelog:
                         Content = ChangelogView(this);
                         break;
@@ -98,11 +102,14 @@ namespace InnoTecheLearning
                         Title("CSWCSS eLearning App"),
                         Society,
 
-           MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{Alert(this,"[2016-11-1 18:00:00] 1E03: Hi\n"+
+           MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{
+               /*Alert(this,"[2016-11-1 18:00:00] 1E03: Hi\n"+
                "[2016-11-1 18:00:09] 3F43: No one likes you loser\n[2016-11-1 18:00:16] 1E03: 😢😭😢😭😢😭😢😭😢\n"+
                "[2016-11-1 18:00:22] 2E12: Hey don't bully him!\n[2016-11-1 18:00:28] 3F43: Go kill yourself because you"+
                " are a F-ing faggot\n[2016-11-1 18:00:34] 2E12: I am going to rape you\n"+
-               "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5)); }, BoldLabel("Forum") ),
+               "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5));*/
+               Showing = Pages.CloudTest;
+                         }, BoldLabel("Forum (CloudTest)") ),
                          MainScreenItem(Image(ImageFile.Translate), delegate{Alert(this,
                           "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"); },
                          BoldLabel("Translator") ),
@@ -120,7 +127,7 @@ namespace InnoTecheLearning
            MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {
                              Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
                          MainScreenItem(Image(ImageFile.MusicTuner), delegate {
-                             Showing = Pages.MusicTuner;Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
+                             Showing = Pages.MusicTuner;//Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
                          },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate {
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
@@ -169,11 +176,17 @@ namespace InnoTecheLearning
         }
         public StackLayout CloudTest
         { get {
-                Entry E = new Entry();
+                Entry ID = new Entry { Keyboard = Keyboard.Numeric, Placeholder = "Student ID (without beginning s)" };
+                Entry E = new Entry { Keyboard = Keyboard.Text, Placeholder = "Password" };
                 Label L1 = BoldLabel("");
                 Label L2 = BoldLabel("");
                 Label L3 = BoldLabel("");
                 Label L4 = BoldLabel("");
-                return new StackLayout { Children = {E, Button("Test the Cloud", delegate { var Response = POST()}) } }; } }
+                return new StackLayout { Children = {ID, E, Button((Text)"Test the Cloud",
+                    delegate { var Response = Login(TryCast<short>(ID.Text), E.Text);
+                    L1.Text = "ID: " + Response[0];    L2.Text = "Name: " + Response[1];
+                    L3.Text = "Class: " + Response[2]; L4.Text = "Number: " + Response[3];}),
+                    L1, L2, L3, L4, Back(this)},
+                VerticalOptions = LayoutOptions.Center}; } }
     }
 }

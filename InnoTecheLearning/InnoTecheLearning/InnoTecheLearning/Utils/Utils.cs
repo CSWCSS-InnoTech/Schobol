@@ -295,6 +295,24 @@ namespace InnoTecheLearning
             }
         }
 
+        /// <summary>
+        /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
+        /// <param name="Object">The <see cref="object"/> instance to convert.</param>
+        /// <returns>The result of conversion if successful. If not it will be the default value of the <see cref="Type"/> to convert to.</returns>
+        public static T TryCast<T>(dynamic Object)
+        {
+            try
+            {
+                return (T)Object;
+            }
+            catch (InvalidCastException)
+            {
+                return default(T);
+            }
+        }
+
         public static char[] CharGen(char Start, char End, params char[] Exclude)
         {   string Return = "";
             for (char i = Start; i < End+1; i++)

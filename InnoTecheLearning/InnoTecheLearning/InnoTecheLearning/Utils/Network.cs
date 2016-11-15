@@ -7,25 +7,29 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static string[] POST(Uri BaseAddress, Uri Request, params KeyValuePair<string, string>[] Content)
+        public static string[] Login(short StudentID/*18999*/, string PassPhrase/*Y1234567*/)
+        { return POST(new Uri("cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
+            "STUDENT_ID=s"+StudentID.ToString()+"&STUDENT_PASSPHRASE="+PassPhrase).Split(','); }
+        public static string POST(Uri BaseAddress, string RequestPath, string Content)
+            //params KeyValuePair<string, string>[] Content)
         {
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("cloud.pedosa.org");
+                client.BaseAddress = BaseAddress;
 
                 //string jsonData = @"{""username"" : ""myusername"", ""password"" : ""mypassword""}";
-                string Input = "";//"STUDENT_ID=s18999&STUDENT_PASSPHRASE=Y1234567"
-                foreach (KeyValuePair<string, string> In in Content)
+                //string Input = "";
+                /*foreach (KeyValuePair<string, string> In in Content)
                 {
                     Input += In.Key + '=' + In.Value + '&';
                 }
-                Input = Input.TrimEnd('&');
-                using (var content = new StringContent(Input/*jsonData*/,
+                Input = Input.TrimEnd('&');*/
+                using (var content = new StringContent(Content/*jsonData*/,
                      Encoding.UTF8/*, "application/json"*/))
-                using (HttpResponseMessage response = Do(client.PostAsync("/solutions/cswcss-innotech/test/index.php", content)))
+                using (HttpResponseMessage response = Do(client.PostAsync(RequestPath, content)))
 
                     // this result string should be something like: "{"token":"rgh2ghgdsfds"}"
-                    return Do(response.Content.ReadAsStringAsync()).Split(',');
+                    return Do(response.Content.ReadAsStringAsync());
             }
         }
     }
