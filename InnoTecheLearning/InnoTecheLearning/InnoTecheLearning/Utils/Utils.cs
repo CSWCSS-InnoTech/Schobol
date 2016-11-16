@@ -341,7 +341,37 @@ namespace InnoTecheLearning
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task);
-        } 
+        }
+
+        public static ushort ToUShort(string String)
+        {
+Retry:      try
+            {
+                return ushort.Parse(String);
+            }
+            catch (OverflowException)
+            {
+                try
+                {
+                    return ushort.Parse(String.Replace(System.Globalization.NumberFormatInfo.CurrentInfo.
+                        NegativeSign, string.Empty).Replace("-", string.Empty).Remove(6));
+                }
+                catch (OverflowException)
+                {
+                    return ushort.Parse(String.Replace(System.Globalization.NumberFormatInfo.CurrentInfo.
+                        NegativeSign, string.Empty).Replace("-", string.Empty).Remove(5));
+                }
+            }
+            catch (ArgumentNullException)
+            { return 0; }
+            catch (FormatException)
+            {
+                for (int i = 0; i < String.Length; i++)
+                    if (!char.IsDigit(String[i]))
+                    { String = String.Remove(i, 1); i--;}
+                goto Retry;
+            }
+        }
         /*
         public string TransformForCurrentPlatform(string url)
         {

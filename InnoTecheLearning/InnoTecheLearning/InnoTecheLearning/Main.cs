@@ -168,25 +168,53 @@ namespace InnoTecheLearning
                         Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
                         Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Cello_A); })),
 
+#if __ANDROID__
                         BoldLabel("Sorry, but Android 6.0+ only!"),
+#endif
                         Back(this)
                     }
                 };
             }
         }
         public StackLayout CloudTest
-        { get {
-                Entry ID = new Entry { Keyboard = Keyboard.Numeric, Placeholder = "Student ID (without beginning s)" };
-                Entry E = new Entry { Keyboard = Keyboard.Text, Placeholder = "Password" };
-                Label L1 = BoldLabel("");
-                Label L2 = BoldLabel("");
-                Label L3 = BoldLabel("");
-                Label L4 = BoldLabel("");
-                return new StackLayout { Children = {ID, E, Button((Text)"Test the Cloud",
-                    delegate { var Response = Login(TryCast<short>(ID.Text), E.Text);
-                    L1.Text = "ID: " + Response[0];    L2.Text = "Name: " + Response[1];
-                    L3.Text = "Class: " + Response[2]; L4.Text = "Number: " + Response[3];}),
+        {
+            get
+            {
+                var Display = new
+                {
+                    ID = "ID:".PadRight(8),
+                    Name = "Name:".PadRight(8),
+                    Class = "Class:".PadRight(8),
+                    Number = "Number:".PadRight(8)
+                };
+
+                Entry ID = new Entry
+                {
+                    Keyboard = Keyboard.Numeric,
+                    Placeholder = "Student ID (without beginning s)",
+                    PlaceholderColor = Color.Gray
+                };
+                Entry E = new Entry
+                {
+                    Keyboard = Keyboard.Text,
+                    Placeholder = "Password",
+                    PlaceholderColor = Color.Gray
+                };
+                Label L1 = BoldLabel(Display.ID);
+                Label L2 = BoldLabel(Display.Name);
+                Label L3 = BoldLabel(Display.Class);
+                Label L4 = BoldLabel(Display.Number);
+
+                return new StackLayout
+                {
+                    Children = {ID, E, Button((Text)"Test the Cloud",
+                    delegate { var Response = Login(ToUShort(ID.Text), E.Text);
+                    L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
+                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3];}),
                     L1, L2, L3, L4, Back(this)},
-                VerticalOptions = LayoutOptions.Center}; } }
+                    VerticalOptions = LayoutOptions.Center
+                };
+            }
+        }
     }
 }
