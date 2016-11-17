@@ -334,6 +334,27 @@ namespace InnoTecheLearning
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
+            public static ScrollView ButtonStack(params Button[] Buttons)
+            {
+                StackLayout Return = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    HorizontalOptions = LayoutOptions.FillAndExpand
+                };
+                for (int i = 0; i < Buttons.Length - 1; i++)
+                    Return.Children.Add(new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Children = { Buttons[i], Buttons[++i] }
+                    });
+                return new ScrollView
+                {
+                    Orientation = ScrollOrientation.Vertical,
+                    Content = Return,
+                    HorizontalOptions = LayoutOptions.FillAndExpand
+                };
+            }
         }
     }
 }

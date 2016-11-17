@@ -210,11 +210,12 @@ namespace InnoTecheLearning
                     Children = {ID, E, Button((Text)"Test the Cloud",
                     delegate { var Response = Login(ToUShort(ID.Text), E.Text);
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
-                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3];}),
+                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; }),
                     L1, L2, L3, L4, Back(this)},
                     VerticalOptions = LayoutOptions.Center
                 };
             }
         }
+
     }
 }
