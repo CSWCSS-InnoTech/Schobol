@@ -24,6 +24,7 @@ namespace InnoTecheLearning
                     Input += In.Key + '=' + In.Value + '&';
                 }
                 Input = Input.TrimEnd('&');*/
+                
                 using (var content = new StringContent(Content/*jsonData*/,
                      Encoding.UTF8/*, "application/json"*/))
                 using (HttpResponseMessage response = Do(client.PostAsync(RequestPath, content)))
