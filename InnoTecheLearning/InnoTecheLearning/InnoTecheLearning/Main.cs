@@ -192,13 +192,15 @@ namespace InnoTecheLearning
                 {
                     Keyboard = Keyboard.Numeric,
                     Placeholder = "Student ID (without beginning s)",
-                    PlaceholderColor = Color.Gray
+                    PlaceholderColor = Color.Gray,
+                    TextColor = Color.Black
                 };
                 Entry E = new Entry
                 {
                     Keyboard = Keyboard.Text,
                     Placeholder = "Password",
-                    PlaceholderColor = Color.Gray
+                    PlaceholderColor = Color.Gray,
+                    TextColor = Color.Black
                 };
                 Label L1 = BoldLabel(Display.ID);
                 Label L2 = BoldLabel(Display.Name);
