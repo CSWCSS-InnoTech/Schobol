@@ -342,7 +342,18 @@ namespace InnoTecheLearning
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task);
         }
+#if NETFX_CORE
+        public static void Do(global::Windows.Foundation.IAsyncAction Task)
+        {
+            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                Helper.Run(Task.AsTask());
+        }
 
+        public static T Do<T>(global::Windows.Foundation.IAsyncOperation<T> Task)
+        {
+            return Task.GetAwaiter().GetResult();
+        }
+#endif
         public static ushort ToUShort(string String)
         {
 Retry:      try

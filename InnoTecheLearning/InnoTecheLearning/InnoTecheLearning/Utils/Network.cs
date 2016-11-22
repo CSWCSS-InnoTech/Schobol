@@ -8,8 +8,8 @@ namespace InnoTecheLearning
     partial class Utils
     {
         public static string[] Login(ushort StudentID/*18999*/, string PassPhrase/*Y1234567*/)
-        { return POST(new Uri("http://cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
-            "STUDENT_ID=s"+StudentID.ToString()+"&STUDENT_PASSPHRASE="+PassPhrase).Split(','); }
+        { return Log(POST(new Uri("http://cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
+            "STUDENT_ID=s"+StudentID.ToString()+"&STUDENT_PASSPHRASE="+PassPhrase)).Split(','); }
         public static string POST(Uri BaseAddress, string RequestPath, string Content)
             //params KeyValuePair<string, string>[] Content)
         {

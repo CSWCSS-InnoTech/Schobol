@@ -37,34 +37,47 @@ namespace InnoTecheLearning
                 switch (value)
                 {
                     case Pages.CloudTest:
+                        Region = "CloudTest";
                         Content = CloudTest;
                         break;
                     case Pages.Changelog:
+                        Region = "Changelog";
                         Content = ChangelogView(this);
                         break;
                     case Pages.Main:
+                        Region = "Main";
                         Content = MainView;
                         break;
                     case Pages.Forum:
+                        Region = "Forum";
                         break;
                     case Pages.Translate:
+                        Region = "Translate";
                         break;
                     case Pages.VocabBook:
+                        Region = "VocabBook";
                         break;
                     case Pages.MathConverter:
+                        Region = "MathConverter";
                         break;
                     case Pages.MathConverter_Duo:
+                        Region = "MathConverter_Duo";
                         break;
                     case Pages.Factorizer:
+                        Region = "Factorizer";
                         break;
                     case Pages.Sports:
+                        Region = "Sports";
                         break;
                     case Pages.MusicTuner:
+                        Region = "MusicTuner";
                         Content = MusicTuner;
                         break;
                     case Pages.MathSolver:
+                        Region = "MathSolver";
                         break;
                     default:
+                        Region = "App";
                         break;
                 }
                 _Showing = value;
@@ -77,6 +90,7 @@ namespace InnoTecheLearning
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
+            Log("Main page initialized.");
         }
         protected override bool OnBackButtonPressed()
         {

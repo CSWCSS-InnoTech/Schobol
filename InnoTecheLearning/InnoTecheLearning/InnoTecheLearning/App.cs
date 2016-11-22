@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-
+using static InnoTecheLearning.Utils;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -15,6 +15,8 @@ namespace InnoTecheLearning
     {
         public App ()
 		{
+            Region = "App";
+            Log("App strated");
             // The root page of your application
             MainPage = new Main();//ResourceView;
         }
