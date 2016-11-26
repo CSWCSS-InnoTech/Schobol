@@ -207,14 +207,16 @@ namespace InnoTecheLearning
                     Keyboard = Keyboard.Numeric,
                     Placeholder = "Student ID (without beginning s)",
                     PlaceholderColor = Color.Gray,
-                    TextColor = Color.Black
+                    TextColor = Color.Black,
+                    Text = "18999"
                 };
                 Entry E = new Entry
                 {
                     Keyboard = Keyboard.Text,
                     Placeholder = "Password",
                     PlaceholderColor = Color.Gray,
-                    TextColor = Color.Black
+                    TextColor = Color.Black,
+                    Text = "Y1234567"
                 };
                 Label L1 = BoldLabel(Display.ID);
                 Label L2 = BoldLabel(Display.Name);
@@ -224,14 +226,30 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {ID, E, Button((Text)"Test the Cloud",
-                    delegate { var Response = Login(ToUShort(ID.Text), E.Text);
+                    delegate { try
+                        {
+var Response = Login(ToUShort(ID.Text), E.Text);
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
-                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; }),
-                    L1, L2, L3, L4, Back(this)},
+                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; 
+                    L1, L2, L3, L4, Back(this)
+                    }
+    catch (Exception)
+    {
+
+		throw;
+    }}}),,
                     VerticalOptions = LayoutOptions.Center
                 };
             }
         }
+        static void Hi()
+        {
+            Type scriptType = Type.GetTypeFromCLSID(Guid.Parse("0E59F1D5-1FBE-11D0-8FF2-00A0D10038BC"));
 
+            dynamic obj = Activator.CreateInstance(scriptType, false);
+            obj.Language = "javascript";
+
+            var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
+        }
     }
 }
