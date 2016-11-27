@@ -226,22 +226,19 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {ID, E, Button((Text)"Test the Cloud",
-                    delegate { try
-                        {
-var Response = Login(ToUShort(ID.Text), E.Text);
+                    delegate {
+                    Try(delegate { var Response = Login(ToUShort(ID.Text), E.Text);
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
-                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; 
-                    L1, L2, L3, L4, Back(this)
-                    }
-    catch (Exception)
-    {
-
-		throw;
-    }}}),,
+                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
+                    (IndexOutOfRangeException ex)=> {Alert(this, "Abnornal return value from Cloud: " +
+                        string.IsNullOrWhiteSpace(ex.)) ;}); }),
+                    L1, L2, L3, L4, Back(this)}
+                    ,
                     VerticalOptions = LayoutOptions.Center
                 };
             }
         }
+#if false
         static void Hi()
         {
             Type scriptType = Type.GetTypeFromCLSID(Guid.Parse("0E59F1D5-1FBE-11D0-8FF2-00A0D10038BC"));
@@ -251,5 +248,6 @@ var Response = Login(ToUShort(ID.Text), E.Text);
 
             var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
         }
+#endif
     }
 }

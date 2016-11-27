@@ -71,6 +71,9 @@
       <HintPath>..\..\packages\Xamarin.Forms.2.2.0.45\lib\MonoAndroid10\FormsViewGroup.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MB.JsEvaluator">
+      <HintPath>..\InnoTecheLearning\DLL\MB.JsEvaluator.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />

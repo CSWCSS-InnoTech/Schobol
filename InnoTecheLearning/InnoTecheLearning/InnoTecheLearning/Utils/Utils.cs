@@ -383,6 +383,42 @@ Retry:      try
                 goto Retry;
             }
         }
+        public static string Evaluate(string Expression)
+        {
+            // Ask user to enter expression.
+            MB.JsEvaluator.Evaluator evaluator = new MB.JsEvaluator.Evaluator();
+            return evaluator.Eval(Expression);
+        }
+        public static void Try(Action Try, Action<Exception> Catch = null, Action Finally = null)
+        {
+            try
+            {
+                Try();
+            }
+            catch (Exception ex)
+            {
+                if (Catch == null) { throw; } else { Catch(ex); }
+            }
+            finally
+            {
+                Finally?.Invoke();
+            }
+        }
+        public static T Try<T>(Func<T> Try, Func<Exception,T> Catch = null, Action Finally = null)
+        {
+            try
+            {
+                return Try();
+            }
+            catch (Exception ex)
+            {
+                if (Catch == null) { throw; } else { return Catch(ex); }
+            }
+            finally
+            {
+                Finally?.Invoke();
+            }
+        }
         /*
         public string TransformForCurrentPlatform(string url)
         {

@@ -139,6 +139,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="MB.JsEvaluator">
+      <HintPath>..\InnoTecheLearning\DLL\MB.JsEvaluator.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.3.2.127\lib\win81\Xamarin.Forms.Core.dll</HintPath>
       <Private>True</Private>

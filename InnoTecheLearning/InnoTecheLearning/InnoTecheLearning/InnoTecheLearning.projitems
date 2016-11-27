@@ -10,26 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\BinaryExpression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\EvaluationVisitor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\Function.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\LogicalExpression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\LogicalExpressionVisitor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\Parameter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\SerializationVisitor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\TernaryExpression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\UnaryExpression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Domain\Value.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\EvaluateFunctionHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\EvaluateParameterHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\EvaluationException.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\EvaluationOption.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Expression.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\FunctionArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\NCalcLexer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\NCalcParser.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\Numbers.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Calculator\ParameterArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SoundPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SoundRecorder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
@@ -48,7 +28,6 @@
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cswcss.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Change.log" />
-    <None Include="$(MSBuildThisFileDirectory)Calculator\NCalc.csproj" />
     <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.cs" />

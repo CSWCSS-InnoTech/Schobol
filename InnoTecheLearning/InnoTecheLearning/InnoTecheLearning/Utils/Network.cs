@@ -7,9 +7,28 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
+        public class AbnormalReturnException<TReturn> : HttpRequestException
+        {   public TReturn ReturnValue { get; }
+            public AbnormalReturnException(TReturn Value) : base()
+            { ReturnValue = Value; }
+            public AbnormalReturnException(TReturn Value, string Message) : base(Message)
+            { ReturnValue = Value; }
+            public AbnormalReturnException(TReturn Value, string Message, Exception Inner) : base(Message, Inner)
+            { ReturnValue = Value; }
+        }
         public static string[] Login(ushort StudentID = 18999, string PassPhrase = "Y1234567")
-        { return Log(POST(new Uri("http://cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
-            "STUDENT_ID=s"+StudentID.ToString()+"&STUDENT_PASSPHRASE="+PassPhrase)).Split(','); }
+        {
+            string Return = POST(new Uri("http://cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
+              "STUDENT_ID=s" + StudentID.ToString() + "&STUDENT_PASSPHRASE=" + PassPhrase);
+            try
+            {
+                return Return.Split(',');
+            }
+            catch (IndexOutOfRangeException)
+            {
+                throw new AbnormalReturnException<string>(Return, "Return value does not contain at least 3 commas");
+            }
+        }
         public static string POST(Uri BaseAddress, string RequestPath, string Content)
             //params KeyValuePair<string, string>[] Content)
         {

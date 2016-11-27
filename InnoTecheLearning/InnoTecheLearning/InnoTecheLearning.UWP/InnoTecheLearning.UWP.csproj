@@ -127,6 +127,11 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MB.JsEvaluator">
+      <HintPath>..\InnoTecheLearning\DLL\MB.JsEvaluator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
   <Import Project="..\InnoTecheLearning\InnoTecheLearning.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
