@@ -24,9 +24,10 @@ namespace InnoTecheLearning
             {
                 return Return.Split(',');
             }
-            catch (IndexOutOfRangeException)
+            catch (IndexOutOfRangeException ex)
             {
-                throw new AbnormalReturnException<string>(Return, "Return value does not contain at least 3 commas");
+                throw new AbnormalReturnException<string>(Return,
+                    "Return value does not contain at least 3 commas", ex);
             }
         }
         public static string POST(Uri BaseAddress, string RequestPath, string Content)

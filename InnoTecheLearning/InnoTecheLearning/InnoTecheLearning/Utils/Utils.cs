@@ -397,14 +397,39 @@ function Cos(x){ return Math.cos(x); }
 function Exp(x){ return Math.exp(x); }
 function Floor(x){ return Math.floor(x); }
 function Log(x){ return Math.log(x); }
-function Max(args){ return Math.max.apply(this, arguments); }
-function Min(args){ return Math.min.apply(this, arguments); }
+function Max(arguments){ return Math.max.apply(this, arguments); }
+function Min(arguments){ return Math.min.apply(this, arguments); }
 function Pow(x, y){ return Math.pow(x,y); }
 function Random(){ return Math.random(); }
 function Round(x){ return Math.round(x); }
 function Sin(x){ return Math.sin(x); }
 function Sqrt(x){ return Math.sqrt(x); }
-function Tan(x){ return Math.tan(x); }
+function Tan(x){ return Math.tan(x); }"+
+#if false
+function Factorial_(aNumber : int, recursNumber : int ) : double {
+   // recursNumber keeps track of the number of iterations so far.
+   if (aNumber == 0) {  // If the number is 0, its factorial is 1.
+      return 1.;
+   } else {
+      if(recursNumber > 100) {
+         throw(""Too many levels of recursion."");
+      } else {  // Otherwise, recurse again.
+         return (aNumber* Factorial_(aNumber - 1, recursNumber + 1));
+      }
+}
+}
+
+function Factorial(aNumber : int) : double {
+   // Use type annotation to only accept numbers coercible to integers.
+   // double is used for the return type to allow very large numbers to be returned.
+   if(aNumber< 0) {
+      throw(""Cannot take the factorial of a negative number."");
+   } else {  // Call the recursive function.
+      return  Factorial_(aNumber, 0);
+   }
+}
+#endif
+@"
 var π = Math.PI;
 var e = Math.E;
 var Root2 = Math.SQRT2;
@@ -514,7 +539,7 @@ var Log10e = Math.LOG10E;
                 }
                 else if (Device.OS == TargetPlatform.WinPhone)
                 {
-    #if WINDOWS_PHONE
+#if WINDOWS_PHONE
         if (url.StartsWith("/") && url.Length > 1)
         {
             url = url.Substring(1);
@@ -534,7 +559,7 @@ var Log10e = Math.LOG10E;
                log.Debug("Unable to located create ImageSource using URL: " + url);
             }
         }
-    #endif
+#endif
                 }
 
                 if (imageSource == null)
