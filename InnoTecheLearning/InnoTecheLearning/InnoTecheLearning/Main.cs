@@ -21,8 +21,8 @@ namespace InnoTecheLearning
             Forum,
             Translate,
             VocabBook,
-            MathConverter,
-            MathConverter_Duo,
+            Calculator,
+            Calculator_Free,
             Factorizer,
             Sports,
             MusicTuner,
@@ -57,11 +57,12 @@ namespace InnoTecheLearning
                     case Pages.VocabBook:
                         Region = "VocabBook";
                         break;
-                    case Pages.MathConverter:
-                        Region = "MathConverter";
+                    case Pages.Calculator:
+                        Region = "Calculator";
                         break;
-                    case Pages.MathConverter_Duo:
-                        Region = "MathConverter_Duo";
+                    case Pages.Calculator_Free:
+                        Region = "Calculator_Free";
+                        Content = Calculator_Free;
                         break;
                     case Pages.Factorizer:
                         Region = "Factorizer";
@@ -85,8 +86,6 @@ namespace InnoTecheLearning
         }
         public Main()
         {
-            MainView = _MainView;
-            MusicTuner = _MusicTuner;
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
@@ -102,9 +101,8 @@ namespace InnoTecheLearning
             else
                 return base.OnBackButtonPressed();
         }
-
-        public StackLayout MainView { get; }
-        public StackLayout _MainView
+        
+        public StackLayout MainView
         {
             get
             {
@@ -123,17 +121,18 @@ namespace InnoTecheLearning
                " are a F-ing faggot\n[2016-11-1 18:00:34] 2E12: I am going to rape you\n"+
                "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5));*/
                Showing = Pages.CloudTest;
-                         }, BoldLabel("Forum (CloudTest)") ),
+                         }, BoldLabel("Forum\n(CloudTest)") ),
                          MainScreenItem(Image(ImageFile.Translate), delegate{Alert(this,
                           "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"); },
                          BoldLabel("Translator") ),
                          MainScreenItem(Image(ImageFile.VocabBook),delegate {Alert(this,"Ida = 捱打，伸張靜儀、儆惡懲奸，\n" +
 "      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
 
-           MainScreenRow(MainScreenItem(Image(ImageFile.MathConverter),delegate {
-                             Alert(this, "1+1=2"); },BoldLabel("Math Converter")),
-                         MainScreenItem(Image(ImageFile.MathConverter_Duo),delegate {
-                             Alert(this, StrDup("1+",100) + "1\n=101"); },BoldLabel("Math Converter Duo")),
+           MainScreenRow(MainScreenItem(Image(ImageFile.Calculator),delegate {
+                             Alert(this, "1+1=2"); },BoldLabel("Calculator")),
+                         MainScreenItem(Image(ImageFile.Calculator_Free),delegate {
+                             Showing = Pages.Calculator_Free;//Alert(this, StrDup("1+",100) + "1\n=101");
+                         },BoldLabel("Calculator\nFree Mode")),
                          MainScreenItem(Image(ImageFile.Factorizer),delegate {Alert(this,
                              "Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³\n = 𝐗(𝐗−1)²(5𝐗−2)"
                              ); },BoldLabel("Quadratic Factorizer"))),
@@ -154,8 +153,7 @@ namespace InnoTecheLearning
             }
         }
         StreamPlayer MusicSound { get; set; }
-        public StackLayout MusicTuner { get; }
-        public StackLayout _MusicTuner
+        public StackLayout MusicTuner
         {
             get
             {
@@ -230,24 +228,30 @@ namespace InnoTecheLearning
                     Try(delegate { var Response = Login(ToUShort(ID.Text), E.Text);
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
                     L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
-                    (IndexOutOfRangeException ex)=> {Alert(this, "Abnornal return value from Cloud: " +
-                        string.IsNullOrWhiteSpace(ex.)) ;}); }),
+                    (Exception ex)=> {Alert(this, "Abnornal return value from Cloud: " +
+                        '"'+((AbnormalReturnException<string>)ex).ReturnValue+'"') ;}); }),
                     L1, L2, L3, L4, Back(this)}
                     ,
                     VerticalOptions = LayoutOptions.Center
                 };
             }
         }
-#if false
-        static void Hi()
+        public StackLayout Calculator_Free
         {
-            Type scriptType = Type.GetTypeFromCLSID(Guid.Parse("0E59F1D5-1FBE-11D0-8FF2-00A0D10038BC"));
-
-            dynamic obj = Activator.CreateInstance(scriptType, false);
-            obj.Language = "javascript";
-
-            var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
+            get
+            {
+                Editor Editor = new Editor { TextColor = Color.Black ,HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand };
+                Entry Entry = new Entry { TextColor = Color.Black, Placeholder = "Result", 
+                    PlaceholderColor = Color.Gray, IsEnabled = false};
+                return new StackLayout
+                {
+                    Children =
+                    {Editor,
+                    Button((Text)"Evaluate", delegate { Entry.Text = Evaluate(Editor.Text); })
+                    }
+                };
+            }
         }
-#endif
     }
 }

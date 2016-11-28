@@ -6,7 +6,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 74"; 
+        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 76"; 
         public static Version Version
         { get { return Version.Parse(VersionFull.Remove(VersionFull.IndexOf(' '))); } }
         public static string VersionName

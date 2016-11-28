@@ -12,22 +12,6 @@ namespace InnoTecheLearning
         /// </summary>
         public static class Create
         {
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
-            public static Button Button(FileImageSource Image, EventHandler OnClick)
-            {   return Button(Image, OnClick, new Size(50, 50));}
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
-            public static Button Button(FileImageSource Image, EventHandler OnClick, Size Size)
-            {
-                Button Button = new Button
-                {
-                    Image = Image,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
-                };
-                Button.Clicked += OnClick;
-                return Button;
-            }
-
             public static Button Button(Text Text, EventHandler OnClick,Color BackColor =
                 default(Color), Color TextColor = default(Color))
             {
@@ -57,6 +41,22 @@ namespace InnoTecheLearning
                 Button.Clicked += OnClick;
                 return Button;
             }
+            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
+            public static Button Button(FileImageSource Image, EventHandler OnClick)
+            {   return Button(Image, OnClick, new Size(50, 50));}
+            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
+            public static Button Button(FileImageSource Image, EventHandler OnClick, Size Size)
+            {
+                Button Button = new Button
+                {
+                    Image = Image,
+                    WidthRequest = Size.Width,
+                    HeightRequest = Size.Height
+                };
+                Button.Clicked += OnClick;
+                return Button;
+            }
+
             [Obsolete("Use MainScreenItem(ImageSource Source, Action OnTap, Label Display) instead.\nDeprecated in 0.10.0a46")]
             public static StackLayout MainScreenItemB/*B = Button*/(FileImageSource Image, EventHandler OnClick, Text Display)
             {
@@ -106,8 +106,8 @@ namespace InnoTecheLearning
                 Forum = 1,
                 Translate = 2,
                 VocabBook = 3,
-                MathConverter = 4,
-                MathConverter_Duo = 5,
+                Calculator = 4,
+                Calculator_Free = 5,
                 Factorizer = 6,
                 Sports = 7,
                 MusicTuner = 8,
@@ -131,10 +131,10 @@ namespace InnoTecheLearning
                     case ImageFile.VocabBook:
                         ActualFile = "book-2.png";
                         break;
-                    case ImageFile.MathConverter:
+                    case ImageFile.Calculator:
                         ActualFile = "square-root-of-x-mathematical-signs.png";
                         break;
-                    case ImageFile.MathConverter_Duo:
+                    case ImageFile.Calculator_Free:
                         ActualFile = "square-root-of-x-mathematical-signs.png";
                         break;
                     case ImageFile.Factorizer:

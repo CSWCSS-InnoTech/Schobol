@@ -386,9 +386,46 @@ Retry:      try
         public static string Evaluate(string Expression)
         {
             // Ask user to enter expression.
-            MB.JsEvaluator.Evaluator evaluator = new MB.JsEvaluator.Evaluator();
-            return evaluator.Eval(Expression);
+            Evaluator evaluator = new Evaluator();
+            return evaluator.Eval(@"function Abs (n) {return Math.abs(n); }
+function Acos(n) { return Math.acos(n); }
+function Asin (n) { return Math.asin(n); }
+function Atan (n) { return Math.atan(n); }
+function Atan2(y, x){ return Math.atan2(y, x); }
+function Ceil(x){ return Math.ceil(x); }
+function Cos(x){ return Math.cos(x); }
+function Exp(x){ return Math.exp(x); }
+function Floor(x){ return Math.floor(x); }
+function Log(x){ return Math.log(x); }
+function Max(args){ return Math.max.apply(this, arguments); }
+function Min(args){ return Math.min.apply(this, arguments); }
+function Pow(x, y){ return Math.pow(x,y); }
+function Random(){ return Math.random(); }
+function Round(x){ return Math.round(x); }
+function Sin(x){ return Math.sin(x); }
+function Sqrt(x){ return Math.sqrt(x); }
+function Tan(x){ return Math.tan(x); }
+var π = Math.PI;
+var e = Math.E;
+var Root2 = Math.SQRT2;
+var Root0_5 = Math.SQRT1_2;
+var Ln2 = Math.LN2;
+var Ln10 = Math.LN10;
+var Log2e = Math.LOG2E;
+var Log10e = Math.LOG10E;
+" + Expression);
         }
+#if false
+        static void Hi()
+        {
+            Type scriptType = Type.GetTypeFromCLSID(Guid.Parse("0E59F1D5-1FBE-11D0-8FF2-00A0D10038BC"));
+
+            dynamic obj = Activator.CreateInstance(scriptType, false);
+            obj.Language = "javascript";
+
+            var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
+        }
+#endif
         public static void Try(Action Try, Action<Exception> Catch = null, Action Finally = null)
         {
             try
