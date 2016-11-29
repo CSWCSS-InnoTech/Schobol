@@ -288,7 +288,7 @@ namespace InnoTecheLearning
                 Result = (T)Object;
                 return true;
             }
-            catch (InvalidCastException)
+            catch (Exception ex)when(ex is InvalidCastException||ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 Result = default(T);
                 return false;
@@ -307,7 +307,7 @@ namespace InnoTecheLearning
             {
                 return (T)Object;
             }
-            catch (InvalidCastException)
+            catch (Exception ex) when (ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 return default(T);
             }
@@ -383,11 +383,9 @@ Retry:      try
                 goto Retry;
             }
         }
-        public static string Evaluate(string Expression)
+        public static string Evaluate(string Expression, Page Alert = null)
         {
-            // Ask user to enter expression.
-            Evaluator evaluator = new Evaluator();
-            return evaluator.Eval(@"function Abs (n) {return Math.abs(n); }
+            const string Prefix = @"function Abs (n) {return Math.abs(n); }
 function Acos(n) { return Math.acos(n); }
 function Asin (n) { return Math.asin(n); }
 function Atan (n) { return Math.atan(n); }
@@ -404,8 +402,7 @@ function Random(){ return Math.random(); }
 function Round(x){ return Math.round(x); }
 function Sin(x){ return Math.sin(x); }
 function Sqrt(x){ return Math.sqrt(x); }
-function Tan(x){ return Math.tan(x); }"+
-#if false
+function Tan(x){ return Math.tan(x); }
 function Factorial_(aNumber : int, recursNumber : int ) : double {
    // recursNumber keeps track of the number of iterations so far.
    if (aNumber == 0) {  // If the number is 0, its factorial is 1.
@@ -428,8 +425,6 @@ function Factorial(aNumber : int) : double {
       return  Factorial_(aNumber, 0);
    }
 }
-#endif
-@"
 var π = Math.PI;
 var e = Math.E;
 var Root2 = Math.SQRT2;
@@ -438,7 +433,18 @@ var Ln2 = Math.LN2;
 var Ln10 = Math.LN10;
 var Log2e = Math.LOG2E;
 var Log10e = Math.LOG10E;
-" + Expression);
+"""";
+";
+            // Ask user to enter expression.
+            Evaluator evaluator = new Evaluator();
+            try
+            {
+                return evaluator.Eval(Prefix + Expression);
+            }
+            catch (Exception ex) when (Alert != null)
+            {
+                return "ERROR: "+ex.Message;
+            }
         }
 #if false
         static void Hi()
@@ -451,30 +457,70 @@ var Log10e = Math.LOG10E;
             var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
         }
 #endif
-        public static void Try(Action Try, Action<Exception> Catch = null, Action Finally = null)
+        public static void Try<TException>(Action Try, Action<TException> Catch = null, Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
         {
             try
             {
                 Try();
             }
-            catch (Exception ex)
+            catch (TException ex) when (CatchFilter != null && (CatchFilter == null? true : CatchFilter()))
             {
-                if (Catch == null) { throw; } else { Catch(ex); }
+                 Catch(ex); 
+            }
+            finally
+            {
+                Finally?.Invoke();
+            }
+
+        }
+        public static T Try<T, TException>(Func<T> Try, Func<TException,T> Catch = null, Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
+        {
+            try
+            {
+                return Try();
+            }
+            catch (TException ex) when (CatchFilter != null && (CatchFilter == null ? true : CatchFilter()) )
+            {
+                return Catch(ex); 
             }
             finally
             {
                 Finally?.Invoke();
             }
         }
-        public static T Try<T>(Func<T> Try, Func<Exception,T> Catch = null, Action Finally = null)
+        public static void Try<TException1, TException2>(Action Try, Action<TException1> Catch1 = null, Func<bool> CatchFilter1 = null, Action<TException2> Catch2 = null, Func<bool> CatchFilter2 = null, Action Finally = null) where TException1 : Exception where TException2 : Exception
+        {
+            try
+            {
+                Try();
+            }
+            catch (TException1 ex) when (CatchFilter1 != null && (CatchFilter1 == null ? true : CatchFilter1()))
+            {
+                Catch1(ex);
+            }
+            catch (TException2 ex) when (CatchFilter2 != null && (CatchFilter2 == null ? true : CatchFilter2()))
+            {
+                Catch2(ex);
+            }
+            finally
+            {
+                Finally?.Invoke();
+            }
+
+        }
+        public static T Try<T, TException1, TException2>(Func<T> Try, Func<TException1, T> Catch1 = null, Func<bool> CatchFilter1 = null, Func<TException2, T> Catch2 = null, Func<bool> CatchFilter2 = null, Action Finally = null) where TException1 : Exception where TException2 : Exception
         {
             try
             {
                 return Try();
             }
-            catch (Exception ex)
+            catch (TException1 ex) when (CatchFilter1 != null && (CatchFilter1 == null ? true : CatchFilter1()))
             {
-                if (Catch == null) { throw; } else { return Catch(ex); }
+                return Catch1(ex);
+            }
+            catch (TException2 ex) when (CatchFilter2 != null && (CatchFilter2 == null ? true : CatchFilter2()))
+            {
+                return Catch2(ex);
             }
             finally
             {

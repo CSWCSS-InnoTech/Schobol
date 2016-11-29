@@ -228,11 +228,10 @@ namespace InnoTecheLearning
                     Try(delegate { var Response = Login(ToUShort(ID.Text), E.Text);
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
                     L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
-                    (Exception ex)=> {AbnormalReturnException<string> e;
-                        if (TryCast(ex, out e))
-                        {Alert(this, "Abnornal return value from Cloud: " + '"' + e.ReturnValue + '"');}
-                        else { Alert(this, ex.ToString()); };
-                    }); }),
+                    (AbnormalReturnException<string> ex)=> {
+                        Alert(this, "Abnornal return value from Cloud: " + '"' + ex.ReturnValue + '"'); },
+                        Catch2:(Exception ex) => { Alert(this, ex.ToString()); }
+                    ); }),
                     L1, L2, L3, L4, Back(this)}
                     ,
                     VerticalOptions = LayoutOptions.Center
@@ -248,20 +247,20 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromRgb(0xD0,0xD0,0xD0)};
                 Entry Entry = new Entry { TextColor = Color.Black, Placeholder = "Result",
                     PlaceholderColor = Color.Gray, HorizontalOptions = LayoutOptions.FillAndExpand};
-                Entry.TextChanged += Entry_TextChanged;
+                Entry.TextChanged += Calculator_Free_TextChanged;
                 return new StackLayout
                 {
                     Children =
                     {Editor,
-                    Button((Text)"Evaluate", delegate { Calculator_Free_Value = Evaluate(Editor.Text);
-                        Entry_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
+                    Button((Text)"Evaluate", delegate { Calculator_Free_Value = Evaluate(Editor.Text, this);
+                        Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
                     Entry
                     }
                 };
             }
         }
 
-        private void Entry_TextChanged(object sender, TextChangedEventArgs e)
+        private void Calculator_Free_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Free_Value) {((Entry)sender).Text = Calculator_Free_Value; }
         }

@@ -18,10 +18,11 @@ namespace InnoTecheLearning
         }
         public static string[] Login(ushort StudentID = 18999, string PassPhrase = "Y1234567")
         {
-            string Return = POST(new Uri("http://cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
-              "STUDENT_ID=s" + StudentID.ToString() + "&STUDENT_PASSPHRASE=" + PassPhrase);
+            string Return = "";
             try
             {
+                Return = POST(new Uri("http://cloud.pedosa.org"), "/solutions/cswcss-innotech/test/index.php",
+                 "STUDENT_ID=s" + StudentID.ToString() + "&STUDENT_PASSPHRASE=" + PassPhrase);
                 return Return.Split(',');
             }
             catch (IndexOutOfRangeException ex)
