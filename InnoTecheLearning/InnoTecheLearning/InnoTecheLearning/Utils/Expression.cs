@@ -42,9 +42,49 @@
             Super, This, /*References*/ Throw, Try, Catch, Finally, //Exceptions
             Debugger, Import, Package, Print, With //Miscellaneous
         }
-        public static string ToString(Expressions Expression)
-        { return ToString((MoreExpressions)Expression); }
-        public static string ToString(MoreExpressions Expression)
+        public static int ItemLocation(this MoreExpressions[] Expression, int Index)
+        {
+            string String = Expression.AsString();
+            int i = 0, j = 0;
+            for ( ; i < Expression.Length && j < Index; i++)
+            {
+                j += Expression[i].StringLength();
+            }
+            return i;
+        }
+        public static int StringLength(this Expressions Expression)
+        {
+            return AsString(Expression).Length;
+        }
+        public static int StringLength(this MoreExpressions Expression)
+        {
+            return AsString(Expression).Length;
+        }
+        public static int StringLength(this Expressions[] Expression)
+        {
+            return AsString(Expression).Length;
+        }
+        public static int StringLength(this MoreExpressions[] Expression)
+        {
+            return AsString(Expression).Length;
+        }
+        public static string AsString(this Expressions[] Expression)
+        {
+            string Return = "";
+            foreach (Expressions Item in Expression)
+                Return += AsString(Item);
+            return Return;
+        }
+        public static string AsString(this MoreExpressions[] Expression)
+        {
+            string Return = "";
+            foreach (MoreExpressions Item in Expression)
+                Return += AsString(Item);
+            return Return;
+        }
+        public static string AsString(this Expressions Expression)
+        { return AsString((MoreExpressions)Expression); }
+        public static string AsString(this MoreExpressions Expression)
         {
             switch (Expression)
             {

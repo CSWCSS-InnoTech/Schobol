@@ -49,7 +49,7 @@ namespace InnoTecheLearning
                     BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Button = new Button { Text = Utils.ToString(Expression),
+                Button Button = new Button { Text = Expression.AsString(),
                     TextColor = TextColor, BackgroundColor = BackColor };
                 Button.Clicked += (object sender, EventArgs e)=> { OnClick(sender, e, Expression); };
                 return Button;
@@ -63,7 +63,7 @@ namespace InnoTecheLearning
                     TextColor = Color.Black;
                 Button Button = new Button
                 {
-                    Text = Utils.ToString(Expression),
+                    Text = Expression.AsString(),
                     TextColor = TextColor,
                     WidthRequest = Size.Width,
                     HeightRequest = Size.Height,
@@ -385,6 +385,20 @@ namespace InnoTecheLearning
                     Content = Return,
                     HorizontalOptions = LayoutOptions.FillAndExpand
                 };
+            }
+            public static ColumnDefinitionCollection Columns(GridUnitType Unit, params double[] Widths)
+            {
+                ColumnDefinitionCollection Return = new ColumnDefinitionCollection();
+                foreach (int Width in Widths)
+                    Return.Add(new ColumnDefinition { Width = new GridLength(Width, Unit) });
+                return Return;
+            }
+            public static RowDefinitionCollection Rows(GridUnitType Unit, params double[] Heights)
+            {
+                RowDefinitionCollection Return = new RowDefinitionCollection();
+                foreach (int Height in Heights)
+                    Return.Add(new RowDefinition { Height = new GridLength(Height, Unit) });
+                return Return;
             }
         }
     }

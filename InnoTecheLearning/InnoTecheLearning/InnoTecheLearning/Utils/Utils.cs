@@ -383,26 +383,24 @@ Retry:      try
                 goto Retry;
             }
         }
-        public static string Evaluate(string Expression, Page Alert = null)
+        public static string Evaluate(string Expression, Page Alert = null, bool MaxMin = true)
         {
             const string Prefix = @"function Abs (n) {return Math.abs(n); }
-function Acos(n) { return Math.acos(n); }
-function Asin (n) { return Math.asin(n); }
-function Atan (n) { return Math.atan(n); }
-function Atan2(y, x){ return Math.atan2(y, x); }
-function Ceil(x){ return Math.ceil(x); }
-function Cos(x){ return Math.cos(x); }
-function Exp(x){ return Math.exp(x); }
-function Floor(x){ return Math.floor(x); }
-function Log(x){ return Math.log(x); }
-function Max(arguments){ return Math.max.apply(this, arguments); }
-function Min(arguments){ return Math.min.apply(this, arguments); }
-function Pow(x, y){ return Math.pow(x,y); }
-function Random(){ return Math.random(); }
-function Round(x){ return Math.round(x); }
-function Sin(x){ return Math.sin(x); }
-function Sqrt(x){ return Math.sqrt(x); }
-function Tan(x){ return Math.tan(x); }
+function Acos(n : double) : double { return Math.acos(n); }
+function Asin (n : double) : double { return Math.asin(n); }
+function Atan (n : double) : double { return Math.atan(n); }
+function Atan2(y : double, x : double) : double{ return Math.atan2(y, x); }
+function Ceil(x : double) : double { return Math.ceil(x); }
+function Cos(x : double) : double { return Math.cos(x); }
+function Exp(x : double) : double { return Math.exp(x); }
+function Floor(x : double) : double { return Math.floor(x); }
+function Log(x : double) : double { return Math.log(x); }
+function Pow(x : double, y : double) : double { return Math.pow(x,y); }
+function Random() : double { return Math.random(); }
+function Round(x : double) : double { return Math.round(x); }
+function Sin(x : double) : double { return Math.sin(x); }
+function Sqrt(x : double) : double { return Math.sqrt(x); }
+function Tan(x : double) : double { return Math.tan(x); }
 function Factorial_(aNumber : int, recursNumber : int ) : double {
    // recursNumber keeps track of the number of iterations so far.
    if (aNumber < 3) {  // If the number is 0, its factorial is 1.
@@ -439,11 +437,18 @@ var Log10e = Math.LOG10E;
             Evaluator evaluator = new Evaluator();
             try
             {
-                return evaluator.Eval(Prefix + Expression);
+                return evaluator.Eval(Prefix + (MaxMin ? Expression.Replace("\rMin(", "\rMath.min(").
+                    Replace("\nMin(", "\nMath.min(").Replace("\f2028Min(", "\f2028Math.min(").
+                    Replace("\u2028Min(", "\u2028Math.min(").Replace("\u2029Min(", "\u2029Math.min(").
+
+                    Replace("\rMax(", "\rMath.max(").
+                    Replace("\nMax(", "\nMath.max(").Replace("\f2028Max(", "\f2028Math.max(").
+                    Replace("\u2028Max(", "\u2028Math.max(").Replace("\u2029Max(", "\u2029Math.max(")
+                    : Expression));
             }
             catch (Exception ex) when (Alert != null)
             {
-                return "ERROR: "+ex.Message;
+                return '⮾' + ex.Message;
             }
         }
 #if false

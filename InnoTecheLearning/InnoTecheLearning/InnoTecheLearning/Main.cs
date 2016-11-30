@@ -238,6 +238,37 @@ namespace InnoTecheLearning
                 };
             }
         }
+        string Calculator_Value = "";
+        Expressions[] Calculator_Expression = { };
+        public StackLayout Calculator
+        {
+            get
+            {
+                Entry In = new Entry
+                {
+                    TextColor = Color.Black,
+                    Placeholder = "Expression",
+                    PlaceholderColor = Color.Gray,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0)
+                };
+                In.TextChanged += Calculator_TextChanged;
+                Entry Out = new Entry
+                {
+                    TextColor = Color.Black,
+                    Placeholder = "Result",
+                    PlaceholderColor = Color.Gray,
+                    HorizontalOptions = LayoutOptions.FillAndExpand
+                };
+                Grid UI = new Grid { ColumnDefinitions = Columns(GridUnitType.Star, 1)};
+                Out.TextChanged += Calculator_TextChanged;
+                return new StackLayout { Children = {In, UI, Out } };
+            }
+        }
+        private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
+        }
         string Calculator_Free_Value = "";
         public StackLayout Calculator_Free
         {
