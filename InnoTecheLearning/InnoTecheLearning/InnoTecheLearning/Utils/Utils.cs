@@ -405,10 +405,10 @@ function Sqrt(x){ return Math.sqrt(x); }
 function Tan(x){ return Math.tan(x); }
 function Factorial_(aNumber : int, recursNumber : int ) : double {
    // recursNumber keeps track of the number of iterations so far.
-   if (aNumber == 0) {  // If the number is 0, its factorial is 1.
-      return 1.;
+   if (aNumber < 3) {  // If the number is 0, its factorial is 1.
+      return double(aNumber);
    } else {
-      if(recursNumber > 100) {
+      if(recursNumber > 170) {
          throw(""Too many levels of recursion."");
       } else {  // Otherwise, recurse again.
          return (aNumber* Factorial_(aNumber - 1, recursNumber + 1));

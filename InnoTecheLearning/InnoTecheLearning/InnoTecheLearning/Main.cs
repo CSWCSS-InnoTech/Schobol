@@ -101,7 +101,7 @@ namespace InnoTecheLearning
             else
                 return base.OnBackButtonPressed();
         }
-        
+
         public StackLayout MainView
         {
             get

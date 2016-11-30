@@ -12,7 +12,7 @@ namespace InnoTecheLearning
         /// </summary>
         public static class Create
         {
-            public static Button Button(Text Text, EventHandler OnClick,Color BackColor =
+            public static Button Button(Text Text, EventHandler OnClick, Color BackColor =
                 default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -39,6 +39,37 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor
                 };
                 Button.Clicked += OnClick;
+                return Button;
+            }
+            public delegate void ExpressionHandler(object sender, EventArgs e, Expressions exp);
+            public static Button Button(Expressions Expression, ExpressionHandler OnClick, Color BackColor =
+                default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button { Text = Utils.ToString(Expression),
+                    TextColor = TextColor, BackgroundColor = BackColor };
+                Button.Clicked += (object sender, EventArgs e)=> { OnClick(sender, e, Expression); };
+                return Button;
+            }
+            public static Button Button(Expressions Expression, ExpressionHandler OnClick, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button
+                {
+                    Text = Utils.ToString(Expression),
+                    TextColor = TextColor,
+                    WidthRequest = Size.Width,
+                    HeightRequest = Size.Height,
+                    BackgroundColor = BackColor
+                };
+                Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, e, Expression); };
                 return Button;
             }
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
