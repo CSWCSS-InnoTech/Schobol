@@ -4,7 +4,7 @@
     {
         public enum Expressions : byte
         {
-            Space,
+            Space, Ans,
             D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, DPoint, //Decimals
             Addition, Subtraction, Multiplication, Division, Modulus, Increment, Decrement, //Arithmetic
             LParenthese, RParenthese, LBracket, RBracket, LBrace, RBrace, //Parentheses
@@ -13,12 +13,13 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
-            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e //Constants
+            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, //Constants
+            Comma, //Continuation
         }
         public enum MoreExpressions : byte
         {
             #region Expressions
-            Space,
+            Space, Ans,
             D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, DPoint, //Decimals
             Addition, Subtraction, Multiplication, Division, Modulus, Increment, Decrement, //Arithmetic
             LParenthese, RParenthese, LBracket, RBracket, LBrace, RBrace, //Parentheses
@@ -27,14 +28,14 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
-            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e //Constants
-            , //Continuation
+            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, //Constants
+            Comma, //Continuation
             #endregion Hello this is a comment
             Assign, AssignAdd, AssignBAnd, AssignBOr, AssignBXor, //Assignment
             AssignDivision, AssignLShift, AssignModulus, AssignMultiplication, //Assignment
             AssignRShift, AssignSubtraction, AssignUnsignRShift, //Assignment
             InstanceOf, New, Reference, TypeOf, Void, //Types
-            Comma, Ternary1, Ternary2, Separator, If, Else, Switch, //Control
+            Ternary1, Ternary2, Separator, If, Else, Switch, //Control
             Class, Constant, Delete, Enum, Function,//Declaration
             FunctionGet, FunctionSet, Interface, Return, Static, Var,//Declaration
             Comment, CommentStart, CommentEnd, //Comments
@@ -42,15 +43,23 @@
             Super, This, /*References*/ Throw, Try, Catch, Finally, //Exceptions
             Debugger, Import, Package, Print, With //Miscellaneous
         }
-        public static int ItemLocation(this MoreExpressions[] Expression, int Index)
+        public static int ItemLocation(this Expressions[] Expression, int Index)
         {
-            string String = Expression.AsString();
-            int i = 0, j = 0;
-            for ( ; i < Expression.Length && j < Index; i++)
+            for (int i = 0, j = 0; i < Expression.Length; i++)
             {
                 j += Expression[i].StringLength();
+                if (j > Index) return i;
             }
-            return i;
+            return -1;
+        }
+        public static int ItemLocation(this MoreExpressions[] Expression, int Index)
+        {
+            for (int i = 0, j = 0; i < Expression.Length; i++)
+            {
+                j += Expression[i].StringLength();
+                if (j > Index) return i;
+            }
+            return -1;
         }
         public static int StringLength(this Expressions Expression)
         {
@@ -90,6 +99,8 @@
             {
                 case MoreExpressions.Space:
                     return " ";
+                case MoreExpressions.Ans:
+                    return "Ans";
                 case MoreExpressions.D0:
                     return "0";
                 case MoreExpressions.D1:
@@ -183,7 +194,7 @@
                 case MoreExpressions.Atan:
                     return "Atan(";
                 case MoreExpressions.Atan2:
-                    return "Atan2";
+                    return "Atan2(";
                 case MoreExpressions.Ceil:
                     return "Ceil(";
                 case MoreExpressions.Cos:

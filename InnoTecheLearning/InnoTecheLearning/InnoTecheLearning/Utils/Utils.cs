@@ -218,10 +218,12 @@ namespace InnoTecheLearning
         {   await Page.DisplayAlert(Title, Message, Cancel);
             return Return; }
 
-        public static T Alert<T>(T Return, Page Page,  Text Message = default(Text), string Title = "Alert", string Cancel = "OK")
+        public static T Alert<T>(T Return, Page Page,  Text Message = default(Text),
+            string Title = "Alert", string Cancel = "OK")
         {  return Do(AlertAsync(Return, Page, Title, Message, Cancel)); }
 
-        public async static void Alert(Page Page, Text Message = default(Text), string Title = "Alert", string Cancel = "OK")
+        public async static void Alert(Page Page, Text Message = default(Text),
+            string Title = "Alert", string Cancel = "OK")
         {
             await Page.DisplayAlert(Title, Message, Cancel);
         }
@@ -279,7 +281,8 @@ namespace InnoTecheLearning
         /// </summary>
         /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
         /// <param name="Object">The <see cref="object"/> instance to convert.</param>
-        /// <param name="Result">The result of conversion if successful. If not it will be the default value of the <see cref="Type"/> to convert to.</param>
+        /// <param name="Result">The result of conversion if successful.
+        /// If not it will be the default value of the <see cref="Type"/> to convert to.</param>
         /// <returns>Whether the conversion has succeeded.</returns>
         public static bool TryCast<T>(dynamic Object, out T Result)
         {
@@ -288,7 +291,8 @@ namespace InnoTecheLearning
                 Result = (T)Object;
                 return true;
             }
-            catch (Exception ex)when(ex is InvalidCastException||ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            catch (Exception ex)when(ex is InvalidCastException||
+            ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 Result = default(T);
                 return false;
@@ -300,14 +304,16 @@ namespace InnoTecheLearning
         /// </summary>
         /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
         /// <param name="Object">The <see cref="object"/> instance to convert.</param>
-        /// <returns>The result of conversion if successful. If not it will be the default value of the <see cref="Type"/> to convert to.</returns>
+        /// <returns>The result of conversion if successful. If not it will be the default value of
+        /// the <see cref="Type"/> to convert to.</returns>
         public static T TryCast<T>(dynamic Object)
         {
             try
             {
                 return (T)Object;
             }
-            catch (Exception ex) when (ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            catch (Exception ex) when (ex is InvalidCastException ||
+            ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 return default(T);
             }
@@ -383,13 +389,13 @@ Retry:      try
                 goto Retry;
             }
         }
-        public static string Evaluate(string Expression, Page Alert = null, bool MaxMin = true)
+        public static string Evaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
         {
             const string Prefix = @"function Abs (n) {return Math.abs(n); }
 function Acos(n : double) : double { return Math.acos(n); }
 function Asin (n : double) : double { return Math.asin(n); }
 function Atan (n : double) : double { return Math.atan(n); }
-function Atan2(y : double, x : double) : double{ return Math.atan2(y, x); }
+function Atan (y : double, x : double) : double{ return Math.atan2(y, x); }
 function Ceil(x : double) : double { return Math.ceil(x); }
 function Cos(x : double) : double { return Math.cos(x); }
 function Exp(x : double) : double { return Math.exp(x); }
@@ -437,13 +443,9 @@ var Log10e = Math.LOG10E;
             Evaluator evaluator = new Evaluator();
             try
             {
-                return evaluator.Eval(Prefix + (MaxMin ? Expression.Replace("\rMin(", "\rMath.min(").
-                    Replace("\nMin(", "\nMath.min(").Replace("\f2028Min(", "\f2028Math.min(").
-                    Replace("\u2028Min(", "\u2028Math.min(").Replace("\u2029Min(", "\u2029Math.min(").
-
-                    Replace("\rMax(", "\rMath.max(").
-                    Replace("\nMax(", "\nMath.max(").Replace("\f2028Max(", "\f2028Math.max(").
-                    Replace("\u2028Max(", "\u2028Math.max(").Replace("\u2029Max(", "\u2029Math.max(")
+                return evaluator.Eval(TrueFree ? Expression : Prefix + (MaxMin ?
+                    System.Text.RegularExpressions.Regex.
+                    Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
                     : Expression));
             }
             catch (Exception ex) when (Alert != null)
@@ -462,7 +464,8 @@ var Log10e = Math.LOG10E;
             var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
         }
 #endif
-        public static void Try<TException>(Action Try, Action<TException> Catch = null, Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
+        public static void Try<TException>(Action Try, Action<TException> Catch = null,
+            Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
         {
             try
             {
@@ -478,7 +481,8 @@ var Log10e = Math.LOG10E;
             }
 
         }
-        public static T Try<T, TException>(Func<T> Try, Func<TException,T> Catch = null, Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
+        public static T Try<T, TException>(Func<T> Try, Func<TException,T> Catch = null,
+            Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
         {
             try
             {
@@ -493,7 +497,9 @@ var Log10e = Math.LOG10E;
                 Finally?.Invoke();
             }
         }
-        public static void Try<TException1, TException2>(Action Try, Action<TException1> Catch1 = null, Func<bool> CatchFilter1 = null, Action<TException2> Catch2 = null, Func<bool> CatchFilter2 = null, Action Finally = null) where TException1 : Exception where TException2 : Exception
+        public static void Try<TException1, TException2>(Action Try, Action<TException1> Catch1 = null,
+            Func<bool> CatchFilter1 = null, Action<TException2> Catch2 = null, Func<bool> CatchFilter2 = null,
+            Action Finally = null) where TException1 : Exception where TException2 : Exception
         {
             try
             {
@@ -513,7 +519,9 @@ var Log10e = Math.LOG10E;
             }
 
         }
-        public static T Try<T, TException1, TException2>(Func<T> Try, Func<TException1, T> Catch1 = null, Func<bool> CatchFilter1 = null, Func<TException2, T> Catch2 = null, Func<bool> CatchFilter2 = null, Action Finally = null) where TException1 : Exception where TException2 : Exception
+        public static T Try<T, TException1, TException2>(Func<T> Try, Func<TException1, T> Catch1 = null,
+            Func<bool> CatchFilter1 = null, Func<TException2, T> Catch2 = null, Func<bool> CatchFilter2 = null, 
+            Action Finally = null) where TException1 : Exception where TException2 : Exception
         {
             try
             {
@@ -620,7 +628,125 @@ var Log10e = Math.LOG10E;
 
                 return imageSource;
             }
-        }*/
+        }
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
+.tg .tg-s6z2{text-align:center}
+.tg .tg-baqh{text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+  <tr>
+    <th class="tg-s6z2" colspan="19"></th>
+  </tr>
+  <tr>
+    <td class="tg-baqh" rowspan="6"></td>
+    <td class="tg-baqh">π</td>
+    <td class="tg-baqh">e</td>
+    <td class="tg-baqh" rowspan="6"></td>
+    <td class="tg-baqh">Log</td>
+    <td class="tg-baqh">Pow</td>
+    <td class="tg-baqh">Sin</td>
+    <td class="tg-baqh">Asin</td>
+    <td class="tg-baqh" rowspan="6"></td>
+    <td class="tg-baqh">&lt;</td>
+    <td class="tg-baqh">&gt;</td>
+    <td class="tg-baqh">&amp;&amp;</td>
+    <td class="tg-baqh">--</td>
+    <td class="tg-baqh" rowspan="6"><br></td>
+    <td class="tg-baqh">++</td>
+    <td class="tg-baqh">%</td>
+    <td class="tg-baqh">Ans</td>
+    <td class="tg-baqh">⌫</td>
+    <td class="tg-baqh">⎚</td>
+  </tr>
+  <tr>
+    <td class="tg-s6z2">Root2</td>
+    <td class="tg-s6z2">Root0_5</td>
+    <td class="tg-s6z2">Rdm</td>
+    <td class="tg-s6z2">Exp</td>
+    <td class="tg-s6z2">Cos</td>
+    <td class="tg-s6z2">Acos</td>
+    <td class="tg-s6z2">&lt;=</td>
+    <td class="tg-s6z2">&gt;=</td>
+    <td class="tg-s6z2">&lt;&lt;</td>
+    <td class="tg-s6z2">&gt;&gt;</td>
+    <td class="tg-baqh">7</td>
+    <td class="tg-s6z2">8</td>
+    <td class="tg-s6z2">9</td>
+    <td class="tg-s6z2">(</td>
+    <td class="tg-s6z2">)</td>
+  </tr>
+  <tr>
+    <td class="tg-s6z2">Ln2</td>
+    <td class="tg-s6z2">Ln10</td>
+    <td class="tg-s6z2">Max</td>
+    <td class="tg-s6z2">Min</td>
+    <td class="tg-s6z2">Tan</td>
+    <td class="tg-s6z2">Atan</td>
+    <td class="tg-s6z2">==</td>
+    <td class="tg-s6z2">!=</td>
+    <td class="tg-s6z2">&lt;</td>
+    <td class="tg-s6z2">&gt;</td>
+    <td class="tg-baqh">4</td>
+    <td class="tg-s6z2">5</td>
+    <td class="tg-s6z2">6</td>
+    <td class="tg-s6z2">*</td>
+    <td class="tg-s6z2">/</td>
+  </tr>
+  <tr>
+    <td class="tg-s6z2">Log2e</td>
+    <td class="tg-s6z2">Log10e</td>
+    <td class="tg-s6z2">Sqrt</td>
+    <td class="tg-s6z2">Rnd</td>
+    <td class="tg-s6z2">Ceil</td>
+    <td class="tg-s6z2">Floor</td>
+    <td class="tg-s6z2">===</td>
+    <td class="tg-s6z2">!==</td>
+    <td class="tg-s6z2">~</td>
+    <td class="tg-s6z2">&amp;</td>
+    <td class="tg-baqh">1</td>
+    <td class="tg-s6z2">2</td>
+    <td class="tg-s6z2">3</td>
+    <td class="tg-s6z2">+</td>
+    <td class="tg-s6z2">-</td>
+  </tr>
+  <tr>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2">,</td>
+    <td class="tg-s6z2">Fct</td>
+    <td class="tg-s6z2">Abs</td>
+    <td class="tg-s6z2">&gt;&gt;&gt;<br></td>
+    <td class="tg-s6z2">!</td>
+    <td class="tg-s6z2">||</td>
+    <td class="tg-s6z2">^</td>
+    <td class="tg-s6z2">|</td>
+    <td class="tg-baqh">0</td>
+    <td class="tg-s6z2">.</td>
+    <td class="tg-s6z2">e</td>
+    <td class="tg-s6z2" colspan="2">=</td>
+  </tr>
+  <tr>
+    <td class="tg-s6z2">Const</td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2">Func</td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2">Bin</td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-baqh"></td>
+    <td class="tg-s6z2">Norm</td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+    <td class="tg-s6z2"></td>
+  </tr>
+</table>
+         */
     }
 }
 

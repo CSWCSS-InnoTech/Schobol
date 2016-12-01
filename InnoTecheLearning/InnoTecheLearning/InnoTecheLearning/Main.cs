@@ -265,6 +265,18 @@ namespace InnoTecheLearning
                 return new StackLayout { Children = {In, UI, Out } };
             }
         }
+        public static Grid Norm
+        {
+            get
+            {
+                Grid Return = new Grid
+                {
+                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
+                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1, 1)
+                };
+                Return.Children.Add(Button(Expressions.Increment, (object sender)=> { Expressions} ))
+                    }
+        }
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
