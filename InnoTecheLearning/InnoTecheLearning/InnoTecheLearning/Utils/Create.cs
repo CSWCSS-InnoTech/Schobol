@@ -41,9 +41,11 @@ namespace InnoTecheLearning
                 Button.Clicked += OnClick;
                 return Button;
             }
-            public delegate void ExpressionHandler(object sender, EventArgs e, Expressions exp);
-            public static Button Button(Expressions Expression, ExpressionHandler OnClick, Color BackColor =
-                default(Color), Color TextColor = default(Color))
+            public class ExpressionEventArgs : EventArgs
+            {   public ExpressionEventArgs(Expressions Expression) : base() { this.Expression = Expression; }
+                public Expressions Expression { get; } }
+            public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick, 
+                Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
                     BackColor = Color.Silver;
@@ -51,11 +53,11 @@ namespace InnoTecheLearning
                     TextColor = Color.Black;
                 Button Button = new Button { Text = Expression.AsString(),
                     TextColor = TextColor, BackgroundColor = BackColor };
-                Button.Clicked += (object sender, EventArgs e)=> { OnClick(sender, e, Expression); };
+                Button.Clicked += (object sender, EventArgs e)=> { OnClick(sender, new ExpressionEventArgs(Expression)); };
                 return Button;
             }
-            public static Button Button(Expressions Expression, ExpressionHandler OnClick, Size Size,
-                 Color BackColor = default(Color), Color TextColor = default(Color))
+            public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick, 
+                Size Size, Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
                     BackColor = Color.Silver;
@@ -69,7 +71,7 @@ namespace InnoTecheLearning
                     HeightRequest = Size.Height,
                     BackgroundColor = BackColor
                 };
-                Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, e, Expression); };
+                Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, new ExpressionEventArgs(Expression)); };
                 return Button;
             }
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]

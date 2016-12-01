@@ -59,6 +59,7 @@ namespace InnoTecheLearning
                         break;
                     case Pages.Calculator:
                         Region = "Calculator";
+                        Content = Calculator;
                         break;
                     case Pages.Calculator_Free:
                         Region = "Calculator_Free";
@@ -129,7 +130,8 @@ namespace InnoTecheLearning
 "      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
 
            MainScreenRow(MainScreenItem(Image(ImageFile.Calculator),delegate {
-                             Alert(this, "1+1=2"); },BoldLabel("Calculator")),
+                            Showing = Pages.Calculator;// Alert(this, "1+1=2");
+                             },BoldLabel("Calculator")),
                          MainScreenItem(Image(ImageFile.Calculator_Free),delegate {
                              Showing = Pages.Calculator_Free;//Alert(this, StrDup("1+",100) + "1\n=101");
                          },BoldLabel("Calculator\nFree Mode")),
@@ -239,7 +241,9 @@ namespace InnoTecheLearning
             }
         }
         string Calculator_Value = "";
-        Expressions[] Calculator_Expression = { };
+        List<Expressions> Calculator_Expression = new List<Expressions>();
+        delegate void NoInputDelegate();
+        event NoInputDelegate Calculator_Changed;
         public StackLayout Calculator
         {
             get
@@ -252,7 +256,8 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0)
                 };
-                In.TextChanged += Calculator_TextChanged;
+                In.TextChanged += delegate { if(In.Text != Calculator_Expression.AsString())
+                                             In.Text = Calculator_Expression.AsString(); };
                 Entry Out = new Entry
                 {
                     TextColor = Color.Black,
@@ -260,22 +265,58 @@ namespace InnoTecheLearning
                     PlaceholderColor = Color.Gray,
                     HorizontalOptions = LayoutOptions.FillAndExpand
                 };
-                Grid UI = new Grid { ColumnDefinitions = Columns(GridUnitType.Star, 1)};
                 Out.TextChanged += Calculator_TextChanged;
-                return new StackLayout { Children = {In, UI, Out } };
-            }
-        }
-        public static Grid Norm
-        {
-            get
-            {
-                Grid Return = new Grid
+                Calculator_Changed += delegate { In.Text = Calculator_Expression.AsString(); };
+                Grid Const, Func, Bin, Norm = new Grid
                 {
                     ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
-                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1, 1)
+                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1, 1),
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                Return.Children.Add(Button(Expressions.Increment, (object sender)=> { Expressions} ))
-                    }
+                Append(Norm.Children, Expressions.Increment, 0, 1);
+                Append(Norm.Children, Expressions.Modulus, 1, 1);
+                Append(Norm.Children, Expressions.Ans, 2, 1);
+                Norm.Children.Add(Button('⌫', delegate { Calculator_Expression.RemoveLast(); Calculator_Changed(); }), 3, 1);
+                Norm.Children.Add(Button('⎚', delegate { Calculator_Expression.Clear(); Calculator_Changed(); }), 4, 1);
+                Append(Norm.Children, Expressions.D7, 0, 2);
+                Append(Norm.Children, Expressions.D8, 1, 2);
+                Append(Norm.Children, Expressions.D9, 2, 2);
+                Append(Norm.Children, Expressions.LParenthese, 3, 2);
+                Append(Norm.Children, Expressions.RParenthese, 4, 2);
+                Append(Norm.Children, Expressions.D4, 0, 3);
+                Append(Norm.Children, Expressions.D5, 1, 3);
+                Append(Norm.Children, Expressions.D6, 2, 3);
+                Append(Norm.Children, Expressions.Multiplication, 3, 3);
+                Append(Norm.Children, Expressions.Division, 4, 3);
+                Append(Norm.Children, Expressions.D1, 0, 4);
+                Append(Norm.Children, Expressions.D2, 1, 4);
+                Append(Norm.Children, Expressions.D3, 2, 4);
+                Append(Norm.Children, Expressions.Addition, 3, 4);
+                Append(Norm.Children, Expressions.Subtraction, 4, 4);
+                Append(Norm.Children, Expressions.D0, 0, 5);
+                Append(Norm.Children, Expressions.DPoint, 1, 5);
+                Append(Norm.Children, Expressions.e, 2, 5);
+                Norm.Children.Add(Button('=', delegate { Calculator_Value = Evaluate(In.Text, this);
+                    Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));}), 3, 5, 5, 6);
+
+                return new StackLayout { Children = { In, Norm, Out } };
+            }
+        }
+        public void Append(Grid.IGridList<View> List, Expressions Expression)
+        {
+            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
+            {Calculator_Expression.Add(e.Expression); Calculator_Changed();}));
+        }
+        public void Append(Grid.IGridList<View> List, Expressions Expression, int Left, int Top)
+        {
+            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}), Left, Top);
+        }
+        public void Append(Grid.IGridList<View> List, Expressions Expression, int Left, int Right, int Top, int Bottom)
+        {
+            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}), Left, Right, Top, Bottom);
         }
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {

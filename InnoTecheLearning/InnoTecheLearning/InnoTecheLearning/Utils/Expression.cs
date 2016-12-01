@@ -43,18 +43,28 @@
             Super, This, /*References*/ Throw, Try, Catch, Finally, //Exceptions
             Debugger, Import, Package, Print, With //Miscellaneous
         }
-        public static int ItemLocation(this Expressions[] Expression, int Index)
+        public static void RemoveLast<T>(this System.Collections.Generic.IList<T> List)
+        { List.RemoveAt(List.Count - 1); }
+        public static void RemoveItemLocation(this System.Collections.Generic.IList<Expressions> Expression, int Index)
         {
-            for (int i = 0, j = 0; i < Expression.Length; i++)
+            Expression.RemoveAt(ItemLocation(Expression, Index));
+        }
+        public static void RemoveItemLocation(this System.Collections.Generic.IList<MoreExpressions> Expression, int Index)
+        {
+            Expression.RemoveAt(ItemLocation(Expression, Index));
+        }
+        public static int ItemLocation(this System.Collections.Generic.IList<Expressions> Expression, int Index)
+        {
+            for (int i = 0, j = 0; i < Expression.Count; i++)
             {
                 j += Expression[i].StringLength();
                 if (j > Index) return i;
             }
             return -1;
         }
-        public static int ItemLocation(this MoreExpressions[] Expression, int Index)
+        public static int ItemLocation(this System.Collections.Generic.IList<MoreExpressions> Expression, int Index)
         {
-            for (int i = 0, j = 0; i < Expression.Length; i++)
+            for (int i = 0, j = 0; i < Expression.Count; i++)
             {
                 j += Expression[i].StringLength();
                 if (j > Index) return i;
@@ -69,22 +79,22 @@
         {
             return AsString(Expression).Length;
         }
-        public static int StringLength(this Expressions[] Expression)
+        public static int StringLength(this System.Collections.Generic.IList<Expressions> Expression)
         {
             return AsString(Expression).Length;
         }
-        public static int StringLength(this MoreExpressions[] Expression)
+        public static int StringLength(this System.Collections.Generic.IList<MoreExpressions> Expression)
         {
             return AsString(Expression).Length;
         }
-        public static string AsString(this Expressions[] Expression)
+        public static string AsString(this System.Collections.Generic.IList<Expressions> Expression)
         {
             string Return = "";
             foreach (Expressions Item in Expression)
                 Return += AsString(Item);
             return Return;
         }
-        public static string AsString(this MoreExpressions[] Expression)
+        public static string AsString(this System.Collections.Generic.IList<MoreExpressions> Expression)
         {
             string Return = "";
             foreach (MoreExpressions Item in Expression)
