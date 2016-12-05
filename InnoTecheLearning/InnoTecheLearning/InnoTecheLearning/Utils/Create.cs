@@ -75,10 +75,10 @@ namespace InnoTecheLearning
                 return Button;
             }
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
-            public static Button Button(FileImageSource Image, EventHandler OnClick)
-            {   return Button(Image, OnClick, new Size(50, 50));}
+            public static Button ButtonB(FileImageSource Image, EventHandler OnClick)
+            {   return ButtonB(Image, OnClick, new Size(50, 50));}
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
-            public static Button Button(FileImageSource Image, EventHandler OnClick, Size Size)
+            public static Button ButtonB(FileImageSource Image, EventHandler OnClick, Size Size)
             {
                 Button Button = new Button
                 {
@@ -98,7 +98,7 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     HorizontalOptions = LayoutOptions.Center,
-                    Children = { Button(Image: Image, OnClick: OnClick), Display }
+                    Children = { ButtonB(Image: Image, OnClick: OnClick), Display }
                 };
             }
 

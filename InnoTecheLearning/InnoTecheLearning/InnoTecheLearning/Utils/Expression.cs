@@ -44,7 +44,7 @@
             Debugger, Import, Package, Print, With //Miscellaneous
         }
         public static void RemoveLast<T>(this System.Collections.Generic.IList<T> List)
-        { List.RemoveAt(List.Count - 1); }
+        { if(List.Count != 0) List.RemoveAt(List.Count - 1); }
         public static void RemoveItemLocation(this System.Collections.Generic.IList<Expressions> Expression, int Index)
         {
             Expression.RemoveAt(ItemLocation(Expression, Index));
