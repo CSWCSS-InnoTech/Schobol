@@ -374,7 +374,7 @@ namespace InnoTecheLearning
                 Append(Const.Children, Expressions.Log2e, 0, 3);
                 Append(Const.Children, Expressions.Log10e, 1, 3);
 
-                StackLayout Return = new StackLayout { Children = { In, null, Norm, Out } };
+                StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, Out } };
                 ScrollView Select = new ScrollView
                 {
                     Content = new StackLayout
