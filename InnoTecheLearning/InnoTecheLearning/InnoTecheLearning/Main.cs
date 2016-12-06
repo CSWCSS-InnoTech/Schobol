@@ -384,11 +384,16 @@ namespace InnoTecheLearning
                         Orientation = StackOrientation.Horizontal,
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         Children = {
-           Button("Norm", delegate { IsEnabled = false; Return.Children[2] = Norm; IsEnabled = true;}, Color.FromHex("#8AC249")) ,
-           Button("Bin", delegate {  IsEnabled = false; Return.Children[2] = Bin; IsEnabled = true;}, Color.FromHex("#8AC249")) ,
-           Button("Func", delegate {  IsEnabled = false; Return.Children[2] = Func; IsEnabled = true;}, Color.FromHex("#8AC249")) ,
-           Button("Const", delegate { IsEnabled = false; Return.Children[2] = Const; IsEnabled = true; }, Color.FromHex("#8AC249")) }
+                        Button("Norm", delegate {Try(delegate { if(Return.Children[2] != Norm) Return.Children[2]
+                                = Norm; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
+                        Button("Bin", delegate {Try(delegate { if(Return.Children[2] != Bin) Return.Children[2] 
+                                = Bin; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
+                        Button("Func", delegate {Try(delegate { if(Return.Children[2] != Func) Return.Children[2]
+                                = Func; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
+                        Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
+                                = Const; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
                         //Light Green
+                        }
                     }
                 };
                 Return.Children[1] = Select;

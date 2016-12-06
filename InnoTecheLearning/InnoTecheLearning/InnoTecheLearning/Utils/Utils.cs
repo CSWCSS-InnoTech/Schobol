@@ -473,7 +473,7 @@ var Log10e = Math.LOG10E;
             {
                 Try();
             }
-            catch (TException ex) when (CatchFilter != null && (CatchFilter == null? true : CatchFilter()))
+            catch (TException ex) when (Catch != null && (CatchFilter == null? true : CatchFilter()))
             {
                  Catch(ex); 
             }
@@ -490,7 +490,7 @@ var Log10e = Math.LOG10E;
             {
                 return Try();
             }
-            catch (TException ex) when (CatchFilter != null && (CatchFilter == null ? true : CatchFilter()) )
+            catch (TException ex) when (Catch != null && (CatchFilter == null ? true : CatchFilter()) )
             {
                 return Catch(ex); 
             }
@@ -507,11 +507,11 @@ var Log10e = Math.LOG10E;
             {
                 Try();
             }
-            catch (TException1 ex) when (CatchFilter1 != null && (CatchFilter1 == null ? true : CatchFilter1()))
+            catch (TException1 ex) when (Catch1 != null && (CatchFilter1 == null ? true : CatchFilter1()))
             {
                 Catch1(ex);
             }
-            catch (TException2 ex) when (CatchFilter2 != null && (CatchFilter2 == null ? true : CatchFilter2()))
+            catch (TException2 ex) when (Catch2 != null && (CatchFilter2 == null ? true : CatchFilter2()))
             {
                 Catch2(ex);
             }
@@ -529,11 +529,11 @@ var Log10e = Math.LOG10E;
             {
                 return Try();
             }
-            catch (TException1 ex) when (CatchFilter1 != null && (CatchFilter1 == null ? true : CatchFilter1()))
+            catch (TException1 ex) when (Catch1 != null && (CatchFilter1 == null ? true : CatchFilter1()))
             {
                 return Catch1(ex);
             }
-            catch (TException2 ex) when (CatchFilter2 != null && (CatchFilter2 == null ? true : CatchFilter2()))
+            catch (TException2 ex) when (Catch2 != null && (CatchFilter2 == null ? true : CatchFilter2()))
             {
                 return Catch2(ex);
             }
