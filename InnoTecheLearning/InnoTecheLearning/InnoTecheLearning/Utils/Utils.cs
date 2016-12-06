@@ -389,9 +389,11 @@ Retry:      try
                 goto Retry;
             }
         }
+        private static string EvaluteAns = "";
         public static string Evaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
-        {
-            const string Prefix = @"function Abs (n) {return Math.abs(n); }
+        {   
+            string Prefix = "var Ans : String = \"" + EvaluteAns + @""";
+function Abs (n) {return Math.abs(n); }
 function Acos(n : double) : double { return Math.acos(n); }
 function Asin (n : double) : double { return Math.asin(n); }
 function Atan (n : double) : double { return Math.atan(n); }
@@ -443,7 +445,7 @@ var Log10e = Math.LOG10E;
             Evaluator evaluator = new Evaluator();
             try
             {
-                return evaluator.Eval(TrueFree ? Expression : Prefix + (MaxMin ?
+                return EvaluteAns = evaluator.Eval(TrueFree ? Expression : Prefix + (MaxMin ?
                     System.Text.RegularExpressions.Regex.
                     Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
                     : Expression));

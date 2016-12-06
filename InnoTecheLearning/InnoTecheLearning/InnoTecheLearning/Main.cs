@@ -278,30 +278,32 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.Space, "␣", 0, 0);
                 Append(Norm.Children, Expressions.Modulus, 1, 0);
                 Append(Norm.Children, Expressions.Ans, 2, 0);
-                Norm.Children.Add(Button("⌫", delegate { Calculator_Expression.RemoveLast(); Calculator_Changed(); }), 3, 0);
-                Norm.Children.Add(Button("⎚", delegate { Calculator_Expression.Clear(); Calculator_Changed(); }), 4, 0);
-                Append(Norm.Children, Expressions.D7, 0, 1);
-                Append(Norm.Children, Expressions.D8, 1, 1);
-                Append(Norm.Children, Expressions.D9, 2, 1);
+                Norm.Children.Add(Button("⌫", delegate { Calculator_Expression.RemoveLast();
+                    Calculator_Changed(); }, Color.FromHex("#E91E63")), 3, 0);
+                Norm.Children.Add(Button("⎚", delegate { Calculator_Expression.Clear();
+                    Calculator_Changed(); }, Color.FromHex("#E91E63")), 4, 0); //Pink
+                Append(Norm.Children, Expressions.D7, 0, 1, Color.FromHex("#607D8B"));
+                Append(Norm.Children, Expressions.D8, 1, 1, Color.FromHex("#607D8B"));
+                Append(Norm.Children, Expressions.D9, 2, 1, Color.FromHex("#607D8B"));
                 Append(Norm.Children, Expressions.LParenthese, 3, 1);
                 Append(Norm.Children, Expressions.RParenthese, 4, 1);
-                Append(Norm.Children, Expressions.D4, 0, 2);
-                Append(Norm.Children, Expressions.D5, 1, 2);
-                Append(Norm.Children, Expressions.D6, 2, 2);
+                Append(Norm.Children, Expressions.D4, 0, 2, Color.FromHex("#607D8B"));
+                Append(Norm.Children, Expressions.D5, 1, 2, Color.FromHex("#607D8B"));
+                Append(Norm.Children, Expressions.D6, 2, 2, Color.FromHex("#607D8B"));
                 Append(Norm.Children, Expressions.Multiplication, 3, 2);
                 Append(Norm.Children, Expressions.Division, 4, 2);
-                Append(Norm.Children, Expressions.D1, 0, 3);
-                Append(Norm.Children, Expressions.D2, 1, 3);
-                Append(Norm.Children, Expressions.D3, 2, 3);
+                Append(Norm.Children, Expressions.D1, 0, 3, Color.FromHex("#607D8B"));
+                Append(Norm.Children, Expressions.D2, 1, 3, Color.FromHex("#607D8B"));
+                Append(Norm.Children, Expressions.D3, 2, 3, Color.FromHex("#607D8B"));
                 Append(Norm.Children, Expressions.Addition, 3, 3);
                 Append(Norm.Children, Expressions.Subtraction, 4, 3);
-                Append(Norm.Children, Expressions.D0, 0, 4);
+                Append(Norm.Children, Expressions.D0, 0, 4, Color.FromHex("#607D8B")); //Blue Grey
                 Append(Norm.Children, Expressions.DPoint, 1, 4);
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", delegate {
                     Calculator_Value = Evaluate(In.Text, this);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
-                }), 3, 5, 4, 5);
+                }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
                 Bin = new Grid
                 {
@@ -342,7 +344,7 @@ namespace InnoTecheLearning
                 Append(Func.Children, Expressions.Pow, "Pow", 1, 0);
                 Append(Func.Children, Expressions.Sin, "Sin", 2, 0);
                 Append(Func.Children, Expressions.Asin, "Asin", 3, 0);
-                Append(Func.Children, Expressions.Random, "Rdm", 0, 1);
+                Append(Func.Children, Expressions.Random, "Random", 0, 1);
                 Append(Func.Children, Expressions.Exp, "Exp", 1, 1);
                 Append(Func.Children, Expressions.Cos, "Cos", 2, 1);
                 Append(Func.Children, Expressions.Acos, "Acos", 3, 1);
@@ -354,9 +356,9 @@ namespace InnoTecheLearning
                 Append(Func.Children, Expressions.Round, "Round", 1, 3);
                 Append(Func.Children, Expressions.Ceil, "Ceil", 2, 3);
                 Append(Func.Children, Expressions.Floor, "Floor", 3, 3);
-                Append(Func.Children, Expressions.Comma, 0, 1, 4, 5);
+                Append(Func.Children, Expressions.Comma, 0, 2, 4, 5);
                 Append(Func.Children, Expressions.Abs, "Abs", 2, 4);
-                Append(Func.Children, Expressions.Factorial, "Fct", 3, 4);
+                Append(Func.Children, Expressions.Factorial, "Factorial", 3, 4);
 
                 Const = new Grid
                 {
@@ -381,46 +383,54 @@ namespace InnoTecheLearning
                     {
                         Orientation = StackOrientation.Horizontal,
                         HorizontalOptions = LayoutOptions.FillAndExpand,
-                        Children = { Button("Norm", delegate { Return.Children[2] = Norm; }) ,
-                         Button("Bin", delegate { Return.Children[2] = Bin; }) ,
-                         Button("Func", delegate { Return.Children[2] = Func; }) ,
-                         Button("Const", delegate { Return.Children[2] = Const; }) }
+                        Children = {
+           Button("Norm", delegate { IsEnabled = false; Return.Children[2] = Norm; IsEnabled = true;}, Color.FromHex("#8AC249")) ,
+           Button("Bin", delegate {  IsEnabled = false; Return.Children[2] = Bin; IsEnabled = true;}, Color.FromHex("#8AC249")) ,
+           Button("Func", delegate {  IsEnabled = false; Return.Children[2] = Func; IsEnabled = true;}, Color.FromHex("#8AC249")) ,
+           Button("Const", delegate { IsEnabled = false; Return.Children[2] = Const; IsEnabled = true; }, Color.FromHex("#8AC249")) }
+                        //Light Green
                     }
                 };
                 Return.Children[1] = Select;
                 return Return;
-            }
+            } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
         }
         #region Append
-        public void Append(Grid.IGridList<View> List, Expressions Expression)
+        public void Append(Grid.IGridList<View> List, Expressions Expression,
+            Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            {Calculator_Expression.Add(e.Expression); Calculator_Changed();}));
+            {Calculator_Expression.Add(e.Expression); Calculator_Changed();}, BackColor, TextColor));
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, int Left, int Top)
+        public void Append(Grid.IGridList<View> List, Expressions Expression,
+            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}), Left, Top);
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}, BackColor, TextColor), Left, Top);
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, int Left, int Right, int Top, int Bottom)
+        public void Append(Grid.IGridList<View> List, Expressions Expression,
+            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}), Left, Right, Top, Bottom);
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}, BackColor, TextColor), Left, Right, Top, Bottom);
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name)
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
+            Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name));
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor));
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, int Left, int Top)
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, 
+            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name), Left, Top);
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Top);
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, int Left, int Right, int Top, int Bottom)
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, 
+            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name), Left, Right, Top, Bottom);
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
         #endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
