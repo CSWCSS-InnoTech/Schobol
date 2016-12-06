@@ -74,6 +74,40 @@ namespace InnoTecheLearning
                 Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, new ExpressionEventArgs(Expression)); };
                 return Button;
             }
+            public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick,
+                Text Text, Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button
+                {
+                    Text = Text,
+                    TextColor = TextColor,
+                    BackgroundColor = BackColor
+                };
+                Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, new ExpressionEventArgs(Expression)); };
+                return Button;
+            }
+            public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick,
+                Text Text, Size Size, Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button
+                {
+                    Text = Text,
+                    TextColor = TextColor,
+                    WidthRequest = Size.Width,
+                    HeightRequest = Size.Height,
+                    BackgroundColor = BackColor
+                };
+                Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, new ExpressionEventArgs(Expression)); };
+                return Button;
+            }
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
             public static Button ButtonB(FileImageSource Image, EventHandler OnClick)
             {   return ButtonB(Image, OnClick, new Size(50, 50));}

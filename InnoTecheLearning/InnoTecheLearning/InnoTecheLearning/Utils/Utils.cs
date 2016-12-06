@@ -637,7 +637,7 @@ var Log10e = Math.LOG10E;
 .tg .tg-baqh{text-align:center;vertical-align:top}
 </style>
 <table class="tg">
-  <tr>
+  <tbody><tr>
     <th class="tg-s6z2" colspan="19"></th>
   </tr>
   <tr>
@@ -653,9 +653,9 @@ var Log10e = Math.LOG10E;
     <td class="tg-baqh">&lt;</td>
     <td class="tg-baqh">&gt;</td>
     <td class="tg-baqh">&amp;&amp;</td>
-    <td class="tg-baqh">--</td>
+    <td class="tg-baqh">&gt;&gt;&gt;</td>
     <td class="tg-baqh" rowspan="6"><br></td>
-    <td class="tg-baqh">++</td>
+    <td class="tg-baqh">␣</td>
     <td class="tg-baqh">%</td>
     <td class="tg-baqh">Ans</td>
     <td class="tg-baqh">⌫</td>
@@ -687,8 +687,8 @@ var Log10e = Math.LOG10E;
     <td class="tg-s6z2">Atan</td>
     <td class="tg-s6z2">==</td>
     <td class="tg-s6z2">!=</td>
-    <td class="tg-s6z2">&lt;</td>
-    <td class="tg-s6z2">&gt;</td>
+    <td class="tg-s6z2">++</td>
+    <td class="tg-s6z2">--</td>
     <td class="tg-baqh">4</td>
     <td class="tg-s6z2">5</td>
     <td class="tg-s6z2">6</td>
@@ -715,10 +715,10 @@ var Log10e = Math.LOG10E;
   <tr>
     <td class="tg-s6z2"></td>
     <td class="tg-s6z2"></td>
-    <td class="tg-s6z2">,</td>
-    <td class="tg-s6z2">Fct</td>
+    <td class="tg-s6z2" colspan="2">,</td>
+    
     <td class="tg-s6z2">Abs</td>
-    <td class="tg-s6z2">&gt;&gt;&gt;<br></td>
+    <td class="tg-s6z2">Fct</td>
     <td class="tg-s6z2">!</td>
     <td class="tg-s6z2">||</td>
     <td class="tg-s6z2">^</td>
@@ -745,7 +745,7 @@ var Log10e = Math.LOG10E;
     <td class="tg-s6z2"></td>
     <td class="tg-s6z2"></td>
   </tr>
-</table>
+</tbody></table>
          */
     }
 }

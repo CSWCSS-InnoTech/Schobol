@@ -274,7 +274,8 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                Append(Norm.Children, Expressions.Increment, 0, 0);
+
+                Append(Norm.Children, Expressions.Space, "␣", 0, 0);
                 Append(Norm.Children, Expressions.Modulus, 1, 0);
                 Append(Norm.Children, Expressions.Ans, 2, 0);
                 Norm.Children.Add(Button("⌫", delegate { Calculator_Expression.RemoveLast(); Calculator_Changed(); }), 3, 0);
@@ -309,115 +310,88 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                Append(Norm.Children, Expressions.Less, 0, 0);
-                Append(Norm.Children, Expressions.Great, 1, 0);
-                Append(Norm.Children, Expressions.LAnd, 2, 0);
-                Append(Norm.Children, Expressions.Decrement, 3, 0);
-                Append(Norm.Children, Expressions.LessEqual, 0, 1);
-                Append(Norm.Children, Expressions.GreatEqual, 1, 1);
-                Append(Norm.Children, Expressions.BLShift, 2, 1);
-                Append(Norm.Children, Expressions.BRShift, 3, 1);
-                Append(Norm.Children, Expressions.Equal, 0, 2);
-                Append(Norm.Children, Expressions.NEqual, 1, 2);
-                Append(Norm.Children, Expressions.D6, 2, 2);
-                Append(Norm.Children, Expressions.Multiplication, 3, 2);
-                Append(Norm.Children, Expressions.D1, 0, 3);
-                Append(Norm.Children, Expressions.D2, 1, 3);
-                Append(Norm.Children, Expressions.D3, 2, 3);
-                Append(Norm.Children, Expressions.Addition, 3, 3);
-                Append(Norm.Children, Expressions.D0, 0, 4);
-                Append(Norm.Children, Expressions.DPoint, 1, 4);
-                Append(Norm.Children, Expressions.e, 2, 4);
-                Norm.Children.Add(Button("=", delegate {
-                    Calculator_Value = Evaluate(In.Text, this);
-                    Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
-                }), 3, 5, 4, 5);
+                Append(Bin.Children, Expressions.Less, 0, 0);
+                Append(Bin.Children, Expressions.Great, 1, 0);
+                Append(Bin.Children, Expressions.LAnd, 2, 0);
+                Append(Bin.Children, Expressions.UnsignRShift, 3, 0);
+                Append(Bin.Children, Expressions.LessEqual, 0, 1);
+                Append(Bin.Children, Expressions.GreatEqual, 1, 1);
+                Append(Bin.Children, Expressions.BLShift, 2, 1);
+                Append(Bin.Children, Expressions.BRShift, 3, 1);
+                Append(Bin.Children, Expressions.Equal, 0, 2);
+                Append(Bin.Children, Expressions.NEqual, 1, 2);
+                Append(Bin.Children, Expressions.Increment, 2, 2);
+                Append(Bin.Children, Expressions.Decrement, 3, 2);
+                Append(Bin.Children, Expressions.Identity, 0, 3);
+                Append(Bin.Children, Expressions.NIdentity, 1, 3);
+                Append(Bin.Children, Expressions.BNot, 2, 3);
+                Append(Bin.Children, Expressions.BAnd, 3, 3);
+                Append(Bin.Children, Expressions.LNot, 0, 4);
+                Append(Bin.Children, Expressions.LOr, 1, 4);
+                Append(Bin.Children, Expressions.BXor, 2, 4);
+                Append(Bin.Children, Expressions.BOr, 3, 4);
 
                 Func = new Grid
                 {
-                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
+                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1),
                     RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                Append(Norm.Children, Expressions.Increment, 0, 0);
-                Append(Norm.Children, Expressions.Modulus, 1, 0);
-                Append(Norm.Children, Expressions.Ans, 2, 0);
-                Norm.Children.Add(Button("⌫", delegate { Calculator_Expression.RemoveLast(); Calculator_Changed(); }), 3, 0);
-                Norm.Children.Add(Button("⎚", delegate { Calculator_Expression.Clear(); Calculator_Changed(); }), 4, 0);
-                Append(Norm.Children, Expressions.D7, 0, 1);
-                Append(Norm.Children, Expressions.D8, 1, 1);
-                Append(Norm.Children, Expressions.D9, 2, 1);
-                Append(Norm.Children, Expressions.LParenthese, 3, 1);
-                Append(Norm.Children, Expressions.RParenthese, 4, 1);
-                Append(Norm.Children, Expressions.D4, 0, 2);
-                Append(Norm.Children, Expressions.D5, 1, 2);
-                Append(Norm.Children, Expressions.D6, 2, 2);
-                Append(Norm.Children, Expressions.Multiplication, 3, 2);
-                Append(Norm.Children, Expressions.Division, 4, 2);
-                Append(Norm.Children, Expressions.D1, 0, 3);
-                Append(Norm.Children, Expressions.D2, 1, 3);
-                Append(Norm.Children, Expressions.D3, 2, 3);
-                Append(Norm.Children, Expressions.Addition, 3, 3);
-                Append(Norm.Children, Expressions.Subtraction, 4, 3);
-                Append(Norm.Children, Expressions.D0, 0, 4);
-                Append(Norm.Children, Expressions.DPoint, 1, 4);
-                Append(Norm.Children, Expressions.e, 2, 4);
-                Norm.Children.Add(Button("=", delegate {
-                    Calculator_Value = Evaluate(In.Text, this);
-                    Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
-                }), 3, 5, 4, 5);
+                Append(Func.Children, Expressions.Log, "Log", 0, 0);
+                Append(Func.Children, Expressions.Pow, "Pow", 1, 0);
+                Append(Func.Children, Expressions.Sin, "Sin", 2, 0);
+                Append(Func.Children, Expressions.Asin, "Asin", 3, 0);
+                Append(Func.Children, Expressions.Random, "Rdm", 0, 1);
+                Append(Func.Children, Expressions.Exp, "Exp", 1, 1);
+                Append(Func.Children, Expressions.Cos, "Cos", 2, 1);
+                Append(Func.Children, Expressions.Acos, "Acos", 3, 1);
+                Append(Func.Children, Expressions.Max, "Max", 0, 2);
+                Append(Func.Children, Expressions.Min, "Min", 1, 2);
+                Append(Func.Children, Expressions.Tan, "Tan", 2, 2);
+                Append(Func.Children, Expressions.Atan, "Atan", 3, 2);
+                Append(Func.Children, Expressions.Sqrt, "Sqrt", 0, 3);
+                Append(Func.Children, Expressions.Round, "Round", 1, 3);
+                Append(Func.Children, Expressions.Ceil, "Ceil", 2, 3);
+                Append(Func.Children, Expressions.Floor, "Floor", 3, 3);
+                Append(Func.Children, Expressions.Comma, 0, 1, 4, 5);
+                Append(Func.Children, Expressions.Abs, "Abs", 2, 4);
+                Append(Func.Children, Expressions.Factorial, "Fct", 3, 4);
 
                 Const = new Grid
                 {
-                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
-                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1),
+                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1),
+                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                Append(Norm.Children, Expressions.Increment, 0, 0);
-                Append(Norm.Children, Expressions.Modulus, 1, 0);
-                Append(Norm.Children, Expressions.Ans, 2, 0);
-                Norm.Children.Add(Button("⌫", delegate { Calculator_Expression.RemoveLast(); Calculator_Changed(); }), 3, 0);
-                Norm.Children.Add(Button("⎚", delegate { Calculator_Expression.Clear(); Calculator_Changed(); }), 4, 0);
-                Append(Norm.Children, Expressions.D7, 0, 1);
-                Append(Norm.Children, Expressions.D8, 1, 1);
-                Append(Norm.Children, Expressions.D9, 2, 1);
-                Append(Norm.Children, Expressions.LParenthese, 3, 1);
-                Append(Norm.Children, Expressions.RParenthese, 4, 1);
-                Append(Norm.Children, Expressions.D4, 0, 2);
-                Append(Norm.Children, Expressions.D5, 1, 2);
-                Append(Norm.Children, Expressions.D6, 2, 2);
-                Append(Norm.Children, Expressions.Multiplication, 3, 2);
-                Append(Norm.Children, Expressions.Division, 4, 2);
-                Append(Norm.Children, Expressions.D1, 0, 3);
-                Append(Norm.Children, Expressions.D2, 1, 3);
-                Append(Norm.Children, Expressions.D3, 2, 3);
-                Append(Norm.Children, Expressions.Addition, 3, 3);
-                Append(Norm.Children, Expressions.Subtraction, 4, 3);
-                Append(Norm.Children, Expressions.D0, 0, 4);
-                Append(Norm.Children, Expressions.DPoint, 1, 4);
-                Append(Norm.Children, Expressions.e, 2, 4);
-                Norm.Children.Add(Button("=", delegate {
-                    Calculator_Value = Evaluate(In.Text, this);
-                    Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
-                }), 3, 5, 4, 5);
+                Append(Const.Children, Expressions.π, 0, 0);
+                Append(Const.Children, Expressions.e, 1, 0);
+                Append(Const.Children, Expressions.Root2, 0, 1);
+                Append(Const.Children, Expressions.Root0_5, "Root0.5", 1, 1);
+                Append(Const.Children, Expressions.Ln2, 0, 2);
+                Append(Const.Children, Expressions.Ln10, 1, 2);
+                Append(Const.Children, Expressions.Log2e, 0, 3);
+                Append(Const.Children, Expressions.Log10e, 1, 3);
 
-                StackLayout Return = new StackLayout { Children = { In, Norm, Out } };
+                StackLayout Return = new StackLayout { Children = { In, null, Norm, Out } };
                 ScrollView Select = new ScrollView
                 {
                     Content = new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
-                        Children = { Button("Norm", delegate { Return.Children[1] = Norm; }) ,
-                         Button("Bin", delegate { Return.Children[1] = Bin; }) ,
-                         Button("Func", delegate { Return.Children[1] = Func; }) ,
-                         Button("Const", delegate { Return.Children[1] = Const; }) }
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Children = { Button("Norm", delegate { Return.Children[2] = Norm; }) ,
+                         Button("Bin", delegate { Return.Children[2] = Bin; }) ,
+                         Button("Func", delegate { Return.Children[2] = Func; }) ,
+                         Button("Const", delegate { Return.Children[2] = Const; }) }
                     }
                 };
+                Return.Children[1] = Select;
                 return Return;
             }
         }
+        #region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression)
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
@@ -433,6 +407,22 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed();}), Left, Right, Top, Bottom);
         }
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name)
+        {
+            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name));
+        }
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, int Left, int Top)
+        {
+            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name), Left, Top);
+        }
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, int Left, int Right, int Top, int Bottom)
+        {
+            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name), Left, Right, Top, Bottom);
+        }
+        #endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
