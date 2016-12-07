@@ -254,10 +254,14 @@ namespace InnoTecheLearning
                     Placeholder = "Expression",
                     PlaceholderColor = Color.Gray,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0)
+                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0),
+                    Text = Calculator_Expression.AsString()
                 };
-                In.TextChanged += delegate { if(In.Text != Calculator_Expression.AsString())
-                                             In.Text = Calculator_Expression.AsString(); };
+                In.TextChanged += delegate
+                {
+                    if (In.Text != Calculator_Expression.AsString())
+                        In.Text = Calculator_Expression.AsString();
+                };
                 Entry Out = new Entry
                 {
                     TextColor = Color.Black,
@@ -278,10 +282,16 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.Space, "␣", 0, 0);
                 Append(Norm.Children, Expressions.Modulus, 1, 0);
                 Append(Norm.Children, Expressions.Ans, 2, 0);
-                Norm.Children.Add(Button("⌫", delegate { Calculator_Expression.RemoveLast();
-                    Calculator_Changed(); }, Color.FromHex("#E91E63")), 3, 0);
-                Norm.Children.Add(Button("⎚", delegate { Calculator_Expression.Clear();
-                    Calculator_Changed(); }, Color.FromHex("#E91E63")), 4, 0); //Pink
+                Norm.Children.Add(Button("⌫", delegate
+                {
+                    Calculator_Expression.RemoveLast();
+                    Calculator_Changed();
+                }, Color.FromHex("#E91E63")), 3, 0);
+                Norm.Children.Add(Button("⎚", delegate
+                {
+                    Calculator_Expression.Clear();
+                    Calculator_Changed();
+                }, Color.FromHex("#E91E63")), 4, 0); //Pink
                 Append(Norm.Children, Expressions.D7, 0, 1, Color.FromHex("#607D8B"));
                 Append(Norm.Children, Expressions.D8, 1, 1, Color.FromHex("#607D8B"));
                 Append(Norm.Children, Expressions.D9, 2, 1, Color.FromHex("#607D8B"));
@@ -300,7 +310,8 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.D0, 0, 4, Color.FromHex("#607D8B")); //Blue Grey
                 Append(Norm.Children, Expressions.DPoint, 1, 4);
                 Append(Norm.Children, Expressions.e, 2, 4);
-                Norm.Children.Add(Button("=", delegate {
+                Norm.Children.Add(Button("=", delegate
+                {
                     Calculator_Value = Evaluate(In.Text, this);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
@@ -358,23 +369,27 @@ namespace InnoTecheLearning
                 Append(Func.Children, Expressions.Floor, "Floor", 3, 3);
                 Append(Func.Children, Expressions.Comma, 0, 2, 4, 5);
                 Append(Func.Children, Expressions.Abs, "Abs", 2, 4);
-                Append(Func.Children, Expressions.Factorial, "Factorial", 3, 4);
+                Append(Func.Children, Expressions.Factorial, "Factor", 3, 4);
 
                 Const = new Grid
                 {
-                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1),
-                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1),
+                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1),
+                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
                 Append(Const.Children, Expressions.π, 0, 0);
                 Append(Const.Children, Expressions.e, 1, 0);
-                Append(Const.Children, Expressions.Root2, 0, 1);
-                Append(Const.Children, Expressions.Root0_5, "Root0.5", 1, 1);
-                Append(Const.Children, Expressions.Ln2, 0, 2);
-                Append(Const.Children, Expressions.Ln10, 1, 2);
-                Append(Const.Children, Expressions.Log2e, 0, 3);
-                Append(Const.Children, Expressions.Log10e, 1, 3);
+                Append(Const.Children, Expressions.Root2, 2, 0);
+                Append(Const.Children, Expressions.Root0_5, "Root0.5", 3, 0);
+                Append(Const.Children, Expressions.Ln2, 0, 1);
+                Append(Const.Children, Expressions.Ln10, 1, 1);
+                Append(Const.Children, Expressions.Log2e, 2, 1);
+                Append(Const.Children, Expressions.Log10e, 3, 1);
+                Append(Const.Children, Expressions.Infinity, 0, 2);
+                Append(Const.Children, Expressions.NInfinity, 1, 2);
+                Append(Const.Children, Expressions.NaN, 2, 2);
+                Append(Const.Children, Expressions.Undefined, 3, 2);
 
                 StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, Out } };
                 ScrollView Select = new ScrollView
@@ -386,7 +401,7 @@ namespace InnoTecheLearning
                         Children = {
                         Button("Norm", delegate {Try(delegate { if(Return.Children[2] != Norm) Return.Children[2]
                                 = Norm; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Button("Bin", delegate {Try(delegate { if(Return.Children[2] != Bin) Return.Children[2] 
+                        Button("Bin", delegate {Try(delegate { if(Return.Children[2] != Bin) Return.Children[2]
                                 = Bin; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Func", delegate {Try(delegate { if(Return.Children[2] != Func) Return.Children[2]
                                 = Func; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
@@ -405,19 +420,19 @@ namespace InnoTecheLearning
             Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            {Calculator_Expression.Add(e.Expression); Calculator_Changed();}, BackColor, TextColor));
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor));
         }
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}, BackColor, TextColor), Left, Top);
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor), Left, Top);
         }
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed();}, BackColor, TextColor), Left, Right, Top, Bottom);
+            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor), Left, Right, Top, Bottom);
         }
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
             Color BackColor = default(Color), Color TextColor = default(Color))
@@ -425,13 +440,13 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor));
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, 
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
             int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Top);
         }
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name, 
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
             int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color))
         {
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
@@ -447,10 +462,20 @@ namespace InnoTecheLearning
         {
             get
             {
-                Editor Editor = new Editor { TextColor = Color.Black ,HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand, BackgroundColor = Color.FromRgb(0xD0,0xD0,0xD0)};
-                Entry Entry = new Entry { TextColor = Color.Black, Placeholder = "Result",
-                    PlaceholderColor = Color.Gray, HorizontalOptions = LayoutOptions.FillAndExpand};
+                Editor Editor = new Editor
+                {
+                    TextColor = Color.Black,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0)
+                };
+                Entry Entry = new Entry
+                {
+                    TextColor = Color.Black,
+                    Placeholder = "Result",
+                    PlaceholderColor = Color.Gray,
+                    HorizontalOptions = LayoutOptions.FillAndExpand
+                };
                 Entry.TextChanged += Calculator_Free_TextChanged;
                 return new StackLayout
                 {
@@ -466,7 +491,32 @@ namespace InnoTecheLearning
 
         private void Calculator_Free_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (((Entry)sender).Text != Calculator_Free_Value) {((Entry)sender).Text = Calculator_Free_Value; }
+            if (((Entry)sender).Text != Calculator_Free_Value) { ((Entry)sender).Text = Calculator_Free_Value; }
+        }
+
+        string Factorizer_Root1 = "";
+        string Factorizer_Root2 = "";
+        string Factorizer_Result = "";
+        public StackLayout Factorizer
+        {
+            get
+            {
+                Entry C1 = Entry("", "Coefficient");
+                Entry C2 = Entry("", "Coefficient");
+                Entry C3 = Entry("", "Coefficient");
+                Entry R1 = Entry(Factorizer_Root1, "First Root", delegate { return Factorizer_Root1; });
+                Entry R2 = Entry(Factorizer_Root1, "Second Root", delegate { return Factorizer_Root2; });
+                Entry F = Entry(Factorizer_Root1, "Factorized Result", delegate { return Factorizer_Result; });
+                return new StackLayout
+                {
+                    Children = {
+                        Row(C1, (Text)"X²+"),
+                        Row(C2, (Text)"XY+"),
+                        Row(C3, (Text)"Y²"),
+                        Button("Factorize", delegate { })
+                    }
+                };
+            }
         }
     }
 }

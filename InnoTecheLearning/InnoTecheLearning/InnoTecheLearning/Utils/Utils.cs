@@ -392,7 +392,7 @@ Retry:      try
         private static string EvaluteAns = "";
         public static string Evaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
         {   
-            string Prefix = "var Ans : String = \"" + EvaluteAns + @""";
+            string Prefix = "var Ans : String = \"" + EvaluteAns.Replace("\"", @"\""").Replace(@"\", @"\\") + @""";
 function Abs (n) {return Math.abs(n); }
 function Acos(n : double) : double { return Math.acos(n); }
 function Asin (n : double) : double { return Math.asin(n); }
@@ -412,10 +412,11 @@ function Tan(x : double) : double { return Math.tan(x); }
 function Factorial_(aNumber : int, recursNumber : int ) : double {
    // recursNumber keeps track of the number of iterations so far.
    if (aNumber < 3) {  // If the number is 0, its factorial is 1.
+      if (aNumber == 0) return 1.;
       return double(aNumber);
    } else {
       if(recursNumber > 170) {
-         throw(""Too many levels of recursion."");
+         return Infinity;
       } else {  // Otherwise, recurse again.
          return (aNumber* Factorial_(aNumber - 1, recursNumber + 1));
       }
@@ -431,14 +432,14 @@ function Factorial(aNumber : int) : double {
       return  Factorial_(aNumber, 0);
    }
 }
-var π = Math.PI;
-var e = Math.E;
-var Root2 = Math.SQRT2;
-var Root0_5 = Math.SQRT1_2;
-var Ln2 = Math.LN2;
-var Ln10 = Math.LN10;
-var Log2e = Math.LOG2E;
-var Log10e = Math.LOG10E;
+const π = Math.PI;
+const e = Math.E;
+const Root2 = Math.SQRT2;
+const Root0_5 = Math.SQRT1_2;
+const Ln2 = Math.LN2;
+const Ln10 = Math.LN10;
+const Log2e = Math.LOG2E;
+const Log10e = Math.LOG10E;
 """";
 ";
             // Ask user to enter expression.
@@ -541,6 +542,11 @@ var Log10e = Math.LOG10E;
             {
                 Finally?.Invoke();
             }
+        }
+        public static EventHandler<TextChangedEventArgs> TextChanged(Func<string> Value)
+        {
+            return (object sender, TextChangedEventArgs e) =>
+            { if (((Entry)sender).Text != Value()) { ((Entry)sender).Text = Value(); } };
         }
         /*
         public string TransformForCurrentPlatform(string url)

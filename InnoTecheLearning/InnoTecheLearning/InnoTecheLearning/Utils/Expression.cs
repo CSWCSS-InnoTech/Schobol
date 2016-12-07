@@ -13,7 +13,7 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
-            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, //Constants
+            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
         }
         public enum MoreExpressions : byte
@@ -28,7 +28,7 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
-            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, //Constants
+            π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
             #endregion Hello this is a comment
             Assign, AssignAdd, AssignBAnd, AssignBOr, AssignBXor, //Assignment
@@ -249,6 +249,16 @@
                     return "Log2e";
                 case MoreExpressions.Log10e:
                     return "Log10e";
+                case MoreExpressions.Infinity:
+                    return "Infinity";
+                case MoreExpressions.NInfinity:
+                    return "-Infinity";
+                case MoreExpressions.NaN:
+                    return "NaN";
+                case MoreExpressions.Undefined:
+                    return "undefined";
+                case MoreExpressions.Comma:
+                    return ",";
                 //Expressions - MoreExpressions Line
                 case MoreExpressions.Assign:
                     return "=";
@@ -284,8 +294,6 @@
                     return "typeof(";
                 case MoreExpressions.Void:
                     return "void";
-                case MoreExpressions.Comma:
-                    return ",";
                 case MoreExpressions.Ternary1:
                     return "?";
                 case MoreExpressions.Ternary2:

@@ -436,6 +436,21 @@ namespace InnoTecheLearning
                     Return.Add(new RowDefinition { Height = new GridLength(Height, Unit) });
                 return Return;
             }
+            public static Entry Entry(Text Text, Text Placeholder, Func<string> ReadOnly = null,
+                Color TextColor = default(Color), Color PlaceholderColor = default(Color), Color BackColor = default(Color))
+            {
+                Entry Return = new Entry
+                {
+                    Text = Text,
+                    Placeholder = Placeholder,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    TextColor = TextColor == default(Color) ? Color.Black : TextColor,
+                    PlaceholderColor = PlaceholderColor == default(Color) ? Color.Silver : PlaceholderColor,
+                    BackgroundColor = BackColor == default(Color) ? Color.Default : BackColor
+                };
+                if(ReadOnly!= null) Return.TextChanged += TextChanged(ReadOnly);
+                return Return;
+            }
         }
     }
 }
