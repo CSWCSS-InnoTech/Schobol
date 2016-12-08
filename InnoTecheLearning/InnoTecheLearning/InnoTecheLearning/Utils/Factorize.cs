@@ -21,23 +21,20 @@ namespace InnoTecheLearning
         /// [5] = Second factor's constant term
         /// [6] = The highest common factor among the coefficients.
         /// Factorized Result: [6]([2]X+[3]Y)([4]X+[5]Y)</returns>
-        public static void FactorizeNonthrowable(double A, double B, double C
+        public static void FactorizeNonthrowable(ref double A, ref double B, ref double C
             , out Complex Root1, out Complex Root2)
         {
             C = B * B - 4 * A * C;
             Root1 = (Complex.Sqrt(C) - B) / (2 * A);
             Root2 = (-Complex.Sqrt(C) - B) / (2 * A);
         }
-        public static double Factorize(double A, double B, double C
+        public static double FactorizeThrowable(double A, double B, double C
             , out Complex Root1, out Complex Root2,
             out double Factor1Co, out double Factor1CTerm,
             out double Factor2Co, out double Factor2CTerm, double SafeCheck = 100000)
         {
-            double M = 0;
-            double X, Y;
-            C = B * B - 4 * A * C;
-            Root1 = (Complex.Sqrt(C) - B) / (2 * A);
-            Root2 = (-Complex.Sqrt(C) - B) / (2 * A);
+            double X, Y, M = 0;
+            FactorizeNonthrowable(ref A, ref B, ref C, out Root1, out Root2);
             if (Root1.Imaginary != 0) throw new ArithmeticException("Imaginary root cannot be factorized.");
             if (Root2.Imaginary != 0) throw new ArithmeticException("Imaginary root cannot be factorized.");
             X = Root1.Real;
@@ -60,26 +57,26 @@ namespace InnoTecheLearning
             M -= M;
             return A;
         }
-        public static string FactorizeSafe(double A, double B, double C,
+        public static string Factorize(double A, double B, double C,
             out Complex Root1, out Complex Root2, char X = 'X', char Y = 'Y', double SafeCheck = 100000)
         {
             try
             {
                 double Factor1Co, Factor1CTerm, Factor2Co, Factor2CTerm;
-                double HCF = Factorize(A, B, C, out Root1, out Root2, out Factor1Co, out Factor1CTerm,
+                double HCF = FactorizeThrowable(A, B, C, out Root1, out Root2, out Factor1Co, out Factor1CTerm,
                     out Factor2Co, out Factor2CTerm, SafeCheck);
-                return Prefix(HCF) + "(" + Prefix(Factor1Co) + X + Postfix(Factor1CTerm) + ")" +
-                       "(" + Prefix(Factor2Co) + Y + Postfix(Factor2CTerm) + ")";
+                return Prefix(HCF) + "(" + Prefix(Factor1Co) + X + Suffix(Factor1CTerm) + ")" +
+                    "(" + Prefix(Factor2Co) + Y + Suffix(Factor2CTerm) + ")";
             }
             catch (ArithmeticException ex)
             {
-                FactorizeNonthrowable(A, B, C, out Root1, out Root2);
+                FactorizeNonthrowable(ref A, ref B, ref C, out Root1, out Root2);
                 return ex.Message;
             }
         }
         public static string Prefix(double n)
         { return n == 1 ? "" : n == -1 ? "-" : n.ToString(); }
-        public static string Postfix(double n)
+        public static string Suffix(double n)
         { return n == 0 ? "" : (n > 0 ? "+" : "") + n.ToString(); }
     }
 } 

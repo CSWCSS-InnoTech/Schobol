@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Evaluator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Factorize.cs" />

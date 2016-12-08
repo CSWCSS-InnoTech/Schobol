@@ -513,7 +513,10 @@ namespace InnoTecheLearning
                         Row(C1, (Text)"X²+"),
                         Row(C2, (Text)"XY+"),
                         Row(C3, (Text)"Y²"),
-                        Button("Factorize", delegate { })
+                        Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
+                            Factorize(Conversion.Val(C1.Text), Conversion.Val(C2.Text), Conversion.Val(C3.Text), out X1, out X2);
+                        Factorizer_Root1 = X1.ToString();Factorizer_Root2 = X2.ToString();
+                            R1.Text=""; R2.Text=""; F.Text=""; }), R1, R2, F
                     }
                 };
             }
