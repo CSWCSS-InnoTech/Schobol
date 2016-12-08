@@ -67,6 +67,7 @@ namespace InnoTecheLearning
                         break;
                     case Pages.Factorizer:
                         Region = "Factorizer";
+                        Content = Factorizer;
                         break;
                     case Pages.Sports:
                         Region = "Sports";
@@ -134,10 +135,10 @@ namespace InnoTecheLearning
                              },BoldLabel("Calculator")),
                          MainScreenItem(Image(ImageFile.Calculator_Free),delegate {
                              Showing = Pages.Calculator_Free;//Alert(this, StrDup("1+",100) + "1\n=101");
-                         },BoldLabel("Calculator\nFree Mode")),
-                         MainScreenItem(Image(ImageFile.Factorizer),delegate {Alert(this,
-                             "Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³\n = 𝐗(𝐗−1)²(5𝐗−2)"
-                             ); },BoldLabel("Quadratic Factorizer"))),
+                             },BoldLabel("Calculator\nFree Mode")),
+                         MainScreenItem(Image(ImageFile.Factorizer),delegate {
+                             Showing = Pages.Factorizer;//Alert(this,"Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³\n = 𝐗(𝐗−1)²(5𝐗−2)");
+                             },BoldLabel("Quadratic Factorizer"))),
 
            MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {
                              Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
