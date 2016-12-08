@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Evaluator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Factorize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Network.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
