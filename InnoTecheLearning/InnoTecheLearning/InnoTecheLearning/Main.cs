@@ -123,7 +123,7 @@ namespace InnoTecheLearning
                " are a F-ing faggot\n[2016-11-1 18:00:34] 2E12: I am going to rape you\n"+
                "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5));*/
                Showing = Pages.CloudTest;
-                         }, BoldLabel("Forum\n(CloudTest)") ),
+                         }, BoldLabel("Forum\n(⁠C⁠l⁠o⁠u⁠d⁠T⁠e⁠s⁠t⁠)") ),
                          MainScreenItem(Image(ImageFile.Translate), delegate{Alert(this,
                           "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"); },
                          BoldLabel("Translator") ),
@@ -167,18 +167,18 @@ namespace InnoTecheLearning
                     Children = {
                         Title("CSWCSS Music Tuner"),
 
-                        Row(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        Row(true, Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
 
-                        Row(Button((Text)"G",  delegate {MusicSound =  Play(Sounds.Violin_G); }),
+                        Row(true, Button((Text)"G",  delegate {MusicSound =  Play(Sounds.Violin_G); }),
                         Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Violin_D); }),
                         Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Violin_A); }),
                         Button((Text)"E",  delegate {MusicSound =  Play(Sounds.Violin_E); })),
 
-                        Row(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        Row(true, Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
 
-                        Row(Button((Text)"'C",  delegate {MusicSound =  Play(Sounds.Cello_C); }),
+                        Row(true, Button((Text)"'C",  delegate {MusicSound =  Play(Sounds.Cello_C); }),
                         Button((Text)"'G",  delegate {MusicSound =  Play(Sounds.Cello_G); }),
                         Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
                         Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Cello_A); })),
@@ -511,11 +511,11 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {
-                        Row(C1, (Text)"X²+"),
-                        Row(C2, (Text)"XY+"),
-                        Row(C3, (Text)"Y²"),
+                        Row(false, C1, (Text)"X²+"),
+                        Row(false, C2, (Text)"XY+"),
+                        Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(Conversion.Val(C1.Text), Conversion.Val(C2.Text), Conversion.Val(C3.Text), out X1, out X2);
+                            Factorize(double.Parse(C1.Text), double.Parse(C2.Text), double.Parse(C3.Text), out X1, out X2);
                         Factorizer_Root1 = X1.ToString();Factorizer_Root2 = X2.ToString();
                             R1.Text=""; R2.Text=""; F.Text=""; }), R1, R2, F
                     }

@@ -375,13 +375,13 @@ namespace InnoTecheLearning
                 }
             }
 
-            public static StackLayout Row(params View[] Items)
+            public static StackLayout Row(bool VerticalExpand, params View[] Items)
             {
                 StackLayout MenuScreenRow = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Start,
                     Children = { }
                 };
                 foreach (View MenuScreenItem in Items)
