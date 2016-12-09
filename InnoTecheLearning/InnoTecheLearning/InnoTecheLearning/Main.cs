@@ -510,14 +510,15 @@ namespace InnoTecheLearning
                 Entry F = Entry(Factorizer_Root1, "Factorized Result", delegate { return Factorizer_Result; });
                 return new StackLayout
                 {
+                    VerticalOptions = LayoutOptions.Center,
                     Children = {
                         Row(false, C1, (Text)"X²+"),
                         Row(false, C2, (Text)"XY+"),
                         Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
                             Factorize(double.Parse(C1.Text), double.Parse(C2.Text), double.Parse(C3.Text), out X1, out X2);
-                        Factorizer_Root1 = X1.ToString();Factorizer_Root2 = X2.ToString();
-                            R1.Text=""; R2.Text=""; F.Text=""; }), R1, R2, F
+                            Factorizer_Root1 = X1.ToABi();Factorizer_Root2 = X2.ToABi();
+                            R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
                     }
                 };
             }

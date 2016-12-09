@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="edu.cswcss.eLearning" android:installLocation="auto" android:versionCode="2" android:versionName="0.10.0 (Xamarin Update) Alpha 91">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="edu.cswcss.eLearning" android:installLocation="auto" android:versionCode="2" android:versionName="0.10.0 (Xamarin Update) Alpha 92">
 	<uses-sdk android:minSdkVersion="14" />
 	<application android:icon="@drawable/icon" android:label="CSWCSS eLearning App"></application>
 </manifest>
