@@ -79,6 +79,6 @@ namespace InnoTecheLearning
         public static string Suffix(double n)
         { return n == 0 ? "" : (n > 0 ? "+" : "") + n.ToString(); }
         public static string ToABi(this Complex complex)
-        { return complex.Real + Suffix(complex.Imaginary) + "i"; }
+        { return complex.Real + Suffix(complex.Imaginary) + (complex.Imaginary == 0 ? "": "i"); }
     }
 } 

@@ -380,8 +380,8 @@ namespace InnoTecheLearning
                 StackLayout MenuScreenRow = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Center,
                     Children = { }
                 };
                 foreach (View MenuScreenItem in Items)
@@ -436,13 +436,14 @@ namespace InnoTecheLearning
                     Return.Add(new RowDefinition { Height = new GridLength(Height, Unit) });
                 return Return;
             }
-            public static Entry Entry(Text Text, Text Placeholder, Func<string> ReadOnly = null,
+            public static Entry Entry(Text Text, Text Placeholder, Func<string> ReadOnly = null, Keyboard Keyboard = null,
                 Color TextColor = default(Color), Color PlaceholderColor = default(Color), Color BackColor = default(Color))
             {
                 Entry Return = new Entry
                 {
                     Text = Text,
                     Placeholder = Placeholder,
+                    Keyboard = Keyboard ?? Keyboard.Default,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     TextColor = TextColor == default(Color) ? Color.Black : TextColor,
                     PlaceholderColor = PlaceholderColor == default(Color) ? Color.Silver : PlaceholderColor,

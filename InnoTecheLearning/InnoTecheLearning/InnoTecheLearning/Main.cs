@@ -502,9 +502,9 @@ namespace InnoTecheLearning
         {
             get
             {
-                Entry C1 = Entry("", "Coefficient");
-                Entry C2 = Entry("", "Coefficient");
-                Entry C3 = Entry("", "Coefficient");
+                Entry C1 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
+                Entry C2 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
+                Entry C3 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
                 Entry R1 = Entry(Factorizer_Root1, "First Root", delegate { return Factorizer_Root1; });
                 Entry R2 = Entry(Factorizer_Root1, "Second Root", delegate { return Factorizer_Root2; });
                 Entry F = Entry(Factorizer_Root1, "Factorized Result", delegate { return Factorizer_Result; });
