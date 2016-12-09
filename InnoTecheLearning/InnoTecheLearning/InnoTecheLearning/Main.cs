@@ -502,8 +502,14 @@ namespace InnoTecheLearning
         {
             get
             {
+                Button S1 = null;
+                S1 = Button("+", delegate { S1.Text = S1.Text == "+" ? "-" : "+"; });
                 Entry C1 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
+                Button S2 = null;
+                S2 = Button("+", delegate { S2.Text = S2.Text == "+" ? "-" : "+"; });
                 Entry C2 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
+                Button S3 = null;
+                S3 = Button("+", delegate { S3.Text = S3.Text == "+" ? "-" : "+"; });
                 Entry C3 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
                 Entry R1 = Entry(Factorizer_Root1, "First Root", delegate { return Factorizer_Root1; });
                 Entry R2 = Entry(Factorizer_Root1, "Second Root", delegate { return Factorizer_Root2; });
@@ -512,11 +518,12 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.Center,
                     Children = {
-                        Row(false, C1, (Text)"X²+"),
-                        Row(false, C2, (Text)"XY+"),
+                        Row(false, S1, C1, (Text)"X²", S2),
+                        Row(false, C2, (Text)"XY", S3),
                         Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(double.Parse(C1.Text), double.Parse(C2.Text), double.Parse(C3.Text), out X1, out X2);
+                            Factorize(double.Parse(S1.Text + C1.Text), double.Parse(S2.Text + C2.Text), 
+                            double.Parse(S3.Text + C3.Text), out X1, out X2);
                             Factorizer_Root1 = X1.ToABi();Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
                     }
