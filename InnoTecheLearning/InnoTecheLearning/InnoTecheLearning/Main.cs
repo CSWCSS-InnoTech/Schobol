@@ -149,7 +149,7 @@ namespace InnoTecheLearning
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
                          ),
 
-                Button((Text)"Changelog", delegate {Showing = Pages.Changelog; }),
+                Button("Changelog", delegate {Showing = Pages.Changelog; }),
                 Utils.Create.Version
                     }
                 };
@@ -167,21 +167,21 @@ namespace InnoTecheLearning
                     Children = {
                         Title("CSWCSS Music Tuner"),
 
-                        Row(true, Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        Row(false, Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
 
-                        Row(true, Button((Text)"G",  delegate {MusicSound =  Play(Sounds.Violin_G); }),
-                        Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Violin_D); }),
-                        Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Violin_A); }),
-                        Button((Text)"E",  delegate {MusicSound =  Play(Sounds.Violin_E); })),
+                        Row(false, Button("G",  delegate {MusicSound =  Play(Sounds.Violin_G); }),
+                        Button("D",  delegate {MusicSound =  Play(Sounds.Violin_D); }),
+                        Button("A",  delegate {MusicSound =  Play(Sounds.Violin_A); }),
+                        Button("E",  delegate {MusicSound =  Play(Sounds.Violin_E); })),
 
                         Row(true, Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
 
-                        Row(true, Button((Text)"'C",  delegate {MusicSound =  Play(Sounds.Cello_C); }),
-                        Button((Text)"'G",  delegate {MusicSound =  Play(Sounds.Cello_G); }),
-                        Button((Text)"D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
-                        Button((Text)"A",  delegate {MusicSound =  Play(Sounds.Cello_A); })),
+                        Row(true, Button("'C",  delegate {MusicSound =  Play(Sounds.Cello_C); }),
+                        Button("'G",  delegate {MusicSound =  Play(Sounds.Cello_G); }),
+                        Button("D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
+                        Button("A",  delegate {MusicSound =  Play(Sounds.Cello_A); })),
 
 #if __ANDROID__
                         BoldLabel("Sorry, but Android 6.0+ only!"),
@@ -468,7 +468,7 @@ namespace InnoTecheLearning
                     TextColor = Color.Black,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0)
+                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0) //Light Grey
                 };
                 Entry Entry = new Entry
                 {
@@ -522,10 +522,30 @@ namespace InnoTecheLearning
                         Row(false, C2, (Text)"XY", S3),
                         Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(double.Parse(S1.Text + C1.Text), double.Parse(S2.Text + C2.Text), 
+                            Factorize(double.Parse(S1.Text + C1.Text), double.Parse(S2.Text + C2.Text),
                             double.Parse(S3.Text + C3.Text), out X1, out X2);
                             Factorizer_Root1 = X1.ToABi();Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
+                    }
+                };
+            }
+        }
+        IStepCounter Pedometer = new StepCounter((uint Steps, TimeSpan TimePassed, float Distance)=> { });
+        Label Sports_Steps = BoldLabel("Steps");
+        Label Sports_Time = BoldLabel("Elapsed Time");
+        Label Sports_Distance = BoldLabel("Estimated Distance");
+        Label Sports_Now = BoldLabel("Time Now");
+        public StackLayout Sports
+        {
+            get
+            {
+
+                return new StackLayout
+                {
+                    Children = {
+                        Button("Start Running", delegate { Pedometer.Start(); }, Color.Blue),
+                        Button("Stop Running", delegate { Pedometer.Stop(); }, Color.Red),
+
                     }
                 };
             }

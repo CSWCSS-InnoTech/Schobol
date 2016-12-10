@@ -18,10 +18,35 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
+        public delegate void StepCountChangedEventHandler(uint Steps, TimeSpan TimePassed, float Distance);
+        /// <summary>
+        /// A Component that acts like a Pedometer. It senses motion via the 
+        /// Accerleromter and attempts to determine if a step has been 
+        /// taken. Using a configurable stride length, it can estimate the 
+        /// distance traveled as well.
+        /// </summary>
         public interface IStepCounter
         {
-            int Small { get; }
-            int Big { get; }
+            event StepCountChangedEventHandler StepsChanged;
+            uint Steps { get; }
+            void Start();
+            DateTime StartTime { get; }
+            TimeSpan TimePassed { get; }
+            void Stop();
+            void Reset();
+            //  Properties
+            /// <summary>
+            /// Set the nonnegative average stride length in meters. Default: 0.73
+            /// </summary>
+            float StrideLength
+            { get; set; }
+
+
+            /// <summary>
+            /// The approximate distance traveled in meters.
+            /// </summary>
+            float Distance
+            { get; }
         }
         /// <summary>
         /// A Component that acts like a Pedometer. It senses motion via the 
@@ -32,7 +57,7 @@ namespace InnoTecheLearning
         public class StepCounter :
 #if __IOS__
         IStepCounter {
-            public int Small
+            public uint Steps
             {
                 get
                 {
@@ -48,24 +73,30 @@ namespace InnoTecheLearning
                     if (_stepCounter == null)
                         _stepCounter = new CMStepCounter();
 
-                    return (int)Do(_stepCounter.QueryStepCountAsync(sMidnight, NSDate.Now, _queue));
+                    return (uint)Do(_stepCounter.QueryStepCountAsync(sMidnight, NSDate.Now, _queue));
                 }
             }
-            public int Big
-            { get { return Small; } }
-            public delegate void DailyStepCountChangedEventHandler(nint stepCount);
+            public DateTime StartTime { get; private set; }
+           // public delegate void DailyStepCountChangedEventHandler(nint stepCount);
 
             private NSOperationQueue _queue;
             private DateTime _resetTime;
             private CMStepCounter _stepCounter;
             private nint count;
 
-            public StepCounter()
+            public void Start()
             {
+                StartTime = DateTime.Now;
                 ForceUpdate();
 
                 _stepCounter.StartStepCountingUpdates(_queue, 1, Updater);
             }
+
+            public void Stop()
+            { _stepCounter.StopStepCountingUpdates(); }
+
+            public void Reset()
+            { count = 0; StartTime = DateTime.MinValue; }
 
             public void ForceUpdate()
             {
@@ -92,8 +123,6 @@ namespace InnoTecheLearning
 
             private void DailyStepQueryHandler(nint stepCount, NSError error)
             {
-                if (DailyStepCountChanged == null)
-                    return;
 
 #if DEBUG
                 //stepCount = 1245;
@@ -104,7 +133,7 @@ namespace InnoTecheLearning
 #endif
 
 
-                DailyStepCountChanged(stepCount);
+                StepsChanged?.Invoke((uint)stepCount, TimePassed, Distance);
             }
 
             private void Updater(nint stepCount, NSDate date, NSError error)
@@ -113,7 +142,7 @@ namespace InnoTecheLearning
                 _stepCounter.QueryStepCount(sMidnight, NSDate.Now, _queue, DailyStepQueryHandler);
             }
 
-            public event DailyStepCountChangedEventHandler DailyStepCountChanged;
+            //public event DailyStepCountChangedEventHandler DailyStepCountChanged;
 
             public static class DateHelpers
             {
@@ -188,19 +217,24 @@ namespace InnoTecheLearning
 #elif __ANDROID__
         JavaObject, IStepCounter, ISensorEventListener, IDisposable
         {
+            public uint Steps { get { return SmallSteps; } }
+            public uint SmallSteps { get { return numStepsRaw; } }
+            public uint BigSteps { get { return numStepsWithFilter; } }
+            public DateTime StartTime { get; private set; }
+
             private static string TAG = "InnoTecheLearning.Sports";
 
             private static string PREFS_NAME = "PedometerPrefs";
 
             private static int INTERVAL_VARIATION = 250;
 
-            private static int NUM_INTERVALS = 2;
+            private static uint NUM_INTERVALS = 2;
 
             private static int WIN_SIZE = 100;
 
-            private static float STRIDE_LENGTH = ((float)(0.73));
+            private static float STRIDE_LENGTH = 0.73f;
 
-            private static float PEAK_VALLEY_RANGE = ((float)(40));
+            private static float PEAK_VALLEY_RANGE = 40.0f;
 
             private Context context;
 
@@ -210,11 +244,11 @@ namespace InnoTecheLearning
 
             private int winPos = 0;
 
-            private int intervalPos = 0;
+            private uint intervalPos = 0;
 
-            private int numStepsWithFilter = 0;
+            private uint numStepsWithFilter = 0;
 
-            private int numStepsRaw = 0;
+            private uint numStepsRaw = 0;
 
             private float lastValley = 0;
 
@@ -258,8 +292,8 @@ namespace InnoTecheLearning
                 //  Restore preferences
                 ISharedPreferences settings = context.GetSharedPreferences(PREFS_NAME, FileCreationMode.Private);
                 strideLength = settings.GetFloat("Pedometer.stridelength", STRIDE_LENGTH);
-                totalDistance = settings.GetFloat("Pedometer.distance", 0);
-                numStepsRaw = settings.GetInt("Pedometer.prevStepCount", 0);
+                Distance = settings.GetFloat("Pedometer.distance", 0);
+                numStepsRaw = (uint)settings.GetInt("Pedometer.prevStepCount", 0);
                 prevStopClockTime = settings.GetLong("Pedometer.clockTime", 0);
                 numStepsWithFilter = numStepsRaw;
                 startTime = CurrentTimeMillis();
@@ -273,6 +307,7 @@ namespace InnoTecheLearning
                 if (pedometerPaused)
                 {
                     pedometerPaused = false;
+                    StartTime = DateTime.Now;
                     sensorManager.RegisterListener(this,
                         sensorManager.GetSensorList(SensorType.Accelerometer)[0], SensorDelay.Fastest);
                     startTime = CurrentTimeMillis();
@@ -291,7 +326,7 @@ namespace InnoTecheLearning
             {
                 numStepsWithFilter = 0;
                 numStepsRaw = 0;
-                totalDistance = 0;
+                Distance = 0;
                 prevStopClockTime = 0;
                 startTime = CurrentTimeMillis();
             }
@@ -325,8 +360,8 @@ namespace InnoTecheLearning
                 ISharedPreferences settings = context.GetSharedPreferences(PREFS_NAME, FileCreationMode.Private);
                 ISharedPreferencesEditor editor = settings.Edit();
                 editor.PutFloat("Pedometer.stridelength", strideLength);
-                editor.PutFloat("Pedometer.distance", totalDistance);
-                editor.PutInt("Pedometer.prevStepCount", numStepsRaw);
+                editor.PutFloat("Pedometer.distance", Distance);
+                editor.PutInt("Pedometer.prevStepCount", (int)numStepsRaw);
                 if (pedometerPaused)
                 {
                     editor.PutLong("Pedometer.clockTime", prevStopClockTime);
@@ -343,9 +378,10 @@ namespace InnoTecheLearning
             }
 
             //  Events
-            public void RaiseSimpleStep(int simpleSteps, float distance)
+            public void RaiseSimpleStep(uint simpleSteps, float distance)
             {
                 SimpleStep(simpleSteps, distance);
+                StepsChanged?.Invoke(Steps, TimePassed, distance);
             }
             ///<summary>This event is run when a raw step is detected</summary>
             public event StepEventHandler SimpleStep;
@@ -354,23 +390,10 @@ namespace InnoTecheLearning
             /// A walking step is a step that appears to be involved in forward motion.
             /// </summary>
             public event StepEventHandler WalkStep;
-            public delegate void StepEventHandler(int Steps, float Distance);
-            public void RaiseWalkStep(int walkSteps, float distance)
+            public delegate void StepEventHandler(uint Steps, float Distance);
+            public void RaiseWalkStep(uint walkSteps, float distance)
             {
                 WalkStep(walkSteps, distance);
-            }
-
-            //  Properties
-            /// <summary>
-            /// Set the nonnegative average stride length in meters. Default: 0.73
-            /// </summary>
-            public float StrideLength
-            {
-                get
-                {
-                    return strideLength;
-                }
-                set { strideLength = value; }
             }
 
             /// <summary>
@@ -384,17 +407,6 @@ namespace InnoTecheLearning
                     return stopDetectionTimeout;
                 }
                 set { stopDetectionTimeout = value; }
-            }
-
-            /// <summary>
-            /// The approximate distance traveled in meters.
-            /// </summary>
-            public float Distance
-            {
-                get
-                {
-                    return totalDistance;
-                }
             }
 
             /// <summary>
@@ -418,7 +430,7 @@ namespace InnoTecheLearning
             /// <summary>
             /// The number of simple steps taken since the pedometer has started.
             /// </summary>
-            public int SimpleSteps
+            public uint SimpleSteps
             {
                 get
                 {
@@ -429,7 +441,7 @@ namespace InnoTecheLearning
             /// <summary>
             /// The number of walk steps taken since the pedometer has started.
             /// </summary>
-            public int WalkSteps
+            public uint WalkSteps
             {
                 get
                 {
@@ -540,19 +552,19 @@ namespace InnoTecheLearning
                             if (foundNonStep)
                             {
                                 numStepsWithFilter += NUM_INTERVALS;
-                                totalDistance += strideLength * NUM_INTERVALS;
+                                Distance += strideLength * NUM_INTERVALS;
                                 foundNonStep = false;
                             }
                             numStepsWithFilter++;
-                            WalkStep(numStepsWithFilter, totalDistance);
-                            totalDistance += strideLength;
+                            WalkStep(numStepsWithFilter, Distance);
+                            Distance += strideLength;
                         }
                         else
                         {
                             foundNonStep = true;
                         }
                         numStepsRaw++;
-                        SimpleStep(numStepsRaw, totalDistance);
+                        SimpleStep(numStepsRaw, Distance);
                         foundValley = false;
                     }
                 }
@@ -670,25 +682,38 @@ namespace InnoTecheLearning
                 }
             }
 #elif WINDOWS_UWP
-        IStepCounter {
-            public StepCounter()
+        IStepCounter { 
+            public void Start()
             { Do(New()); }
+            public void Stop()
+            { readings.ReadingChanged -= Readings_ReadingChanged; }
+            public void Reset()
+            { SmallSteps = BigSteps = 0; StartTime = DateTime.MinValue; }
+
+            public uint SmallSteps { get; private set; }
+            public uint BigSteps { get; private set; }
+            public uint Steps { get { return SmallSteps + BigSteps; } }
+            public DateTime StartTime { get; private set; }
+            Pedometer readings;
+            
             async private System.Threading.Tasks.Task New()
             {
-                Pedometer readings = await Pedometer.GetDefaultAsync();
+                readings = await Pedometer.GetDefaultAsync();
+                StartTime = DateTime.Now;
                 readings.ReportInterval = 100;
                 readings.ReadingChanged += Readings_ReadingChanged;
             }
             private void Readings_ReadingChanged(Pedometer sender, PedometerReadingChangedEventArgs args)
             {
                 PedometerReading readvalues = args.Reading;
+                StepsChanged?.Invoke(Steps, TimePassed, Distance);
                 if (readvalues.StepKind == PedometerStepKind.Walking)
                 {
-                    var walkingsteps = readvalues.CumulativeSteps;
+                    SmallSteps = (uint)readvalues.CumulativeSteps;
                 }
                 else if (readvalues.StepKind == PedometerStepKind.Running)
                 {
-                    var runningSteps = readvalues.CumulativeSteps;
+                    BigSteps = (uint)readvalues.CumulativeSteps;
                 }
             }
             public async void gettingHistory()
@@ -698,11 +723,27 @@ namespace InnoTecheLearning
 #elif NETFX_CORE
         IStepCounter {
             private bool hasChanged;
-            private int counter;
+            public uint Steps { get; private set; } = 0;
+            public DateTime StartTime { get; private set; }
             private double x_old;
             private double y_old;
             private double z_old;
-            private void checkIsMovement(AccelerometerReadingChangedEventArgs e)
+            Accelerometer Sensor;
+
+            public void Start()
+            {
+                Sensor = Accelerometer.GetDefault();
+                StartTime = DateTime.Now;
+                Sensor.ReportInterval = 100;
+                Sensor.ReadingChanged += checkIsMovement;
+            }
+            public void Stop()
+            { Sensor.ReadingChanged -= checkIsMovement; }
+
+            public void Reset()
+            { Steps = 0; StartTime = DateTime.MinValue; }
+
+            private void checkIsMovement(Accelerometer sender, AccelerometerReadingChangedEventArgs e)
             {
                 double x = e.Reading.AccelerationX;
                 double y = e.Reading.AccelerationY;
@@ -716,7 +757,8 @@ namespace InnoTecheLearning
                     if (!hasChanged)
                     {
                         hasChanged = true;
-                        counter++; //here the counter
+                        StepsChanged?.Invoke(Steps, TimePassed, Distance);
+                        Steps++; //here the counter
                     }
                     else
                     {
@@ -730,6 +772,32 @@ namespace InnoTecheLearning
 #else
         {
 #endif
+            public TimeSpan TimePassed { get { return DateTime.Now - StartTime; } }
+            public event StepCountChangedEventHandler StepsChanged;
+
+            //  Properties
+            /// <summary>
+            /// Set the nonnegative average stride length in meters. Default: 0.73
+            /// </summary>
+            public float StrideLength
+            { get; set; }
+            
+            /// <summary>
+            /// The approximate distance traveled in meters.
+            /// </summary>
+            public float Distance
+            {
+#if __ANDROID__
+                get; private set;
+#else
+                get { return StrideLength * Steps; }
+#endif
+
+            }
+
+            public StepCounter(StepCountChangedEventHandler Handler = null)
+            { if(Handler != null) StepsChanged += Handler; }
+
             public static class Conversion
             {
                 public static double StepCountToPercentage(int stepCount)

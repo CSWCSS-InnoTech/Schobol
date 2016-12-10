@@ -12,9 +12,59 @@ namespace InnoTecheLearning
         /// </summary>
         public struct Text : IComparable
         {
-            public static Text Null { get { return (string)null; } }
-            public static Text Empty { get { return string.Empty; } }
-            public static Text Default { get { return default(Text); } }
+            public static readonly Text Null = (string)null;
+            public static readonly Text Empty = string.Empty;
+            public static readonly Text Default = default(Text);
+            public static Text Random
+            {
+                get
+                {
+                    char[] Chars = new char[new Random().Next(0, 20)];
+                    for (int i = 0; i < Chars.Length; i++)
+                    {
+                        Chars[i] = (char)new Random().Next(' ', '~');
+                    }
+                    return Chars;
+                }
+            }
+            public static Text RandomLatin
+            {
+                get
+                {
+                    char[] Chars = new char[new Random().Next(1, 20)];
+                    for (int i = 0; i < Chars.Length; i++)
+                    {
+                        Chars[i] = (char)(Convert.ToBoolean(new Random().Next(0, 1))?
+                            new Random().Next('A', 'Z'):new Random().Next('a', 'z'));
+                    }
+                    return Chars;
+                }
+            }
+            public static Text RandomInteger
+            {
+                get
+                {
+                    char[] Chars = new char[new Random().Next(1, 20)];
+                    for (int i = 0; i < Chars.Length; i++)
+                    {
+                        Chars[i] = (char)new Random().Next('0', '9');
+                    }
+                    if (Convert.ToBoolean(new Random().Next(0, 1))) Chars[0] = '-';
+                    return new string(Chars).TrimStart('0');
+                }
+            }
+            public static Text RandomUnicode
+            {
+                get
+                {
+                    char[] Chars = new char[new Random().Next(0, 20)];
+                    for (int i = 0; i < Chars.Length; i++)
+                    {
+                        Chars[i] = (char)new Random().Next(char.MaxValue);
+                    }
+                    return Chars;
+                }
+            }
             public string Value { get; set; }
             public Text(string Text)
             { Value = Text; }
