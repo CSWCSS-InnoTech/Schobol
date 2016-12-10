@@ -71,6 +71,7 @@ namespace InnoTecheLearning
                         break;
                     case Pages.Sports:
                         Region = "Sports";
+                        Content = Sports;
                         break;
                     case Pages.MusicTuner:
                         Region = "MusicTuner";
@@ -91,6 +92,11 @@ namespace InnoTecheLearning
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
+            Pedometer = new StepCounter((uint Steps, TimeSpan TimePassed, float Distance) =>
+            {
+                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString();
+                Sports_Distance.Text = Distance.ToString(); Sports_Now.Text = DateTime.Now.TimeOfDay.ToString();
+            });
             Log("Main page initialized.");
         }
         protected override bool OnBackButtonPressed()
@@ -141,7 +147,8 @@ namespace InnoTecheLearning
                              },BoldLabel("Quadratic Factorizer"))),
 
            MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {
-                             Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃"); },BoldLabel("Sports")),
+                             Showing = Pages.Sports;//Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃");
+                         },BoldLabel("Sports")),
                          MainScreenItem(Image(ImageFile.MusicTuner), delegate {
                              Showing = Pages.MusicTuner;//Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
                          },BoldLabel("Music Tuner")),
@@ -530,11 +537,11 @@ namespace InnoTecheLearning
                 };
             }
         }
-        IStepCounter Pedometer = new StepCounter((uint Steps, TimeSpan TimePassed, float Distance)=> { });
-        Label Sports_Steps = BoldLabel("Steps");
-        Label Sports_Time = BoldLabel("Elapsed Time");
-        Label Sports_Distance = BoldLabel("Estimated Distance");
-        Label Sports_Now = BoldLabel("Time Now");
+        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40,0x40,0x40));
+        Label Sports_Time = BoldLabel("00:00:00", Color.White, Color.FromRgb(0x40, 0x40, 0x40));
+        Label Sports_Distance = BoldLabel("0m", Color.White, Color.FromRgb(0x40, 0x40, 0x40));
+        Label Sports_Now = BoldLabel(DateTime.Now.TimeOfDay.ToString(), Color.White, Color.FromRgb(0x40, 0x40, 0x40));
+        IStepCounter Pedometer;
         public StackLayout Sports
         {
             get
@@ -543,9 +550,17 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {
-                        Button("Start Running", delegate { Pedometer.Start(); }, Color.Blue),
-                        Button("Stop Running", delegate { Pedometer.Stop(); }, Color.Red),
-
+                        Button("Start Running", delegate { Pedometer.Start(); }, Color.Blue, Color.White),
+                        Button("Stop Running", delegate { Pedometer.Stop(); }, Color.Red, Color.White),
+                        (Text)"Steps",
+                        Sports_Steps,
+                        (Text)"Elapsed Time",
+                        Sports_Time,
+                        (Text)"Estimated Distance",
+                        Sports_Distance,
+                        (Text)"Time Now",
+                        Sports_Now,
+                        Button("Reset", delegate {Pedometer.Reset(); }, Color.Yellow)
                     }
                 };
             }

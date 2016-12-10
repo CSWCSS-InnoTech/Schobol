@@ -260,27 +260,33 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
-            public static Label BoldLabel(Text Text, Color TextColor = default(Color))
+            public static Label BoldLabel(Text Text, Color TextColor = default(Color), Color BackColor = default(Color))
             {
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
+                if (TextColor == default(Color))
+                    TextColor = Color.Default;
                 return new Label
                 {
                     Text = Text,
                     FontAttributes = FontAttributes.Bold,
                     TextColor = TextColor,
+                    BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center
                 };
             }
-            public static Label BoldLabel2(Text Text, Color TextColor = default(Color))
+            public static Label BoldLabel2(Text Text, Color TextColor = default(Color), Color BackColor = default(Color))
             {
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
+                if (TextColor == default(Color))
+                    TextColor = Color.Default;
                 return new Label
                 {
                     FormattedText = Format(Bold(Text)),
                     TextColor = TextColor,
+                    BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center
                 };
