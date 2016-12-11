@@ -531,82 +531,90 @@ namespace InnoTecheLearning
 
             public void OnSensorChanged(SensorEvent @event)
             {
-                if (@event.Sensor.Type != SensorType.Accelerometer) return;
-                System.Collections.Generic.IList<float> values = @event.Values;
-                float magnitude = 0;
-                foreach (float v in values) magnitude += v * v;
-                // Check if the middle reading within the current window represents
-                // a peak/valley.
-                int mid = (winPos + WIN_SIZE / 2) % WIN_SIZE;
-
-                // Peak is detected
-                if (startPeaking && isPeak)
+                int Line = 534;
+                try
                 {
-                    if (foundValley && lastValues[mid] - lastValley > PEAK_VALLEY_RANGE)
+       Line = 537;  if (@event.Sensor.Type != SensorType.Accelerometer) return;
+       Line = 538;  System.Collections.Generic.IList<float> values = @event.Values;
+       Line = 539;  float magnitude = 0;
+       Line = 540;  foreach (float v in values) magnitude += v * v;
+                    // Check if the middle reading within the current window represents
+                    // a peak/valley.
+       Line = 543;  int mid = (winPos + WIN_SIZE / 2) % WIN_SIZE;
+
+                    // Peak is detected
+       Line = 546;  if (startPeaking && isPeak)
                     {
-                        // Step detected on axis k with maximum peak-valley range.
-                        long timestamp = CurrentTimeMillis();
-                        stepInterval[intervalPos] = timestamp - stepTimestamp;
-                        intervalPos = (intervalPos + 1) % NUM_INTERVALS;
-                        stepTimestamp = timestamp;
-                        if (areStepsEquallySpaced)
+       Line = 548;      if (foundValley && lastValues[mid] - lastValley > PEAK_VALLEY_RANGE)
                         {
-                            if (foundNonStep)
+                            // Step detected on axis k with maximum peak-valley range.
+               Line = 551;  long timestamp = CurrentTimeMillis();
+               Line = 552;  stepInterval[intervalPos] = timestamp - stepTimestamp;
+               Line = 553;  intervalPos = (intervalPos + 1) % NUM_INTERVALS;
+               Line = 554;  stepTimestamp = timestamp;
+               Line = 555;  if (areStepsEquallySpaced)
                             {
-                                numStepsWithFilter += NUM_INTERVALS;
-                                Distance += strideLength * NUM_INTERVALS;
-                                foundNonStep = false;
+               Line = 557;      if (foundNonStep)
+                                {
+               Line = 559;          numStepsWithFilter += NUM_INTERVALS;
+               Line = 560;          Distance += strideLength * NUM_INTERVALS;
+               Line = 561;          foundNonStep = false;
+                                }
+               Line = 563;        numStepsWithFilter++;
+               Line = 564;        WalkStep(numStepsWithFilter, Distance);
+               Line = 565;        Distance += strideLength;
                             }
-                            numStepsWithFilter++;
-                            WalkStep(numStepsWithFilter, Distance);
-                            Distance += strideLength;
+                            else
+                            {
+               Line = 569;        foundNonStep = true;
+                            }
+               Line = 571;    numStepsRaw++;
+               Line = 572;    SimpleStep(numStepsRaw, Distance);
+               Line = 573;   foundValley = false;
                         }
-                        else
-                        {
-                            foundNonStep = true;
-                        }
-                        numStepsRaw++;
-                        SimpleStep(numStepsRaw, Distance);
-                        foundValley = false;
                     }
-                }
-                if (startPeaking && isValley)
-                {
-                    foundValley = true;
-                    lastValley = lastValues[mid];
-                }
-                // Store latest accelerometer reading in the window.
-                avgWindow[avgPos] = magnitude;
-                avgPos = (avgPos + 1) % avgWindow.Length;
-                lastValues[winPos] = 0;
-                foreach (float m in avgWindow) lastValues[winPos] += m;
-                lastValues[winPos] /= avgWindow.Length;
-                if (startPeaking || winPos > 1)
-                {
-                    int i = winPos;
-                    if (--i < 0) i += WIN_SIZE;
-                    lastValues[winPos] += 2 * lastValues[i];
-                    if (--i < 0) i += WIN_SIZE;
-                    lastValues[winPos] += lastValues[i];
-                    lastValues[winPos] /= 4;
-                }
-                else if (!startPeaking && winPos == 1)
-                {
-                    lastValues[1] = (lastValues[1] + lastValues[0]) / 2f;
-                }
+        Line = 576; if (startPeaking && isValley)
+                    {
+        Line = 578;     foundValley = true;
+        Line = 579;     lastValley = lastValues[mid];
+                    }
+                    // Store latest accelerometer reading in the window.
+        Line = 582; avgWindow[avgPos] = magnitude;
+        Line = 583; avgPos = (avgPos + 1) % avgWindow.Length;
+        Line = 584; lastValues[winPos] = 0;
+        Line = 585; foreach (float m in avgWindow) lastValues[winPos] += m;
+        Line = 586; lastValues[winPos] /= avgWindow.Length;
+        Line = 587; if (startPeaking || winPos > 1)
+                    {
+        Line = 589;     int i = winPos;
+        Line = 590;     if (--i < 0) i += WIN_SIZE;
+        Line = 591;     lastValues[winPos] += 2 * lastValues[i];
+        Line = 592;     if (--i < 0) i += WIN_SIZE;
+        Line = 593;     lastValues[winPos] += lastValues[i];
+        Line = 594;     lastValues[winPos] /= 4;
+        Line = 595; }
+                    else if (!startPeaking && winPos == 1)
+                    {
+        Line = 598;     lastValues[1] = (lastValues[1] + lastValues[0]) / 2f;
+                    }
 
-                long elapsedTimestamp = CurrentTimeMillis();
-                if (elapsedTimestamp - stepTimestamp > stopDetectionTimeout)
-                {
-                    stepTimestamp = elapsedTimestamp;
+        Line = 601; long elapsedTimestamp = CurrentTimeMillis();
+        Line = 602; if (elapsedTimestamp - stepTimestamp > stopDetectionTimeout)
+                    {
+        Line = 604;     stepTimestamp = elapsedTimestamp;
+                    }
+                    // Once the buffer is full, start peak/valley detection.
+        Line = 607; if (winPos == WIN_SIZE - 1 && !startPeaking)
+                    {
+        Line = 609;     startPeaking = true;
+                    }
+                    // Increment position within the window.
+        Line = 612; winPos = (winPos + 1) % WIN_SIZE;
                 }
-                // Once the buffer is full, start peak/valley detection.
-                if (winPos == WIN_SIZE - 1 && !startPeaking)
+                catch (Exception ex)
                 {
-                    startPeaking = true;
+                    throw new Exception(Line.ToString(), ex);
                 }
-                // Increment position within the window.
-                winPos = (winPos + 1) % WIN_SIZE;
             }
 
             //  Deleteable implementation
