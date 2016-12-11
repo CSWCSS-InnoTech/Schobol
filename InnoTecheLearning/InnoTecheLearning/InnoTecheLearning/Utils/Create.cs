@@ -275,7 +275,8 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center,
-                    FontSize = Device.GetNamedSize(Size, typeof(Label))
+                    FontSize = Device.GetNamedSize(Size, typeof(Label)),
+                    HorizontalOptions = LayoutOptions.Fill
                 };
             }
             public static Label BoldLabel2(Text Text, Color TextColor = default(Color), 
@@ -292,7 +293,8 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center,
-                    FontSize = Device.GetNamedSize(Size, typeof(Label))
+                    FontSize = Device.GetNamedSize(Size, typeof(Label)),
+                    HorizontalOptions = LayoutOptions.Fill
                 };
             }
             public static ScrollView Changelog

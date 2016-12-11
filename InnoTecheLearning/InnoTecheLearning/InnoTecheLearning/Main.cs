@@ -94,7 +94,7 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             Pedometer = new StepCounter((uint Steps, TimeSpan TimePassed, float Distance) =>
             {
-                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString("HH:mm:ss");
+                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString(@"hh\:mm\:ss");
                 Sports_Distance.Text = Distance.ToString() + " m"; Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
             });
             Log("Main page initialized.");
@@ -530,9 +530,9 @@ namespace InnoTecheLearning
                         Row(false, C2, (Text)"XY", S3),
                         Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(double.Parse(S1.Text + C1.Text), double.Parse(S2.Text + C2.Text),
-                            double.Parse(S3.Text + C3.Text), out X1, out X2);
-                            Factorizer_Root1 = X1.ToABi();Factorizer_Root2 = X2.ToABi();
+                            Factorize(double.Parse(S1.Text + C1.Text), TryCast<double>(S2.Text + C2.Text),
+                            TryCast<double>(S3.Text + C3.Text), out X1, out X2);
+                            Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
                     }
                 };
@@ -549,12 +549,16 @@ namespace InnoTecheLearning
             get
             {
                 Device.StartTimer(TimeSpan.FromSeconds(1), 
-                    () => { Sports_Time.Text = Pedometer.TimePassed.ToString("HH:mm:ss");
-                        Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss"); return Showing == Pages.Sports; });
+                    () => {
+                        Sports_Steps.Text = Pedometer.Steps.ToString();
+                        Sports_Distance.Text = Pedometer.Distance.ToString() + " m";
+                        Sports_Time.Text = Pedometer.TimePassed.ToString(@"hh\:mm\:ss");
+                        Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
+                        return Showing == Pages.Sports; });
                 return new StackLayout
                 {
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
                         Button("Start Running", delegate { Pedometer.Start(); }, Color.Blue, Color.White),
                         Button("Stop Running", delegate { Pedometer.Stop(); }, Color.Red, Color.White),
@@ -566,7 +570,7 @@ namespace InnoTecheLearning
                         Sports_Distance,
                         (Text)"Time Now",
                         Sports_Now,
-                        Button("Reset", delegate {Pedometer.Reset(); }, Color.Yellow)
+                        Button("Reset", delegate { Pedometer.Reset(); }, Color.Yellow)
                     }
                 };
             }
