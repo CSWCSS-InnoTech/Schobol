@@ -382,7 +382,7 @@ namespace InnoTecheLearning
             //  Events
             public void RaiseSimpleStep(uint simpleSteps, float distance)
             {
-                SimpleStep(simpleSteps, distance);
+                SimpleStep?.Invoke(simpleSteps, distance);
                 StepsChanged?.Invoke(Steps, TimePassed, distance);
             }
             ///<summary>This event is run when a raw step is detected</summary>
@@ -395,7 +395,7 @@ namespace InnoTecheLearning
             public delegate void StepEventHandler(uint Steps, float Distance);
             public void RaiseWalkStep(uint walkSteps, float distance)
             {
-                WalkStep(walkSteps, distance);
+                WalkStep?.Invoke(walkSteps, distance);
             }
 
             /// <summary>
@@ -528,7 +528,7 @@ namespace InnoTecheLearning
             {
                 Debug(TAG, "Accelerometer accuracy changed.");
             }
-
+            /* How to debug a method
             public void OnSensorChanged(SensorEvent @event)
             {
                 int Line = 534;
@@ -561,15 +561,15 @@ namespace InnoTecheLearning
                Line = 561;          foundNonStep = false;
                                 }
                Line = 563;        numStepsWithFilter++;
-               Line = 564;        WalkStep(numStepsWithFilter, Distance);
+               Line = 564;        RaiseWalkStep(numStepsWithFilter, Distance);
                Line = 565;        Distance += strideLength;
                             }
                             else
                             {
                Line = 569;        foundNonStep = true;
                             }
-               Line = 571;    numStepsRaw++;
-               Line = 572;    SimpleStep(numStepsRaw, Distance);
+               Line = 571;   numStepsRaw++;
+               Line = 572;   RaiseSimpleStep(numStepsRaw, Distance);
                Line = 573;   foundValley = false;
                         }
                     }
@@ -616,7 +616,86 @@ namespace InnoTecheLearning
                     throw new Exception(Line.ToString(), ex);
                 }
             }
+            */
+            public void OnSensorChanged(SensorEvent @event)
+            {
+                if (@event.Sensor.Type != SensorType.Accelerometer) return;
+                System.Collections.Generic.IList<float> values = @event.Values;
+                float magnitude = 0;
+                foreach (float v in values) magnitude += v * v;
+                // Check if the middle reading within the current window represents
+                // a peak/valley.
+                int mid = (winPos + WIN_SIZE / 2) % WIN_SIZE;
 
+                // Peak is detected
+                if (startPeaking && isPeak)
+                {
+                    if (foundValley && lastValues[mid] - lastValley > PEAK_VALLEY_RANGE)
+                    {
+                        // Step detected on axis k with maximum peak-valley range.
+                        long timestamp = CurrentTimeMillis();
+                        stepInterval[intervalPos] = timestamp - stepTimestamp;
+                        intervalPos = (intervalPos + 1) % NUM_INTERVALS;
+                        stepTimestamp = timestamp;
+                        if (areStepsEquallySpaced)
+                        {
+                            if (foundNonStep)
+                            {
+                                numStepsWithFilter += NUM_INTERVALS;
+                                Distance += strideLength * NUM_INTERVALS;
+                                foundNonStep = false;
+                            }
+                            numStepsWithFilter++;
+                            RaiseWalkStep(numStepsWithFilter, Distance);
+                            Distance += strideLength;
+                        }
+                        else
+                        {
+                            foundNonStep = true;
+                        }
+                        numStepsRaw++;
+                        RaiseSimpleStep(numStepsRaw, Distance);
+                        foundValley = false;
+                    }
+                }
+                if (startPeaking && isValley)
+                {
+                    foundValley = true;
+                    lastValley = lastValues[mid];
+                }
+                // Store latest accelerometer reading in the window.
+                avgWindow[avgPos] = magnitude;
+                avgPos = (avgPos + 1) % avgWindow.Length;
+                lastValues[winPos] = 0;
+                foreach (float m in avgWindow) lastValues[winPos] += m;
+                lastValues[winPos] /= avgWindow.Length;
+                if (startPeaking || winPos > 1)
+                {
+                    int i = winPos;
+                    if (--i < 0) i += WIN_SIZE;
+                    lastValues[winPos] += 2 * lastValues[i];
+                    if (--i < 0) i += WIN_SIZE;
+                    lastValues[winPos] += lastValues[i];
+                    lastValues[winPos] /= 4;
+                }
+                else if (!startPeaking && winPos == 1)
+                {
+                    lastValues[1] = (lastValues[1] + lastValues[0]) / 2f;
+                }
+
+                long elapsedTimestamp = CurrentTimeMillis();
+                if (elapsedTimestamp - stepTimestamp > stopDetectionTimeout)
+                {
+                    stepTimestamp = elapsedTimestamp;
+                }
+                // Once the buffer is full, start peak/valley detection.
+                if (winPos == WIN_SIZE - 1 && !startPeaking)
+                {
+                    startPeaking = true;
+                }
+                // Increment position within the window.
+                winPos = (winPos + 1) % WIN_SIZE;
+            }
             //  Deleteable implementation
             public new void Dispose()
             {
