@@ -84,6 +84,8 @@ namespace InnoTecheLearning
             private CMStepCounter _stepCounter;
             private nint count;
 
+            public StepCounter()
+            { }
             public void Start()
             {
                 StartTime = DateTime.Now;
@@ -256,7 +258,7 @@ namespace InnoTecheLearning
 
             private float strideLength = STRIDE_LENGTH;
 
-            private float totalDistance = 0;
+            //private float totalDistance = 0;
 
             private long[] stepInterval = new long[NUM_INTERVALS];
 
@@ -796,6 +798,9 @@ namespace InnoTecheLearning
             }
 
             public StepCounter(StepCountChangedEventHandler Handler = null)
+#if __ANDROID__
+                :this()
+#endif
             { if(Handler != null) StepsChanged += Handler; }
 
             public static class Conversion
