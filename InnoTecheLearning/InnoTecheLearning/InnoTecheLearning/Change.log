@@ -9,9 +9,14 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 !Security to invite users to upgrade in case of vulnerabilities.
 ~Comment for notes.
 
-v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/Happypig375/InnoTech-eLearning/raw/Development/InnoTecheLearning/Versions/0.10.0a69.apk}
+v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/Happypig375/InnoTech-eLearning/raw/Development/InnoTecheLearning/Versions/0.10.0a100.apk}
++Proper negative factorizer calculations
+*Calculator replaces MathConverter
+*Calculator_Free replaces MathConverter_Duo
+*Lots of UI changes (eg Button looks)
 -0.9.0 Haloween theme
 ~Contains all features from 0.8.0 (Smallest Update Ever)
+~Now uses Xamarin Forms instead of App Inventor 2
 
 Changelog format update [2016-11-15 Tue 17:30]:
 Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>

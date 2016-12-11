@@ -1,26 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using static System.Double;
 
 namespace InnoTecheLearning
 {
     partial class Utils
     {
-        /// <summary>
-        /// Factorizes an expression.
-        /// </summary>
-        /// <param name="A">Multiplied by X².</param>
-        /// <param name="B">Multiplied by XY.</param>
-        /// <param name="C">Multiplied by Y².</param>
-        /// <returns>An IEnumerable which
-        /// [0] = First Root
-        /// [1] = Second Root
-        /// [2] = First factor's coefficient
-        /// [3] = First factor's constant term
-        /// [4] = Second factor's coefficient
-        /// [5] = Second factor's constant term
-        /// [6] = The highest common factor among the coefficients.
-        /// Factorized Result: [6]([2]X+[3]Y)([4]X+[5]Y)</returns>
         public static void FactorizeNonthrowable(ref double A, ref double B, ref double C
             , out Complex Root1, out Complex Root2)
         {
@@ -31,7 +17,7 @@ namespace InnoTecheLearning
         public static double FactorizeThrowable(double A, double B, double C
             , out Complex Root1, out Complex Root2,
             out double Factor1Co, out double Factor1CTerm,
-            out double Factor2Co, out double Factor2CTerm, double SafeCheck = 100000)
+            out double Factor2Co, out double Factor2CTerm, double SafeCheck = 1e6)
         {
             double X, Y, M = 0;
             FactorizeNonthrowable(ref A, ref B, ref C, out Root1, out Root2);
@@ -57,16 +43,33 @@ namespace InnoTecheLearning
             M -= M;
             return A;
         }
+        /// <summary>
+        /// Factorizes an expression.
+        /// </summary>
+        /// <param name="A">Multiplied by X².</param>
+        /// <param name="B">Multiplied by XY.</param>
+        /// <param name="C">Multiplied by Y².</param>
+        /// <returns>An IEnumerable which
+        /// [0] = First Root
+        /// [1] = Second Root
+        /// [2] = First factor's coefficient
+        /// [3] = First factor's constant term
+        /// [4] = Second factor's coefficient
+        /// [5] = Second factor's constant term
+        /// [6] = The highest common factor among the coefficients.
+        /// Factorized Result: [6]([2]X+[3]Y)([4]X+[5]Y)</returns>
         public static string Factorize(double A, double B, double C,
-            out Complex Root1, out Complex Root2, char X = 'X', char Y = 'Y', double SafeCheck = 100000)
+            out Complex Root1, out Complex Root2, char X = 'X', char Y = 'Y', double SafeCheck = 1e6)
         {
             try
             {
                 double Factor1Co, Factor1CTerm, Factor2Co, Factor2CTerm;
                 double HCF = FactorizeThrowable(A, B, C, out Root1, out Root2, out Factor1Co, out Factor1CTerm,
                     out Factor2Co, out Factor2CTerm, SafeCheck);
-                return Prefix(HCF) + "(" + Prefix(Factor1Co) + X + Suffix(Factor1CTerm) + ")" +
-                    "(" + Prefix(Factor2Co) + Y + Suffix(Factor2CTerm) + ")";
+                return Prefix(HCF) + (Factor2Co == 0 && Factor2CTerm == 0 ? X.ToString() :
+                    "(" + Prefix(Factor1Co) + X + Suffix(Factor1CTerm) + ")") +
+                    (Factor2Co == 0 && Factor2CTerm == 0 ? "" : 
+                    "(" + Prefix(Factor2Co) + Y + Suffix(Factor2CTerm) + ")");
             }
             catch (ArithmeticException ex)
             {
@@ -79,6 +82,9 @@ namespace InnoTecheLearning
         public static string Suffix(double n)
         { return n == 0 ? "" : (n > 0 ? "+" : "") + n.ToString(); }
         public static string ToABi(this Complex complex)
-        { return complex.Real + Suffix(complex.Imaginary) + (complex.Imaginary == 0 ? "": "i"); }
+        {
+            return (IsNaN(complex.Real) ? "NaN" : complex.Real.ToString()) +
+                   (IsNaN(complex.Imaginary) ? "" : Suffix(complex.Imaginary) + (complex.Imaginary == 0 ? "" : "i"));
+        }
     }
 } 

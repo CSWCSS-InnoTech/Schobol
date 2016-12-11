@@ -392,12 +392,13 @@ Retry:      try
         private static string EvaluteAns = "";
         public static string Evaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
         {   
-            string Prefix = "var Ans : String = \"" + EvaluteAns.Replace("\"", @"\""").Replace(@"\", @"\\") + @""";
+            string Prefix = "var Prev : String = \"" + EvaluteAns.Replace(@"\", @"\\").Replace("\"", @"\""") + @""";
+var Ans : double = double(Prev);
 function Abs (n) {return Math.abs(n); }
 function Acos(n : double) : double { return Math.acos(n); }
 function Asin (n : double) : double { return Math.asin(n); }
 function Atan (n : double) : double { return Math.atan(n); }
-function Atan (y : double, x : double) : double{ return Math.atan2(y, x); }
+function Atan2 (y : double, x : double) : double{ return Math.atan2(y, x); }
 function Ceil(x : double) : double { return Math.ceil(x); }
 function Cos(x : double) : double { return Math.cos(x); }
 function Exp(x : double) : double { return Math.exp(x); }
@@ -453,7 +454,7 @@ const Log10e = Math.LOG10E;
             }
             catch (Exception ex) when (Alert != null)
             {
-                return '⮾' + ex.Message;
+                return 'ⓧ' + ex.Message; //⮾
             }
         }
 #if false

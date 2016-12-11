@@ -889,7 +889,7 @@ namespace InnoTecheLearning
                 :this()
 #endif
             { if(Handler != null) StepsChanged += Handler; }
-
+            
             public static class Conversion
             {
                 public static double StepCountToPercentage(int stepCount)

@@ -94,8 +94,8 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             Pedometer = new StepCounter((uint Steps, TimeSpan TimePassed, float Distance) =>
             {
-                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString();
-                Sports_Distance.Text = Distance.ToString(); Sports_Now.Text = DateTime.Now.TimeOfDay.ToString();
+                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString("HH:mm:ss");
+                Sports_Distance.Text = Distance.ToString() + " m"; Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
             });
             Log("Main page initialized.");
         }
@@ -371,13 +371,14 @@ namespace InnoTecheLearning
                 Append(Func.Children, Expressions.Min, "Min", 1, 2);
                 Append(Func.Children, Expressions.Tan, "Tan", 2, 2);
                 Append(Func.Children, Expressions.Atan, "Atan", 3, 2);
-                Append(Func.Children, Expressions.Sqrt, "Sqrt", 0, 3);
-                Append(Func.Children, Expressions.Round, "Round", 1, 3);
-                Append(Func.Children, Expressions.Ceil, "Ceil", 2, 3);
-                Append(Func.Children, Expressions.Floor, "Floor", 3, 3);
-                Append(Func.Children, Expressions.Comma, 0, 2, 4, 5);
-                Append(Func.Children, Expressions.Abs, "Abs", 2, 4);
-                Append(Func.Children, Expressions.Factorial, "Factor", 3, 4);
+                Append(Func.Children, Expressions.Abs, "Abs", 0, 3);
+                Append(Func.Children, Expressions.Factorial, "Factor", 1, 3);
+                Append(Func.Children, Expressions.Comma, 2, 3);
+                Append(Func.Children, Expressions.Atan2, "Atan2", 3, 3);
+                Append(Func.Children, Expressions.Sqrt, "Sqrt", 0, 4);
+                Append(Func.Children, Expressions.Round, "Round", 1, 4);
+                Append(Func.Children, Expressions.Ceil, "Ceil", 2, 4);
+                Append(Func.Children, Expressions.Floor, "Floor", 3, 4);
 
                 Const = new Grid
                 {
@@ -537,18 +538,23 @@ namespace InnoTecheLearning
                 };
             }
         }
-        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40,0x40,0x40));
-        Label Sports_Time = BoldLabel("00:00:00", Color.White, Color.FromRgb(0x40, 0x40, 0x40));
-        Label Sports_Distance = BoldLabel("0m", Color.White, Color.FromRgb(0x40, 0x40, 0x40));
-        Label Sports_Now = BoldLabel(DateTime.Now.TimeOfDay.ToString(), Color.White, Color.FromRgb(0x40, 0x40, 0x40));
+        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40,0x40,0x40), NamedSize.Large);
+        Label Sports_Time = BoldLabel("00:00:00", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
+        Label Sports_Distance = BoldLabel("0 m", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
+        Label Sports_Now = BoldLabel(DateTime.Now.ToString("HH:mm:ss"), Color.White,
+            Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         IStepCounter Pedometer;
         public StackLayout Sports
         {
             get
             {
-
+                Device.StartTimer(TimeSpan.FromSeconds(1), 
+                    () => { Sports_Time.Text = Pedometer.TimePassed.ToString("HH:mm:ss");
+                        Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss"); return Showing == Pages.Sports; });
                 return new StackLayout
                 {
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center,
                     Children = {
                         Button("Start Running", delegate { Pedometer.Start(); }, Color.Blue, Color.White),
                         Button("Stop Running", delegate { Pedometer.Stop(); }, Color.Red, Color.White),

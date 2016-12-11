@@ -260,7 +260,8 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
-            public static Label BoldLabel(Text Text, Color TextColor = default(Color), Color BackColor = default(Color))
+            public static Label BoldLabel(Text Text, Color TextColor = default(Color), 
+                Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
             {
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
@@ -273,10 +274,12 @@ namespace InnoTecheLearning
                     TextColor = TextColor,
                     BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
-                    HorizontalTextAlignment = TextAlignment.Center
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = Device.GetNamedSize(Size, typeof(Label))
                 };
             }
-            public static Label BoldLabel2(Text Text, Color TextColor = default(Color), Color BackColor = default(Color))
+            public static Label BoldLabel2(Text Text, Color TextColor = default(Color), 
+                Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
             {
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
@@ -288,7 +291,8 @@ namespace InnoTecheLearning
                     TextColor = TextColor,
                     BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
-                    HorizontalTextAlignment = TextAlignment.Center
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = Device.GetNamedSize(Size, typeof(Label))
                 };
             }
             public static ScrollView Changelog
