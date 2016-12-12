@@ -291,8 +291,8 @@ namespace InnoTecheLearning
                 Result = (T)Object;
                 return true;
             }
-            catch (Exception ex)when(ex is InvalidCastException||
-            ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            catch (Exception)
+            //when(ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 Result = default(T);
                 return false;
@@ -312,10 +312,53 @@ namespace InnoTecheLearning
             {
                 return (T)Object;
             }
-            catch (Exception ex) when (ex is InvalidCastException ||
-            ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            catch (Exception) 
+            //when (ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 return default(T);
+            }
+        }
+        /// <summary>
+        /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
+        /// <param name="Object">The <see cref="object"/> instance to convert.</param>
+        /// <param name="Default">The result of conversion if failed.</param>
+        /// <param name="Result">The result of conversion if successful.
+        /// If not it will be <paramref name="Default"/>.</param>
+        /// <returns>Whether the conversion has succeeded.</returns>
+        public static bool TryCast<T>(dynamic Object, T Default, out T Result)
+        {
+            try
+            {
+                Result = (T)Object;
+                return true;
+            }
+            catch (Exception)
+            //when(ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            {
+                Result = Default;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> to convert to.</typeparam>
+        /// <param name="Object">The <see cref="object"/> instance to convert.</param>
+        /// <param name="Default">The result of conversion if failed.</param>
+        /// <returns>The result of conversion if successful. If not it will be <paramref name="Default"/>.</returns>
+        public static T TryCast<T>(dynamic Object, T Default)
+        {
+            try
+            {
+                return (T)Object;
+            }
+            catch (Exception)
+            //when (ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
+            {
+                return Default;
             }
         }
 

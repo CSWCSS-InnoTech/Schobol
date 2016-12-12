@@ -861,7 +861,13 @@ namespace InnoTecheLearning
 #else
         {
 #endif
-            public TimeSpan TimePassed { get { return DateTime.Now - StartTime; } }
+            public TimeSpan TimePassed
+            {
+                get
+                {
+                    return StartTime == default(DateTime) ? TimeSpan.Zero : DateTime.Now - StartTime;
+                }
+            }
             public event StepCountChangedEventHandler StepsChanged;
 
             //  Properties
@@ -900,7 +906,7 @@ namespace InnoTecheLearning
 
                 public static double StepCountToPercentage(Int64 stepCount)
                 {
-                    var per = (stepCount / (decimal)10000) * 100;
+                    var per = (stepCount / 10000m) * 100;
                     return ((double)per);
                 }
 

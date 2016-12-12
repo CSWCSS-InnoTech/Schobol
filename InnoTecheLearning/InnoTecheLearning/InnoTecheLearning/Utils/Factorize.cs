@@ -21,6 +21,8 @@ namespace InnoTecheLearning
         {
             double X, Y, M = 0;
             FactorizeNonthrowable(ref A, ref B, ref C, out Root1, out Root2);
+            if (IsNaN(Root1.Imaginary)) throw new ArithmeticException("NaN cannot be factorized.");
+            if (IsNaN(Root2.Imaginary)) throw new ArithmeticException("NaN cannot be factorized.");
             if (Root1.Imaginary != 0) throw new ArithmeticException("Imaginary root cannot be factorized.");
             if (Root2.Imaginary != 0) throw new ArithmeticException("Imaginary root cannot be factorized.");
             X = Root1.Real;

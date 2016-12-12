@@ -530,8 +530,8 @@ namespace InnoTecheLearning
                         Row(false, C2, (Text)"XY", S3),
                         Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(double.Parse(S1.Text + C1.Text), TryCast<double>(S2.Text + C2.Text),
-                            TryCast<double>(S3.Text + C3.Text), out X1, out X2);
+                            Factorize(TryCast(S1.Text + C1.Text, 0d), TryCast(S2.Text + C2.Text, 0d),
+                            TryCast(S3.Text + C3.Text, 0d), out X1, out X2);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
                     }
