@@ -331,6 +331,7 @@ namespace InnoTecheLearning
                 Distance = 0;
                 prevStopClockTime = 0;
                 startTime = CurrentTimeMillis();
+                StartTime = DateTime.Now;
             }
 
             ///<summary>Resumes counting, synonym of Start.</summary>
@@ -345,6 +346,7 @@ namespace InnoTecheLearning
                 if (!pedometerPaused)
                 {
                     pedometerPaused = true;
+                    StartTime = DateTime.MinValue;
                     sensorManager.UnregisterListener(this);
                     Debug(TAG, "Unregistered listener on pause");
                     prevStopClockTime = (prevStopClockTime
