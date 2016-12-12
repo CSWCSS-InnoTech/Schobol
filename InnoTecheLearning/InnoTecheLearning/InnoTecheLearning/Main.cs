@@ -92,11 +92,6 @@ namespace InnoTecheLearning
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
-            Pedometer = new StepCounter((uint Steps, TimeSpan TimePassed, float Distance) =>
-            {
-                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString(@"hh\:mm\:ss");
-                Sports_Distance.Text = Distance.ToString() + " m"; Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
-            });
             Log("Main page initialized.");
         }
         protected override bool OnBackButtonPressed()
@@ -530,8 +525,8 @@ namespace InnoTecheLearning
                         Row(false, C2, (Text)"XY", S3),
                         Row(false, C3, (Text)"Y²"),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(TryCast(S1.Text + C1.Text, 0d), TryCast(S2.Text + C2.Text, 0d),
-                            TryCast(S3.Text + C3.Text, 0d), out X1, out X2);
+                            Factorize(TryParseDouble(S1.Text + C1.Text, 0d), TryParseDouble(S2.Text + C2.Text, 0d),
+                            TryParseDouble(S3.Text + C3.Text, 0d), out X1, out X2);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
                     }
@@ -543,7 +538,11 @@ namespace InnoTecheLearning
         Label Sports_Distance = BoldLabel("0 m", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Now = BoldLabel(DateTime.Now.ToString("HH:mm:ss"), Color.White,
             Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
-        IStepCounter Pedometer;
+        IStepCounter Pedometer = new StepCounter(/*(uint Steps, TimeSpan TimePassed, float Distance) =>
+            {
+                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString(@"hh\:mm\:ss");
+                Sports_Distance.Text = Distance.ToString() + " m"; Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
+            }*/);
         public StackLayout Sports
         {
             get

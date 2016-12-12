@@ -592,6 +592,8 @@ const Log10e = Math.LOG10E;
             return (object sender, TextChangedEventArgs e) =>
             { if (((Entry)sender).Text != Value()) { ((Entry)sender).Text = Value(); } };
         }
+        public static double TryParseDouble(string s, double @default)
+        { double d; if (double.TryParse(s, out d)) { return d; } else { return @default; }; }
         /*
         public string TransformForCurrentPlatform(string url)
         {
