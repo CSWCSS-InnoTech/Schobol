@@ -152,7 +152,7 @@ namespace InnoTecheLearning
                          ),
 
                 Button("Changelog", delegate {Showing = Pages.Changelog; }),
-                Utils.Create.Version
+                Utils.Create.VersionDisplay
                     }
                 };
             }

@@ -6,33 +6,46 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 102"; 
-        public static Version Version
-        { get { return Version.Parse(VersionFull.Remove(VersionFull.IndexOf(' '))); } }
-        public static string VersionName
-        { get { var NoVersion =  VersionFull.Substring(VersionFull.IndexOf('(') + 1);
-                return NoVersion.Remove(')');} }
-        public static VersionPhrase VersionState { get {
-                return VersionPhrase.Parse(VersionFull.Replace(Version.ToString(), "").Replace(VersionName, ""));} }
-        public struct VersionPhrase
-        {   VersionStage Stage { get; }
-            int Build { get; }
-            public VersionPhrase(VersionStage Stage, int Build)
-            {   this.Stage = Stage; this.Build = Build; }
-            public static VersionPhrase Parse(string Text)
-            {   Text = Text.Trim();
-                return new VersionPhrase((VersionStage)Enum.Parse(typeof(VersionStage),
-                    Text.Replace(' ', '_').TrimStart('(',')').TrimStart().TrimEnd(CharGen('0','9'))),
-                    int.Parse(Text.TrimStart(CharGen('\x20','\x7f', CharGen('0','9')))));
+        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 102); } }
+        public const string VersionName = "Xamarin Update";
+
+        public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
+        public static string VersionFull
+        {
+            get
+            {
+                return Version.ToString(3) + (string.IsNullOrEmpty(VersionName) ? "" : $" ({VersionName})") +
+                       (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
+                       " " + VersionState.ToString().Replace('_', ' ') + " " + Version.MinorRevision : "");
             }
-            public override string ToString()
-            { return Stage.ToString().Replace('_', ' ') + ' ' + Build.ToString(); }
         }
+        public static string VersionShort
+        {
+            get
+            {
+                return Version.ToString(3) +
+                       (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
+                       (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
+            }
+        }
+
+        public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
+        public static string ToShort(this Version Version)
+        {
+            return Version.ToString(3) +
+                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
+                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
+        }
+
         public enum VersionStage : byte {
+            /// <summary>
+            /// The stage of the app is undefined.
+            /// </summary>
+            Undefined,
             /// <summary>
             /// The app is in alpha phrase.
             /// </summary>
-            Alpha = 0,
+            Alpha,
             /// <summary>
             /// The app is in beta phrase.
             /// </summary>
@@ -46,6 +59,7 @@ namespace InnoTecheLearning
             /// </summary>
             Release
         }
+
         public static class Constants
         {
             /// <summary>
@@ -97,14 +111,17 @@ namespace InnoTecheLearning
             /// Vertical tab character. Not used in Microsoft Windows.
             /// </summary>
             public const char VerticalTab = '\v';
+            /// <summary>
+            /// Full block character. Not used in Microsoft Windows.
+            /// </summary>
+            public const char FullBlock = '█';
             public const string Trash =
 @"游BB金句：星期二過後就係星期三
 - 在非洲，每六十秒，就有一分鐘過去。
 - 每呼吸60秒，就減少一分鐘的壽命。
 - 張開你的眼睛！否則，你將什麼都看不見。
 - 誰能想的到，這名16歲少女，在四年前，只是一名12歲少女。";
-        }
-        public const string Shorts =
+            public const string Shorts =
 "不時見到 WhatsApp 對話，有人打 LOL、er、LMK，但係一個都睇唔明，而且風氣吹到去周圍都係，"+
 @"個個都覆你 OMW、BOT ，睇唔明好蝕底。短短幾個英文字母係咩意思？唔好再咁老套，以下係常見的英文WhatsApp潮語，以後同朋友溝通更容易！
 
@@ -154,5 +171,6 @@ hm = 嗯……
 oops = 弊啦！
 oh = 喔
 yeah/ yup = 同意";
+        }
     }
 }

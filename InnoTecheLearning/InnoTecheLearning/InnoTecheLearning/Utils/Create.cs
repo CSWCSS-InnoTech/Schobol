@@ -323,7 +323,7 @@ namespace InnoTecheLearning
                     return Return;
                 }
             }
-            public static Label Version
+            public static Label VersionDisplay
             {
                 get
                 {
@@ -464,6 +464,8 @@ namespace InnoTecheLearning
                 if(ReadOnly!= null) Return.TextChanged += TextChanged(ReadOnly);
                 return Return;
             }
+            public static Version Version(int Major, int Minor, int Build = -1, VersionStage Stage = 0, short Revision = -1)
+            { return new Version(Major, Minor, Build, (int)Stage << 16 + Revision); }
         }
     }
 }
