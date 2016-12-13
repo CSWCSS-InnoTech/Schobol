@@ -464,7 +464,7 @@ namespace InnoTecheLearning
                 if(ReadOnly!= null) Return.TextChanged += TextChanged(ReadOnly);
                 return Return;
             }
-            public static Version Version(int Major, int Minor, int Build = -1, VersionStage Stage = 0, short Revision = -1)
+            public static Version Version(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0)
             { return new Version(Major, Minor, Build, (int)Stage << 16 + Revision); }
         }
     }
