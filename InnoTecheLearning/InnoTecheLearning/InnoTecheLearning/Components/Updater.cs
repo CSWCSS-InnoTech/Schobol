@@ -1,44 +1,160 @@
-﻿#if __ANDROID__
-using Android.App;
-using Android.Content;
-using Android.Net;
-using Android.OS;
-using Android.Runtime;
-using Android.Util;
-using Android.Views;
-using Android.Widget;
-using Java.IO;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-//using System.IO;
-using System.Linq;
+﻿#if __ANDROID__ || WINDOWS_UWP
+using Callback = System.Action<InnoTecheLearning.Utils.Updater.UpdateProgress>;
+using Exception = System.Exception;
 using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+#if __ANDROID__
+using Android.Content;
 using Xamarin.Forms;
-using Uri = System.Uri;
 using AndroUri = Android.Net.Uri;
 using Environment = Android.OS.Environment;
 using AndroLog = Android.Util.Log;
-using Exception = System.Exception;
-using System.Diagnostics.Contracts;
-using CultureInfo = System.Globalization.CultureInfo;
-using NumberStyles = System.Globalization.NumberStyles;
 using Throwable = Java.Lang.Throwable;
+using File = Java.IO.File;
+using Path = System.IO.Path;
+#elif WINDOWS_UWP
+using Windows.Foundation;
+using Windows.ApplicationModel;
+using Windows.Management.Deployment;
+using Uri = System.Uri;
+#endif
 
 namespace InnoTecheLearning
 {
     partial class Utils
     {
-        class Updater
+        interface IUpdater
+        { string NewestAlpha { get; } UpdateState CheckUpdate(); HttpStatusCode GetPage(string url); }
+        public enum UpdateState : byte
+        { Undefined, Success, Newest, NoNetwork, DownloadException, InstallException }
+        public static string ToName(this Updater.UpdateProgress Progress)
         {
-            const string ID = "InnoTecheLearning.Updater";
+            if (Progress >= Updater.UpdateProgress.Downloading_0_Percent &&
+                Progress <= Updater.UpdateProgress.Downloading_100_Percent)
+                return $"Downloading ({Progress - Updater.UpdateProgress.Downloading_0_Percent}%)";
+            return Progress.ToString().Replace('_', ' ');
+        }
+        public class Updater : IUpdater
+        {
+            public bool Is404(string url) { return GetPage(url) == HttpStatusCode.NotFound; }
+            public event Callback Progress;
+            public Updater(Callback Action)
+            { Progress += Action; }
+
+            public enum UpdateProgress : byte
+            {
+                Checking_Internet = 0,
+                Getting_Downloads_Folder = 1,
+                Checking_Newest_Update = 2,
+                Downloading = 3,
+                #region Downloading Percent
+                Downloading_0_Percent = 100,
+                Downloading_1_Percent = 101,
+                Downloading_2_Percent = 102,
+                Downloading_3_Percent = 103,
+                Downloading_4_Percent = 104,
+                Downloading_5_Percent = 105,
+                Downloading_6_Percent = 106,
+                Downloading_7_Percent = 107,
+                Downloading_8_Percent = 108,
+                Downloading_9_Percent = 109,
+                Downloading_10_Percent = 110,
+                Downloading_11_Percent = 111,
+                Downloading_12_Percent = 112,
+                Downloading_13_Percent = 113,
+                Downloading_14_Percent = 114,
+                Downloading_15_Percent = 115,
+                Downloading_16_Percent = 116,
+                Downloading_17_Percent = 117,
+                Downloading_18_Percent = 118,
+                Downloading_19_Percent = 119,
+                Downloading_20_Percent = 120,
+                Downloading_21_Percent = 121,
+                Downloading_22_Percent = 122,
+                Downloading_23_Percent = 123,
+                Downloading_24_Percent = 124,
+                Downloading_25_Percent = 125,
+                Downloading_26_Percent = 126,
+                Downloading_27_Percent = 127,
+                Downloading_28_Percent = 128,
+                Downloading_29_Percent = 129,
+                Downloading_30_Percent = 130,
+                Downloading_31_Percent = 131,
+                Downloading_32_Percent = 132,
+                Downloading_33_Percent = 133,
+                Downloading_34_Percent = 134,
+                Downloading_35_Percent = 135,
+                Downloading_36_Percent = 136,
+                Downloading_37_Percent = 137,
+                Downloading_38_Percent = 138,
+                Downloading_39_Percent = 139,
+                Downloading_40_Percent = 140,
+                Downloading_41_Percent = 141,
+                Downloading_42_Percent = 142,
+                Downloading_43_Percent = 143,
+                Downloading_44_Percent = 144,
+                Downloading_45_Percent = 145,
+                Downloading_46_Percent = 146,
+                Downloading_47_Percent = 147,
+                Downloading_48_Percent = 148,
+                Downloading_49_Percent = 149,
+                Downloading_50_Percent = 150,
+                Downloading_51_Percent = 151,
+                Downloading_52_Percent = 152,
+                Downloading_53_Percent = 153,
+                Downloading_54_Percent = 154,
+                Downloading_55_Percent = 155,
+                Downloading_56_Percent = 156,
+                Downloading_57_Percent = 157,
+                Downloading_58_Percent = 158,
+                Downloading_59_Percent = 159,
+                Downloading_60_Percent = 160,
+                Downloading_61_Percent = 161,
+                Downloading_62_Percent = 162,
+                Downloading_63_Percent = 163,
+                Downloading_64_Percent = 164,
+                Downloading_65_Percent = 165,
+                Downloading_66_Percent = 166,
+                Downloading_67_Percent = 167,
+                Downloading_68_Percent = 168,
+                Downloading_69_Percent = 169,
+                Downloading_70_Percent = 170,
+                Downloading_71_Percent = 171,
+                Downloading_72_Percent = 172,
+                Downloading_73_Percent = 173,
+                Downloading_74_Percent = 174,
+                Downloading_75_Percent = 175,
+                Downloading_76_Percent = 176,
+                Downloading_77_Percent = 177,
+                Downloading_78_Percent = 178,
+                Downloading_79_Percent = 179,
+                Downloading_80_Percent = 180,
+                Downloading_81_Percent = 181,
+                Downloading_82_Percent = 182,
+                Downloading_83_Percent = 183,
+                Downloading_84_Percent = 184,
+                Downloading_85_Percent = 185,
+                Downloading_86_Percent = 186,
+                Downloading_87_Percent = 187,
+                Downloading_88_Percent = 188,
+                Downloading_89_Percent = 189,
+                Downloading_90_Percent = 190,
+                Downloading_91_Percent = 191,
+                Downloading_92_Percent = 192,
+                Downloading_93_Percent = 193,
+                Downloading_94_Percent = 194,
+                Downloading_95_Percent = 195,
+                Downloading_96_Percent = 196,
+                Downloading_97_Percent = 197,
+                Downloading_98_Percent = 198,
+                Downloading_99_Percent = 199,
+                Downloading_100_Percent = 200,
+                #endregion
+                Installing = 255
+            }
+#if __ANDROID__
             const string Url = @"https://github.com/Happypig375/InnoTech-eLearning/blob/Versions/Android/";
             const string Download = @"https://github.com/Happypig375/InnoTech-eLearning/raw/Versions/Android/";
+            const string ID = "InnoTecheLearning.Updater";
             public string NewestAlpha
             {
                 get
@@ -46,23 +162,66 @@ namespace InnoTecheLearning
                     ModifiableVersion TestFor = Version;
                     while (!Is404(Url + TestFor.ToShort() + ".apk"))
                         TestFor.Major++;
+                    TestFor.Major--;
+                    while (!Is404(Url + TestFor.ToShort() + ".apk"))
+                        TestFor.Minor++;
+                    TestFor.Minor--;
+                    while (!Is404(Url + TestFor.ToShort() + ".apk"))
+                        TestFor.Build++;
+                    TestFor.Build--;
+                    while (!Is404(Url + TestFor.ToShort() + ".apk"))
+                        TestFor.MajorRevision++;
+                    TestFor.MajorRevision--;
+                    while (!Is404(Url + TestFor.ToShort() + ".apk"))
+                        TestFor.MinorRevision++;
+                    TestFor.MinorRevision--;
+                    return TestFor.ToShort();
                 }
             }
-            public void CheckUpdate()
+            public UpdateState CheckUpdate()
             {
-                HttpWebRequest Request = new HttpWebRequest(new Uri(@"http://xxxxx/downloads/app.test-signed.apk"));
-                //this installs the app onto the device,
-                Intent intent = new Intent();
-                intent.SetDataAndType(
-                    AndroUri.FromFile(
-                        new File(Environment.ExternalStorageDirectory.Path + "/app.test-signed.apk")
-                    ), "application/vnd.android.package-archive"
-                );
-                Forms.Context.StartActivity(intent);
+                Progress?.Invoke(UpdateProgress.Checking_Internet);
+                if (!IsInternetAvailable) return UpdateState.NoNetwork;
+
+                Progress?.Invoke(UpdateProgress.Getting_Downloads_Folder);
+                string LocalDownload = Environment.GetExternalStoragePublicDirectory
+                    (Environment.DirectoryDownloads).AbsolutePath;
+                string DownloadLocation = "";
+                try
+                {
+                    Progress?.Invoke(UpdateProgress.Checking_Newest_Update);
+                    string NewestAlpha = this.NewestAlpha;
+                    if (NewestAlpha == VersionShort) return UpdateState.Newest;
+                    NewestAlpha += ".apk";
+                    Progress?.Invoke(UpdateProgress.Downloading);
+                    WebClient Client = new WebClient();
+                    Client.DownloadProgressChanged += (object sender, DownloadProgressChangedEventArgs e) => 
+                    { Progress((UpdateProgress)((byte)UpdateProgress.Downloading_0_Percent + e.ProgressPercentage)); };
+                    Do(Client.DownloadFileTaskAsync(Download + NewestAlpha,
+                        DownloadLocation = Path.Combine(LocalDownload, NewestAlpha)));
+                }
+                catch (Exception)
+                {
+                    return UpdateState.DownloadException;
+                }
+                try
+                {
+                    Progress?.Invoke(UpdateProgress.Installing);
+                    //this installs the app onto the device,
+                    Intent intent = new Intent();
+                    intent.SetDataAndType(
+                        AndroUri.FromFile(new File(DownloadLocation)), "application/vnd.android.package-archive"
+                    );
+                    Forms.Context.StartActivity(intent);
+                    return UpdateState.Success;
+                }
+                catch (Exception)
+                {
+                    return UpdateState.InstallException;
+                }
             }
 
-            public static bool Is404(string url) { return GetPage(url) == HttpStatusCode.NotFound; }
-            public static HttpStatusCode GetPage(string url)
+            public HttpStatusCode GetPage(string url)
             {
                 try
                 {
@@ -83,624 +242,99 @@ namespace InnoTecheLearning
                     throw;
                 }
             }
- 
-    // A Version object contains four hierarchical numeric components: major, minor,
-    // build and revision.  Build and revision may be unspecified, which is represented 
-    // internally as a -1.  By definition, an unspecified component matches anything 
-    // (both unspecified and specified), and an unspecified component is "less than" any
-    // specified component.
- 
-    [Serializable]
-    [System.Runtime.InteropServices.ComVisible(true)]
-    public sealed class ModifiableVersion : ICloneable, IComparable
-        , IComparable<ModifiableVersion>, IEquatable<ModifiableVersion>
-    {
-                public static implicit operator Version(ModifiableVersion MV)
-                { return new Version(MV._Major, MV._Minor, MV._Build, MV._Revision); }
-                public static implicit operator ModifiableVersion(Version V)
-                { return new Version(V.Major, V.Minor, V.Build, V.Revision); }
-                // AssemblyName depends on the order staying the same
-                private int _Major;
-        private int _Minor;
-        private int _Build = -1;
-        private int _Revision = -1;
-        private static readonly char[] SeparatorsArray = new char[] { '.' };
-
-        public ModifiableVersion(int major, int minor, int build, int revision)
-        {
-            if (major < 0)
-                throw new ArgumentOutOfRangeException("major", major,"major is less than zero.");
-
-            if (minor < 0)
-                throw new ArgumentOutOfRangeException("minor", minor, "minor is less than zero.");
-
-            if (build < 0)
-                throw new ArgumentOutOfRangeException("build", build, "build is less than zero.");
-
-            if (revision < 0)
-                throw new ArgumentOutOfRangeException("revision", revision, "revision is less than zero.");
-            Contract.EndContractBlock();
-
-            _Major = major;
-            _Minor = minor;
-            _Build = build;
-            _Revision = revision;
-        }
-
-        public ModifiableVersion(int major, int minor, int build)
+            public bool IsInternetAvailable
+            {
+                get
                 {
-                    if (major < 0)
-                        throw new ArgumentOutOfRangeException("major", major, "major is less than zero.");
-
-                    if (minor < 0)
-                        throw new ArgumentOutOfRangeException("minor", minor, "minor is less than zero.");
-
-                    if (build < 0)
-                        throw new ArgumentOutOfRangeException("build", build, "build is less than zero.");
-
-                    Contract.EndContractBlock();
-
-            _Major = major;
-            _Minor = minor;
-            _Build = build;
-        }
-
-        public ModifiableVersion(int major, int minor)
+                    try
+                    {
+                        Dns.GetHostEntry("www.github.com");
+                        return true;
+                    }
+                    catch (System.Net.Sockets.SocketException)
+                    { return false; }
+                }
+            }
+#elif WINDOWS_UWP
+            const string Url = @"https://github.com/Happypig375/InnoTech-eLearning/blob/Versions/UWP/";
+            const string Download = @"https://github.com/Happypig375/InnoTech-eLearning/raw/Versions/UWP/";
+            const string ID = "InnoTecheLearning.Updater";
+            public string NewestAlpha
+            {
+                get
                 {
-                    if (major < 0)
-                        throw new ArgumentOutOfRangeException("major", major, "major is less than zero.");
+                    ModifiableVersion TestFor = Version;
+                    while (!Is404(Url + TestFor.ToShort() + ".appxbundle"))
+                        TestFor.Major++;
+                    TestFor.Major--;
+                    while (!Is404(Url + TestFor.ToShort() + ".appxbundle"))
+                        TestFor.Minor++;
+                    TestFor.Minor--;
+                    while (!Is404(Url + TestFor.ToShort() + ".appxbundle"))
+                        TestFor.Build++;
+                    TestFor.Build--;
+                    while (!Is404(Url + TestFor.ToShort() + ".appxbundle"))
+                        TestFor.MajorRevision++;
+                    TestFor.MajorRevision--;
+                    while (!Is404(Url + TestFor.ToShort() + ".appxbundle"))
+                        TestFor.MinorRevision++;
+                    TestFor.MinorRevision--;
+                    return TestFor.ToShort();
+                }
+            }
+            public UpdateState CheckUpdate()
+            {
+                Progress?.Invoke(UpdateProgress.Checking_Internet);
+                if (!IsInternetAvailable) return UpdateState.NoNetwork;
+                try
+                {
+                    Progress?.Invoke(UpdateProgress.Checking_Newest_Update);
+                    string NewestAlpha = this.NewestAlpha;
+                    if (NewestAlpha == VersionShort) return UpdateState.Newest;
+                    NewestAlpha += ".appxbundle";
+                    Uri updatePackage = new Uri(Download + NewestAlpha);
 
-                    if (minor < 0)
-                        throw new ArgumentOutOfRangeException("minor", minor, "minor is less than zero.");
-                    Contract.EndContractBlock();
-
-            _Major = major;
-            _Minor = minor;
-        }
-
-        public ModifiableVersion(String version)
-        {
-            Version v = ModifiableVersion.Parse(version);
-            _Major = v.Major;
-            _Minor = v.Minor;
-            _Build = v.Build;
-            _Revision = v.Revision;
-        }
-
-#if FEATURE_LEGACYNETCF
-        //required for Mango AppCompat
-        [System.Runtime.CompilerServices.FriendAccessAllowed]
+                    //this installs the app onto the device,
+                    string packageFamilyName = Package.Current.Id.FamilyName;
+                    string packageLocation = updatePackage.ToString();
+                    PackageManager packagemanager = new PackageManager();
+                    Progress?.Invoke(UpdateProgress.Downloading);
+                    var Action = packagemanager.UpdatePackageAsync(new Uri(packageLocation), 
+                        null, DeploymentOptions.ForceApplicationShutdown);
+                    Action.Progress += (IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> result,
+                        DeploymentProgress progress) => {
+                            Progress?.Invoke((UpdateProgress)
+                                ((byte)UpdateProgress.Downloading_0_Percent + progress.percentage)); };
+                    return UpdateState.Success;
+                }
+                catch (Exception)
+                {
+                    return UpdateState.InstallException;
+                }
+            }
+            public HttpStatusCode GetPage(string url)
+            {
+                // Creates an HttpWebRequest for the specified URL. 
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                // Sends the HttpWebRequest and waits for a response.
+                using (HttpWebResponse myHttpWebResponse = (HttpWebResponse)Do(myHttpWebRequest.GetResponseAsync()))
+                    return myHttpWebResponse.StatusCode;
+            }
+            public bool IsInternetAvailable
+            {
+                get
+                {
+                    try
+                    {
+                        Do(Dns.GetHostEntryAsync("www.github.com"));
+                        return true;
+                    }
+                    catch (System.Net.Sockets.SocketException)
+                    { return false; }
+                }
+            }
 #endif
-        public ModifiableVersion()
-        {
-            _Major = 0;
-            _Minor = 0;
         }
-
-        // Properties for setting and getting version numbers
-        public int Major
-        {
-            get { return _Major; }
-                    set { _Major = value; }
-        }
-
-        public int Minor
-        {
-            get { return _Minor; }
-                    set { _Minor = value; }
-                }
-
-        public int Build
-        {
-            get { return _Build; }
-                    set { _Build = value; }
-                }
-
-        public int Revision
-        {
-            get { return _Revision; }
-                    set { _Revision = value; }
-                }
-
-        public short MajorRevision
-        {
-            get { return (short)(_Revision >> 16); }
-                    set { _Revision = value << 16 + MinorRevision; }
-                }
-
-        public short MinorRevision
-        {
-            get { return (short)(_Revision & 0xFFFF); }
-                    set { _Revision = MajorRevision + value; }
-        }
-
-        public Object Clone()
-        {
-                    ModifiableVersion v = new ModifiableVersion();
-            v._Major = _Major;
-            v._Minor = _Minor;
-            v._Build = _Build;
-            v._Revision = _Revision;
-            return (v);
-        }
-
-        public int CompareTo(Object version)
-        {
-            if (version == null)
-            {
-#if FEATURE_LEGACYNETCF
-                if (CompatibilitySwitches.IsAppEarlierThanWindowsPhone8) {
-                    throw new ArgumentOutOfRangeException();
-                } else {
-#endif
-                return 1;
-#if FEATURE_LEGACYNETCF
-                }
-#endif
-            }
-
-                    ModifiableVersion v = version as ModifiableVersion;
-            if (v == null)
-            {
-#if FEATURE_LEGACYNETCF
-                if (CompatibilitySwitches.IsAppEarlierThanWindowsPhone8) {
-                    throw new InvalidCastException(Environment.GetResourceString("Arg_MustBeVersion"));
-                } else {
-#endif
-                throw new ArgumentException("version must be a ModifiableVersion.", "version");
-#if FEATURE_LEGACYNETCF
-                }
-#endif                
-            }
-
-            if (this._Major != v._Major)
-                if (this._Major > v._Major)
-                    return 1;
-                else
-                    return -1;
-
-            if (this._Minor != v._Minor)
-                if (this._Minor > v._Minor)
-                    return 1;
-                else
-                    return -1;
-
-            if (this._Build != v._Build)
-                if (this._Build > v._Build)
-                    return 1;
-                else
-                    return -1;
-
-            if (this._Revision != v._Revision)
-                if (this._Revision > v._Revision)
-                    return 1;
-                else
-                    return -1;
-
-            return 0;
-        }
-                
-        public int CompareTo(ModifiableVersion value)
-        {
-            if (value == null)
-                return 1;
- 
-            if (this._Major != value._Major)
-                if (this._Major > value._Major)
-                    return 1;
-                else
-                    return -1;
- 
-            if (this._Minor != value._Minor)
-                if (this._Minor > value._Minor)
-                    return 1;
-                else
-                    return -1;
- 
-            if (this._Build != value._Build)
-                if (this._Build > value._Build)
-                    return 1;
-                else
-                    return -1;
- 
-            if (this._Revision != value._Revision)
-                if (this._Revision > value._Revision)
-                    return 1;
-                else
-                    return -1;
- 
-            return 0;
-        }
-
-        public override bool Equals(Object obj)
-        {
-                    ModifiableVersion v = obj as ModifiableVersion;
-            if (v == null)
-                return false;
-
-            // check that major, minor, build & revision numbers match
-            if ((this._Major != v._Major) ||
-                (this._Minor != v._Minor) ||
-                (this._Build != v._Build) ||
-                (this._Revision != v._Revision))
-                return false;
-
-            return true;
-        }
-
-        public bool Equals(ModifiableVersion obj)
-        {
-            if (obj == null)
-                return false;
-
-            // check that major, minor, build & revision numbers match
-            if ((this._Major != obj._Major) ||
-                (this._Minor != obj._Minor) ||
-                (this._Build != obj._Build) ||
-                (this._Revision != obj._Revision))
-                return false;
-
-            return true;
-        }
-
-        public override int GetHashCode()
-        {
-            // Let's assume that most version numbers will be pretty small and just
-            // OR some lower order bits together.
-
-            int accumulator = 0;
-
-            accumulator |= (this._Major & 0x0000000F) << 28;
-            accumulator |= (this._Minor & 0x000000FF) << 20;
-            accumulator |= (this._Build & 0x000000FF) << 12;
-            accumulator |= (this._Revision & 0x00000FFF);
-
-            return accumulator;
-        }
-
-        public override String ToString()
-        {
-            if (_Build == -1) return (ToString(2));
-            if (_Revision == -1) return (ToString(3));
-            return (ToString(4));
-        }
-
-        public String ToString(int fieldCount)
-        {
-            StringBuilder sb;
-            switch (fieldCount)
-            {
-                case 0:
-                    return (String.Empty);
-                case 1:
-                    return (_Major.ToString());
-                case 2:
-                    sb = StringBuilderCache.Acquire();
-                    AppendPositiveNumber(_Major, sb);
-                    sb.Append('.');
-                    AppendPositiveNumber(_Minor, sb);
-                    return StringBuilderCache.GetStringAndRelease(sb);
-                default:
-                    if (_Build == -1)
-                        throw new ArgumentException("fieldCount must be between 0 to 2", "fieldCount");
-
-                    if (fieldCount == 3)
-                    {
-                        sb = StringBuilderCache.Acquire();
-                        AppendPositiveNumber(_Major, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Minor, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Build, sb);
-                        return StringBuilderCache.GetStringAndRelease(sb);
-                    }
-
-                    if (_Revision == -1)
-                        throw new ArgumentException("fieldCount must be between 0 to 3", "fieldCount");
-
-                    if (fieldCount == 4)
-                    {
-                        sb = StringBuilderCache.Acquire();
-                        AppendPositiveNumber(_Major, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Minor, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Build, sb);
-                        sb.Append('.');
-                        AppendPositiveNumber(_Revision, sb);
-                        return StringBuilderCache.GetStringAndRelease(sb);
-                    }
-
-                    throw new ArgumentException("fieldCount must be between 0 to 4", "fieldCount");
-            }
-        }
-
-        //
-        // AppendPositiveNumber is an optimization to append a number to a StringBuilder object without
-        // doing any boxing and not even creating intermediate string.
-        // Note: as we always have positive numbers then it is safe to convert the number to string 
-        // regardless of the current culture as we’ll not have any punctuation marks in the number
-        //
-        private const int ZERO_CHAR_VALUE = (int)'0';
-        private static void AppendPositiveNumber(int num, StringBuilder sb)
-        {
-            Contract.Assert(num >= 0, "AppendPositiveNumber expect positive numbers");
-
-            int index = sb.Length;
-            int reminder;
-
-            do
-            {
-                reminder = num % 10;
-                num = num / 10;
-                sb.Insert(index, (char)(ZERO_CHAR_VALUE + reminder));
-            } while (num > 0);
-        }
-
-        public static Version Parse(string input)
-        {
-            if (input == null)
-            {
-                throw new ArgumentNullException("input");
-            }
-            Contract.EndContractBlock();
-
-            VersionResult r = new VersionResult();
-            r.Init("input", true);
-            if (!TryParseVersion(input, ref r))
-            {
-                throw r.GetVersionParseException();
-            }
-            return r.m_parsedVersion;
-        }
-
-        public static bool TryParse(string input, out Version result)
-        {
-            VersionResult r = new VersionResult();
-            r.Init("input", false);
-            bool b = TryParseVersion(input, ref r);
-            result = r.m_parsedVersion;
-            return b;
-        }
-
-        private static bool TryParseVersion(string version, ref VersionResult result)
-        {
-            int major, minor, build, revision;
-
-            if ((Object)version == null)
-            {
-                result.SetFailure(ParseFailureKind.ArgumentNullException);
-                return false;
-            }
-
-            string[] parsedComponents = version.Split(SeparatorsArray);
-            int parsedComponentsLength = parsedComponents.Length;
-            if ((parsedComponentsLength < 2) || (parsedComponentsLength > 4))
-            {
-                result.SetFailure(ParseFailureKind.ArgumentException);
-                return false;
-            }
-
-            if (!TryParseComponent(parsedComponents[0], "version", ref result, out major))
-            {
-                return false;
-            }
-
-            if (!TryParseComponent(parsedComponents[1], "version", ref result, out minor))
-            {
-                return false;
-            }
-
-            parsedComponentsLength -= 2;
-
-            if (parsedComponentsLength > 0)
-            {
-                if (!TryParseComponent(parsedComponents[2], "build", ref result, out build))
-                {
-                    return false;
-                }
-
-                parsedComponentsLength--;
-
-                if (parsedComponentsLength > 0)
-                {
-                    if (!TryParseComponent(parsedComponents[3], "revision", ref result, out revision))
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        result.m_parsedVersion = new Version(major, minor, build, revision);
-                    }
-                }
-                else
-                {
-                    result.m_parsedVersion = new Version(major, minor, build);
-                }
-            }
-            else
-            {
-                result.m_parsedVersion = new Version(major, minor);
-            }
-
-            return true;
-        }
-
-        private static bool TryParseComponent(string component, string componentName, ref VersionResult result, out int parsedComponent)
-        {
-            if (!Int32.TryParse(component, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsedComponent))
-            {
-                result.SetFailure(ParseFailureKind.FormatException, component);
-                return false;
-            }
-
-            if (parsedComponent < 0)
-            {
-                result.SetFailure(ParseFailureKind.ArgumentOutOfRangeException, componentName);
-                return false;
-            }
-
-            return true;
-        }
-
-        public static bool operator ==(ModifiableVersion v1, ModifiableVersion v2)
-        {
-            if (Object.ReferenceEquals(v1, null))
-            {
-                return Object.ReferenceEquals(v2, null);
-            }
-
-            return v1.Equals(v2);
-        }
-
-        public static bool operator !=(ModifiableVersion v1, ModifiableVersion v2)
-        {
-            return !(v1 == v2);
-        }
-
-        public static bool operator <(ModifiableVersion v1, ModifiableVersion v2)
-        {
-            if ((Object)v1 == null)
-                throw new ArgumentNullException("v1");
-            Contract.EndContractBlock();
-            return (v1.CompareTo(v2) < 0);
-        }
-
-        public static bool operator <=(ModifiableVersion v1, ModifiableVersion v2)
-        {
-            if ((Object)v1 == null)
-                throw new ArgumentNullException("v1");
-            Contract.EndContractBlock();
-            return (v1.CompareTo(v2) <= 0);
-        }
-
-        public static bool operator >(ModifiableVersion v1, ModifiableVersion v2)
-        {
-            return (v2 < v1);
-        }
-
-        public static bool operator >=(ModifiableVersion v1, ModifiableVersion v2)
-        {
-            return (v2 <= v1);
-        }
-
-        internal enum ParseFailureKind
-        {
-            ArgumentNullException,
-            ArgumentException,
-            ArgumentOutOfRangeException,
-            FormatException
-        }
-
-        internal struct VersionResult
-        {
-            internal Version m_parsedVersion;
-            internal ParseFailureKind m_failure;
-            internal string m_exceptionArgument;
-            internal string m_argumentName;
-            internal bool m_canThrow;
-
-            internal void Init(string argumentName, bool canThrow)
-            {
-                m_canThrow = canThrow;
-                m_argumentName = argumentName;
-            }
-
-            internal void SetFailure(ParseFailureKind failure)
-            {
-                SetFailure(failure, String.Empty);
-            }
-
-            internal void SetFailure(ParseFailureKind failure, string argument)
-            {
-                m_failure = failure;
-                m_exceptionArgument = argument;
-                if (m_canThrow)
-                {
-                    throw GetVersionParseException();
-                }
-            }
-
-            internal Exception GetVersionParseException()
-            {
-                switch (m_failure)
-                {
-                    case ParseFailureKind.ArgumentNullException:
-                        return new ArgumentNullException(m_argumentName);
-                    case ParseFailureKind.ArgumentException:
-                        return new ArgumentException("Input must be convertible to ModifiableVersion.");
-                    case ParseFailureKind.ArgumentOutOfRangeException:
-                        return new ArgumentOutOfRangeException(m_exceptionArgument, "Input is out of ModifiableVersion's range.");
-                    case ParseFailureKind.FormatException:
-                        // Regenerate the FormatException as would be thrown by Int32.Parse()
-                        try
-                        {
-                            Int32.Parse(m_exceptionArgument, CultureInfo.InvariantCulture);
-                        }
-                        catch (FormatException e)
-                        {
-                            return e;
-                        }
-                        catch (OverflowException e)
-                        {
-                            return e;
-                        }
-                        Contract.Assert(false, "Int32.Parse() did not throw exception but TryParse failed: " + m_exceptionArgument);
-                        return new FormatException("String format is invalid.");
-                    default:
-                        Contract.Assert(false, "Unmatched case in Version.GetVersionParseException() for value: " + m_failure);
-                        return new ArgumentException("String must be convertible to ModifiableVersion.");
-                }
-            }
-
-        }
-                internal static class StringBuilderCache
-                {
-                    // The value 360 was chosen in discussion with performance experts as a compromise between using
-                    // as litle memory (per thread) as possible and still covering a large part of short-lived
-                    // StringBuilder creations on the startup path of VS designers.
-                    private const int MAX_BUILDER_SIZE = 360;
-
-                    [ThreadStatic]
-                    private static StringBuilder CachedInstance;
-
-                    public static StringBuilder Acquire(int capacity = 16)
-                    {
-                        if (capacity <= MAX_BUILDER_SIZE)
-                        {
-                            StringBuilder sb = StringBuilderCache.CachedInstance;
-                            if (sb != null)
-                            {
-                                // Avoid stringbuilder block fragmentation by getting a new StringBuilder
-                                // when the requested size is larger than the current capacity
-                                if (capacity <= sb.Capacity)
-                                {
-                                    StringBuilderCache.CachedInstance = null;
-                                    sb.Clear();
-                                    return sb;
-                                }
-                            }
-                        }
-                        return new StringBuilder(capacity);
-                    }
-
-                    public static void Release(StringBuilder sb)
-                    {
-                        if (sb.Capacity <= MAX_BUILDER_SIZE)
-                        {
-                            StringBuilderCache.CachedInstance = sb;
-                        }
-                    }
-
-                    public static string GetStringAndRelease(StringBuilder sb)
-                    {
-                        string result = sb.ToString();
-                        Release(sb);
-                        return result;
-                    }
-                }
-            }
-}
     }
 }
 #endif

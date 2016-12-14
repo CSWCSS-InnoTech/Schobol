@@ -402,6 +402,17 @@ namespace InnoTecheLearning
         {
             return Task.GetAwaiter().GetResult();
         }
+        public static void Do<TProgress>(global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
+        {
+            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                Helper.Run(Task.AsTask());
+        }
+
+        public static TResult Do<TResult, TProgress>
+            (global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task)
+        {
+            return Task.GetAwaiter().GetResult();
+        }
 #endif
         public static ushort ToUShort(string String)
         {

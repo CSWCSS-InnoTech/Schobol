@@ -348,6 +348,17 @@ namespace InnoTecheLearning
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
             }
+            public static Button UpdateAlpha(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Return = Button("Check for Alpha", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
+                Return.HorizontalOptions = LayoutOptions.End;
+                Return.VerticalOptions = LayoutOptions.Fill;
+                return Return;
+            }
             public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
             {
                 ScrollView Changelog = Create.Changelog;
