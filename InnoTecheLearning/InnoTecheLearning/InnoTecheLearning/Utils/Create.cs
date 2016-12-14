@@ -348,13 +348,41 @@ namespace InnoTecheLearning
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
             }
+
             public static Button UpdateAlpha(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
                     BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Return = Button("Check for Alpha", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
+                Button Return = Button("Check for Alpha", delegate {
+#if __ANDROID__
+                        Android.App.ProgressDialog progress = new Android.App.ProgressDialog(Forms.Context);
+                        progress.Indeterminate = true;
+                        progress.SetProgressStyle(Android.App.ProgressDialogStyle.Horizontal);
+                        progress.SetMessage("Please wait...Loading updater....");
+                        progress.SetCancelable(true);
+                        progress.Show();
+                        progress.SetMessage(new Updater((Updater.UpdateProgress Progress) => {
+                        progress.SetMessage(Progress.ToName());
+                        progress.Progress = (int)Progress * 10;
+                        }).CheckUpdate().ToString());
+                        progress.Dismiss();
+#elif WINDOWS_UWP
+                    Windows.UI.Xaml.Controls.ContentDialog progress = new Windows.UI.Xaml.Controls.ContentDialog();
+                    var Text = new Windows.UI.Xaml.Controls.TextBlock();
+                    var Bar = new Windows.UI.Xaml.Controls.ProgressBar();
+                    Text.Text = "Please wait...Loading updater....";
+                    async () => { await progress.ShowAsync(); };
+                    progress.SetMessage(new Updater((Updater.UpdateProgress Progress) => {
+                        progress.SetMessage(Progress.ToName());
+                        progress.Progress = (int)Progress * 10;
+                    }).CheckUpdate().ToString());
+#else
+                    Alert(Page, "Only supported on Android and Windows 10. " +
+                        "For other versions, please check the github repository manually.");
+#endif
+                }, Color.Silver);
                 Return.HorizontalOptions = LayoutOptions.End;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
