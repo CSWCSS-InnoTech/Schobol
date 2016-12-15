@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>ca86097f-6b9e-4d80-bbe3-3334acb33c86</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>InnoTecheLearning</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\SoundPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\SoundRecorder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\StepCounter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayerLegacy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\TempIO.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\TextLog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\TextToSpeech.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\Updater.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\UWPProgressDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Evaluator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Factorize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Network.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cswcss.gif" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Change.log" />
+    <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\book-2.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\translator-tool-3.png" />
+    <None Include="$(MSBuildThisFileDirectory)Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\japanese-dragon.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\mathematical-operation.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\square-root-of-x-mathematical-signs.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\treble-clef-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\man-sprinting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\violin-icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cello-icon.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloA.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloCC.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloD.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CelloGG.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinA.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinD.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinE.wav" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinG.wav" />
+  </ItemGroup>
+</Project>
