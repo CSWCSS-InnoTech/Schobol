@@ -165,6 +165,7 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.StartAndExpand,
+                    HorizontalOptions = LayoutOptions.Center,
                     Orientation = StackOrientation.Vertical,
                     Children = {
                         Title("CSWCSS Music Tuner"),

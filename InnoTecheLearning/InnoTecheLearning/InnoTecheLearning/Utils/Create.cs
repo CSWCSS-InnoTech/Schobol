@@ -387,7 +387,7 @@ namespace InnoTecheLearning
                         "For other versions, please check the github repository manually.");
 #endif
                 }, Color.Silver);
-                Return.HorizontalOptions = LayoutOptions.End;
+                Return.HorizontalOptions = LayoutOptions.Start;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
             }
@@ -398,7 +398,7 @@ namespace InnoTecheLearning
                     BackColor = Color.White;
                 return new StackLayout
                 {
-                    Children = { Changelog, Back(Page) },
+                    Children = { Changelog, Row(false, UpdateAlpha(Page), Back(Page)) },
                     BackgroundColor = BackColor,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill
