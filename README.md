@@ -18,3 +18,5 @@ For bug reporting / development releases / latest code, use this branch.
 
 [Versions branch](https://github.com/happypig375/innotech-elearning/tree/Versions) stores binaries of every single release (including Development releases).
 Used for version checking in-app (Android and Windows 10) or finding an old version.
+
+[Jordan-Fung-patch-1 branch](https://github.com/happypig375/innotech-elearning/tree/Jordan-Fung-patch-1) is for updating Readme.md (aka this file), created by our handsome chairman.
