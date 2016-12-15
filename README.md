@@ -3,7 +3,7 @@ The eLearn App, developed in Xamarin, is an on-going project of the Innovative T
 
 Lead Developer: Hadrian Tang Wai To
 
-Chiarman: [Jordan Fung Tsz Chun](www.jordanfung.com)
+Chiarman: [Jordan Fung Tsz Chun](http://www.jordanfung.com)
 (OMG this handsome 14-year-old entrepreneur has a website!!!)
 
 Vice-Chairman: [Keon Wong Kai Lok](http://designheaven8.wixsite.com/lego-mania-official)
