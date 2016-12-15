@@ -33,6 +33,12 @@ namespace InnoTecheLearning
                 return $"Downloading ({Progress - Updater.UpdateProgress.Downloading_0_Percent}%)";
             return Progress.ToString().Replace('_', ' ');
         }
+        public static byte Percentage(this Updater.UpdateProgress Progress)
+        {
+            if (Progress <= Updater.UpdateProgress.Downloading_0_Percent) return 0;
+            if (Progress >= Updater.UpdateProgress.Downloading_100_Percent) return 100;
+            return Progress - Updater.UpdateProgress.Downloading_0_Percent;
+        }
         public class Updater : IUpdater
         {
             public bool Is404(string url) { return GetPage(url) == HttpStatusCode.NotFound; }

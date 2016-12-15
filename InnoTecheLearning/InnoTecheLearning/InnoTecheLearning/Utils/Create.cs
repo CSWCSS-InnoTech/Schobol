@@ -355,29 +355,33 @@ namespace InnoTecheLearning
                     BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Return = Button("Check for Alpha", delegate {
+                Button Return = Button("Check for Alpha", delegate
+                {
 #if __ANDROID__
-                        Android.App.ProgressDialog progress = new Android.App.ProgressDialog(Forms.Context);
-                        progress.Indeterminate = true;
-                        progress.SetProgressStyle(Android.App.ProgressDialogStyle.Horizontal);
-                        progress.SetMessage("Please wait...Loading updater....");
-                        progress.SetCancelable(true);
-                        progress.Show();
-                        progress.SetMessage(new Updater((Updater.UpdateProgress Progress) => {
+                    Android.App.ProgressDialog progress = new Android.App.ProgressDialog(Forms.Context);
+                    progress.Indeterminate = true;
+                    progress.SetProgressStyle(Android.App.ProgressDialogStyle.Horizontal);
+                    progress.SetMessage("Please wait... Loading updater....");
+                    progress.SetCancelable(true);
+                    progress.Show();
+                    progress.SetMessage(new Updater((Updater.UpdateProgress Progress) =>
+                    {
                         progress.SetMessage(Progress.ToName());
-                        progress.Progress = (int)Progress * 10;
-                        }).CheckUpdate().ToString());
-                        progress.Dismiss();
-#elif WINDOWS_UWP
-                    Windows.UI.Xaml.Controls.ContentDialog progress = new Windows.UI.Xaml.Controls.ContentDialog();
-                    var Text = new Windows.UI.Xaml.Controls.TextBlock();
-                    var Bar = new Windows.UI.Xaml.Controls.ProgressBar();
-                    Text.Text = "Please wait...Loading updater....";
-                    async () => { await progress.ShowAsync(); };
-                    progress.SetMessage(new Updater((Updater.UpdateProgress Progress) => {
-                        progress.SetMessage(Progress.ToName());
-                        progress.Progress = (int)Progress * 10;
+                        progress.Progress = Progress.Percentage() * 100;
                     }).CheckUpdate().ToString());
+                    Do(System.Threading.Tasks.Task.Delay(2000));
+                    progress.Dismiss();
+#elif WINDOWS_UWP
+                    var w = new ProgressDialog(
+                        new ProgressDialogConfig { Title = "Please wait... Loading updater...." });
+                    w.Show();
+                    w.Title = new Updater((Updater.UpdateProgress Progress) =>
+                    {
+                        w.Title = Progress.ToName();
+                        w.PercentComplete = Progress.Percentage();
+                    }).CheckUpdate().ToString();
+                    Do(System.Threading.Tasks.Task.Delay(2000));
+                    w.Hide();
 #else
                     Alert(Page, "Only supported on Android and Windows 10. " +
                         "For other versions, please check the github repository manually.");
