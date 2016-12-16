@@ -230,8 +230,7 @@
 
         public object SourceContext
         {
-            get => 
-                null;
+            get { return null; }
             set
             {
             }

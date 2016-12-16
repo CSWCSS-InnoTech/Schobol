@@ -275,7 +275,7 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center,
-                    FontSize = Device.GetNamedSize(Size, typeof(Label)),
+                    FontSize = Device.GetNamedSize(Size, targetElementType: typeof(Label)),
                     HorizontalOptions = LayoutOptions.Fill
                 };
             }

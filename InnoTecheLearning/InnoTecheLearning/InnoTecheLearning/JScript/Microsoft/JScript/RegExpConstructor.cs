@@ -87,7 +87,7 @@
         }
 
         [JSFunction(JSFunctionAttributeEnum.HasVarArgs)]
-        public RegExpObject CreateInstance(params object[] args)
+        public new RegExpObject CreateInstance(params object[] args)
         {
             RegExpObject obj2;
             if (((args == null) || (args.Length <= 0)) || ((obj2 = args[0] as RegExpObject) == null))
@@ -277,8 +277,7 @@
 
         public object input
         {
-            get => 
-                this.GetInput();
+            get { return this.GetInput(); }
             set
             {
                 if (base.noExpando)

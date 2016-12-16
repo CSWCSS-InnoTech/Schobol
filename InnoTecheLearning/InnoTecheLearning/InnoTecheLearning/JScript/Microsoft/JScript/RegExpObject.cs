@@ -176,8 +176,7 @@
 
         public object lastIndex
         {
-            get => 
-                this.lastIndexInt;
+            get { return this.lastIndexInt; }
             set
             {
                 this.lastIndexInt = value;

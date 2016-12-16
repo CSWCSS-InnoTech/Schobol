@@ -21,6 +21,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\Updater.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\UWPProgressDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JScript\System\ArrayList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JScript\System\Reflection\BindingFlags.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JScript\System\Reflection\MemberTypes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JScript\System\TypeCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ApplicationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
@@ -389,8 +393,5 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinD.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinE.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinG.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)JScript\" />
   </ItemGroup>
 </Project>

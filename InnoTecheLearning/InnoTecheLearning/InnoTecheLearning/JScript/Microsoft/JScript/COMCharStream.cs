@@ -61,8 +61,7 @@
 
         public override long Position
         {
-            get => 
-                ((long) this.buffer.Length);
+            get { return ((long) this.buffer.Length); }
             set
             {
             }

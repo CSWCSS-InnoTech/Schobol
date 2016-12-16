@@ -47,7 +47,7 @@
             }
         }
 
-        public Type GetType()
+        public new Type GetType()
         {
             if (!this.implicitWrapper)
             {
@@ -131,8 +131,7 @@
 
         public override object length
         {
-            get => 
-                base.len;
+            get { return base.len; }
             set
             {
                 throw new JScriptException(JSError.AssignmentToReadOnly);
@@ -167,10 +166,8 @@
                     return string.CompareOrdinal(Microsoft.JScript.Convert.ToString(x), Microsoft.JScript.Convert.ToString(y));
                 }
                 double val = Microsoft.JScript.Convert.ToNumber(this.compareFn.Call(new object[] { x, y }, null));
-                if (val != val)
-                {
+                if (double.IsInfinity(val) || double.IsNaN(val)) 
                     throw new JScriptException(JSError.NumberExpected);
-                }
                 return (int) Runtime.DoubleToInt64(val);
             }
         }

@@ -55,8 +55,7 @@
 
         internal MemberInfo this[int i]
         {
-            get => 
-                this.list[i];
+            get { return this.list[i]; }
             set
             {
                 this.list[i] = value;

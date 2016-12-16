@@ -260,8 +260,7 @@
 
         public object SourceContext
         {
-            get => 
-                null;
+            get { return null; }
             set
             {
             }
@@ -269,8 +268,7 @@
 
         public string SourceText
         {
-            get => 
-                this.codeContext.source_string;
+            get { return this.codeContext.source_string; }
             set
             {
                 this.codeContext.SetSourceContext(this.codeContext.document, (value == null) ? "" : value);
@@ -281,8 +279,7 @@
 
         public int StartColumn
         {
-            get => 
-                this.codeContext.document.startCol;
+            get { return this.codeContext.document.startCol; }
             set
             {
                 this.codeContext.document.startCol = value;
@@ -291,8 +288,7 @@
 
         public int StartLine
         {
-            get => 
-                this.codeContext.document.startLine;
+            get { return this.codeContext.document.startLine; }
             set
             {
                 this.codeContext.document.startLine = value;

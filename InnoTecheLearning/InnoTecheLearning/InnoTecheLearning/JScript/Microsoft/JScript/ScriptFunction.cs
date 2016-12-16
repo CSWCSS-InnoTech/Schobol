@@ -171,8 +171,7 @@
 
         public virtual int length
         {
-            get => 
-                this.ilength;
+            get { return this.ilength; }
             set
             {
             }
@@ -180,8 +179,7 @@
 
         public object prototype
         {
-            get => 
-                this.proto;
+            get { return this.proto; }
             set
             {
                 if (!base.noExpando)
