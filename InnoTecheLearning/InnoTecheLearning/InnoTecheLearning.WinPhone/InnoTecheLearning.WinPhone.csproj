@@ -125,6 +125,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="ChakraHost8.1">
+      <HintPath>..\InnoTecheLearning\DLL\ChakraHost8.1.dll</HintPath>
+    </Reference>
     <Reference Include="Xamarin.Forms.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Core.dll</HintPath>
       <Private>True</Private>

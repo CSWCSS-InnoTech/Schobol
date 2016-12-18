@@ -319,13 +319,13 @@ yeah/ yup = 同意";
             public short MajorRevision
             {
                 get { return (short)(_Revision >> 16); }
-                set { _Revision = value << 16 + MinorRevision; }
+                set { _Revision = value * (1 << 16) + MinorRevision; }
             }
 
             public short MinorRevision
             {
                 get { return (short)(_Revision & 0xFFFF); }
-                set { _Revision = MajorRevision + value; }
+                set { _Revision = MajorRevision * (1 << 16) + value; }
             }
 
             public Object Clone()

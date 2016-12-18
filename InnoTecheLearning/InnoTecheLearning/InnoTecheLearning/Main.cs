@@ -316,7 +316,7 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", delegate
                 {
-                    Calculator_Value = Evaluate(In.Text, this);
+                    Calculator_Value = JSEvaluate(In.Text, this);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
@@ -486,7 +486,7 @@ namespace InnoTecheLearning
                 {
                     Children =
                     {Editor,
-                    Button("Evaluate", delegate { Calculator_Free_Value = Evaluate(Editor.Text, this);
+                    Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
                         Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
                     Entry
                     }

@@ -508,7 +508,7 @@ namespace InnoTecheLearning
                 return Return;
             }
             public static Version Version(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0)
-            { return new Version(Major, Minor, Build, (int)Stage << 16 + Revision); }
+            { return new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision); }
         }
     }
 }

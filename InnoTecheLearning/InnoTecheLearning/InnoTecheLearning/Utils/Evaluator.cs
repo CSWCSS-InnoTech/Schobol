@@ -1,15 +1,23 @@
 ﻿#pragma warning disable 0618
+#if __IOS || __ANDROID__
 using Microsoft.JScript;
 using Microsoft.JScript.Vsa;
+#elif NETFX_CORE
+using ChakraHost.Hosting;
+using System;
+using System.Collections.ObjectModel;
+#endif
+
 namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public class Evaluator : INeedEngine
+#if __IOS__ || __ANDROID__
+        public class JSEvaluator : INeedEngine
         {
 
             // Methods
-            public Evaluator() { init(); }
+            public JSEvaluator() { init(); }
             private void init() { }
             [JSFunction(JSFunctionAttributeEnum.HasStackFrame)]
             public virtual string Eval(string expr)
@@ -37,7 +45,7 @@ namespace InnoTecheLearning
             {
                 if (vsaEngine == null)
                 {
-                    vsaEngine = VsaEngine.CreateEngineWithType(typeof(Evaluator).TypeHandle);
+                    vsaEngine = VsaEngine.CreateEngineWithType(typeof(JSEvaluator).TypeHandle);
                 }
                 return vsaEngine;
             }
@@ -47,6 +55,63 @@ namespace InnoTecheLearning
             }
             private VsaEngine vsaEngine { get; set; }
         }
+#elif NETFX_CORE
+        public static MainViewModel Evaluator { get; } = new MainViewModel();
+        public class MainViewModel
+        {
+            private JavaScriptRuntime Runtime { get; }
+            public MainViewModel()
+            {
+                Runtime = JavaScriptRuntime.Create();
+            }
+
+            public string Eval(string CodeToExecute)
+            {
+                using (new JavaScriptContext.Scope(Runtime.CreateContext()))
+                {
+                        DefineEcho();
+                        var result = JavaScriptContext.RunScript(CodeToExecute);
+                        //var numberResult = result.ConvertToNumber();
+                        //var doubleResult = numberResult.ToDouble();
+                        return result.ToString(); 
+                }
+            }
+            private void DefineCallback
+            (JavaScriptValue hostObject, string callbackName, JavaScriptNativeFunction callbackDelegate)
+            {
+                var propertyId = JavaScriptPropertyId.FromString(callbackName);
+
+                var function = JavaScriptValue.CreateFunction(callbackDelegate);
+
+                hostObject.SetProperty(propertyId, function, true);
+            }
+            string EchoOut = "";
+            private JavaScriptValue Echo(JavaScriptValue callee,
+ bool isConstructCall, JavaScriptValue[] arguments,
+ ushort argumentCount, IntPtr callbackData)
+            {
+                for (uint index = 1; index < argumentCount; index++)
+                {
+                    EchoOut += arguments[index].ConvertToString().ToString();
+                }
+
+                return JavaScriptValue.True;
+            }
+
+            private JavaScriptNativeFunction EchoDelegate { get; set; }
+
+            private void DefineEcho()
+            {
+                var globalObject = JavaScriptValue.GlobalObject;
+
+                var hostObject = JavaScriptValue.CreateObject();
+                var hostPropertyId = JavaScriptPropertyId.FromString("managedhost");
+                globalObject.SetProperty(hostPropertyId, hostObject, true);
+                EchoDelegate = Echo;
+                DefineCallback(hostObject, "echo", EchoDelegate);
+            }
+        }
+#endif
 
     }
 

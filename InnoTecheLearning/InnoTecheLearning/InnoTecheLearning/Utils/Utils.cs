@@ -443,10 +443,11 @@ Retry:      try
                 goto Retry;
             }
         }
-        private static string EvaluteAns = "";
-        public static string Evaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
+
+        private static string JSEvaluteAns = "";
+        public static string JSEvaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
         {   
-            string Prefix = "var Prev : String = \"" + EvaluteAns.Replace(@"\", @"\\").Replace("\"", @"\""") + @""";
+            string Prefix = "var Prev : String = \"" + JSEvaluteAns.Replace(@"\", @"\\").Replace("\"", @"\""") + @""";
 var Ans : double = double(Prev);
 function Abs (n) {return Math.abs(n); }
 function Acos(n : double) : double { return Math.acos(n); }
@@ -498,10 +499,12 @@ const Log10e = Math.LOG10E;
 """";
 ";
             // Ask user to enter expression.
-            Evaluator evaluator = new Evaluator();
+#if __IOS || __ANDROID__
+            JSEvaluator Evaluator = new JSEvaluator();
+#endif
             try
             {
-                return EvaluteAns = evaluator.Eval(TrueFree ? Expression : Prefix + (MaxMin ?
+                return JSEvaluteAns = Evaluator.Eval(TrueFree ? Expression : Prefix + (MaxMin ?
                     System.Text.RegularExpressions.Regex.
                     Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
                     : Expression));
@@ -511,6 +514,7 @@ const Log10e = Math.LOG10E;
                 return 'ⓧ' + ex.Message; //⮾
             }
         }
+
 #if false
         static void Hi()
         {
