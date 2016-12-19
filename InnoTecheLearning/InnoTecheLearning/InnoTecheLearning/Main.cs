@@ -420,7 +420,7 @@ namespace InnoTecheLearning
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
         }
-        #region Append
+#region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color))
         {
@@ -457,7 +457,7 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
-        #endregion
+#endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }

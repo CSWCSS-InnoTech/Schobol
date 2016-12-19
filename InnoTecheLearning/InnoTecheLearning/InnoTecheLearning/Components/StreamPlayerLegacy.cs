@@ -1,24 +1,41 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using static InnoTecheLearning.Utils;
+﻿using System.Threading.Tasks;
+using System.IO;
+#if __IOS__
+using AVFoundation;
+using Foundation;
+#elif __ANDROID__
+using Android.Net;
+using Android.Media;
+using Java.IO;
+using Xamarin.Forms;
+using Stream = System.IO.Stream;
+#elif NETFX_CORE
+using System;
+using Windows.UI.Xaml.Controls;
+using Windows.Storage;
+using Windows.Storage.Streams;
+//using static Windows.ApplicationModel.Package;
+#endif
 
 namespace InnoTecheLearning
 {
     /// <summary>
-    /// Used to be the <see cref="StreamPlayer"/> between 0.10.0a51 to 0.10.0a64
+    /// Used to be the <see cref="StreamPlayer"/> between 0.10.0a65 to 0.10.0a104
     /// </summary>
-    public class StreamPlayerLegacy : ISoundPlayer, System.IDisposable
+    class StreamPlayerLegacy : ISoundPlayer
     {
         public enum Sounds : byte
-        {Violin_G,
-        Violin_D,
-        Violin_A,
-        Violin_E,
-        Cello_C,
-        Cello_G,
-        Cello_D,
-        Cello_A}
-        public static StreamPlayerLegacy PlayAsync(Sounds Sound, double Volume = 1)
+        {
+            Violin_G,
+            Violin_D,
+            Violin_A,
+            Violin_E,
+            Cello_C,
+            Cello_G,
+            Cello_D,
+            Cello_A
+        }
+        public static StreamPlayerLegacy Create(Sounds Sound, double Volume = 1)
         {
             string Name = "";
             switch (Sound)
@@ -50,67 +67,181 @@ namespace InnoTecheLearning
                 default:
                     break;
             }
-           return  Create(Resources.GetStream("Sounds." + Name), true, Volume);
+            return Create(Content: Utils.Resources.GetStream("Sounds." + Name), Loop: true,Volume: Volume);
         }
         public static StreamPlayerLegacy Play(Sounds Sound, double Volume = 1)
-        { return Play(Sound, Volume);}
-        private StreamPlayerLegacy() { }
-        SoundPlayer _Player;
-        string File;
-        public static StreamPlayerLegacy Create(Stream Stream, bool Loop = false, double Volume = 1)
-        {
-            var Return = new StreamPlayerLegacy();
-            Return.Init(Stream, Loop, Volume);
+        {   var Return = Create(Sound, Volume);
+            Return.Play();
             return Return;
         }
-        protected void Init(Stream Stream, bool Loop, double Volume)
+#if __IOS__
+        AVAudioPlayer _player;
+        public static StreamPlayerLegacy Create(Stream Content, bool Loop = false, double Volume = 1)
         {
-            File = Temp.TempFile;
-            Temp.SaveStream(File, Stream);
-            _Player = SoundPlayer.Create(File, Loop, Volume);
+            var Return = new StreamPlayerLegacy();
+            Return.Init(Content, Loop, Volume);
+            return Return;
+        }
+        protected void Init(Stream Content, bool Loop, double Volume)
+        {
+            _player = AVAudioPlayer.FromData(NSData.FromStream(Content));
+            _player.NumberOfLoops = Loop? 0: -1;
+            _player.Volume = System.Convert.ToSingle(Volume);
+            //_player.FinishedPlaying += (object sender, AVStatusEventArgs e) => { _player = null; };
         }
         public void Play()
-        { _Player.Play(); }
+        { _player.Play(); }
         public void Pause()
-        { _Player.Pause(); }
+        { _player.Pause(); }
         public void Stop()
-        { _Player.Stop(); }
+        { _player.Stop(); }
         public event System.EventHandler Complete
-        { add { _Player.Complete += value; } remove { _Player.Complete -= value; } } 
-        #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
-
-        protected virtual void Dispose(bool disposing)
+        { add { _player.FinishedPlaying += (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; }
+        remove { _player.FinishedPlaying -= (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; } }
+        ~StreamPlayerLegacy()
+        { _player.Dispose(); }
+#elif __ANDROID__
+        public class StreamMediaDataSourceLegacy : MediaDataSource//sorry, but Android 6.0+ only!
         {
-            if (!disposedValue)
+            void PlayAudioTrack(byte[] audioBuffer)
             {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects).
-                }
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                Temp.Delete(File);
-                // TODO: set large fields to null.
-                _Player = null;
+                AudioTrack audioTrack = new AudioTrack(
+                  // Stream type
+                  Android.Media.Stream.Music,
+                  // Frequency
+                  11025,
+                  // Mono or stereo
+                  ChannelOut.Mono,
+                  // Audio encoding
+                  Android.Media.Encoding.Pcm16bit,
+                  // Length of the audio clip.
+                  audioBuffer.Length,
+                  // Mode. Stream or static.
+                  AudioTrackMode.Stream);
 
-                disposedValue = true;
+                audioTrack.Play();
+                audioTrack.Write(audioBuffer, 0, audioBuffer.Length);
+            }
+            Stream data;
+
+            public StreamMediaDataSourceLegacy(Stream Data)
+            {
+                data = Data;
+            }
+
+            public override long Size
+            {
+                get
+                {
+                    return data.Length;
+                }
+            }
+
+            public override int ReadAt(long position, byte[] buffer, int offset, int size)
+            {
+                data.Seek(position, SeekOrigin.Begin);
+                return data.Read(buffer, offset, size);
+            }
+
+            public override void Close()
+            {
+                if (data != null)
+                {
+                    data.Dispose();
+                    data = null;
+                }
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+
+                if (data != null)
+                {
+                    data.Dispose();
+                    data = null;
+                }
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-         ~StreamPlayerLegacy() {
-           // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-           Dispose(false);
-         }
-
-        // This code added to correctly implement the disposable pattern.
-        public void Dispose()
+        Android.Media.MediaPlayer _player = new Android.Media.MediaPlayer();
+        bool _prepared;
+        public static StreamPlayerLegacy Create(Stream Content, bool Loop = false, double Volume = 1)
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // System.GC.SuppressFinalize(this);
+            var Return = new StreamPlayerLegacy();
+            Return.Init(Content, Loop, Volume);
+            return Return;
         }
-        #endregion
+        protected void Init(Stream Content, bool Loop, double Volume)
+        {
+            _player.Looping = Loop;
+            _player.Reset();
+            _player.SetDataSource(new StreamMediaDataSourceLegacy(Content));
+            _player.Prepare();
+            _player.Prepared += (sender, e) => {_prepared = true;};
+        }
+        public void Play()
+        { if (_prepared) _player.Start(); }
+        public void Pause()
+        { if (_prepared) _player.Pause(); }
+        public void Stop()
+        {
+            if (_player == null)
+                return;
+
+            _player.Stop();
+            _player.Dispose();
+            _player = null;
+        }
+        public event System.EventHandler Complete
+        { add { _player.Completion += value; } remove { _player.Completion -= value; } }
+        ~StreamPlayerLegacy()
+        { Stop(); }
+#elif NETFX_CORE
+        MediaElement _player;
+        public static StreamPlayerLegacy Create(Stream Content, bool Loop = false, double Volume = 1)
+        {
+            var Return = new StreamPlayerLegacy();
+//#pragma warning disable 4014
+            /*await*/
+            Utils.Do(Return.Init(Content, Loop, Volume));
+//#pragma warning restore 4014
+            return Return;
+        }
+        protected async Task Init(Stream Content, bool Loop, double Volume)
+        {
+            const string FileName = "TempContent";
+            Utils.Temp.SaveStream(FileName, Content);
+            // await Current.InstalledLocation.GetFolderAsync(FolderName);
+            StorageFile file = await StorageFile.GetFileFromPathAsync(Utils.Temp.GetFile(FileName));
+            IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.Read);
+
+            _player = new MediaElement
+            {
+                IsMuted = false,
+                Position = new TimeSpan(0, 0, 0),
+                Volume = Volume,
+                IsLooping = Loop
+            };
+            _player.SetSource(stream, file.ContentType);
+
+        }
+        /*public void Play()
+        {
+             _player.Play();
+        }*/
+        public void Play()
+        { _player.Play(); }
+        public void Pause()
+        { _player.Pause(); }
+        public void Stop()
+        { _player.Stop(); }
+        public event EventHandler Complete
+        {
+            add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
+            remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
+        }
+#endif
+        private StreamPlayerLegacy() : base()
+        { }
     }
 }

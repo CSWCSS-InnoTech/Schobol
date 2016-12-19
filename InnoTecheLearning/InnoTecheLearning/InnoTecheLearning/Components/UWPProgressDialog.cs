@@ -17,7 +17,7 @@ namespace InnoTecheLearning
     {
         public event EventHandler CanExecuteChanged;
         readonly Action action;
-
+        private void Main() { CanExecuteChanged -= null; CanExecuteChanged(null, null); }
         public Command(Action action)
         {
             this.action = action;

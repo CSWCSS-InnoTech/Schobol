@@ -10,7 +10,7 @@
   <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.10.0.0" ProcessorArchitecture="x86" />
   <mp:PhoneIdentity PhoneProductId="47f0706c-3646-4de9-8968-b498fa30d6e7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>InnoTecheLearning App</DisplayName>
+    <DisplayName>eLearning App</DisplayName>
     <PublisherDisplayName>InnoTech Society of CSWCSS</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -21,7 +21,7 @@
     <Resource Language="EN-US" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="InnoTecheLearning App.exe" EntryPoint="edu.cswcss.eLearning">
+    <Application Id="App" Executable="CSWCSS eLearning App.exe" EntryPoint="InnoTecheLearning.UWP.App">
       <uap:VisualElements DisplayName="eLearning App" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Developed by the Innovative Technology Society of CSWCSS" BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"></uap:DefaultTile>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
@@ -34,6 +34,7 @@
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
+    <DeviceCapability Name="microphone" />
   </Capabilities>
   <build:Metadata>
     <build:Item Name="SharedGUID" Value="ca86097f-6b9e-4d80-bbe3-3334acb33c86" />

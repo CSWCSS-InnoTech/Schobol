@@ -381,9 +381,14 @@ namespace InnoTecheLearning
         public static T Assign<T>(T Value, out T Object)
         { return Object = Value; }
 
-        public static T Do<T>(Task<T> Task)
+        public static void Do(Action Task)
         {
-            return Task.GetAwaiter().GetResult();
+            Task?.Invoke();
+        }
+
+        public static T Do<T>(Delegate Task, params object[] Args)
+        {
+            return (T)Task?.DynamicInvoke(Args);
         }
 
         public static void Do(Task Task)
@@ -391,6 +396,12 @@ namespace InnoTecheLearning
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task);
         }
+
+        public static T Do<T>(Task<T> Task)
+        {
+            return Task.GetAwaiter().GetResult();
+        }
+
 #if NETFX_CORE
         public static void Do(global::Windows.Foundation.IAsyncAction Task)
         {
@@ -414,6 +425,7 @@ namespace InnoTecheLearning
             return Task.GetAwaiter().GetResult();
         }
 #endif
+
         public static ushort ToUShort(string String)
         {
 Retry:      try
@@ -499,7 +511,7 @@ const Log10e = Math.LOG10E;
 """";
 ";
             // Ask user to enter expression.
-#if __IOS || __ANDROID__
+#if __IOS__ || __ANDROID__
             JSEvaluator Evaluator = new JSEvaluator();
 #endif
             try
@@ -609,6 +621,22 @@ const Log10e = Math.LOG10E;
         }
         public static double TryParseDouble(string s, double @default)
         { double d; if (double.TryParse(s, out d)) { return d; } else { return @default; }; }
+        public static byte[] ReadFully(this Stream input, bool reset = false)
+        {
+            if (reset && input.CanSeek) input.Seek(0, SeekOrigin.Begin);
+            if (input is MemoryStream)
+            {
+                return ((MemoryStream)input).ToArray();
+            }
+            else
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    input.CopyTo(ms);
+                    return ms.ToArray();
+                }
+            }
+        }
         /*
         public string TransformForCurrentPlatform(string url)
         {

@@ -1,5 +1,5 @@
 ﻿#pragma warning disable 0618
-#if __IOS || __ANDROID__
+#if __IOS__ || __ANDROID__
 using Microsoft.JScript;
 using Microsoft.JScript.Vsa;
 #elif NETFX_CORE
