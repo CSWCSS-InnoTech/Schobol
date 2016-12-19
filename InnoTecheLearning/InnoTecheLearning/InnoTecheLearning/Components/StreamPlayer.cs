@@ -25,6 +25,27 @@ namespace InnoTecheLearning
     /// </summary>
     class StreamPlayer : ISoundPlayer
     {
+        public class StreamPlayerOptions
+        {
+            Sounds Sound;
+            float Volume = 1;
+            bool Loop = false;
+            System.EventHandler Complete;
+#if __ANDROID__
+            // Stream type
+            Android.Media.Stream Type= Android.Media.Stream.Music;
+            // Frequency
+            int SampleRate=11025;
+            // Mono or stereo
+            ChannelOut Config=ChannelOut.Mono;
+            // Audio encoding
+            Encoding Format=Android.Media.Encoding.Pcm16bit;
+            // Length of the audio clip.
+            int SizeInBytes=-1;
+            // Mode. Stream or static.
+            AudioTrackMode Mode=AudioTrackMode.Stream;
+#endif
+        }
         public enum Sounds : byte
         {
             Violin_G,
