@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>HOME</Machine>
+    <WindowsUser>user</WindowsUser>
+    <TargetPlatformIdentifier>WindowsPhoneApp</TargetPlatformIdentifier>
+    <TargetOsVersion>6.3</TargetOsVersion>
+    <TargetOsDescription>Windows Phone 8.1</TargetOsDescription>
+    <SolutionConfiguration>Debug|AnyCPU</SolutionConfiguration>
+    <PackageArchitecture>neutral</PackageArchitecture>
+    <PackageIdentityName>e8ebdf4c-1a3c-4b54-919a-429e98e93142</PackageIdentityName>
+    <PackageIdentityPublisher>CN=joaqu</PackageIdentityPublisher>
+    <IntermediateOutputPath>C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\obj\Debug\</IntermediateOutputPath>
+    <RemoteDeploymentType></RemoteDeploymentType>
+    <PackageRegistrationPath></PackageRegistrationPath>
+    <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\WinPhone\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\WinPhone\CSWCSS eLearning App.exe">
+      <PackagePath>CSWCSS eLearning App.exe</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\ChakraHost8.1.dll">
+      <PackagePath>ChakraHost8.1.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Core.dll">
+      <PackagePath>Xamarin.Forms.Core.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.dll">
+      <PackagePath>Xamarin.Forms.Platform.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.dll">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.Phone.dll">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.Phone.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Xaml.dll">
+      <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Assets\Logo.scale-240.png">
+      <PackagePath>Assets\Logo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Assets\SmallLogo.scale-240.png">
+      <PackagePath>Assets\SmallLogo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Assets\SplashScreen.scale-240.png">
+      <PackagePath>Assets\SplashScreen.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Assets\Square71x71Logo.scale-240.png">
+      <PackagePath>Assets\Square71x71Logo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Assets\StoreLogo.scale-240.png">
+      <PackagePath>Assets\StoreLogo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Assets\WideLogo.scale-240.png">
+      <PackagePath>Assets\WideLogo.scale-240.png</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Toolkit.Content\ApplicationBar.Add.png">
+      <PackagePath>Toolkit.Content\ApplicationBar.Add.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Toolkit.Content\ApplicationBar.Cancel.png">
+      <PackagePath>Toolkit.Content\ApplicationBar.Cancel.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Toolkit.Content\ApplicationBar.Check.png">
+      <PackagePath>Toolkit.Content\ApplicationBar.Check.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Toolkit.Content\ApplicationBar.Delete.png">
+      <PackagePath>Toolkit.Content\ApplicationBar.Delete.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\Toolkit.Content\ApplicationBar.Select.png">
+      <PackagePath>Toolkit.Content\ApplicationBar.Select.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.WinPhone\README_FIRST.txt">
+      <PackagePath>README_FIRST.txt</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\WinPhone\CSWCSS eLearning App.xr.xml">
+      <PackagePath>CSWCSS eLearning App.xr.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\WinPhone\App.xbf">
+      <PackagePath>App.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\WinPhone\MainPage.xbf">
+      <PackagePath>MainPage.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT\PageControl.xbf">
+      <PackagePath>Xamarin.Forms.Platform.WinRT\PageControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT\StepperControl.xbf">
+      <PackagePath>Xamarin.Forms.Platform.WinRT\StepperControl.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT\Xamarin.Forms.Platform.WinRT.xr.xml">
+      <PackagePath>Xamarin.Forms.Platform.WinRT\Xamarin.Forms.Platform.WinRT.xr.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.Phone\FormsTextBoxStyle.xbf">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.Phone\FormsTextBoxStyle.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.Phone\PhoneResources.xbf">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.Phone\PhoneResources.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.Phone\Resources.xbf">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.Phone\Resources.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.Phone\SearchBox.xbf">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.Phone\SearchBox.xbf</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\packages\Xamarin.Forms.2.3.3.175\lib\wpa81\Xamarin.Forms.Platform.WinRT.Phone\Xamarin.Forms.Platform.WinRT.Phone.xr.xml">
+      <PackagePath>Xamarin.Forms.Platform.WinRT.Phone\Xamarin.Forms.Platform.WinRT.Phone.xr.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\WinPhone\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

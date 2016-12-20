@@ -26,7 +26,6 @@ namespace InnoTecheLearning
     /// </summary>
     class StreamPlayer : ISoundPlayer
     {
-        public StreamPlayerOptions Hi = new StreamPlayerOptions() {Type = StreamPlayerOptions.StreamType.Alarm };
         public class StreamPlayerOptions
         {
             #region Mime Types
@@ -919,20 +918,32 @@ namespace InnoTecheLearning
             #endregion
             public StreamPlayerOptions(Stream Content, string Extension, bool Loop = false)
             {
-                this.Content = Content; MimeType = MimeTypes[Extension.ToLower().Trim()]; this.Loop = Loop;
+                this.Content = Content; MimeType = MimeTypes[Extension.ToLower().Trim().TrimStart('.')]; this.Loop = Loop;
             }
             public Stream Content = null;
             public float Volume = 1;
             public bool Loop = false;
-            public System.EventHandler Complete;
             /// <summary>
             /// Stream type.
             /// </summary>
             public StreamType Type = StreamType.Music;
+            int? _SampleRate = null;
             /// <summary>
-            /// Frequency.
+            /// Frequency. OPTIONAL. Do not enter unless you are sure about the value.
             /// </summary>
-            public int SampleRate = 11025;
+            public int SampleRate
+            {
+                get
+                {
+                    if (_SampleRate.HasValue) return _SampleRate.Value;
+                    if (!Content.CanSeek) return 11025;
+                    Content.Seek(28, SeekOrigin.Begin);
+                    byte[] val = new byte[4];
+                    Content.Read(val, 0, 4);
+                    return System.BitConverter.ToInt32(val, 0) * 8;
+                }
+                set { _SampleRate = value; }
+            }
             /// <summary>
             /// Mono or stereo.
             /// </summary>
@@ -949,7 +960,7 @@ namespace InnoTecheLearning
             /// Mode. Stream or static.
             /// </summary>
             public AudioTrackMode Mode = AudioTrackMode.Stream;
-            public string MimeType = "unknown/unknown";
+            public string MimeType { get; } = "unknown/unknown";
 
             public enum AudioTrackMode
             {
@@ -1145,7 +1156,50 @@ namespace InnoTecheLearning
                 default:
                     break;
             }
-            return Create(Content: Utils.Resources.GetStream("Sounds." + Name), Loop: true, Volume: Volume);
+            return Create(new StreamPlayerOptions(
+                Utils.Resources.GetStream("Sounds." + Name), System.IO.Path.GetExtension(Name))
+            { Volume = Volume, Loop = true });
+        }
+        public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
+        {
+            var Return = Create(Sound, Options);
+            Return.Play();
+            return Return;
+        }
+        public static StreamPlayer Create(Sounds Sound, StreamPlayerOptions Options)
+        {
+            string Name = "";
+            switch (Sound)
+            {
+                case Sounds.Violin_G:
+                    Name = "ViolinG.wav";
+                    break;
+                case Sounds.Violin_D:
+                    Name = "ViolinD.wav";
+                    break;
+                case Sounds.Violin_A:
+                    Name = "ViolinA.wav";
+                    break;
+                case Sounds.Violin_E:
+                    Name = "ViolinE.wav";
+                    break;
+                case Sounds.Cello_C:
+                    Name = "CelloCC.wav";
+                    break;
+                case Sounds.Cello_G:
+                    Name = "CelloGG.wav";
+                    break;
+                case Sounds.Cello_D:
+                    Name = "CelloD.wav";
+                    break;
+                case Sounds.Cello_A:
+                    Name = "CelloA.wav";
+                    break;
+                default:
+                    break;
+            }
+            Options.Content = Utils.Resources.GetStream("Sounds." + Name);
+            return Create(Options);
         }
         public static StreamPlayer Play(Sounds Sound, float Volume = 1)
         {
@@ -1154,13 +1208,27 @@ namespace InnoTecheLearning
             return Return;
         }
 #if __IOS__
+        public static StreamPlayer Create(StreamPlayerOptions Options)
+        {
+            var Return = new StreamPlayer();
+            Return.Init(Options);
+            return Return;
+        }
+        protected void Init(StreamPlayerOptions Options)
+        {
+            _player = AVAudioPlayer.FromData(NSData.FromStream(Options.Content));
+            _player.NumberOfLoops = Options.Loop ? 0 : -1;
+            _player.Volume = Options.Volume;
+        }
         AVAudioPlayer _player;
+        [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
         public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
         {
             var Return = new StreamPlayer();
             Return.Init(Content, Loop, Volume);
             return Return;
         }
+        [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
         protected void Init(Stream Content, bool Loop, float Volume)
         {
             _player = AVAudioPlayer.FromData(NSData.FromStream(Content));
@@ -1186,12 +1254,42 @@ namespace InnoTecheLearning
         bool _prepared;
         bool _loop;
         float _volume;
+        public static StreamPlayer Create(StreamPlayerOptions Options)
+        {
+            var Return = new StreamPlayer();
+            Return.Init(Options);
+            return Return;
+        }
+        protected void Init(StreamPlayerOptions Options)
+        {
+            _content = Options.Content;
+            _player = new AudioTrack(
+            // Stream type
+            (Android.Media.Stream)Options.Type,
+            // Frequency
+            Options.SampleRate,
+            // Mono or stereo
+            (ChannelOut)Options.Config,
+            // Audio encoding
+            (Encoding)Options.Format,
+            // Length of the audio clip.
+            Options.SizeInBytes,
+            // Mode. Stream or static.
+            (AudioTrackMode)Options.Mode);
+            _loop = Options.Loop;
+            _volume = Options.Volume;
+            _player.SetVolume(_volume = Options.Volume);
+            _player.SetNotificationMarkerPosition(Options.SizeInBytes / 2);
+            _prepared = true;
+        }
+        [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
         public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
         {
             var Return = new StreamPlayer();
             Return.Init(Content, Loop, Volume);
             return Return;
         }
+        [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
         protected void Init(Stream Content, bool Loop, float Volume)
         {
             _content = Content;
@@ -1258,12 +1356,31 @@ namespace InnoTecheLearning
         { Stop(); }
 #elif NETFX_CORE
         MediaElement _player;
+        public static StreamPlayer Create(StreamPlayerOptions Options)
+        {
+            var Return = new StreamPlayer();
+            Return.Init(Options);
+            return Return;
+        }
+        protected void Init(StreamPlayerOptions Options)
+        {
+            _player = new MediaElement
+            {
+                IsMuted = false,
+                Position = new TimeSpan(0, 0, 0),
+                Volume = Options.Volume,
+                IsLooping = Options.Loop
+            };
+            _player.SetSource(Options.Content.AsRandomAccessStream(), Options.MimeType);
+        }
+        [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
         public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
         {
             var Return = new StreamPlayer();
             Return.Init(Content, Loop, Volume);
             return Return;
         }
+        [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
         protected void Init(Stream Content, bool Loop, float Volume)
         {
             _player = new MediaElement
@@ -1309,7 +1426,6 @@ namespace InnoTecheLearning
             }
         }
 #endif
-        private StreamPlayer() : base()
-        { }
+        private StreamPlayer() : base() { } 
     }
 }

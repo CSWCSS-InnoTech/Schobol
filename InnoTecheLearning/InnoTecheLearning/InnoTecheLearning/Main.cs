@@ -185,10 +185,6 @@ namespace InnoTecheLearning
                         Button("'G",  delegate {MusicSound =  Play(Sounds.Cello_G); }),
                         Button("D",  delegate {MusicSound =  Play(Sounds.Cello_D); }),
                         Button("A",  delegate {MusicSound =  Play(Sounds.Cello_A); })),
-
-#if __ANDROID__
-                        BoldLabel("Sorry, but Android 6.0+ only!"),
-#endif
                         Back(this)
                     }
                 };
@@ -316,7 +312,7 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", delegate
                 {
-                    Calculator_Value = JSEvaluate(In.Text, this);
+                    Calculator_Value = JSEvaluate(JSPrefix + In.Text, this);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
@@ -469,6 +465,7 @@ namespace InnoTecheLearning
             {
                 Editor Editor = new Editor
                 {
+                    Text = JSPrefix,
                     TextColor = Color.Black,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
