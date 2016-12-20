@@ -476,13 +476,15 @@ namespace InnoTecheLearning
                     TextColor = Color.Black,
                     Placeholder = "Result",
                     PlaceholderColor = Color.Gray,
-                    HorizontalOptions = LayoutOptions.FillAndExpand
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.End
                 };
                 Entry.TextChanged += Calculator_Free_TextChanged;
                 return new StackLayout
                 {
                     Children =
-                    {Editor,
+                    {new ScrollView {Content = Editor,
+                        HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
                     Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
                         Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
                     Entry

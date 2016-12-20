@@ -1263,7 +1263,11 @@ namespace InnoTecheLearning
             return Return;
         }
         protected void Init(StreamPlayerOptions Options)
-        {
+        {// To get preferred buffer size and sampling rate.
+            AudioManager audioManager = (AudioManager)
+                Forms.Context.GetSystemService(Java.Lang.Class.FromType(typeof(AudioManager)));
+            string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
+            string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
             _content = Options.Content;
             _player = new AudioTrack(
             // Stream type
