@@ -927,22 +927,24 @@ namespace InnoTecheLearning
             /// Stream type.
             /// </summary>
             public StreamType Type = StreamType.Music;
-            int? _SampleRate = null;
+            //int? _SampleRate = null;
             /// <summary>
-            /// Frequency. OPTIONAL. Do not enter unless you are sure about the value.
+            /// Always returns 0 (Unspecified).
             /// </summary>
+            // Frequency. OPTIONAL. Do not enter unless you are sure about the value.
             public int SampleRate
             {
                 get
                 {
-                    if (_SampleRate.HasValue) return _SampleRate.Value;
+                    return 0;
+                    /*if (_SampleRate.HasValue) return _SampleRate.Value;
                     if (!Content.CanSeek) return 11025;
                     Content.Seek(28, SeekOrigin.Begin);
                     byte[] val = new byte[4];
                     Content.Read(val, 0, 4);
-                    return System.BitConverter.ToInt32(val, 0) * 8;
+                    return System.BitConverter.ToInt32(val, 0) * 8;*/
                 }
-                set { _SampleRate = value; }
+                //set { _SampleRate = value; }
             }
             /// <summary>
             /// Mono or stereo.

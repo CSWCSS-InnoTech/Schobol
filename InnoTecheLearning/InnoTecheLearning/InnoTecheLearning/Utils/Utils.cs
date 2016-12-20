@@ -518,7 +518,7 @@ const Log10e = Math.LOG10E;
             {
                 return JSEvaluteAns = Evaluator.Eval(TrueFree ? Expression :
                     "var Prev : String = \"" + JSEvaluteAns.Replace(@"\", @"\\").Replace("\"", @"\""") + @""";
-" + JSPrefix + (MaxMin ?
+" + (MaxMin ?
                     System.Text.RegularExpressions.Regex.
                     Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
                     : Expression));
