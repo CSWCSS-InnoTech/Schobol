@@ -12,12 +12,11 @@ Jordan Fung is a 14-year-old entrepreneur, inspirer, and self-taught programmer 
 
 [Website of Lego Mania](http://designheaven8.wixsite.com/lego-mania-official)
 
-Financial Secretary: Alvin Hung Wai Chun
+###Secretaries
+Alvin Hung Wai Chun, Joseph Li Hoi Ming, Yves Lo Yin Chung
 
-Secretary: Joseph Li Hoi Ming
-
-<img src="https://github.com/happypig375/innotech-elearning/raw/Jordan-Fung-patch-1/mmmmppppffffffffhahahahahahahaha.png" 
-alt="Keon's Reaction LOL" width="239" height="112" border="10" />
+###Coordinators
+Austin Chan Chi Heng, Andrew Lee Ho Wang, Justin Wong Kong Ki
 
 ###About the differrent branches
 
