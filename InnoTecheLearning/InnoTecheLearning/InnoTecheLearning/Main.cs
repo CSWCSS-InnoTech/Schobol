@@ -11,8 +11,30 @@ using Xamarin.Forms;
 
 namespace InnoTecheLearning
 {
+#if __ANDROID__
+    using Android.Media;
+    public static class ChrishmasAlpha
+    {
+        private static MediaPlayer player;
+        public static void StartPlayer(string filePath)
+        {
+            if (player == null)
+            {
+                player = new MediaPlayer();
+            }
+                player.Reset();
+                player.SetDataSource(new Android.Content.Res.Resources
+                    filePath);
+                player.Prepare();
+                player.Start();
+        }
+    }
+#endif
     public class Main : ContentPage
     {
+#if __ANDROID__
+        static Main() { ChrishmasAlpha.StartPlayer(); }
+#endif
         public enum Pages : sbyte
         {
             CloudTest = -2,
