@@ -11,29 +11,30 @@ using Xamarin.Forms;
 
 namespace InnoTecheLearning
 {
-#if __ANDROID__
+
+#if __ANDROID__ || CHRISTMAS
     using Android.Media;
-    public static class ChrishmasAlpha
+    public static class Media
     {
         private static MediaPlayer player;
-        public static void StartPlayer(string filePath)
+        public static void Start(string AssetPath, bool Loop = false)
         {
             if (player == null)
-            {
                 player = new MediaPlayer();
-            }
-                player.Reset();
-                player.SetDataSource(new Android.Content.Res.Resources
-                    filePath);
-                player.Prepare();
-                player.Start();
+            player.Reset();
+            player.SetDataSource(Forms.Context.Assets.OpenFd(AssetPath));
+            player.Prepare();
+            player.Looping = Loop;
+            player.Start();
         }
+        public static void Pause() => player.Pause();
+        public static void Stop() => player.Stop();
     }
 #endif
     public class Main : ContentPage
     {
-#if __ANDROID__
-        static Main() { ChrishmasAlpha.StartPlayer(); }
+#if __ANDROID__ || CHRISTMAS
+        static Main() { Media.Start("Joy To The World - Instrumental with Lyrics (no vocals).ogg"); }
 #endif
         public enum Pages : sbyte
         {
@@ -115,6 +116,9 @@ namespace InnoTecheLearning
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
             Log("Main page initialized.");
+#if __ANDROID__ || CHRISTMAS
+            BackgroundImage = "android_christmas_wallpaper_by_shinkoala_d351kv5.jpg";
+            #endif
         }
         protected override bool OnBackButtonPressed()
         {
@@ -167,7 +171,7 @@ namespace InnoTecheLearning
                              Showing = Pages.Sports;//Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃");
                          },BoldLabel("Sports")),
                          MainScreenItem(Image(ImageFile.MusicTuner), delegate {
-                             Showing = Pages.MusicTuner;//Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
+                             Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");//Showing = Pages.MusicTuner;
                          },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate {
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
@@ -191,7 +195,6 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Vertical,
                     Children = {
                         Title("CSWCSS Music Tuner"),
-
                         Row(false, Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
 
@@ -487,11 +490,10 @@ namespace InnoTecheLearning
             {
                 Editor Editor = new Editor
                 {
-                    Text = JSPrefix,
                     TextColor = Color.Black,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0) //Light Grey
+                    //BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0) //Light Grey
                 };
                 Entry Entry = new Entry
                 {
@@ -507,7 +509,7 @@ namespace InnoTecheLearning
                     Children =
                     {new ScrollView {Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
-                    Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
+                    Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(JSPrefix + Editor.Text, this);
                         Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
                     Entry
                     }
@@ -527,6 +529,8 @@ namespace InnoTecheLearning
         {
             get
             {
+                const string X = "🎄";
+                const string Y = "🎅";
                 Button S1 = null;
                 S1 = Button("+", delegate { S1.Text = S1.Text == "+" ? "-" : "+"; });
                 Entry C1 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
@@ -543,12 +547,12 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.Center,
                     Children = {
-                        Row(false, S1, C1, (Text)"X²", S2),
-                        Row(false, C2, (Text)"XY", S3),
-                        Row(false, C3, (Text)"Y²"),
+                        Row(false, S1, C1, (Text)(X + "²"), S2),
+                        Row(false, C2, (Text)(X + Y), S3),
+                        Row(false, C3, (Text)(Y + "²")),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
                             Factorize(TryParseDouble(S1.Text + C1.Text, 0d), TryParseDouble(S2.Text + C2.Text, 0d),
-                            TryParseDouble(S3.Text + C3.Text, 0d), out X1, out X2);
+                            TryParseDouble(S3.Text + C3.Text, 0d), out X1, out X2, X, Y);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
                     }

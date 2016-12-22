@@ -61,7 +61,7 @@ namespace InnoTecheLearning
         /// [6] = The highest common factor among the coefficients.
         /// Factorized Result: [6]([2]X+[3]Y)([4]X+[5]Y)</returns>
         public static string Factorize(double A, double B, double C,
-            out Complex Root1, out Complex Root2, char X = 'X', char Y = 'Y', double SafeCheck = 1e6)
+            out Complex Root1, out Complex Root2, string X = "X", string Y = "Y", double SafeCheck = 1e6)
         {
             try
             {
