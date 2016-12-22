@@ -17,15 +17,16 @@ namespace InnoTecheLearning
     public class Media
     {
         private MediaPlayer player;
-        public void Start(string AssetPath, bool Loop = false)
+        public void Start(string Path)
         {
-            if (player == null)
-                player = new MediaPlayer();
-            player.Reset();
-            player.SetDataSource(Forms.Context.Assets.OpenFd(AssetPath));
+            var player = new MediaPlayer();
+            player.Prepared += (s, e) =>
+            {
+                player.Start();
+            };
+            player.SetDataSource(Path);
+            player.Looping = true;
             player.Prepare();
-            player.Looping = Loop;
-            player.Start();
         }
         public void Pause() => player.Pause();
         public void Stop() => player.Stop();
@@ -117,7 +118,7 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             Log("Main page initialized.");
 #if __ANDROID__ || CHRISTMAS
-            __player.Start("Joy To The World - Instrumental with Lyrics (no vocals).ogg"); 
+            __player.Start("android.resource://androidTest.androidTest/raw/JoyToTheWorld.ogg"); 
             BackgroundImage = "android_christmas_wallpaper_by_shinkoala_d351kv5.jpg";
             #endif
         }

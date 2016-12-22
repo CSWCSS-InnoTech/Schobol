@@ -142,7 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <AndroidAsset Include="Assets\Joy To The World - Instrumental with Lyrics %28no vocals%29.ogg" />
+    <AndroidResource Include="Resources\raw\JoyToTheWorld.ogg" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
