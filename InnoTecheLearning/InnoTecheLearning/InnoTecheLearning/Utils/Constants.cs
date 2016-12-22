@@ -8,7 +8,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 109); } }
+        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 110); } }
         public const string VersionName = "Christmas Alpha";
 
         public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }

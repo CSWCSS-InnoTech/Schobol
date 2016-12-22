@@ -14,10 +14,10 @@ namespace InnoTecheLearning
 
 #if __ANDROID__ || CHRISTMAS
     using Android.Media;
-    public static class Media
+    public class Media
     {
-        private static MediaPlayer player;
-        public static void Start(string AssetPath, bool Loop = false)
+        private MediaPlayer player;
+        public void Start(string AssetPath, bool Loop = false)
         {
             if (player == null)
                 player = new MediaPlayer();
@@ -27,8 +27,8 @@ namespace InnoTecheLearning
             player.Looping = Loop;
             player.Start();
         }
-        public static void Pause() => player.Pause();
-        public static void Stop() => player.Stop();
+        public void Pause() => player.Pause();
+        public void Stop() => player.Stop();
     }
 #endif
     public class Main : ContentPage
@@ -107,6 +107,9 @@ namespace InnoTecheLearning
                 _Showing = value;
             }
         }
+#if __ANDROID__ || CHRISTMAS
+        Media __player = new Media();
+#endif
         public Main()
         {
             BackgroundColor = Color.White;
@@ -114,7 +117,7 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             Log("Main page initialized.");
 #if __ANDROID__ || CHRISTMAS
-            Media.Start("Joy To The World - Instrumental with Lyrics (no vocals).ogg"); 
+            __player.Start("Joy To The World - Instrumental with Lyrics (no vocals).ogg"); 
             BackgroundImage = "android_christmas_wallpaper_by_shinkoala_d351kv5.jpg";
             #endif
         }
