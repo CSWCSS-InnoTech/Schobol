@@ -33,9 +33,6 @@ namespace InnoTecheLearning
 #endif
     public class Main : ContentPage
     {
-#if __ANDROID__ || CHRISTMAS
-        static Main() { Media.Start("Joy To The World - Instrumental with Lyrics (no vocals).ogg"); }
-#endif
         public enum Pages : sbyte
         {
             CloudTest = -2,
@@ -117,6 +114,7 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             Log("Main page initialized.");
 #if __ANDROID__ || CHRISTMAS
+            Media.Start("Joy To The World - Instrumental with Lyrics (no vocals).ogg"); 
             BackgroundImage = "android_christmas_wallpaper_by_shinkoala_d351kv5.jpg";
             #endif
         }
