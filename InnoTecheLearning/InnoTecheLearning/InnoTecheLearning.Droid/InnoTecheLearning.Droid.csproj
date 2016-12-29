@@ -142,7 +142,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <AndroidResource Include="Resources\raw\JoyToTheWorld.ogg" />
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
@@ -161,9 +160,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Drawable\android_christmas_wallpaper_by_shinkoala_d351kv5.jpg" />
   </ItemGroup>
   <Import Project="..\InnoTecheLearning\InnoTecheLearning.projitems" Label="Shared" Condition="Exists('..\InnoTecheLearning\InnoTecheLearning.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

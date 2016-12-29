@@ -457,29 +457,120 @@ Retry:      try
         }
 
         private static string JSEvaluteAns = "";
-        public static string JSPrefix { get {
-                return  @"var Ans : double = double(Prev);
-function Abs (n) {return Math.abs(n); }
-function Acos(n : double) : double { return Math.acos(n); }
-function Asin (n : double) : double { return Math.asin(n); }
-function Atan (n : double) : double { return Math.atan(n); }
-function Atan2 (y : double, x : double) : double{ return Math.atan2(y, x); }
-function Ceil(x : double) : double { return Math.ceil(x); }
-function Cos(x : double) : double { return Math.cos(x); }
-function Exp(x : double) : double { return Math.exp(x); }
-function Floor(x : double) : double { return Math.floor(x); }
-function Log(x : double) : double { return Math.log(x); }
-function Pow(x : double, y : double) : double { return Math.pow(x,y); }
-function Random() : double { return Math.random(); }
-function Round(x : double) : double { return Math.round(x); }
-function Sin(x : double) : double { return Math.sin(x); }
-function Sqrt(x : double) : double { return Math.sqrt(x); }
-function Tan(x : double) : double { return Math.tan(x); }
-function Factorial_(aNumber : int, recursNumber : int ) : double {
+        public enum AngleMode : byte
+        { Degree, Radian, Gradian, Turn }
+        public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
+            bool TrueFree = false, bool MaxMin = true)
+        {   
+            // Ask user to enter expression.
+#if __IOS__ || __ANDROID__
+            JSEvaluator Evaluator = new JSEvaluator();
+#endif
+            try
+            {
+                return JSEvaluteAns = Evaluator.Eval(TrueFree ? Expression :
+                    $@"var Prev : String = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
+var AngleUnit = {(byte)Mode};" + @"
+var Ans = Number(Prev);
+function AngleConvert(Num, Origin, Target){
+    switch(Origin) {
+        case 0://Degrees
+            switch(Target) {
+                case 0:
+                    return Num;
+                    break;
+                case 1:
+                    return Num * Math.PI / 180;
+                    break;
+                case 2:
+                    return Num * 10 / 9;
+                    break;
+                case 3:
+                    return Num / 360;
+                    break;
+                default:
+                    throw(""Invalid target of angle conversion."");
+            } 
+            break;
+        case 1://Radians
+            switch(Target) {
+                case 0:
+                    return Num / Math.PI * 180;
+                    break;
+                case 1:
+                    return Num;
+                    break;
+                case 2:
+                    return Num * 200 / Math.PI;
+                    break;
+                case 3:
+                    return Num / Math.PI / 2;
+                    break;
+                default:
+                    throw(""Invalid target of angle conversion."");
+            } 
+            break;
+        case 2://Gradians
+            switch(Target) {
+                case 0:
+                    return Num / 10 * 9;
+                    break;
+                case 1:
+                    return Num / 200 * Math.PI;
+                    break;
+                case 2:
+                    return Num;
+                    break;
+                case 3:
+                    return Num / 400;
+                    break;
+                default:
+                    throw(""Invalid target of angle conversion."");
+            } 
+            break;
+        case 3://Turns
+            switch(Target) {
+                case 0:
+                    return Num * 360;
+                    break;
+                case 1:
+                    return Num * 2 * Math.PI;
+                    break;
+                case 2:
+                    return Num * 400;
+                    break;
+                case 3:
+                    return Num;
+                    break;
+                default:
+                    throw(""Invalid target of angle conversion."");
+            } 
+            break;
+        default://What?
+            throw(""Invalid origin of angle conversion."");
+    } 
+}
+function Abs (n) { return Math.abs(n); }
+function Acos(n) { return AngleConvert(Math.acos(n), 1, AngleUnit); }
+function Asin (n) { return AngleConvert(Math.asin(n), 1, AngleUnit); }
+function Atan (n) { return AngleConvert(Math.atan(n), 1, AngleUnit); }
+function Atan2 (y, x){ return AngleConvert(Math.atan2(y, x), 1, AngleUnit); }
+function Ceil(x) { return Math.ceil(x); }
+function Cos(x) { return Math.cos(AngleConvert(x, AngleUnit, 1)); }
+function Exp(x) { return Math.exp(x); }
+function Floor(x) { return Math.floor(x); }
+function Log(x) { return Math.log(x); }
+function Pow(x, y) { return Math.pow(x,y); }
+function Random() { return Math.random(); }
+function Round(x) { return Math.round(x); }
+function Sin(x) { return Math.sin(AngleConvert(x, AngleUnit, 1)); }
+function Sqrt(x) { return Math.sqrt(x); }
+function Tan(x) { return Math.tan(AngleConvert(x, AngleUnit, 1)); }
+function Factorial_(aNumber, recursNumber){
    // recursNumber keeps track of the number of iterations so far.
    if (aNumber < 3) {  // If the number is 0, its factorial is 1.
       if (aNumber == 0) return 1.;
-      return double(aNumber);
+      return Number(aNumber);
    } else {
       if(recursNumber > 170) {
          return Infinity;
@@ -489,7 +580,7 @@ function Factorial_(aNumber : int, recursNumber : int ) : double {
 }
 }
 
-function Factorial(aNumber : int) : double {
+function Factorial(aNumber){
    // Use type annotation to only accept numbers coercible to integers.
    // double is used for the return type to allow very large numbers to be returned.
    if(aNumber< 0) {
@@ -506,19 +597,7 @@ const Ln2 = Math.LN2;
 const Ln10 = Math.LN10;
 const Log2e = Math.LOG2E;
 const Log10e = Math.LOG10E;
-"""";
-"; } }
-        public static string JSEvaluate(string Expression, Page Alert = null, bool TrueFree = false, bool MaxMin = true)
-        {   
-            // Ask user to enter expression.
-#if __IOS__ || __ANDROID__
-            JSEvaluator Evaluator = new JSEvaluator();
-#endif
-            try
-            {
-                return JSEvaluteAns = Evaluator.Eval(TrueFree ? Expression :
-                    "var Prev : String = \"" + JSEvaluteAns.Replace(@"\", @"\\").Replace("\"", @"\""") + @""";
-" + (MaxMin ?
+"""";" + (MaxMin ?
                     System.Text.RegularExpressions.Regex.
                     Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
                     : Expression));

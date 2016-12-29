@@ -12,7 +12,7 @@ using Xamarin.Forms;
 namespace InnoTecheLearning
 {
 
-#if __ANDROID__ || CHRISTMAS
+#if CHRISTMAS //|| __ANDROID__ 
     using Android.Media;
     public class Media
     {
@@ -108,7 +108,7 @@ namespace InnoTecheLearning
                 _Showing = value;
             }
         }
-#if __ANDROID__ || CHRISTMAS
+#if CHRISTMAS //|| __ANDROID__
         Media __player = new Media();
 #endif
         public Main()
@@ -117,10 +117,10 @@ namespace InnoTecheLearning
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
             Log("Main page initialized.");
-#if __ANDROID__ || CHRISTMAS
+#if CHRISTMAS //|| __ANDROID__
             __player.Start("android.resource://androidTest.androidTest/raw/JoyToTheWorld.ogg"); 
             BackgroundImage = "android_christmas_wallpaper_by_shinkoala_d351kv5.jpg";
-            #endif
+#endif
         }
         protected override bool OnBackButtonPressed()
         {
@@ -258,7 +258,7 @@ namespace InnoTecheLearning
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
                     L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
                     (IndexOutOfRangeException ex)=> {
-                        Alert(this, "Abnornal return value from Cloud: " + '"' + Response + '"'); },
+                        Alert(this, "Abnornal return value from Cloud: " + '"' + string.Join(",", Response) + '"'); },
                         Catch2:(Exception ex) => { Alert(this, ex.ToString()); }
                     ); }),
                     L1, L2, L3, L4, Back(this)}
@@ -271,6 +271,7 @@ namespace InnoTecheLearning
         List<Expressions> Calculator_Expression = new List<Expressions>();
         delegate void NoInputDelegate();
         event NoInputDelegate Calculator_Changed;
+        AngleMode AngleUnit = 0;
         public StackLayout Calculator
         {
             get
@@ -339,7 +340,7 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", delegate
                 {
-                    Calculator_Value = JSEvaluate(JSPrefix + In.Text, this);
+                    Calculator_Value = JSEvaluate(In.Text, this, AngleUnit);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
@@ -414,14 +415,20 @@ namespace InnoTecheLearning
                 Append(Const.Children, Expressions.Ln10, 1, 1);
                 Append(Const.Children, Expressions.Log2e, 2, 1);
                 Append(Const.Children, Expressions.Log10e, 3, 1);
-                Append(Const.Children, Expressions.Infinity, 0, 2);
-                Append(Const.Children, Expressions.NInfinity, 1, 2);
+                Append(Const.Children, Expressions.Infinity, "∞", 0, 2);
+                Append(Const.Children, Expressions.NInfinity, "-∞", 1, 2);
                 Append(Const.Children, Expressions.NaN, 2, 2);
-                Append(Const.Children, Expressions.Undefined, 3, 2);
+                Append(Const.Children, Expressions.Undefined, "UNDEF", 3, 2);
 
                 StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, Out } };
+                Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
+                //Light Blue
+                Mode.Clicked += delegate { AngleUnit++; if(AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
+                    Mode.Text = new string(AngleUnit.ToString().Take(AngleUnit == AngleMode.Turn ? 4 : 3).ToArray()); };
                 ScrollView Select = new ScrollView
                 {
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    Orientation = ScrollOrientation.Horizontal,
                     Content = new StackLayout
                     {
                         Orientation = StackOrientation.Horizontal,
@@ -435,6 +442,7 @@ namespace InnoTecheLearning
                                 = Func; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
                                 = Const; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
+                        Mode
                         //Light Green
                         }
                     }
@@ -511,7 +519,7 @@ namespace InnoTecheLearning
                     Children =
                     {new ScrollView {Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
-                    Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(JSPrefix + Editor.Text, this);
+                    Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
                         Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
                     Entry
                     }
@@ -531,8 +539,8 @@ namespace InnoTecheLearning
         {
             get
             {
-                const string X = "🎄";
-                const string Y = "🎅";
+                const string X = "X";
+                const string Y = "Y";
                 Button S1 = null;
                 S1 = Button("+", delegate { S1.Text = S1.Text == "+" ? "-" : "+"; });
                 Entry C1 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
