@@ -20,7 +20,7 @@ namespace vavi.sound.pcm.resampling.ssrc
     using vavi.util.SplitRadixFft;
     using Java.Lang;
 
-
+    using static InnoTecheLearning.Utils;
     /**
      * Shibatch Sampling Rate Converter.
      *
@@ -191,7 +191,7 @@ namespace vavi.sound.pcm.resampling.ssrc
 
         randbuf = new double[RANDBUFLEN];
 
-        Random random = new Random(JavaJavaSystem.CurrentTimeMillis());
+        Random random = new Random(JavaSystem.CurrentTimeMillis());
         for (i = 0; i < POOLSIZE; i++)
         {
             pool[i] = random.NextInt();
@@ -732,7 +732,7 @@ nsmplread = fpi.Read(tempData);
 
                     case 2:
                         for (i = 0; i<nsmplread* nch; i++) {
-                            int v = rawinbuf.Order(byteOrder).asShortBuffer().Get(i);
+                            int v = rawinbuf.Order(byteOrder).AsShortBuffer().Get(i);
 inbuf[nch * inbuflen + i] = (1 / (double) 0x7fff) * v;
                         }
                         break;
@@ -865,7 +865,7 @@ ip2 += nch;
 
 //for(i=0;i<n2b2;i++) { Android.Util.Log.Error("InnoTecheLearning.AudioResampler","%d:%g",i,buf2[ch,i]); }
 
-                    fft.rdft(n2b, 1, buf2[ch], fft_ip, fft_w);
+                    fft.rdft(n2b, 1, buf2.SliceRow(ch), fft_ip, fft_w);
 
                     buf2[ch,0] = stage2[0] * buf2[ch,0];
                     buf2[ch,1] = stage2[1] * buf2[ch,1];
@@ -882,7 +882,7 @@ re = stage2[i * 2] * buf2[ch,i * 2] - stage2[i * 2 + 1] * buf2[ch,i * 2 + 1];
                         buf2[ch,i * 2 + 1] = im;
                     }
 
-                    fft.rdft(n2b, -1, buf2[ch], fft_ip, fft_w);
+                    fft.rdft(n2b, -1, buf2.SliceRow(ch), fft_ip, fft_w);
 
                     for (i = osc, j = 0; i<n2b2; i += osf, j++) {
                         double f = (buf1[ch,j] + buf2[ch,i]);
@@ -900,12 +900,12 @@ outbuf[op + j * nch] = f;
 
                 rp += nsmplwrt1* (sfrq / frqgcd) / osf;
 
-                rawoutbuf.clear();
+                rawoutbuf.Clear();
                 if (twopass) {
                     for (i = 0; i<nsmplwrt2* nch; i++) {
                         double f = outbuf[i] > 0 ? outbuf[i] : -outbuf[i];
 peak[0] = peak[0] < f? f : peak[0];
-                        rawoutbuf.asDoubleBuffer().put(i, outbuf[i]);
+                        rawoutbuf.AsDoubleBuffer().Put(i, outbuf[i]);
                     }
                 } else {
                     switch (dbps) {
@@ -933,7 +933,7 @@ peak[0] = peak[0] < d? d : peak[0];
                                     }
                                 }
 
-                                rawoutbuf.put(i, (byte) (s + 0x80));
+                                rawoutbuf.Put(i, (sbyte) (s + 0x80));
 
                                 ch++;
                                 if (ch == nch) {
@@ -967,7 +967,7 @@ peak[0] = peak[0] < d? d : peak[0];
                                     }
                                 }
 
-                                rawoutbuf.Order(byteOrder).asShortBuffer().put(i, (short) s);
+                                rawoutbuf.Order(byteOrder).AsShortBuffer().Put(i, (short) s);
 
                                 ch++;
                                 if (ch == nch) {
@@ -1001,11 +1001,11 @@ peak[0] = peak[0] < d? d : peak[0];
                                     }
                                 }
 
-                                rawoutbuf.put(i* 3, (byte) (s & 255));
+                                rawoutbuf.Put(i* 3, (sbyte) (s & 255));
                                 s >>= 8;
-                                rawoutbuf.put(i* 3 + 1, (byte) (s & 255));
+                                rawoutbuf.Put(i* 3 + 1, (sbyte) (s & 255));
                                 s >>= 8;
-                                rawoutbuf.put(i* 3 + 2, (byte) (s & 255));
+                                rawoutbuf.Put(i* 3 + 2, (sbyte) (s & 255));
 
                                 ch++;
                                 if (ch == nch) {
@@ -1027,7 +1027,7 @@ peak[0] = peak[0] < d? d : peak[0];
 sumwrite += nsmplwrt2;
                         } else {
                             rawoutbuf.Position(0);
-                            int limitData = (int)(dbps * nch * (Math.floor((double)sumread * dfrq / sfrq) + 2 - sumwrite));
+                            int limitData = (int)(dbps * nch * (Math.Floor((double)sumread * dfrq / sfrq) + 2 - sumwrite));
                             if (limitData > 0) {
                                 rawoutbuf.Limit(limitData);
                                 writeBuffers(fpo, rawoutbuf);
@@ -1053,7 +1053,7 @@ sumwrite += nsmplwrt2;
 sumwrite += nsmplwrt2 - delay;
                             } else {
                                 rawoutbuf.Position(dbps* nch * delay);
-                                rawoutbuf.Limit((int) (dbps* nch * (Math.floor((double) sumread* dfrq / sfrq) + 2 - sumwrite)));
+                                rawoutbuf.Limit((int) (dbps* nch * (Math.Floor((double) sumread* dfrq / sfrq) + 2 - sumwrite)));
                                 writeBuffers(fpo, rawoutbuf);
                                 break;
                             }
@@ -1069,10 +1069,10 @@ sumwrite += nsmplwrt2 - delay;
 
                 {
                     ds = (rp - 1) / (fs1 / sfrq);
+                        
+                    System.Diagnostics.Debug.Assert(inbuflen >= ds);
 
-                    assert(inbuflen >= ds);
-
-System.arraycopy(inbuf, nch* ds, inbuf, 0, nch* (inbuflen - ds)); // memmove TODO overlap
+JavaSystem.Arraycopy(inbuf, nch* ds, inbuf, 0, nch* (inbuflen - ds)); // memmove TODO overlap
                     inbuflen -= ds;
                     rp -= ds* (fs1 / sfrq);
                 }
@@ -1088,14 +1088,13 @@ System.arraycopy(inbuf, nch* ds, inbuf, 0, nch* (inbuflen - ds)); // memmove TOD
         return peak[0];
     }
 
-    /** */
-    public double downsample(InputStream fpi, OutputStream fpo, int nch, int bps, int dbps, int sfrq, int dfrq, double gain, int chanklen, boolean twopass, int dither) throws IOException
+    /** throws IOException*/ 
+    public double downsample(InputStream fpi, OutputStream fpo, int nch, int bps, int dbps, int sfrq, int dfrq, double gain, int chanklen, boolean twopass, int dither)
 {
         int frqgcd, osf = 0, fs1, fs2;
         double[]
     stage1;
-        double[]
-    []
+        double[,]
     stage2;
         int n2, n2x, n2y, n1, n1b;
         int filter1len;
@@ -1108,8 +1107,7 @@ System.arraycopy(inbuf, nch* ds, inbuf, 0, nch* (inbuflen - ds)); // memmove TOD
     ByteBuffer rawinbuf, rawoutbuf;
         double[]
     inbuf, outbuf;
-        double[]
-    []
+        double[,]
     buf1, buf2;
         int i, j;
         int spcount = 0;
@@ -1138,7 +1136,7 @@ frqgcd = gcd(sfrq, dfrq);
                 osf = 3;
             } else {
                 throw new IllegalArgumentException(
-                        String.format("Resampling from %dHz to %dHz is not supported.\n" +
+                        String.Format("Resampling from %dHz to %dHz is not supported.\n" +
                                 "%d/gcd(%d,%d)=%d must be divided by 2 or 3.",
                                 sfrq, dfrq, dfrq, sfrq, dfrq, dfrq / frqgcd));
             }
@@ -1209,8 +1207,8 @@ n2 = 1;
             f2order[0] = 0;
             f2inc = new int[n2y];
             f2inc[0] = sfrq / dfrq;
-            stage2 = new double[n2y][n2x];
-            stage2[0][0] = 1;
+            stage2 = new double[n2y,n2x];
+            stage2[0,0] = 1;
         } else {
             double aa = AA; // stop band attenuation(dB)
 double lpf, d, df, alp, iza;
@@ -1257,11 +1255,11 @@ iza = I0Bessel.value(alp);
                 }
             }
 
-            stage2 = new double[n2y][n2x];
+            stage2 = new double[n2y,n2x];
 
 //Android.Util.Log.Error("InnoTecheLearning.AudioResampler","n2y: %d, n2: %d\n", n2y, n2);
             for (i = -(n2 / 2); i <= n2 / 2; i++) {
-                stage2[(i + n2 / 2) % n2y][(i + n2 / 2) / n2y] = win(i, n2, alp, iza) * hn_lpf(i, lpf, fs2) * fs2 / fs1;
+                stage2[(i + n2 / 2) % n2y,(i + n2 / 2) / n2y] = win(i, n2, alp, iza) * hn_lpf(i, lpf, fs2) * fs2 / fs1;
 //Android.Util.Log.Error("InnoTecheLearning.AudioResampler"," stage2[%02d][%02d]: %f\n", (i + n2 / 2) % n2y, (i + n2 / 2) / n2y, win(i, n2, alp, iza) * hn_lpf(i, lpf, fs2) * fs2 / fs1); // OK
             }
         }
@@ -1281,7 +1279,7 @@ int ds; // disposesfrqTv?
         // ?t@Cinbuf?lvZ stage2 filternTv?
 int nsmplwrt2 = 0;
 int s2p; // stage1 filter?oTv?n1y*osf]
-boolean init, ending;
+bool init, ending;
 //          int osc;
 int bp; // rp2vZ?Dbuf2Tvu
 int rps_backup, s2p_backup;
@@ -1302,13 +1300,13 @@ int op;
 // DA
 // CDRs?[
 
-buf1 = new double[nch][n1b];                                      //rawoutbuf = calloc(nch*(n2b2/osf+1),dbps);
+buf1 = new double[nch,n1b];                                      //rawoutbuf = calloc(nch*(n2b2/osf+1),dbps);
 
-            buf2 = new double[nch][n2x + 1 + n1b2];
+            buf2 = new double[nch,n2x + 1 + n1b2];
 
-            rawinbuf = ByteBuffer.allocate((nch* (n1b2 / osf + osf + 1)) * bps);
+            rawinbuf = ByteBuffer.Allocate((nch* (n1b2 / osf + osf + 1)) * bps);
 //System.err.println((double) n1b2 * sfrq / dfrq + 1);
-            rawoutbuf = ByteBuffer.allocate((int) (((double) n1b2* dfrq / sfrq + 1) * (dbps* nch)));
+            rawoutbuf = ByteBuffer.Allocate((int) (((double) n1b2* dfrq / sfrq + 1) * (dbps* nch)));
             inbuf = new double[nch * (n1b2 / osf + osf + 1)];
             outbuf = new double[(int)(nch * ((double)n1b2 * dfrq / sfrq + 1))];
 
@@ -1339,7 +1337,7 @@ rps = 0;   //TODO settings this parameter to zero fixed a lot of problems
                 rawinbuf.Limit(bps* nch * toberead);
 
                 byte[] tempData = new byte[rawinbuf.Limit()];
-nsmplread = fpi.read(tempData);
+nsmplread = fpi.Read(tempData);
                 if (nsmplread< 0) {
                     nsmplread = 0;
                 }
@@ -1353,7 +1351,7 @@ nsmplread = fpi.read(tempData);
                 rawinbuf = ByteBuffer.Wrap(tempData);
                 rawinbuf.Position(nsmplread);
 
-                rawinbuf.flip();
+                rawinbuf.Flip();
                 nsmplread /= bps* nch;
 
                 switch (bps) {
@@ -1365,7 +1363,7 @@ nsmplread = fpi.read(tempData);
 
                     case 2:
                         for (i = 0; i<nsmplread* nch; i++) {
-                            int v = rawinbuf.Order(byteOrder).asShortBuffer().Get(i);
+                            int v = rawinbuf.Order(byteOrder).AsShortBuffer().Get(i);
 inbuf[nch * inbuflen + i] = (1 / (double) 0x7fff) * v;
 //                            Android.Util.Log.Error("InnoTecheLearning.AudioResampler","I: %f\n", inbuf[nch * inbuflen + i]);
                         }
@@ -1382,7 +1380,7 @@ inbuf[nch * inbuflen + i] = (1 / (double) 0x7fff) * v;
 
                     case 4:
                         for (i = 0; i<nsmplread* nch; i++) {
-                            int v = rawinbuf.Order(byteOrder).getInt(i);
+                            int v = rawinbuf.Order(byteOrder).GetInt(i);
 inbuf[nch * inbuflen + i] = (1 / (double) 0x7fffffff) * v;
                         }
                         break;
@@ -1395,7 +1393,7 @@ inbuf[nch * inbuflen + i] = (1 / (double) 0x7fffffff) * v;
                 sumread += nsmplread;
 
 //                ending = sumread >= chanklen;
-                ending = fpi.available() < 0 || sumread >= chanklen;
+                ending = fpi.Available() < 0 || sumread >= chanklen;
 
 
                 rps_backup = rps;
@@ -1405,47 +1403,47 @@ inbuf[nch * inbuflen + i] = (1 / (double) 0x7fffffff) * v;
                     rps = rps_backup;
 
                     for (k = 0; k<rps; k++) {
-                        buf1[ch][k] = 0;
+                        buf1[ch,k] = 0;
                     }
 
                     for (i = rps, j = 0; i<n1b2; i += osf, j++) {
-                        assert(j< ((n1b2 - rps - 1) / osf + 1));
+                        System.Diagnostics.Debug.Assert(j< ((n1b2 - rps - 1) / osf + 1));
 
-                        buf1[ch][i] = inbuf[j * nch + ch];
+                        buf1[ch,i] = inbuf[j * nch + ch];
 
                         for (k = i + 1; k<i + osf; k++) {
-                            buf1[ch][k] = 0;
+                            buf1[ch,k] = 0;
                         }
                     }
 
-                    assert(j == ((n1b2 - rps - 1) / osf + 1));
+                    System.Diagnostics.Debug.Assert(j == ((n1b2 - rps - 1) / osf + 1));
 
                     for (k = n1b2; k<n1b; k++) {
-                        buf1[ch][k] = 0;
+                        buf1[ch,k] = 0;
                     }
 
                     rps = i - n1b2;
                     rp += j;
 
-                    fft.rdft(n1b, 1, buf1[ch], fft_ip, fft_w);
+                    fft.rdft(n1b, 1, buf1.SliceRow(ch), fft_ip, fft_w);
 
-                    buf1[ch][0] = stage1[0] * buf1[ch][0];
-                    buf1[ch][1] = stage1[1] * buf1[ch][1];
+                    buf1[ch,0] = stage1[0] * buf1[ch,0];
+                    buf1[ch,1] = stage1[1] * buf1[ch,1];
 
                     for (i = 1; i<n1b2; i++) {
                         double re, im;
 
-re = stage1[i * 2] * buf1[ch][i * 2] - stage1[i * 2 + 1] * buf1[ch][i * 2 + 1];
-                        im = stage1[i * 2 + 1] * buf1[ch][i * 2] + stage1[i * 2] * buf1[ch][i * 2 + 1];
+re = stage1[i * 2] * buf1[ch,i * 2] - stage1[i * 2 + 1] * buf1[ch,i * 2 + 1];
+                        im = stage1[i * 2 + 1] * buf1[ch,i * 2] + stage1[i * 2] * buf1[ch,i * 2 + 1];
 
-                        buf1[ch][i * 2] = re;
-                        buf1[ch][i * 2 + 1] = im;
+                        buf1[ch,i * 2] = re;
+                        buf1[ch,i * 2 + 1] = im;
                     }
 
-                    fft.rdft(n1b, -1, buf1[ch], fft_ip, fft_w);
+                    fft.rdft(n1b, -1, buf1.SliceRow(ch), fft_ip, fft_w);
 
                     for (i = 0; i<n1b2; i++) {
-                        buf2[ch][n2x + 1 + i] += buf1[ch][i];
+                        buf2[ch,n2x + 1 + i] += buf1[ch, i];
                     }
 
                     {
@@ -1453,13 +1451,13 @@ re = stage1[i * 2] * buf1[ch][i * 2] - stage1[i * 2 + 1] * buf1[ch][i * 2 + 1];
                         if (rp2 % (fs2 / fs1) != 0) {
                             t1++;
                         }
-
-                        bp = buf2[0].length* ch + t1; // &(buf2[ch][t1]);
+                        
+                        bp = System.Linq.Enumerable.ToArray(buf2.SliceRow(0)).Length* ch + t1; // &(buf2(ch,t1]);
                     }
 
                     s2p = s2p_backup;
 
-                    for (p = 0; bp - (buf2[0].length* ch) < n1b2 + 1; p++) { // buf2[ch]
+                    for (p = 0; bp - (System.Linq.Enumerable.ToArray(buf2.SliceRow(0)).Length* ch) < n1b2 + 1; p++) { // buf2[ch]
                         double tmp = 0;
 int bp2;
 int s2o;
@@ -1473,10 +1471,12 @@ bp2 = bp;
                             s2p = 0;
                         }
 
-                        assert((bp2 - (buf2[0].length* ch)) * (fs2 / fs1) - (rp2 + p* (fs2 / dfrq)) == s2o); // &(buf2[ch][0])
+                        System.Diagnostics.Debug.Assert((bp2 - (System.Linq.Enumerable.ToArray(buf2.SliceRow(0)).
+                            Length* ch)) * (fs2 / fs1) - (rp2 + p* (fs2 / dfrq)) == s2o); // &(buf2(ch,0])
                         for (i = 0; i<n2x; i++) {
 //Android.Util.Log.Error("InnoTecheLearning.AudioResampler","%d (%d, %d)\n", i, bp2 / buf2[0].length, bp2 % buf2[0].length);
-                            tmp += stage2[s2o][i] * buf2[bp2 / buf2[0].length][bp2 % buf2[0].length]; // *bp2++
+                            tmp += stage2[s2o,i] * buf2[bp2 / System.Linq.Enumerable.ToArray(buf2.SliceRow(0)).Length, 
+                                bp2 % System.Linq.Enumerable.ToArray(buf2.SliceRow(0)).Length]; // *bp2++
                             bp2++;
                         }
 
@@ -1489,13 +1489,13 @@ bp2 = bp;
 
                 rp2 += nsmplwrt2* (fs2 / dfrq);
 
-                rawoutbuf.clear();
+                rawoutbuf.Clear();
                 if (twopass) {
                     for (i = 0; i<nsmplwrt2* nch; i++) {
                         double f = outbuf[i] > 0 ? outbuf[i] : -outbuf[i];
 peak[0] = peak[0] < f? f : peak[0];
 //System.err.println("p: " + rawoutbuf.Position() + ", l: " + rawoutbuf.Limit());
-                        rawoutbuf.asDoubleBuffer().put(i, outbuf[i]);
+                        rawoutbuf.AsDoubleBuffer().Put(i, outbuf[i]);
 //if (i < 100) {
 // Android.Util.Log.Error("InnoTecheLearning.AudioResampler","1: %06d: %f\n", i, outbuf[i]);
 //}
@@ -1527,7 +1527,7 @@ peak[0] = peak[0] < d? d : peak[0];
                                     }
                                 }
 
-                                rawoutbuf.put(i, (byte) (s + 0x80));
+                                rawoutbuf.Put(i, (sbyte) (s + 0x80));
 
                                 ch++;
                                 if (ch == nch) {
@@ -1561,7 +1561,7 @@ peak[0] = peak[0] < d? d : peak[0];
                                     }
                                 }
 
-                                rawoutbuf.Order(byteOrder).asShortBuffer().put(i, (short) s);
+                                rawoutbuf.Order(byteOrder).AsShortBuffer().Put(i, (short) s);
 
                                 ch++;
                                 if (ch == nch) {
@@ -1595,11 +1595,11 @@ peak[0] = peak[0] < d? d : peak[0];
                                     }
                                 }
 
-                                rawoutbuf.put(i* 3, (byte) (s & 255));
+                                rawoutbuf.Put(i* 3, (sbyte) (s & 255));
                                 s >>= 8;
-                                rawoutbuf.put(i* 3 + 1, (byte) (s & 255));
+                                rawoutbuf.Put(i* 3 + 1, (sbyte) (s & 255));
                                 s >>= 8;
-                                rawoutbuf.put(i* 3 + 2, (byte) (s & 255));
+                                rawoutbuf.Put(i* 3 + 2, (sbyte) (s & 255));
 
                                 ch++;
                                 if (ch == nch) {
@@ -1621,7 +1621,7 @@ peak[0] = peak[0] < d? d : peak[0];
 sumwrite += nsmplwrt2;
                         } else {
                             rawoutbuf.Position(0);
-                            int limitData = (int)(dbps * nch * (Math.floor((double)sumread * dfrq / sfrq) + 2 - sumwrite));
+                            int limitData = (int)(dbps * nch * (Math.Floor((double)sumread * dfrq / sfrq) + 2 - sumwrite));
                             if (limitData > 0) {
                                 rawoutbuf.Limit(limitData);
                                 writeBuffers(fpo, rawoutbuf);
@@ -1646,7 +1646,7 @@ sumwrite += nsmplwrt2;
 sumwrite += nsmplwrt2 - delay;
                             } else {
                                 rawoutbuf.Position(dbps* nch * delay);
-                                rawoutbuf.Limit((int) (dbps* nch * (Math.floor((double) sumread* dfrq / sfrq) + 2 + sumwrite + nsmplwrt2 - delay)));  //TODO fails with short signals (think that fixed this)
+                                rawoutbuf.Limit((int) (dbps* nch * (Math.Floor((double) sumread* dfrq / sfrq) + 2 + sumwrite + nsmplwrt2 - delay)));  //TODO fails with short signals (think that fixed this)
                                 writeBuffers(fpo, rawoutbuf);
                                 break;
                             }
@@ -1668,14 +1668,16 @@ sumwrite += nsmplwrt2 - delay;
                     }
 
                     for (ch = 0; ch<nch; ch++) {
-                        System.arraycopy(buf2[ch], ds, buf2[ch], 0, n2x + 1 + n1b2 - ds); // memmove TODO overlap
+                        JavaSystem.Arraycopy(System.Linq.Enumerable.ToArray(buf2.SliceRow(ch))
+                            , ds, System.Linq.Enumerable.ToArray(buf2.SliceRow(ch)),
+                            0, n2x + 1 + n1b2 - ds); // memmove TODO overlap
                     }
 
                     rp2 -= ds* (fs2 / fs1);
                 }
 
                 for (ch = 0; ch<nch; ch++) {
-                    System.arraycopy(buf1[ch], n1b2, buf2[ch], n2x + 1, n1b2);
+                    JavaSystem.Arraycopy(buf1[ch], n1b2, buf2[ch], n2x + 1, n1b2);
                 }
 
                 if ((spcount++ & 7) == 7) {
@@ -1688,9 +1690,8 @@ sumwrite += nsmplwrt2 - delay;
 
         return peak[0];
     }
-
-    /** */
-    public double no_src(InputStream fpi, OutputStream fpo, int nch, int bps, int dbps, double gain, int chanklen, boolean twopass, int dither) throws IOException
+        /** */
+        public double no_src(InputStream fpi, OutputStream fpo, int nch, int bps, int dbps, double gain, int chanklen, boolean twopass, int dither) throws IOException
 {
         double[]
     peak = new double[]{
@@ -1734,7 +1735,7 @@ fpi.read(tempData);
                     buf.Position(buf.Limit());
 
                     buf.flip();
-                    s = buf.Order(byteOrder).asShortBuffer().Get(0);
+                    s = buf.Order(byteOrder).AsShortBuffer().Get(0);
 f = (1 / (double) 0x7fff) * s;
                     break;
                 case 3:
@@ -1781,7 +1782,7 @@ f = (1 / (double) 0x7fffffff) * s;
                         s = dither != 0 ? do_shaping(f, peak, dither, ch) : RINT(f);
 buf.Position(0);
                         buf.Limit(1);
-                        buf.put(0, (byte) (s + 128));
+                        buf.Put(0, (sbyte) (s + 128));
                         buf.flip();
                         writeBuffers(fpo, buf);
                         break;
@@ -1790,7 +1791,7 @@ buf.Position(0);
                         s = dither != 0 ? do_shaping(f, peak, dither, ch) : RINT(f);
 buf.Position(0);
                         buf.Limit(2);
-                        buf.asShortBuffer().put(0, (short) s);
+                        buf.AsShortBuffer().Put(0, (short) s);
                         buf.flip();
                         writeBuffers(fpo, buf);
                         break;
@@ -1799,11 +1800,11 @@ buf.Position(0);
                         s = dither != 0 ? do_shaping(f, peak, dither, ch) : RINT(f);
 buf.Position(0);
                         buf.Limit(3);
-                        buf.put(0, (byte) (s & 255));
+                        buf.Put(0, (sbyte) (s & 255));
                         s >>= 8;
-                        buf.put(1, (byte) (s & 255));
+                        buf.Put(1, (sbyte) (s & 255));
                         s >>= 8;
-                        buf.put(2, (byte) (s & 255));
+                        buf.Put(2, (sbyte) (s & 255));
                         buf.flip();
                         writeBuffers(fpo, buf);
                         break;
@@ -2139,11 +2140,11 @@ int dword;
 
 ByteBuffer leos = ByteBuffer.allocate(44).Order(ByteOrder.LITTLE_ENDIAN);
 
-leos.put("RIFF".getBytes());
+leos.Put("RIFF".getBytes());
             dword = 0;
             leos.putInt(dword);
 
-            leos.put("WAVEfmt ".getBytes());
+            leos.Put("WAVEfmt ".getBytes());
             dword = 16;
             leos.putInt(dword);
             word = 1;
@@ -2159,7 +2160,7 @@ leos.putInt(dword); // bytes per sec
             word = (short) (dbps* 8);
             leos.putShort(word); // bits per sample
 
-            leos.put("data".getBytes());
+            leos.Put("data".getBytes());
             dword = 0;
             leos.putInt(dword);
 
@@ -2301,7 +2302,7 @@ leis.clear();
                         s = dither != 0 ? do_shaping(f, peak, dither, ch) : RINT(f);
 
 ByteBuffer buf = ByteBuffer.allocate(1);
-buf.put((byte) (s + 128));
+buf.Put((sbyte) (s + 128));
                         buf.flip();
 
                         writeBuffers(fpo, buf);
@@ -2321,11 +2322,11 @@ buf.putShort((short) s);
                         s = dither != 0 ? do_shaping(f, peak, dither, ch) : RINT(f);
 
 ByteBuffer buf = ByteBuffer.allocate(3);
-buf.put((byte) (s & 255));
+buf.Put((sbyte) (s & 255));
                         s >>= 8;
-                        buf.put((byte) (s & 255));
+                        buf.Put((sbyte) (s & 255));
                         s >>= 8;
-                        buf.put((byte) (s & 255));
+                        buf.Put((sbyte) (s & 255));
                         buf.flip();
 
                         writeBuffers(fpo, buf);

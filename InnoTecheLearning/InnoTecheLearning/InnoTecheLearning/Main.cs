@@ -409,8 +409,13 @@ namespace InnoTecheLearning
                 };
                 Append(Const.Children, Expressions.π, 0, 0);
                 Append(Const.Children, Expressions.e, 1, 0);
+#if __IOS__ || __ANDROID__
+                Append(Const.Children, Expressions.Root2, "√2̅", 2, 0);
+                Append(Const.Children, Expressions.Root0_5, "√0̅.̅5̅", 3, 0);
+#elif NETFX_CORE
                 Append(Const.Children, Expressions.Root2, "√̅2", 2, 0);
                 Append(Const.Children, Expressions.Root0_5, "√̅0̅.̅5", 3, 0);
+#endif
                 Append(Const.Children, Expressions.Ln2, "Logₑ2", 0, 1);
                 Append(Const.Children, Expressions.Ln10, "Logₑ10", 1, 1);
                 Append(Const.Children, Expressions.Log2e, "Log₂e", 2, 1);
