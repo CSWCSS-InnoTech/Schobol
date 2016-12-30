@@ -409,12 +409,12 @@ namespace InnoTecheLearning
                 };
                 Append(Const.Children, Expressions.π, 0, 0);
                 Append(Const.Children, Expressions.e, 1, 0);
-                Append(Const.Children, Expressions.Root2, 2, 0);
-                Append(Const.Children, Expressions.Root0_5, "Root0.5", 3, 0);
-                Append(Const.Children, Expressions.Ln2, 0, 1);
-                Append(Const.Children, Expressions.Ln10, 1, 1);
-                Append(Const.Children, Expressions.Log2e, 2, 1);
-                Append(Const.Children, Expressions.Log10e, 3, 1);
+                Append(Const.Children, Expressions.Root2, "√̅2", 2, 0);
+                Append(Const.Children, Expressions.Root0_5, "√̅0̅.̅5", 3, 0);
+                Append(Const.Children, Expressions.Ln2, "Logₑ2", 0, 1);
+                Append(Const.Children, Expressions.Ln10, "Logₑ10", 1, 1);
+                Append(Const.Children, Expressions.Log2e, "Log₂e", 2, 1);
+                Append(Const.Children, Expressions.Log10e, "Log₁₀e", 3, 1);
                 Append(Const.Children, Expressions.Infinity, "∞", 0, 2);
                 Append(Const.Children, Expressions.NInfinity, "-∞", 1, 2);
                 Append(Const.Children, Expressions.NaN, 2, 2);
@@ -424,7 +424,7 @@ namespace InnoTecheLearning
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
                 Mode.Clicked += delegate { AngleUnit++; if(AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
-                    Mode.Text = new string(AngleUnit.ToString().Take(AngleUnit == AngleMode.Turn ? 4 : 3).ToArray()); };
+                    Mode.Text = AngleUnit.ToString(); };
                 ScrollView Select = new ScrollView
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,

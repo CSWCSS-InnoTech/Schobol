@@ -557,15 +557,25 @@ function Atan (n) { return AngleConvert(Math.atan(n), 1, AngleUnit); }
 function Atan2 (y, x){ return AngleConvert(Math.atan2(y, x), 1, AngleUnit); }
 function Ceil(x) { return Math.ceil(x); }
 function Cos(x) { return Math.cos(AngleConvert(x, AngleUnit, 1)); }
+function Cosh(x) { return (1 + Math.pow(Math.E, -2 * x)) / (2 * Math.pow(Math.E, -x)); }
+function Cot(x) { return 1 / Math.tan(x); }
+function Coth(x) { return (1 + Math.pow(Math.E, -2 * x)) / (1 - Math.pow(Math.E, -2 * x)); }
+function Csc(x) { return 1 / Math.sin(x); }
+function Csch(x) { return (2 * Math.pow(Math.E, -x)) / (1 - Math.pow(Math.E, -2 * x)); }
 function Exp(x) { return Math.exp(x); }
 function Floor(x) { return Math.floor(x); }
-function Log(x) { return Math.log(x); }
+function Ln(x) { return Math.log(x); }
+function Log(x, base) { return Math.log(x) / (base ? Math.log(base) : Math.LN10); }
 function Pow(x, y) { return Math.pow(x,y); }
 function Random() { return Math.random(); }
 function Round(x) { return Math.round(x); }
+function Sec(x) { return 1 / Math.cos(x); }
+function Sech(x) { return (2 * Math.pow(Math.E, -x)) / (1 + Math.pow(Math.E, -2 * x)); }
 function Sin(x) { return Math.sin(AngleConvert(x, AngleUnit, 1)); }
+function Sinh(x) { return (1 - Math.pow(Math.E, -2 * x)) / (2 * Math.pow(Math.E, -x)); }
 function Sqrt(x) { return Math.sqrt(x); }
 function Tan(x) { return Math.tan(AngleConvert(x, AngleUnit, 1)); }
+function Tanh(x) { return (1 - Math.pow(Math.E, -2 * x)) / (1 + Math.pow(Math.E, -2 * x)); }
 function Factorial_(aNumber, recursNumber){
    // recursNumber keeps track of the number of iterations so far.
    if (aNumber < 3) {  // If the number is 0, its factorial is 1.
