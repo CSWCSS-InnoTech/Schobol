@@ -21,15 +21,17 @@ using Windows.Storage.Streams;
 
 namespace InnoTecheLearning
 {
-    /// <summary>
-    /// A <see cref="StreamPlayer"/> that plays streams.
-    /// </summary>
-    class StreamPlayer : ISoundPlayer
+    public partial class Utils
     {
-        public class StreamPlayerOptions
+        /// <summary>
+        /// A <see cref="StreamPlayer"/> that plays streams.
+        /// </summary>
+        public class StreamPlayer : ISoundPlayer
         {
-            #region Mime Types
-            public static Dictionary<string, string> MimeTypes = new Dictionary<string, string>
+            public class StreamPlayerOptions
+            {
+                #region Mime Types
+                public static Dictionary<string, string> MimeTypes = new Dictionary<string, string>
         {
             { "123", "application/vnd.lotus-1-2-3" },
             { "3dml", "text/vnd.in3d.3dml" },
@@ -915,523 +917,527 @@ namespace InnoTecheLearning
             { "zirz", "application/vnd.zul" },
             { "zmm", "application/vnd.handheld-entertainment+xml" },
         };
-            #endregion
-            public StreamPlayerOptions(Stream Content, string Extension, bool Loop = false)
-            {
-                this.Content = Content; MimeType = MimeTypes[Extension.ToLower().Trim().TrimStart('.')]; this.Loop = Loop;
-            }
-            public Stream Content = null;
-            public float Volume = 1;
-            public bool Loop = false;
-            /// <summary>
-            /// Stream type.
-            /// </summary>
-            public StreamType Type = StreamType.Music;
-            //int? _SampleRate = null;
-            /// <summary>
-            /// Always returns 0 (Unspecified).
-            /// </summary>
-            // Frequency. OPTIONAL. Do not enter unless you are sure about the value.
-            public int SampleRate
-            {
-                get
+                #endregion
+                public StreamPlayerOptions(Stream Content, string Extension, bool Loop = false)
                 {
-                    return 0;
-                    /*if (_SampleRate.HasValue) return _SampleRate.Value;
-                    if (!Content.CanSeek) return 11025;
-                    Content.Seek(28, SeekOrigin.Begin);
-                    byte[] val = new byte[4];
-                    Content.Read(val, 0, 4);
-                    return System.BitConverter.ToInt32(val, 0) * 8;*/
+                    this.Content = Content; MimeType = MimeTypes[Extension.ToLower().Trim().TrimStart('.')]; this.Loop = Loop;
                 }
-                //set { _SampleRate = value; }
-            }
-            /// <summary>
-            /// Mono or stereo.
-            /// </summary>
-            public ChannelOut Config = ChannelOut.Mono;
-            /// <summary>
-            /// Audio encoding.
-            /// </summary>
-            public Encoding Format = Encoding.Pcm16bit;
-            /// <summary>
-            /// Length of the audio clip.
-            /// </summary>.
-            public int SizeInBytes { get { return (int)Content.Length; } }
-            /// <summary>
-            /// Mode. Stream or static.
-            /// </summary>
-            public AudioTrackMode Mode = AudioTrackMode.Stream;
-            public string MimeType { get; } = "unknown/unknown";
+                public Stream Content = null;
+                public float Volume = 1;
+                public bool Loop = false;
+                /// <summary>
+                /// Stream type.
+                /// </summary>
+                public StreamType Type = StreamType.Music;
+                int? _SampleRate = null;
+                /// <summary>
+                /// Frequency in Hertz (Hz). 
+                /// </summary>
+                // Always returns 0 (Unspecified). OPTIONAL. Do not enter unless you are sure about the value.
+                public int SampleRate
+                {
+                    get
+                    {
+                        if (_SampleRate.HasValue) return _SampleRate.Value;
+                        if (!Content.CanSeek) return 11025;
+                        Content.Seek(28, SeekOrigin.Begin);
+                        byte[] val = new byte[4];
+                        Content.Read(val, 0, 4);
+                        return System.BitConverter.ToInt32(val, 0) * 8;
+                    }
+                    //set { _SampleRate = value; }
+                }
+                /// <summary>
+                /// Mono or stereo.
+                /// </summary>
+                public ChannelOut Config = ChannelOut.Mono;
+                /// <summary>
+                /// Audio encoding.
+                /// </summary>
+                public Encoding Format = Encoding.Pcm16bit;
+                /// <summary>
+                /// Length of the audio clip.
+                /// </summary>.
+                public int SizeInBytes { get { return (int)Content.Length; } }
+                /// <summary>
+                /// Mode. Stream or static.
+                /// </summary>
+                public AudioTrackMode Mode = AudioTrackMode.Stream;
+                public string MimeType { get; } = "unknown/unknown";
 
-            public enum AudioTrackMode
-            {
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Creation mode where audio data is transferred from Java to the native layer
-                ///  only once before the audio starts playing.
-                /// </para>
-                /// </summary>
-                Static,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Creation mode where audio data is streamed from Java to the native layer
-                ///  as the audio is playing.
-                /// </para>
-                /// </summary>
-                Stream
+                public enum AudioTrackMode
+                {
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Creation mode where audio data is transferred from Java to the native layer
+                    ///  only once before the audio starts playing.
+                    /// </para>
+                    /// </summary>
+                    Static,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Creation mode where audio data is streamed from Java to the native layer
+                    ///  as the audio is playing.
+                    /// </para>
+                    /// </summary>
+                    Stream
+                }
+                public enum ChannelOut
+                {
+                    /// <summary>To be added.</summary>
+                    None,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    FivePointOne = 252,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    SevenPointOne = 1020,
+                    C7point1Surround = 6396,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    BackCenter = 1024,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    BackLeft = 64,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    BackRight = 128,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Default audio channel mask </para>
+                    /// </summary>
+                    Default = 1,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    FrontCenter = 16,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    FrontLeft = 4,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    FrontLeftOfCenter = 256,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    FrontRight = 8,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    FrontRightOfCenter = 512,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    LowFrequency = 32,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    Mono = 4,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    Quad = 204,
+                    SideLeft = 2048,
+                    SideRight = 4096,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    Stereo = 12,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc" />
+                    /// </summary>
+                    Surround = 1052
+                }
+                public enum Encoding
+                {
+                    Ac3 = 5,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Default audio data format </para>
+                    /// </summary>
+                    Default = 1,
+                    Dts = 7,
+                    DtsHd,
+                    EAc3 = 6,
+                    Iec61937 = 13,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Invalid audio data format </para>
+                    /// </summary>
+                    Invalid = 0,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Audio data format: PCM 16 bit per sample. Guaranteed to be supported by devices. </para>
+                    /// </summary>
+                    Pcm16bit = 2,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Audio data format: PCM 8 bit per sample. Not guaranteed to be supported by devices. </para>
+                    /// </summary>
+                    Pcm8bit,
+                    PcmFloat
+                }
+                public enum StreamType
+                {
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">Use this constant as the value for audioStreamType to request that
+                    ///  the default stream type for notifications be used.  Currently the
+                    ///  default stream type is <c><see cref="F:Android.Media.Stream.Notification" /></c>.
+                    /// </para>
+                    /// </summary>
+                    NotificationDefault = -1,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for alarms </para>
+                    /// </summary>
+                    Alarm = 4,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for DTMF Tones </para>
+                    /// </summary>
+                    Dtmf = 8,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for music playback </para>
+                    /// </summary>
+                    Music = 3,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for notifications </para>
+                    /// </summary>
+                    Notification = 5,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for the phone ring </para>
+                    /// </summary>
+                    Ring = 2,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for system sounds </para>
+                    /// </summary>
+                    System = 1,
+                    /// <summary>
+                    ///     <para tool="javadoc-to-mdoc">The audio stream for phone calls </para>
+                    /// </summary>
+                    VoiceCall = 0
+                }
             }
-            public enum ChannelOut
+            public enum Sounds : byte
             {
-                /// <summary>To be added.</summary>
-                None,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                FivePointOne = 252,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                SevenPointOne = 1020,
-                C7point1Surround = 6396,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                BackCenter = 1024,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                BackLeft = 64,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                BackRight = 128,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Default audio channel mask </para>
-                /// </summary>
-                Default = 1,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                FrontCenter = 16,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                FrontLeft = 4,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                FrontLeftOfCenter = 256,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                FrontRight = 8,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                FrontRightOfCenter = 512,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                LowFrequency = 32,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                Mono = 4,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                Quad = 204,
-                SideLeft = 2048,
-                SideRight = 4096,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                Stereo = 12,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc" />
-                /// </summary>
-                Surround = 1052
+                Violin_G,
+                Violin_D,
+                Violin_A,
+                Violin_E,
+                Cello_C,
+                Cello_G,
+                Cello_D,
+                Cello_A
             }
-            public enum Encoding
+            public static StreamPlayer Create(Sounds Sound, float Volume = 1)
             {
-                Ac3 = 5,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Default audio data format </para>
-                /// </summary>
-                Default = 1,
-                Dts = 7,
-                DtsHd,
-                EAc3 = 6,
-                Iec61937 = 13,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Invalid audio data format </para>
-                /// </summary>
-                Invalid = 0,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Audio data format: PCM 16 bit per sample. Guaranteed to be supported by devices. </para>
-                /// </summary>
-                Pcm16bit = 2,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Audio data format: PCM 8 bit per sample. Not guaranteed to be supported by devices. </para>
-                /// </summary>
-                Pcm8bit,
-                PcmFloat
+                string Name = "";
+                switch (Sound)
+                {
+                    case Sounds.Violin_G:
+                        Name = "ViolinG.wav";
+                        break;
+                    case Sounds.Violin_D:
+                        Name = "ViolinD.wav";
+                        break;
+                    case Sounds.Violin_A:
+                        Name = "ViolinA.wav";
+                        break;
+                    case Sounds.Violin_E:
+                        Name = "ViolinE.wav";
+                        break;
+                    case Sounds.Cello_C:
+                        Name = "CelloCC.wav";
+                        break;
+                    case Sounds.Cello_G:
+                        Name = "CelloGG.wav";
+                        break;
+                    case Sounds.Cello_D:
+                        Name = "CelloD.wav";
+                        break;
+                    case Sounds.Cello_A:
+                        Name = "CelloA.wav";
+                        break;
+                    default:
+                        break;
+                }
+                return Create(new StreamPlayerOptions(
+                    Utils.Resources.GetStream("Sounds." + Name), System.IO.Path.GetExtension(Name))
+                { Volume = Volume, Loop = true });
             }
-            public enum StreamType
+            public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
             {
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">Use this constant as the value for audioStreamType to request that
-                ///  the default stream type for notifications be used.  Currently the
-                ///  default stream type is <c><see cref="F:Android.Media.Stream.Notification" /></c>.
-                /// </para>
-                /// </summary>
-                NotificationDefault = -1,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for alarms </para>
-                /// </summary>
-                Alarm = 4,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for DTMF Tones </para>
-                /// </summary>
-                Dtmf = 8,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for music playback </para>
-                /// </summary>
-                Music = 3,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for notifications </para>
-                /// </summary>
-                Notification = 5,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for the phone ring </para>
-                /// </summary>
-                Ring = 2,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for system sounds </para>
-                /// </summary>
-                System = 1,
-                /// <summary>
-                ///     <para tool="javadoc-to-mdoc">The audio stream for phone calls </para>
-                /// </summary>
-                VoiceCall = 0
+                var Return = Create(Sound, Options);
+                Return.Play();
+                return Return;
             }
-        }
-        public enum Sounds : byte
-        {
-            Violin_G,
-            Violin_D,
-            Violin_A,
-            Violin_E,
-            Cello_C,
-            Cello_G,
-            Cello_D,
-            Cello_A
-        }
-        public static StreamPlayer Create(Sounds Sound, float Volume = 1)
-        {
-            string Name = "";
-            switch (Sound)
+            public static StreamPlayer Create(Sounds Sound, StreamPlayerOptions Options)
             {
-                case Sounds.Violin_G:
-                    Name = "ViolinG.wav";
-                    break;
-                case Sounds.Violin_D:
-                    Name = "ViolinD.wav";
-                    break;
-                case Sounds.Violin_A:
-                    Name = "ViolinA.wav";
-                    break;
-                case Sounds.Violin_E:
-                    Name = "ViolinE.wav";
-                    break;
-                case Sounds.Cello_C:
-                    Name = "CelloCC.wav";
-                    break;
-                case Sounds.Cello_G:
-                    Name = "CelloGG.wav";
-                    break;
-                case Sounds.Cello_D:
-                    Name = "CelloD.wav";
-                    break;
-                case Sounds.Cello_A:
-                    Name = "CelloA.wav";
-                    break;
-                default:
-                    break;
+                string Name = "";
+                switch (Sound)
+                {
+                    case Sounds.Violin_G:
+                        Name = "ViolinG.wav";
+                        break;
+                    case Sounds.Violin_D:
+                        Name = "ViolinD.wav";
+                        break;
+                    case Sounds.Violin_A:
+                        Name = "ViolinA.wav";
+                        break;
+                    case Sounds.Violin_E:
+                        Name = "ViolinE.wav";
+                        break;
+                    case Sounds.Cello_C:
+                        Name = "CelloCC.wav";
+                        break;
+                    case Sounds.Cello_G:
+                        Name = "CelloGG.wav";
+                        break;
+                    case Sounds.Cello_D:
+                        Name = "CelloD.wav";
+                        break;
+                    case Sounds.Cello_A:
+                        Name = "CelloA.wav";
+                        break;
+                    default:
+                        break;
+                }
+                Options.Content = Resources.GetStream("Sounds." + Name);
+                return Create(Options);
             }
-            return Create(new StreamPlayerOptions(
-                Utils.Resources.GetStream("Sounds." + Name), System.IO.Path.GetExtension(Name))
-            { Volume = Volume, Loop = true });
-        }
-        public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
-        {
-            var Return = Create(Sound, Options);
-            Return.Play();
-            return Return;
-        }
-        public static StreamPlayer Create(Sounds Sound, StreamPlayerOptions Options)
-        {
-            string Name = "";
-            switch (Sound)
+            public static StreamPlayer Play(Sounds Sound, float Volume = 1)
             {
-                case Sounds.Violin_G:
-                    Name = "ViolinG.wav";
-                    break;
-                case Sounds.Violin_D:
-                    Name = "ViolinD.wav";
-                    break;
-                case Sounds.Violin_A:
-                    Name = "ViolinA.wav";
-                    break;
-                case Sounds.Violin_E:
-                    Name = "ViolinE.wav";
-                    break;
-                case Sounds.Cello_C:
-                    Name = "CelloCC.wav";
-                    break;
-                case Sounds.Cello_G:
-                    Name = "CelloGG.wav";
-                    break;
-                case Sounds.Cello_D:
-                    Name = "CelloD.wav";
-                    break;
-                case Sounds.Cello_A:
-                    Name = "CelloA.wav";
-                    break;
-                default:
-                    break;
+                var Return = Create(Sound, Volume);
+                Return.Play();
+                return Return;
             }
-            Options.Content = Utils.Resources.GetStream("Sounds." + Name);
-            return Create(Options);
-        }
-        public static StreamPlayer Play(Sounds Sound, float Volume = 1)
-        {
-            var Return = Create(Sound, Volume);
-            Return.Play();
-            return Return;
-        }
 #if __IOS__
-        public static StreamPlayer Create(StreamPlayerOptions Options)
-        {
-            var Return = new StreamPlayer();
-            Return.Init(Options);
-            return Return;
-        }
-        protected void Init(StreamPlayerOptions Options)
-        {
-            _player = AVAudioPlayer.FromData(NSData.FromStream(Options.Content));
-            _player.NumberOfLoops = Options.Loop ? 0 : -1;
-            _player.Volume = Options.Volume;
-        }
-        AVAudioPlayer _player;
-        [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
-        public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
-        {
-            var Return = new StreamPlayer();
-            Return.Init(Content, Loop, Volume);
-            return Return;
-        }
-        [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
-        protected void Init(Stream Content, bool Loop, float Volume)
-        {
-            _player = AVAudioPlayer.FromData(NSData.FromStream(Content));
-            _player.NumberOfLoops = Loop? 0: -1;
-            _player.Volume = Volume;
-            //_player.FinishedPlaying += (object sender, AVStatusEventArgs e) => { _player = null; };
-        }
-        public void Play()
-        { _player.Play(); }
-        public void Pause()
-        { _player.Pause(); }
-        public void Stop()
-        { _player.Stop(); }
-        public event System.EventHandler Complete
-        { add { _player.FinishedPlaying += (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; }
-        remove { _player.FinishedPlaying -= (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; } }
-        public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
-        ~StreamPlayer()
-        { _player.Dispose(); }
+            public static StreamPlayer Create(StreamPlayerOptions Options)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Options);
+                return Return;
+            }
+            protected void Init(StreamPlayerOptions Options)
+            {
+                _player = AVAudioPlayer.FromData(NSData.FromStream(Options.Content));
+                _player.NumberOfLoops = Options.Loop ? 0 : -1;
+                _player.Volume = Options.Volume;
+            }
+            AVAudioPlayer _player;
+            [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
+            public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Content, Loop, Volume);
+                return Return;
+            }
+            [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
+            protected void Init(Stream Content, bool Loop, float Volume)
+            {
+                _player = AVAudioPlayer.FromData(NSData.FromStream(Content));
+                _player.NumberOfLoops = Loop ? 0 : -1;
+                _player.Volume = Volume;
+                //_player.FinishedPlaying += (object sender, AVStatusEventArgs e) => { _player = null; };
+            }
+            public void Play()
+            { _player.Play(); }
+            public void Pause()
+            { _player.Pause(); }
+            public void Stop()
+            { _player.Stop(); }
+            public event System.EventHandler Complete
+            {
+                add { _player.FinishedPlaying += (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; }
+                remove { _player.FinishedPlaying -= (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; }
+            }
+            public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
+            ~StreamPlayer()
+            { _player.Dispose(); }
 #elif __ANDROID__
-        AudioTrack _player;
-        Stream _content;
-        bool _prepared;
-        bool _loop;
-        float _volume;
-        public static StreamPlayer Create(StreamPlayerOptions Options)
-        {
-            var Return = new StreamPlayer();
-            Return.Init(Options);
-            return Return;
-        }
-        protected void Init(StreamPlayerOptions Options)
-        {// To get preferred buffer size and sampling rate.
-            AudioManager audioManager = (AudioManager)
-                Forms.Context.GetSystemService(Java.Lang.Class.FromType(typeof(AudioManager)));
-            string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
-            string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
-            _content = Options.Content;
-            _player = new AudioTrack(
-            // Stream type
-            (Android.Media.Stream)Options.Type,
-            // Frequency
-            Options.SampleRate,
-            // Mono or stereo
-            (ChannelOut)Options.Config,
-            // Audio encoding
-            (Encoding)Options.Format,
-            // Length of the audio clip.
-            Options.SizeInBytes,
-            // Mode. Stream or static.
-            (AudioTrackMode)Options.Mode);
-            _loop = Options.Loop;
-            _volume = Options.Volume;
-            _player.SetVolume(_volume = Options.Volume);
-            _player.SetNotificationMarkerPosition(Options.SizeInBytes / 2);
-            _prepared = true;
-        }
-        [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
-        public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
-        {
-            var Return = new StreamPlayer();
-            Return.Init(Content, Loop, Volume);
-            return Return;
-        }
-        [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
-        protected void Init(Stream Content, bool Loop, float Volume)
-        {
-            _content = Content;
-            _player = new AudioTrack(
-            // Stream type
-            Android.Media.Stream.Music,
-            // Frequency
-            11025,
-            // Mono or stereo
-            ChannelOut.Mono,
-            // Audio encoding
-            Encoding.Pcm16bit,
-            // Length of the audio clip.
-            (int)Content.Length,
-            // Mode. Stream or static.
-            AudioTrackMode.Stream);
-            _loop = Loop;
-            _volume = Volume;
-            _player.SetVolume(_volume = Volume);
-            _player.SetNotificationMarkerPosition((int)Content.Length / 2);
-            _prepared = true;
-        }
-        public void Play()
-        {
-            if (!_prepared) return;
-            _player.Flush();
-            _player.Play();
-            _player.Write(_content.ReadFully(), 0, (int)_content.Length);
-        }
-        public void Pause()
-        { if (_prepared) _player.Pause(); }
-        public void Stop()
-        {
-            if (_player == null)
-                return;
+            AudioTrack _player;
+            Stream _content;
+            bool _prepared;
+            bool _loop;
+            float _volume;
+            public static StreamPlayer Create(StreamPlayerOptions Options)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Options);
+                return Return;
+            }
+            protected void Init(StreamPlayerOptions Options)
+            {// To get preferred buffer size and sampling rate.
+                AudioManager audioManager = (AudioManager)
+                    Forms.Context.GetSystemService(Java.Lang.Class.FromType(typeof(AudioManager)));
+                string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
+                string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
+                byte[] Resampled = Resample(Options.Content.ReadFully(true), Options.SampleRate, int.Parse(Rate));
+                _content = new MemoryStream(Resampled, true);
+                
+                _player = new AudioTrack(
+                // Stream type
+                (Android.Media.Stream)Options.Type,
+                // Frequency
+                int.Parse(Rate),
+                // Mono or stereo
+                (ChannelOut)Options.Config,
+                // Audio encoding
+                (Encoding)Options.Format,
+                // Length of the audio clip.
+                Options.SizeInBytes,
+                // Mode. Stream or static.
+                (AudioTrackMode)Options.Mode);
+                _loop = Options.Loop;
+                _volume = Options.Volume;
+                _player.SetVolume(_volume = Options.Volume);
+                _player.SetNotificationMarkerPosition(Options.SizeInBytes / 2);
+                _prepared = true;
+            }
+            [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
+            public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Content, Loop, Volume);
+                return Return;
+            }
+            [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
+            protected void Init(Stream Content, bool Loop, float Volume)
+            {
+                _content = Content;
+                _player = new AudioTrack(
+                // Stream type
+                Android.Media.Stream.Music,
+                // Frequency
+                11025,
+                // Mono or stereo
+                ChannelOut.Mono,
+                // Audio encoding
+                Encoding.Pcm16bit,
+                // Length of the audio clip.
+                (int)Content.Length,
+                // Mode. Stream or static.
+                AudioTrackMode.Stream);
+                _loop = Loop;
+                _volume = Volume;
+                _player.SetVolume(_volume = Volume);
+                _player.SetNotificationMarkerPosition((int)Content.Length / 2);
+                _prepared = true;
+            }
+            public void Play()
+            {
+                if (!_prepared) return;
+                _player.Flush();
+                _player.Play();
+                _player.Write(_content.ReadFully(), 0, (int)_content.Length);
+            }
+            public void Pause()
+            { if (_prepared) _player.Pause(); }
+            public void Stop()
+            {
+                if (_player == null)
+                    return;
 
-            _player.Stop();
-            _player.Dispose();
-            _player = null;
-            _prepared = false;
-        }
-        public event System.EventHandler Complete
-        {
-            add
-            {
-                _player.MarkerReached += MarkerReachedEventHandler(value);
+                _player.Stop();
+                _player.Dispose();
+                _player = null;
+                _prepared = false;
             }
-            remove
+            public event System.EventHandler Complete
             {
-                _player.MarkerReached -= MarkerReachedEventHandler(value);
+                add
+                {
+                    _player.MarkerReached += MarkerReachedEventHandler(value);
+                }
+                remove
+                {
+                    _player.MarkerReached -= MarkerReachedEventHandler(value);
+                }
             }
-        }
-        protected System.EventHandler<AudioTrack.MarkerReachedEventArgs>
-            MarkerReachedEventHandler(System.EventHandler value)
-        {
-            return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
-               {
-                   value(sender, e);
-                   if (_loop) e.Track.SetPlaybackHeadPosition(0);
-               };
-        }
-        public float Volume { get { return _volume; } set { _player.SetVolume(_volume = value); } }
-        ~StreamPlayer()
-        { Stop(); }
+            protected System.EventHandler<AudioTrack.MarkerReachedEventArgs>
+                MarkerReachedEventHandler(System.EventHandler value)
+            {
+                return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
+                   {
+                       value(sender, e);
+                       if (_loop) e.Track.SetPlaybackHeadPosition(0);
+                   };
+            }
+            public float Volume { get { return _volume; } set { _player.SetVolume(_volume = value); } }
+            ~StreamPlayer()
+            { Stop(); }
 #elif NETFX_CORE
-        MediaElement _player;
-        public static StreamPlayer Create(StreamPlayerOptions Options)
-        {
-            var Return = new StreamPlayer();
-            Return.Init(Options);
-            return Return;
-        }
-        protected void Init(StreamPlayerOptions Options)
-        {
-            _player = new MediaElement
+            MediaElement _player;
+            public static StreamPlayer Create(StreamPlayerOptions Options)
             {
-                IsMuted = false,
-                Position = new TimeSpan(0, 0, 0),
-                Volume = Options.Volume,
-                IsLooping = Options.Loop
-            };
-            _player.SetSource(Options.Content.AsRandomAccessStream(), Options.MimeType);
-        }
-        [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
-        public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
-        {
-            var Return = new StreamPlayer();
-            Return.Init(Content, Loop, Volume);
-            return Return;
-        }
-        [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
-        protected void Init(Stream Content, bool Loop, float Volume)
-        {
-            _player = new MediaElement
-            {
-                IsMuted = false,
-                Position = new TimeSpan(0, 0, 0),
-                Volume = Volume,
-                IsLooping = Loop
-            };
-            _player.SetSource(Content.AsRandomAccessStream(), GetMime(Content.ReadFully()));
-        }
-        public void Play()
-        { _player.Play(); }
-        public void Pause()
-        { _player.Pause(); }
-        public void Stop()
-        { _player.Stop(); }
-        public float Volume { get { return (float)_player.Volume; } set { _player.Volume = value; } }
-        public event EventHandler Complete
-        {
-            add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
-            remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
-        }
-        [DllImport(@"urlmon.dll")]
-        private extern static uint FindMimeFromData(uint pBC, [MarshalAs(UnmanagedType.LPStr)] string pwzUrl,
-                                                    [MarshalAs(UnmanagedType.LPArray)] byte[] pBuffer, uint cbSize,
-                                                    [MarshalAs(UnmanagedType.LPStr)] string pwzMimeProposed,
-                                                    uint dwMimeFlags, out uint ppwzMimeOut, uint dwReserverd);
-        public static string GetMime(byte[] buffer)
-        {
-            try
-            {
-                uint mimetype;
-                FindMimeFromData(0, null, buffer, 256, null, 0, out mimetype, 0);
-                IntPtr mimeTypePtr = new IntPtr(mimetype);
-                string mime = Marshal.PtrToStringUni(mimeTypePtr);
-                Marshal.FreeCoTaskMem(mimeTypePtr);
-                return mime;
+                var Return = new StreamPlayer();
+                Return.Init(Options);
+                return Return;
             }
-            catch (Exception)
+            protected void Init(StreamPlayerOptions Options)
             {
-                return "unknown/unknown";
+                _player = new MediaElement
+                {
+                    IsMuted = false,
+                    Position = new TimeSpan(0, 0, 0),
+                    Volume = Options.Volume,
+                    IsLooping = Options.Loop
+                };
+                _player.SetSource(Options.Content.AsRandomAccessStream(), Options.MimeType);
             }
-        }
+            [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
+            public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Content, Loop, Volume);
+                return Return;
+            }
+            [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
+            protected void Init(Stream Content, bool Loop, float Volume)
+            {
+                _player = new MediaElement
+                {
+                    IsMuted = false,
+                    Position = new TimeSpan(0, 0, 0),
+                    Volume = Volume,
+                    IsLooping = Loop
+                };
+                _player.SetSource(Content.AsRandomAccessStream(), GetMime(Content.ReadFully()));
+            }
+            public void Play()
+            { _player.Play(); }
+            public void Pause()
+            { _player.Pause(); }
+            public void Stop()
+            { _player.Stop(); }
+            public float Volume { get { return (float)_player.Volume; } set { _player.Volume = value; } }
+            public event EventHandler Complete
+            {
+                add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
+                remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
+            }
+            [DllImport(@"urlmon.dll")]
+            private extern static uint FindMimeFromData(uint pBC, [MarshalAs(UnmanagedType.LPStr)] string pwzUrl,
+                                                        [MarshalAs(UnmanagedType.LPArray)] byte[] pBuffer, uint cbSize,
+                                                        [MarshalAs(UnmanagedType.LPStr)] string pwzMimeProposed,
+                                                        uint dwMimeFlags, out uint ppwzMimeOut, uint dwReserverd);
+            public static string GetMime(byte[] buffer)
+            {
+                try
+                {
+                    uint mimetype;
+                    FindMimeFromData(0, null, buffer, 256, null, 0, out mimetype, 0);
+                    IntPtr mimeTypePtr = new IntPtr(mimetype);
+                    string mime = Marshal.PtrToStringUni(mimeTypePtr);
+                    Marshal.FreeCoTaskMem(mimeTypePtr);
+                    return mime;
+                }
+                catch (Exception)
+                {
+                    return "unknown/unknown";
+                }
+            }
 #endif
-        private StreamPlayer() : base() { } 
+            private StreamPlayer() : base() { }
+        }
     }
 }

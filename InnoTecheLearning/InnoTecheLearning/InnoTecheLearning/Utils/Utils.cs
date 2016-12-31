@@ -555,27 +555,59 @@ function Acos(n) { return AngleConvert(Math.acos(n), 1, AngleUnit); }
 function Asin (n) { return AngleConvert(Math.asin(n), 1, AngleUnit); }
 function Atan (n) { return AngleConvert(Math.atan(n), 1, AngleUnit); }
 function Atan2 (y, x){ return AngleConvert(Math.atan2(y, x), 1, AngleUnit); }
+function Cbrt (x) { return x ? (x / Math.abs(x) * Math.pow(Math.abs(x), 1 / 3) : x; }
 function Ceil(x) { return Math.ceil(x); }
 function Cos(x) { return Math.cos(AngleConvert(x, AngleUnit, 1)); }
-function Cosh(x) { return (1 + Math.pow(Math.E, -2 * x)) / (2 * Math.pow(Math.E, -x)); }
-function Cot(x) { return 1 / Math.tan(x); }
-function Coth(x) { return (1 + Math.pow(Math.E, -2 * x)) / (1 - Math.pow(Math.E, -2 * x)); }
-function Csc(x) { return 1 / Math.sin(x); }
-function Csch(x) { return (2 * Math.pow(Math.E, -x)) / (1 - Math.pow(Math.E, -2 * x)); }
+function Cosh(x) { return (1 + Math.exp(-2 * x)) / (2 * Math.exp(-x)); }
+function Cot(x) { return 1 / AngleConvert(Math.tan(n), 1, AngleUnit); }
+function Coth(x) { return (1 + Math.exp(-2 * x)) / (1 - Math.exp(-2 * x)); }
+function Csc(x) { return 1 / AngleConvert(Math.sin(n), 1, AngleUnit); }
+function Csch(x) { return (2 * Math.exp(-x)) / (1 - Math.exp(-2 * x)); }
+function Clz32(x) { return 31 - Math.floor(Math.log(x) * Math.LOG2E); }
 function Exp(x) { return Math.exp(x); }
+function Expm1(x) { return Math.exp(x) - 1; }
 function Floor(x) { return Math.floor(x); }
+/*function Hypot(n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16)
+{ 
+  var y = 0;
+  for (var i = 1; i < 17; i++) {
+    var n = eval(""n"" + i)
+    if (n === Infinity || n === -Infinity) return Infinity;
+    if (isNaN(n)) return NaN;
+    y += n * n;
+  }
+  return Math.sqrt(y);
+}*/
+function Imul(a, b) { return (a*(b%65536)+a*Math.floor(b/65536))%2147483648; }
 function Ln(x) { return Math.log(x); }
 function Log(x, base) { return Math.log(x) / (base ? Math.log(base) : Math.LN10); }
-function Pow(x, y) { return Math.pow(x,y); }
+function Pow(x, y) { return Math.pow(x, y); }
 function Random() { return Math.random(); }
 function Round(x) { return Math.round(x); }
-function Sec(x) { return 1 / Math.cos(x); }
-function Sech(x) { return (2 * Math.pow(Math.E, -x)) / (1 + Math.pow(Math.E, -2 * x)); }
+function Sec(x) { return 1 / AngleConvert(Math.cos(n), 1, AngleUnit); }
+function Sech(x) { return (2 * Math.exp(-x)) / (1 + Math.exp(-2 * x)); }
+function Sign(n){
+    // Correctly handles all cases where NaN is appropriate
+    n = parseInt(n);
+    
+    // If it is zero, negative zero, or NaN, then it correctly returns itselfs
+    // else it divides itself by the absolute value of itself to acieve its
+    // sign. This division proves to be much faster than an if or teranary
+    // statement because of the overhead costs of branching, especially in JIT
+    // compilers.
+    return n ? n/Math.abs(n) : n;
+}
 function Sin(x) { return Math.sin(AngleConvert(x, AngleUnit, 1)); }
-function Sinh(x) { return (1 - Math.pow(Math.E, -2 * x)) / (2 * Math.pow(Math.E, -x)); }
+function Sinh(x) { return (1 - Math.exp(-2 * x)) / (2 * Math.exp(-x)); }
 function Sqrt(x) { return Math.sqrt(x); }
 function Tan(x) { return Math.tan(AngleConvert(x, AngleUnit, 1)); }
-function Tanh(x) { return (1 - Math.pow(Math.E, -2 * x)) / (1 + Math.pow(Math.E, -2 * x)); }
+function Tanh(x) { return (1 - Math.exp(-2 * x)) / (1 + Math.exp(-2 * x)); }
+function Trunc(x) { return Sign(x) == 1 ? Math.floor(x) : Math.ceil(x); }
+
+function Deg(x) { return AngleConvert(x, 0, AngleUnit); }
+function Rad(x) { return AngleConvert(x, 1, AngleUnit); }
+function Grad(x) { return AngleConvert(x, 2, AngleUnit); }
+function Turn(x) { return AngleConvert(x, 3, AngleUnit); }
 function Factorial_(aNumber, recursNumber){
    // recursNumber keeps track of the number of iterations so far.
    if (aNumber < 3) {  // If the number is 0, its factorial is 1.
@@ -587,14 +619,14 @@ function Factorial_(aNumber, recursNumber){
       } else {  // Otherwise, recurse again.
          return (aNumber* Factorial_(aNumber - 1, recursNumber + 1));
       }
-}
+   }
 }
 
 function Factorial(aNumber){
    // Use type annotation to only accept numbers coercible to integers.
    // double is used for the return type to allow very large numbers to be returned.
    if(aNumber< 0) {
-      throw(""Cannot take the factorial of a negative number."");
+      return NaN; //throw(""Cannot take the factorial of a negative number."");
    } else {  // Call the recursive function.
       return  Factorial_(aNumber, 0);
    }
@@ -712,20 +744,28 @@ const Log10e = Math.LOG10E;
         }
         public static double TryParseDouble(string s, double @default)
         { double d; if (double.TryParse(s, out d)) { return d; } else { return @default; }; }
-        public static byte[] ReadFully(this Stream input, bool reset = false)
+        public static byte[] ReadFully(this Stream input, bool all = false)
         {
-            if (reset && input.CanSeek) input.Seek(0, SeekOrigin.Begin);
-            if (input is MemoryStream)
+            long pos = input.Position;
+            try
             {
-                return ((MemoryStream)input).ToArray();
-            }
-            else
-            {
-                using (MemoryStream ms = new MemoryStream())
+                if (all && input.CanSeek) input.Seek(0, SeekOrigin.Begin);
+                if (input is MemoryStream)
                 {
-                    input.CopyTo(ms);
-                    return ms.ToArray();
+                    return ((MemoryStream)input).ToArray();
                 }
+                else
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        input.CopyTo(ms);
+                        return ms.ToArray();
+                    }
+                }
+            }
+            finally
+            {
+                if (all && input.CanSeek) input.Seek(pos, SeekOrigin.Begin);
             }
         }
         public static IEnumerable<T> SliceRow<T>(this T[,] array, int row)
@@ -750,8 +790,108 @@ const Log10e = Math.LOG10E;
             {
                 array[row, i] = items[i];
             }
+            return array;
         }
+        public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
+        {
+            List<byte> _samples = new List<byte>();
 
+            int srcLength = samples.Length;
+            var destLength = samples.Length * toSampleRate / fromSampleRate;
+            var dx = srcLength / destLength;
+
+            // fmax : nyqist half of destination sampleRate
+            // fmax / fsr = 0.5;
+            var fmaxDivSR = 0.5;
+            var r_g = 2 * fmaxDivSR;
+
+            // Quality is half the window width
+            var wndWidth2 = quality;
+            var wndWidth = quality * 2;
+
+            var x = 0;
+            int i, j;
+            double r_y;
+            int tau;
+            double r_w;
+            double r_a;
+            double r_snc;
+            for (i = 0; i < destLength; ++i)
+            {
+                r_y = 0.0;
+                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
+                {
+                    // input sample index
+                    j = x + tau;
+
+                    // Hann Window. Scale and calculate sinc
+                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
+                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
+                    r_snc = 1.0;
+                    if (r_a != 0)
+                        r_snc = Math.Sin(r_a) / r_a;
+
+                    if ((j >= 0) && (j < srcLength))
+                    {
+                        r_y += r_g * r_w * r_snc * samples[j];
+                    }
+                }
+                _samples[i] = (byte)r_y;
+                x += dx;
+            }
+
+            return _samples.ToArray();
+        }
+        public static double[] Resample(double[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
+        {
+            List<double> _samples = new List<double>();
+
+            int srcLength = samples.Length;
+            var destLength = samples.Length * toSampleRate / fromSampleRate;
+            var dx = srcLength / destLength;
+
+            // fmax : nyqist half of destination sampleRate
+            // fmax / fsr = 0.5;
+            var fmaxDivSR = 0.5;
+            var r_g = 2 * fmaxDivSR;
+
+            // Quality is half the window width
+            var wndWidth2 = quality;
+            var wndWidth = quality * 2;
+
+            var x = 0;
+            int i, j;
+            double r_y;
+            int tau;
+            double r_w;
+            double r_a;
+            double r_snc;
+            for (i = 0; i < destLength; ++i)
+            {
+                r_y = 0.0;
+                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
+                {
+                    // input sample index
+                    j = x + tau;
+
+                    // Hann Window. Scale and calculate sinc
+                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
+                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
+                    r_snc = 1.0;
+                    if (r_a != 0)
+                        r_snc = Math.Sin(r_a) / r_a;
+
+                    if ((j >= 0) && (j < srcLength))
+                    {
+                        r_y += r_g * r_w * r_snc * samples[j];
+                    }
+                }
+                _samples[i] = r_y;
+                x += dx;
+            }
+            
+            return _samples.ToArray();
+        }
         /*
         public string TransformForCurrentPlatform(string url)
         {
