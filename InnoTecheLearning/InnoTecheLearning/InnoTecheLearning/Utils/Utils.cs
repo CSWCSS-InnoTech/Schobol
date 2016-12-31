@@ -555,13 +555,13 @@ function Acos(n) { return AngleConvert(Math.acos(n), 1, AngleUnit); }
 function Asin (n) { return AngleConvert(Math.asin(n), 1, AngleUnit); }
 function Atan (n) { return AngleConvert(Math.atan(n), 1, AngleUnit); }
 function Atan2 (y, x){ return AngleConvert(Math.atan2(y, x), 1, AngleUnit); }
-function Cbrt (x) { return x ? (x / Math.abs(x) * Math.pow(Math.abs(x), 1 / 3) : x; }
+function Cbrt (x) { return x ? x / Math.abs(x) * Math.pow(Math.abs(x), 1 / 3) : x; }
 function Ceil(x) { return Math.ceil(x); }
 function Cos(x) { return Math.cos(AngleConvert(x, AngleUnit, 1)); }
 function Cosh(x) { return (1 + Math.exp(-2 * x)) / (2 * Math.exp(-x)); }
-function Cot(x) { return 1 / AngleConvert(Math.tan(n), 1, AngleUnit); }
+function Cot(n) { return 1 / AngleConvert(Math.tan(n), 1, AngleUnit); }
 function Coth(x) { return (1 + Math.exp(-2 * x)) / (1 - Math.exp(-2 * x)); }
-function Csc(x) { return 1 / AngleConvert(Math.sin(n), 1, AngleUnit); }
+function Csc(n) { return 1 / AngleConvert(Math.sin(n), 1, AngleUnit); }
 function Csch(x) { return (2 * Math.exp(-x)) / (1 - Math.exp(-2 * x)); }
 function Clz32(x) { return 31 - Math.floor(Math.log(x) * Math.LOG2E); }
 function Exp(x) { return Math.exp(x); }
@@ -584,7 +584,7 @@ function Log(x, base) { return Math.log(x) / (base ? Math.log(base) : Math.LN10)
 function Pow(x, y) { return Math.pow(x, y); }
 function Random() { return Math.random(); }
 function Round(x) { return Math.round(x); }
-function Sec(x) { return 1 / AngleConvert(Math.cos(n), 1, AngleUnit); }
+function Sec(n) { return 1 / AngleConvert(Math.cos(n), 1, AngleUnit); }
 function Sech(x) { return (2 * Math.exp(-x)) / (1 + Math.exp(-2 * x)); }
 function Sign(n){
     // Correctly handles all cases where NaN is appropriate
