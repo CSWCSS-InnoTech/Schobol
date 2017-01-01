@@ -940,21 +940,58 @@ namespace InnoTecheLearning
                     {
                         if (_SampleRate.HasValue) return _SampleRate.Value;
                         if (!Content.CanSeek) return 11025;
-                        Content.Seek(28, SeekOrigin.Begin);
+                        Content.Seek(24, SeekOrigin.Begin);
                         byte[] val = new byte[4];
                         Content.Read(val, 0, 4);
-                        return System.BitConverter.ToInt32(val, 0) * 8;
+                        return System.BitConverter.ToInt32(val, 0);
                     }
                     //set { _SampleRate = value; }
                 }
                 /// <summary>
                 /// Mono or stereo.
                 /// </summary>
-                public ChannelOut Config = ChannelOut.Mono;
+                public ChannelOut Config
+                {
+                    get
+                    {
+                        if (!Content.CanSeek) return ChannelOut.Mono;
+                        Content.Seek(22, SeekOrigin.Begin);
+                        byte[] val = new byte[2];
+                        Content.Read(val, 0, 2);
+                        switch (System.BitConverter.ToInt16(val, 0))
+                        {
+                            case 1: return ChannelOut.Mono;
+                            case 2: return ChannelOut.Stereo;
+                            case 3: return ChannelOut.Stereo | ChannelOut.FrontCenter;
+                            case 4: return ChannelOut.Quad;
+                            case 5: return ChannelOut.Quad | ChannelOut.FrontCenter;
+                            case 6: return ChannelOut.FivePointOne;
+                            case 7: return ChannelOut.FivePointOne | ChannelOut.BackCenter;
+                            case 8: return ChannelOut.SevenPointOne;
+                        }
+                        return ChannelOut.None;
+                    }
+                }
                 /// <summary>
                 /// Audio encoding.
                 /// </summary>
-                public Encoding Format = Encoding.Pcm16bit;
+                public Encoding Format
+                {
+                    get
+                    {
+                        if (!Content.CanSeek) return Encoding.Default;
+                        Content.Seek(34, SeekOrigin.Begin);
+                        byte[] val = new byte[2];
+                        Content.Read(val, 0, 2);
+                        switch (System.BitConverter.ToInt16(val, 0))
+                        {
+                            case 8: return Encoding.Pcm8bit;
+                            case 16: return Encoding.Pcm16bit;
+                            case 32: return Encoding.PcmFloat;
+                        }
+                        return Encoding.Default;
+                    }
+                }
                 /// <summary>
                 /// Length of the audio clip.
                 /// </summary>.
@@ -963,7 +1000,10 @@ namespace InnoTecheLearning
                 /// Mode. Stream or static.
                 /// </summary>
                 public AudioTrackMode Mode = AudioTrackMode.Stream;
-                public string MimeType { get; } = "unknown/unknown";
+                /// <summary>
+                /// Mime type. Default is audio/x-wav.
+                /// </summary>
+                public string MimeType { get; } = "audio/x-wav";
 
                 public enum AudioTrackMode
                 {
@@ -1159,8 +1199,7 @@ namespace InnoTecheLearning
                     default:
                         break;
                 }
-                return Create(new StreamPlayerOptions(
-                    Utils.Resources.GetStream("Sounds." + Name), System.IO.Path.GetExtension(Name))
+                return Create(new StreamPlayerOptions(Resources.GetStream("Sounds." + Name), Path.GetExtension(Name))
                 { Volume = Volume, Loop = true });
             }
             public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
@@ -1268,12 +1307,15 @@ namespace InnoTecheLearning
             protected void Init(StreamPlayerOptions Options)
             {// To get preferred buffer size and sampling rate.
                 AudioManager audioManager = (AudioManager)
-                    Forms.Context.GetSystemService(Java.Lang.Class.FromType(typeof(AudioManager)));
+                    Forms.Context.GetSystemService(Android.Content.Context.AudioService);
                 string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
                 string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
-                byte[] Resampled = Resample(Options.Content.ReadFully(true), Options.SampleRate, int.Parse(Rate));
+                byte[] Resampled = 
+                Resample(System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(
+                    Options.Content.ReadFully(true), 44)), Options.SampleRate, int.Parse(Rate));
+
                 _content = new MemoryStream(Resampled, true);
-                
+                int SizeInBytes = Options.SizeInBytes - 44;
                 _player = new AudioTrack(
                 // Stream type
                 (Android.Media.Stream)Options.Type,
@@ -1284,13 +1326,13 @@ namespace InnoTecheLearning
                 // Audio encoding
                 (Encoding)Options.Format,
                 // Length of the audio clip.
-                Options.SizeInBytes,
+                SizeInBytes,
                 // Mode. Stream or static.
                 (AudioTrackMode)Options.Mode);
                 _loop = Options.Loop;
                 _volume = Options.Volume;
                 _player.SetVolume(_volume = Options.Volume);
-                _player.SetNotificationMarkerPosition(Options.SizeInBytes / 2);
+                _player.SetNotificationMarkerPosition(SizeInBytes / 2);
                 _prepared = true;
             }
             [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]

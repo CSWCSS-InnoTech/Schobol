@@ -552,9 +552,18 @@ function AngleConvert(Num, Origin, Target){
 }
 function Abs (n) { return Math.abs(n); }
 function Acos(n) { return AngleConvert(Math.acos(n), 1, AngleUnit); }
+function Acosh (n) { return Math.log(n + Math.sqrt(n * n - 1)); }
+function Acot (n) { return AngleConvert(Math.PI / 2 - Math.atan(n), 1, AngleUnit); }
+function Acoth (n) { return Math.log((n + 1) / (n - 1)) / 2; }
+function Acsc (n) { return AngleConvert(Math.asin(1 / n), 1, AngleUnit); }
+function Acsch (n) { return Math.log((Math.sqrt(1 + n * n) + 1) / n); }
+function Asec (n) { return AngleConvert(Math.acos(1 / n), 1, AngleUnit); }
+function Asech (n) { return Math.log((Math.sqrt(1 - n * n) + 1) / n); }
 function Asin (n) { return AngleConvert(Math.asin(n), 1, AngleUnit); }
+function Asinh (n) { return Math.log(n + Math.sqrt(n * n + 1)); }
 function Atan (n) { return AngleConvert(Math.atan(n), 1, AngleUnit); }
 function Atan2 (y, x){ return AngleConvert(Math.atan2(y, x), 1, AngleUnit); }
+function Atanh (n) { return Math.log((1 + n) / (1 - n)) / 2; }
 function Cbrt (x) { return x ? x / Math.abs(x) * Math.pow(Math.abs(x), 1 / 3) : x; }
 function Ceil(x) { return Math.ceil(x); }
 function Cos(x) { return Math.cos(AngleConvert(x, AngleUnit, 1)); }
@@ -571,7 +580,7 @@ function Floor(x) { return Math.floor(x); }
 { 
   var y = 0;
   for (var i = 1; i < 17; i++) {
-    var n = eval(""n"" + i)
+    var n = Number(eval(""n"" + i));
     if (n === Infinity || n === -Infinity) return Infinity;
     if (isNaN(n)) return NaN;
     y += n * n;
@@ -579,6 +588,7 @@ function Floor(x) { return Math.floor(x); }
   return Math.sqrt(y);
 }*/
 function Imul(a, b) { return (a*(b%65536)+a*Math.floor(b/65536))%2147483648; }
+function Lb(x) { return Math.log(x) / Math.LN2; }
 function Ln(x) { return Math.log(x); }
 function Log(x, base) { return Math.log(x) / (base ? Math.log(base) : Math.LN10); }
 function Pow(x, y) { return Math.pow(x, y); }

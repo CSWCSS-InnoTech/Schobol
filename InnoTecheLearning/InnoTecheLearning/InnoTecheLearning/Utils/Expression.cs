@@ -13,12 +13,14 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
+            Acosh, Acot, Acoth, Acsc, Acsch, Asec, Asech, Asinh, Atanh, Cbrt, Cosh, Cot, Coth, //Additional Math Functions
+            Csc, Csch, Clz32, Imul, Lb, Ln, Sec, Sech, Sign, Sinh, Tanh, Trunc, Deg, Rad, Grad, Turn, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
         }
         public enum MoreExpressions : byte
         {
-            #region Expressions
+#region Expressions
             Space, Ans,
             D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, DPoint, //Decimals
             Addition, Subtraction, Multiplication, Division, Modulus, Increment, Decrement, //Arithmetic
@@ -28,9 +30,11 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
+            Acosh, Acot, Acoth, Acsc, Acsch, Asec, Asech, Asinh, Atanh, Cbrt, Cosh, Cot, Coth, //Additional Math Functions
+            Csc, Csch, Clz32, Imul, Lb, Ln, Sec, Sech, Sign, Sinh, Tanh, Trunc, Deg, Rad, Grad, Turn, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
-            #endregion Hello this is a comment
+#endregion Hello this is a comment
             Assign, AssignAdd, AssignBAnd, AssignBOr, AssignBXor, //Assignment
             AssignDivision, AssignLShift, AssignModulus, AssignMultiplication, //Assignment
             AssignRShift, AssignSubtraction, AssignUnsignRShift, //Assignment
@@ -233,6 +237,64 @@
                     return "Tan(";
                 case MoreExpressions.Factorial:
                     return "Factorial(";
+                case MoreExpressions.Acosh:
+                    return "Acosh(";
+                case MoreExpressions.Acot:
+                    return "Acot(";
+                case MoreExpressions.Acoth:
+                    return "Acoth(";
+                case MoreExpressions.Acsc:
+                    return "Acsc(";
+                case MoreExpressions.Acsch:
+                    return "Acsch(";
+                case MoreExpressions.Asec:
+                    return "Asec(";
+                case MoreExpressions.Asech:
+                    return "Asech(";
+                case MoreExpressions.Asinh:
+                    return "Asinh(";
+                case MoreExpressions.Atanh:
+                    return "Atanh(";
+                case MoreExpressions.Cbrt:
+                    return "Cbrt(";
+                case MoreExpressions.Cosh:
+                    return "Cosh(";
+                case MoreExpressions.Cot:
+                    return "Cot(";
+                case MoreExpressions.Coth:
+                    return "Coth(";
+                case MoreExpressions.Csc:
+                    return "Csc(";
+                case MoreExpressions.Csch:
+                    return "Csch(";
+                case MoreExpressions.Clz32:
+                    return "Clz32(";
+                case MoreExpressions.Imul:
+                    return "Imul(";
+                case MoreExpressions.Lb:
+                    return "Lb(";
+                case MoreExpressions.Ln:
+                    return "Ln(";
+                case MoreExpressions.Sec:
+                    return "Sec(";
+                case MoreExpressions.Sech:
+                    return "Sech(";
+                case MoreExpressions.Sign:
+                    return "Sign(";
+                case MoreExpressions.Sinh:
+                    return "Sinh(";
+                case MoreExpressions.Tanh:
+                    return "Tanh(";
+                case MoreExpressions.Trunc:
+                    return "Trunc(";
+                case MoreExpressions.Deg:
+                    return "Deg(";
+                case MoreExpressions.Rad:
+                    return "Rad(";
+                case MoreExpressions.Grad:
+                    return "Grad(";
+                case MoreExpressions.Turn:
+                    return "Turn(";
                 case MoreExpressions.π:
                     return "π";
                 case MoreExpressions.e:

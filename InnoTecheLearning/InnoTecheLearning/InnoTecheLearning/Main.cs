@@ -299,7 +299,7 @@ namespace InnoTecheLearning
                 };
                 Out.TextChanged += Calculator_TextChanged;
                 Calculator_Changed += delegate { In.Text = Calculator_Expression.AsString(); };
-                Grid Const, Func, Bin, Norm = new Grid
+                Grid Const, Trig, Func, Bin, Norm = new Grid
                 {
                     ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
                     RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1),
@@ -379,26 +379,64 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
                 };
-                Append(Func.Children, Expressions.Log, "Log", 0, 0);
-                Append(Func.Children, Expressions.Pow, "Pow", 1, 0);
-                Append(Func.Children, Expressions.Sin, "Sin", 2, 0);
-                Append(Func.Children, Expressions.Asin, "Asin", 3, 0);
-                Append(Func.Children, Expressions.Random, "Random", 0, 1);
-                Append(Func.Children, Expressions.Exp, "Exp", 1, 1);
-                Append(Func.Children, Expressions.Cos, "Cos", 2, 1);
-                Append(Func.Children, Expressions.Acos, "Acos", 3, 1);
-                Append(Func.Children, Expressions.Max, "Max", 0, 2);
-                Append(Func.Children, Expressions.Min, "Min", 1, 2);
-                Append(Func.Children, Expressions.Tan, "Tan", 2, 2);
-                Append(Func.Children, Expressions.Atan, "Atan", 3, 2);
-                Append(Func.Children, Expressions.Abs, "Abs", 0, 3);
-                Append(Func.Children, Expressions.Factorial, "Factor", 1, 3);
-                Append(Func.Children, Expressions.Comma, 2, 3);
-                Append(Func.Children, Expressions.Atan2, "Atan2", 3, 3);
-                Append(Func.Children, Expressions.Sqrt, "Sqrt", 0, 4);
-                Append(Func.Children, Expressions.Round, "Round", 1, 4);
-                Append(Func.Children, Expressions.Ceil, "Ceil", 2, 4);
-                Append(Func.Children, Expressions.Floor, "Floor", 3, 4);
+                Append(Func.Children, Expressions.Abs, "Abs", 0, 0);
+                Append(Func.Children, Expressions.Clz32, "Clz32", 1, 0);
+                Append(Func.Children, Expressions.Sqrt, "Sqrt", 2, 0);
+                Append(Func.Children, Expressions.Cbrt, "Cbrt", 3, 0);
+                Append(Func.Children, Expressions.Round, "Round", 0, 1);
+                Append(Func.Children, Expressions.Ceil, "Ceil", 1, 1);
+                Append(Func.Children, Expressions.Floor, "Floor", 2, 1);
+                Append(Func.Children, Expressions.Trunc, "Trunc", 3, 1);
+                Append(Func.Children, Expressions.Exp, "Exp", 0, 2);
+                Append(Func.Children, Expressions.Comma, 1, 2);
+                Append(Func.Children, Expressions.Imul, "Imul", 2, 2);
+                Append(Func.Children, Expressions.Random, "Random", 3, 2);
+                Append(Func.Children, Expressions.Lb, "Lb", 0, 3);
+                Append(Func.Children, Expressions.Ln, "Ln", 1, 3);
+                Append(Func.Children, Expressions.Log, "Log", 2, 3);
+                Append(Func.Children, Expressions.Pow, "Pow", 3, 3);
+                Append(Func.Children, Expressions.Max, "Max", 0, 4);
+                Append(Func.Children, Expressions.Min, "Min", 1, 4);
+                Append(Func.Children, Expressions.Factorial, "Factor", 2, 4);
+                Append(Func.Children, Expressions.Sign, "Sign", 3, 4);
+
+                Trig = new Grid
+                {
+                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1),
+                    RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1),
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand
+                };
+                Append(Trig.Children, Expressions.Deg, "Deg", 0, 0);
+                Append(Trig.Children, Expressions.Sin, "Sin", 1, 0);
+                Append(Trig.Children, Expressions.Sinh, "Sinh", 2, 0);
+                Append(Trig.Children, Expressions.Asin, "Asin", 3, 0);
+                Append(Trig.Children, Expressions.Asinh, "Asinh", 4, 0);
+                Append(Trig.Children, Expressions.Rad, "Rad", 0, 1);
+                Append(Trig.Children, Expressions.Cos, "Cos", 1, 1);
+                Append(Trig.Children, Expressions.Acos, "Acos", 2, 1);
+                Append(Trig.Children, Expressions.Cosh, "Cosh", 3, 1);
+                Append(Trig.Children, Expressions.Acosh, "Acosh", 4, 1);
+                Append(Trig.Children, Expressions.Grad, "Grad", 0, 2);
+                Append(Trig.Children, Expressions.Tan, "Tan", 1, 2);
+                Append(Trig.Children, Expressions.Atan, "Atan", 2, 2);
+                Append(Trig.Children, Expressions.Tanh, "Tanh", 3, 2);
+                Append(Trig.Children, Expressions.Atanh, "Atanh", 4, 2);
+                Append(Trig.Children, Expressions.Turn, "Turn", 0, 3);
+                Append(Trig.Children, Expressions.Cot, "Cot", 1, 3);
+                Append(Trig.Children, Expressions.Acot, 2, 3);
+                Append(Trig.Children, Expressions.Coth, "Coth", 3, 3);
+                Append(Trig.Children, Expressions.Acoth, "Acoth", 4, 3);
+                Append(Trig.Children, Expressions.Atan2, "Atan2", 0, 4);
+                Append(Trig.Children, Expressions.Sec, "Sec", 1, 4);
+                Append(Trig.Children, Expressions.Asec, "Asec", 2, 4);
+                Append(Trig.Children, Expressions.Sech, "Sech", 3, 4);
+                Append(Trig.Children, Expressions.Asech, "Asech", 4, 4);
+                Append(Trig.Children, Expressions.Comma, 0, 5);
+                Append(Trig.Children, Expressions.Csc, "Csc", 1, 5);
+                Append(Trig.Children, Expressions.Acsc, "Acsc", 2, 5);
+                Append(Trig.Children, Expressions.Csch, "Csch", 3, 5);
+                Append(Trig.Children, Expressions.Acsch, "Acsch", 4, 5);
 
                 Const = new Grid
                 {
@@ -445,6 +483,8 @@ namespace InnoTecheLearning
                                 = Bin; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Func", delegate {Try(delegate { if(Return.Children[2] != Func) Return.Children[2]
                                 = Func; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
+                        Button("Trig", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
+                                = Trig; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
                                 = Const; },(InvalidOperationException e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Mode
