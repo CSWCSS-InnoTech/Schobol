@@ -31,6 +31,7 @@
             this.Input = new System.Windows.Forms.TextBox();
             this.Evaluate = new System.Windows.Forms.Button();
             this.Output = new System.Windows.Forms.TextBox();
+            this.Request = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Input
@@ -41,16 +42,16 @@
             this.Input.Location = new System.Drawing.Point(0, 1);
             this.Input.Multiline = true;
             this.Input.Name = "Input";
-            this.Input.Size = new System.Drawing.Size(284, 220);
+            this.Input.Size = new System.Drawing.Size(483, 335);
             this.Input.TabIndex = 0;
             // 
             // Evaluate
             // 
             this.Evaluate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Evaluate.Location = new System.Drawing.Point(0, 219);
+            this.Evaluate.Location = new System.Drawing.Point(0, 334);
             this.Evaluate.Name = "Evaluate";
-            this.Evaluate.Size = new System.Drawing.Size(284, 20);
+            this.Evaluate.Size = new System.Drawing.Size(391, 20);
             this.Evaluate.TabIndex = 1;
             this.Evaluate.Text = "Evaluate";
             this.Evaluate.UseVisualStyleBackColor = true;
@@ -60,16 +61,29 @@
             // 
             this.Output.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Output.Location = new System.Drawing.Point(0, 240);
+            this.Output.Location = new System.Drawing.Point(0, 355);
             this.Output.Name = "Output";
-            this.Output.Size = new System.Drawing.Size(284, 20);
+            this.Output.Size = new System.Drawing.Size(483, 20);
             this.Output.TabIndex = 2;
+            // 
+            // Request
+            // 
+            this.Request.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Request.Location = new System.Drawing.Point(388, 334);
+            this.Request.Name = "Request";
+            this.Request.Size = new System.Drawing.Size(95, 23);
+            this.Request.TabIndex = 3;
+            this.Request.Text = "Post dat request";
+            this.Request.UseVisualStyleBackColor = true;
+            this.Request.Click += new System.EventHandler(this.Request_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(483, 376);
+            this.Controls.Add(this.Request);
             this.Controls.Add(this.Output);
             this.Controls.Add(this.Evaluate);
             this.Controls.Add(this.Input);
@@ -85,6 +99,7 @@
         private System.Windows.Forms.TextBox Input;
         private System.Windows.Forms.Button Evaluate;
         private System.Windows.Forms.TextBox Output;
+        private System.Windows.Forms.Button Request;
     }
 }
 

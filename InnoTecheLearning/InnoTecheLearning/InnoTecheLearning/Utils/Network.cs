@@ -35,7 +35,7 @@ namespace InnoTecheLearning
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(await req.GetRequestStreamAsync()))
             //We need to count how many bytes we're sending. Post'ed Faked Forms should be name=value&
             {
-                req.ContentLength = sw.Encoding.GetBytes(Parameters).Length;
+                //req.ContentLength = sw.Encoding.GetBytes(Parameters).Length;
                 sw.Write(Parameters); //Push it out there
                 sw.Flush();
             }

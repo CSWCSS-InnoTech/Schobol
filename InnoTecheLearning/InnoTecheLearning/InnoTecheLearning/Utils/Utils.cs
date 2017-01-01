@@ -804,10 +804,10 @@ const Log10e = Math.LOG10E;
         }
         public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
-            List<byte> _samples = new List<byte>();
 
             int srcLength = samples.Length;
             var destLength = samples.Length * toSampleRate / fromSampleRate;
+            byte[] _samples = new byte[destLength];
             var dx = srcLength / destLength;
 
             // fmax : nyqist half of destination sampleRate
@@ -850,7 +850,7 @@ const Log10e = Math.LOG10E;
                 x += dx;
             }
 
-            return _samples.ToArray();
+            return _samples;
         }
         public static double[] Resample(double[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
