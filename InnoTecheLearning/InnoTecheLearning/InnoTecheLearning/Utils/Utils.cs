@@ -51,7 +51,7 @@ namespace InnoTecheLearning
 #if !(WINDOWS_APP || WINDOWS_PHONE_APP || WINDOWS_UWP)
         public class FileIO
         {
-            public FileIO(string FileName,FileMode Mode = FileMode.Create)
+            public FileIO(string FileName, FileMode Mode = FileMode.Create)
             {
                 this.FileName = FileName;
                 FileStream = new System.IO.IsolatedStorage.IsolatedStorageFileStream(FileName, Mode);
@@ -61,14 +61,16 @@ namespace InnoTecheLearning
             public string FileName { get; }
             public string FilePath { get; }
             public System.IO.IsolatedStorage.IsolatedStorageFileStream FileStream { get; }
-            public int Read(byte[] Buffer,int Offset, int Count)
+            public int Read(byte[] Buffer, int Offset, int Count)
             { return FileStream.Read(Buffer, Offset, Count); }
             public void Write(byte[] Buffer, int Offset, int Count)
             { FileStream.Write(Buffer, Offset, Count); }
             public void Dispose(bool Delete = false)
-            { FileStream.Dispose();
-              if (Delete)
-                  File.Delete(FilePath); }
+            {
+                FileStream.Dispose();
+                if (Delete)
+                    File.Delete(FilePath);
+            }
             ~FileIO()
             { try { Dispose(); } catch { } }
         }
@@ -89,19 +91,19 @@ namespace InnoTecheLearning
             switch (Device.OS)
             {
                 case TargetPlatform.iOS:
-                    if(iOS != null)
+                    if (iOS != null)
                         return (T)iOS.DynamicInvoke();
                     break;
                 case TargetPlatform.Android:
-                    if(Android != null)
+                    if (Android != null)
                         return (T)Android.DynamicInvoke();
                     break;
                 case TargetPlatform.WinPhone:
-                    if(WinPhone != null)
+                    if (WinPhone != null)
                         return (T)WinPhone.DynamicInvoke();
                     break;
                 case TargetPlatform.Windows:
-                    if(Windows != null)
+                    if (Windows != null)
                         return (T)Windows.DynamicInvoke();
                     break;
                 case TargetPlatform.Other:
@@ -110,43 +112,43 @@ namespace InnoTecheLearning
             }
             return Default == null ? default(T) : (T)Default.DynamicInvoke();
         }
-    /// <summary>
-    /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
-    /// </summary>
-    /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.></typeparam>
-    /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
-    /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
-    /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
-    /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
-    /// <param name="Default">The value to return if no value was provided for the current OS.</param>
-    /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-    public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
-                                  T WinPhone = default(T), T Default = default(T))
-    {
-        switch (Device.OS)
+        /// <summary>
+        /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.></typeparam>
+        /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
+        /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
+        /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
+        /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
+        /// <param name="Default">The value to return if no value was provided for the current OS.</param>
+        /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
+        public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
+                                      T WinPhone = default(T), T Default = default(T))
         {
-            case TargetPlatform.iOS:
-                if (!iOS.Equals(default(T)))
-                    return iOS;
-                break;
-            case TargetPlatform.Android:
-                if (!Android.Equals(default(T)))
-                    return Android;
-                break;
-            case TargetPlatform.WinPhone:
-                if (!WinPhone.Equals(default(T)))
-                    return WinPhone;
-                break;
-            case TargetPlatform.Windows:
-                if (!Windows.Equals(default(T)))
-                    return Windows;
-                break;
-            case TargetPlatform.Other:
-            default:
-                break;
+            switch (Device.OS)
+            {
+                case TargetPlatform.iOS:
+                    if (!iOS.Equals(default(T)))
+                        return iOS;
+                    break;
+                case TargetPlatform.Android:
+                    if (!Android.Equals(default(T)))
+                        return Android;
+                    break;
+                case TargetPlatform.WinPhone:
+                    if (!WinPhone.Equals(default(T)))
+                        return WinPhone;
+                    break;
+                case TargetPlatform.Windows:
+                    if (!Windows.Equals(default(T)))
+                        return Windows;
+                    break;
+                case TargetPlatform.Other:
+                default:
+                    break;
+            }
+            return Default;
         }
-        return Default;
-    }
         public static T OnProject<T>(Func<T> iOS = null, Func<T> Android = null, Func<T> UWP10 = null,
             Func<T> Win81 = null, Func<T> WinPhone81 = null, Func<T> Default = null)
         {
@@ -211,16 +213,18 @@ namespace InnoTecheLearning
         }
 
         public static string CurrentNamespace
-        {   get {return "InnoTecheLearning." + OnProject("iOS", "Droid", "UWP", "Windows", "WinPhone");}}
+        { get { return "InnoTecheLearning." + OnProject("iOS", "Droid", "UWP", "Windows", "WinPhone"); } }
 
-        public async static Task<T> AlertAsync<T>(T Return,Page Page, Text Message = default(Text),
+        public async static Task<T> AlertAsync<T>(T Return, Page Page, Text Message = default(Text),
                                                   string Title = "Alert", string Cancel = "OK")
-        {   await Page.DisplayAlert(Title, Message, Cancel);
-            return Return; }
+        {
+            await Page.DisplayAlert(Title, Message, Cancel);
+            return Return;
+        }
 
-        public static T Alert<T>(T Return, Page Page,  Text Message = default(Text),
+        public static T Alert<T>(T Return, Page Page, Text Message = default(Text),
             string Title = "Alert", string Cancel = "OK")
-        {  return Do(AlertAsync(Return, Page, Title, Message, Cancel)); }
+        { return Do(AlertAsync(Return, Page, Title, Message, Cancel)); }
 
         public async static void Alert(Page Page, Text Message = default(Text),
             string Title = "Alert", string Cancel = "OK")
@@ -272,10 +276,12 @@ namespace InnoTecheLearning
         /// <returns>Returns a <see cref="string"/> consisting of the specified
         /// <see cref="string"/> repeated the specified number of times. </returns>
         public static string StrDup(string String, int Count)
-        { string Return = "";
-          for (int i = 0; i < Count; i++)
+        {
+            string Return = "";
+            for (int i = 0; i < Count; i++)
                 Return += String;
-          return Return;}
+            return Return;
+        }
         /// <summary>
         /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
         /// </summary>
@@ -312,7 +318,7 @@ namespace InnoTecheLearning
             {
                 return (T)Object;
             }
-            catch (Exception) 
+            catch (Exception)
             //when (ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
                 return default(T);
@@ -363,11 +369,12 @@ namespace InnoTecheLearning
         }
 
         public static char[] CharGen(char Start, char End, params char[] Exclude)
-        {   string Return = "";
-            for (char i = Start; i < End+1; i++)
+        {
+            string Return = "";
+            for (char i = Start; i < End + 1; i++)
             {
-                if (Array.Exists(Exclude,x=>x!=i))
-                Return += i;
+                if (Array.Exists(Exclude, x => x != i))
+                    Return += i;
             }
             return Return.ToCharArray();
         }
@@ -428,7 +435,7 @@ namespace InnoTecheLearning
 
         public static ushort ToUShort(string String)
         {
-Retry:      try
+            Retry: try
             {
                 return ushort.Parse(String);
             }
@@ -451,7 +458,7 @@ Retry:      try
             {
                 for (int i = 0; i < String.Length; i++)
                     if (!char.IsDigit(String[i]))
-                    { String = String.Remove(i, 1); i--;}
+                    { String = String.Remove(i, 1); i--; }
                 goto Retry;
             }
         }
@@ -461,7 +468,7 @@ Retry:      try
         { Degree, Radian, Gradian, Turn }
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
             bool TrueFree = false, bool MaxMin = true)
-        {   
+        {
             // Ask user to enter expression.
 #if __IOS__ || __ANDROID__
             JSEvaluator Evaluator = new JSEvaluator();
@@ -672,15 +679,15 @@ const Log10e = Math.LOG10E;
         }
 #endif
         public static void Try<TException>(Action Try, Action<TException> Catch = null,
-            Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
+            Func<bool> CatchFilter = null, Action Finally = null) where TException : Exception
         {
             try
             {
                 Try();
             }
-            catch (TException ex) when (Catch != null && (CatchFilter == null? true : CatchFilter()))
+            catch (TException ex) when (Catch != null && (CatchFilter == null ? true : CatchFilter()))
             {
-                 Catch(ex); 
+                Catch(ex);
             }
             finally
             {
@@ -688,16 +695,16 @@ const Log10e = Math.LOG10E;
             }
 
         }
-        public static T Try<T, TException>(Func<T> Try, Func<TException,T> Catch = null,
-            Func<bool> CatchFilter = null, Action Finally = null)where TException : Exception
+        public static T Try<T, TException>(Func<T> Try, Func<TException, T> Catch = null,
+            Func<bool> CatchFilter = null, Action Finally = null) where TException : Exception
         {
             try
             {
                 return Try();
             }
-            catch (TException ex) when (Catch != null && (CatchFilter == null ? true : CatchFilter()) )
+            catch (TException ex) when (Catch != null && (CatchFilter == null ? true : CatchFilter()))
             {
-                return Catch(ex); 
+                return Catch(ex);
             }
             finally
             {
@@ -727,7 +734,7 @@ const Log10e = Math.LOG10E;
 
         }
         public static T Try<T, TException1, TException2>(Func<T> Try, Func<TException1, T> Catch1 = null,
-            Func<bool> CatchFilter1 = null, Func<TException2, T> Catch2 = null, Func<bool> CatchFilter2 = null, 
+            Func<bool> CatchFilter1 = null, Func<TException2, T> Catch2 = null, Func<bool> CatchFilter2 = null,
             Action Finally = null) where TException1 : Exception where TException2 : Exception
         {
             try
@@ -804,53 +811,56 @@ const Log10e = Math.LOG10E;
         }
         public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
-
-            int srcLength = samples.Length;
-            var destLength = samples.Length * toSampleRate / fromSampleRate;
-            byte[] _samples = new byte[destLength];
-            var dx = srcLength / destLength;
-
-            // fmax : nyqist half of destination sampleRate
-            // fmax / fsr = 0.5;
-            var fmaxDivSR = 0.5;
-            var r_g = 2 * fmaxDivSR;
-
-            // Quality is half the window width
-            var wndWidth2 = quality;
-            var wndWidth = quality * 2;
-
-            var x = 0;
-            int i, j;
-            double r_y;
-            int tau;
-            double r_w;
-            double r_a;
-            double r_snc;
-            for (i = 0; i < destLength; ++i)
+            unchecked
             {
-                r_y = 0.0;
-                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
+
+                int srcLength = samples.Length;
+                var destLength = samples.Length * toSampleRate / fromSampleRate;
+                byte[] _samples = new byte[destLength];
+                var dx = srcLength / destLength;
+
+                // fmax : nyqist half of destination sampleRate
+                // fmax / fsr = 0.5;
+                var fmaxDivSR = 0.5;
+                var r_g = 2 * fmaxDivSR;
+
+                // Quality is half the window width
+                var wndWidth2 = quality;
+                var wndWidth = quality * 2;
+
+                var x = 0;
+                int i, j;
+                double r_y;
+                int tau;
+                double r_w;
+                double r_a;
+                double r_snc;
+                for (i = 0; i < destLength; ++i)
                 {
-                    // input sample index
-                    j = x + tau;
-
-                    // Hann Window. Scale and calculate sinc
-                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
-                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
-                    r_snc = 1.0;
-                    if (r_a != 0)
-                        r_snc = Math.Sin(r_a) / r_a;
-
-                    if ((j >= 0) && (j < srcLength))
+                    r_y = 0.0;
+                    for (tau = -wndWidth2; tau < wndWidth2; ++tau)
                     {
-                        r_y += r_g * r_w * r_snc * samples[j];
-                    }
-                }
-                _samples[i] = (byte)r_y;
-                x += dx;
-            }
+                        // input sample index
+                        j = x + tau;
 
-            return _samples;
+                        // Hann Window. Scale and calculate sinc
+                        r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
+                        r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
+                        r_snc = 1.0;
+                        if (r_a != 0)
+                            r_snc = Math.Sin(r_a) / r_a;
+
+                        if ((j >= 0) && (j < srcLength))
+                        {
+                            r_y += r_g * r_w * r_snc * samples[j];
+                        }
+                    }
+                    _samples[i] = (byte)r_y;
+                    x += dx;
+                }
+
+                return _samples;
+            }
         }
         public static double[] Resample(double[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
@@ -899,7 +909,7 @@ const Log10e = Math.LOG10E;
                 _samples[i] = r_y;
                 x += dx;
             }
-            
+
             return _samples.ToArray();
         }
         /*

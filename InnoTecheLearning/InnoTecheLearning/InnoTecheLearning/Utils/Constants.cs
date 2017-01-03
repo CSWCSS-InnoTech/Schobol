@@ -8,7 +8,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 117); } }
+        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 118); } }
         public const string VersionName = "Xamarin Update";
 
         public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }

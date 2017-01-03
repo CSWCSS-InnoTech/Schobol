@@ -409,8 +409,8 @@ namespace InnoTecheLearning
                 };
                 Append(Trig.Children, Expressions.Deg, "Deg", 0, 0);
                 Append(Trig.Children, Expressions.Sin, "Sin", 1, 0);
-                Append(Trig.Children, Expressions.Sinh, "Sinh", 2, 0);
-                Append(Trig.Children, Expressions.Asin, "Asin", 3, 0);
+                Append(Trig.Children, Expressions.Asin, "Asin", 2, 0);
+                Append(Trig.Children, Expressions.Sinh, "Sinh", 3, 0);
                 Append(Trig.Children, Expressions.Asinh, "Asinh", 4, 0);
                 Append(Trig.Children, Expressions.Rad, "Rad", 0, 1);
                 Append(Trig.Children, Expressions.Cos, "Cos", 1, 1);
@@ -424,7 +424,7 @@ namespace InnoTecheLearning
                 Append(Trig.Children, Expressions.Atanh, "Atanh", 4, 2);
                 Append(Trig.Children, Expressions.Turn, "Turn", 0, 3);
                 Append(Trig.Children, Expressions.Cot, "Cot", 1, 3);
-                Append(Trig.Children, Expressions.Acot, 2, 3);
+                Append(Trig.Children, Expressions.Acot, "Acot", 2, 3);
                 Append(Trig.Children, Expressions.Coth, "Coth", 3, 3);
                 Append(Trig.Children, Expressions.Acoth, "Acoth", 4, 3);
                 Append(Trig.Children, Expressions.Atan2, "Atan2", 0, 4);
@@ -483,7 +483,7 @@ namespace InnoTecheLearning
                                 = Bin; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Func", delegate {Try(delegate { if(Return.Children[2] != Func) Return.Children[2]
                                 = Func; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Button("Trig", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
+                        Button("Trig", delegate {Try(delegate { if(Return.Children[2] != Trig) Return.Children[2]
                                 = Trig; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
                                 = Const; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
