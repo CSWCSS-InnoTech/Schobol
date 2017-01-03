@@ -812,7 +812,7 @@ const Log10e = Math.LOG10E;
         public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
             int srcLength = samples.Length;
-            var destLength = samples.Length * toSampleRate / fromSampleRate;
+            var destLength = (long)samples.Length * toSampleRate / fromSampleRate;
             byte[] _samples = new byte[destLength];
             var dx = srcLength / destLength;
 
@@ -853,7 +853,7 @@ const Log10e = Math.LOG10E;
                     }
                 }
                 _samples[i] = (byte)r_y;
-                x += dx; 
+                x += (int)dx; 
             }
 
             return _samples;

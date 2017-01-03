@@ -1020,6 +1020,23 @@ namespace InnoTecheLearning
                     /// </summary>
                     Stream
                 }
+
+
+                public System.TimeSpan Duration
+                {
+                    get
+                    {
+                        Content.Seek(40, SeekOrigin.Begin);
+                        byte[] val = new byte[4];
+                        Content.Read(val, 0, 4);
+                        double Size = System.BitConverter.ToUInt32(val, 0);
+                        Content.Seek(28, SeekOrigin.Begin);
+                        val = new byte[4];
+                        Content.Read(val, 0, 4);
+                        double ByteRate = System.BitConverter.ToUInt32(val, 0);
+                        return System.TimeSpan.FromSeconds(Size / ByteRate);
+                    }
+                }
                 public enum ChannelOut
                 {
                     /// <summary>To be added.</summary>
@@ -1333,9 +1350,13 @@ namespace InnoTecheLearning
                 _loop = Options.Loop;
                 _volume = Options.Volume;
                 _player.SetVolume(_volume = Options.Volume);
+#if false
                 _player.SetNotificationMarkerPosition(SizeInBytes / 2);
                 _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
                        { if (_loop) e.Track.SetPlaybackHeadPosition(0); };
+#else
+                Device.StartTimer(Options.Duration, () => { if (_loop) _player.SetPlaybackHeadPosition(0); return _loop; });
+#endif
                 _prepared = true;
             }
             [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
