@@ -1290,6 +1290,7 @@ namespace InnoTecheLearning
                 remove { _player.FinishedPlaying -= (System.EventHandler<AVStatusEventArgs>)(System.MulticastDelegate)value; }
             }
             public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
+            public bool Loop { get { return _player.NumberOfLoops == -1; } set { _player.NumberOfLoops = value ? -1 : 0; } }
             ~StreamPlayer()
             { _player.Dispose(); }
 #elif __ANDROID__
@@ -1310,7 +1311,7 @@ namespace InnoTecheLearning
                     Forms.Context.GetSystemService(Android.Content.Context.AudioService);
                 string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
                 string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
-                byte[] Resampled = 
+                byte[] Resampled =
                 Resample(System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(
                     Options.Content.ReadFully(true), 44)), Options.SampleRate, int.Parse(Rate));
 
@@ -1333,6 +1334,8 @@ namespace InnoTecheLearning
                 _volume = Options.Volume;
                 _player.SetVolume(_volume = Options.Volume);
                 _player.SetNotificationMarkerPosition(SizeInBytes / 2);
+                _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
+                       { if (_loop) e.Track.SetPlaybackHeadPosition(0); };
                 _prepared = true;
             }
             [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
@@ -1401,10 +1404,10 @@ namespace InnoTecheLearning
                 return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
                    {
                        value(sender, e);
-                       if (_loop) e.Track.SetPlaybackHeadPosition(0);
                    };
             }
             public float Volume { get { return _volume; } set { _player.SetVolume(_volume = value); } }
+            public bool Loop { get { return _loop; } set { _loop = value; } }
             ~StreamPlayer()
             { Stop(); }
 #elif NETFX_CORE
@@ -1457,6 +1460,7 @@ namespace InnoTecheLearning
                 add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
                 remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
             }
+            public bool Loop { get { return _player.IsLooping; } set { _player.IsLooping = value; } }
             [DllImport(@"urlmon.dll")]
             private extern static uint FindMimeFromData(uint pBC, [MarshalAs(UnmanagedType.LPStr)] string pwzUrl,
                                                         [MarshalAs(UnmanagedType.LPArray)] byte[] pBuffer, uint cbSize,

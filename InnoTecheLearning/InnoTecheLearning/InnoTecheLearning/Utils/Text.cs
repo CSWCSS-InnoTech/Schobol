@@ -68,6 +68,11 @@ namespace InnoTecheLearning
             public string Value { get; set; }
             public Text(string Text)
             { Value = Text; }
+            public Text Append(Text Text)
+            {
+                Value += Text;
+                return this;
+            }
             public Text Append(char Char)
             {
                 Value += Char;
@@ -144,10 +149,14 @@ namespace InnoTecheLearning
             { return First() == Char; }
             public bool StartsWith(string String)
             { return Value.StartsWith(String); }
+            public bool StartsWith(Text Text)
+            { return Value.StartsWith(Text); }
             public bool EndsWith(char Char)
             { return Last() == Char; }
             public bool EndsWith(string String)
             { return Value.EndsWith(String); }
+            public bool EndsWith(Text Text)
+            { return Value.EndsWith(Text); }
             public char First()
             { return Value[0]; }
             public char Last()
@@ -184,6 +193,11 @@ namespace InnoTecheLearning
             public Text Replace(string OldString, string NewString)
             {
                 Value = Value.Replace(OldString, NewString);
+                return this;
+            }
+            public Text Replace(Text OldText, Text NewText)
+            {
+                Value = Value.Replace(OldText, NewText);
                 return this;
             }
             public int Length
@@ -283,6 +297,10 @@ namespace InnoTecheLearning
             }
             public override string ToString()
             { return Value; }
+            public int CompareTo(Text Text)
+            {
+                return Value.CompareTo(Text);
+            }
             public int CompareTo(string String)
             {
                 return Value.CompareTo(String);

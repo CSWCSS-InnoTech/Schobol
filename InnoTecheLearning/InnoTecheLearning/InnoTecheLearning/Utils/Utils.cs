@@ -811,56 +811,52 @@ const Log10e = Math.LOG10E;
         }
         public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
-            unchecked
+            int srcLength = samples.Length;
+            var destLength = samples.Length * toSampleRate / fromSampleRate;
+            byte[] _samples = new byte[destLength];
+            var dx = srcLength / destLength;
+
+            // fmax : nyqist half of destination sampleRate
+            // fmax / fsr = 0.5;
+            var fmaxDivSR = 0.5;
+            var r_g = 2 * fmaxDivSR;
+
+            // Quality is half the window width
+            var wndWidth2 = quality;
+            var wndWidth = quality * 2;
+
+            var x = 0;
+            int i, j;
+            double r_y;
+            int tau;
+            double r_w;
+            double r_a;
+            double r_snc;
+            for (i = 0; i < destLength; ++i)
             {
-
-                int srcLength = samples.Length;
-                var destLength = samples.Length * toSampleRate / fromSampleRate;
-                byte[] _samples = new byte[destLength];
-                var dx = srcLength / destLength;
-
-                // fmax : nyqist half of destination sampleRate
-                // fmax / fsr = 0.5;
-                var fmaxDivSR = 0.5;
-                var r_g = 2 * fmaxDivSR;
-
-                // Quality is half the window width
-                var wndWidth2 = quality;
-                var wndWidth = quality * 2;
-
-                var x = 0;
-                int i, j;
-                double r_y;
-                int tau;
-                double r_w;
-                double r_a;
-                double r_snc;
-                for (i = 0; i < destLength; ++i)
+                r_y = 0.0;
+                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
                 {
-                    r_y = 0.0;
-                    for (tau = -wndWidth2; tau < wndWidth2; ++tau)
+                    // input sample index
+                    j = unchecked(x + tau);
+
+                    // Hann Window. Scale and calculate sinc
+                    r_w = unchecked(0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth)));
+                    r_a = unchecked(2 * Math.PI * (j - x) * fmaxDivSR);
+                    r_snc = 1.0;
+                    if (r_a != 0)
+                        r_snc = unchecked(Math.Sin(r_a) / r_a);
+
+                    if ((j >= 0) && (j < srcLength))
                     {
-                        // input sample index
-                        j = x + tau;
-
-                        // Hann Window. Scale and calculate sinc
-                        r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
-                        r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
-                        r_snc = 1.0;
-                        if (r_a != 0)
-                            r_snc = Math.Sin(r_a) / r_a;
-
-                        if ((j >= 0) && (j < srcLength))
-                        {
-                            r_y += r_g * r_w * r_snc * samples[j];
-                        }
+                        r_y += unchecked(r_g * r_w * r_snc * samples[j]);
                     }
-                    _samples[i] = (byte)r_y;
-                    x += dx;
                 }
-
-                return _samples;
+                _samples[i] = unchecked((byte)r_y);
+                unchecked { x += dx; }
             }
+
+            return _samples;
         }
         public static double[] Resample(double[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
         {
