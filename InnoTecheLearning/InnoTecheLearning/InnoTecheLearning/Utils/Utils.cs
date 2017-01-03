@@ -838,22 +838,22 @@ const Log10e = Math.LOG10E;
                 for (tau = -wndWidth2; tau < wndWidth2; ++tau)
                 {
                     // input sample index
-                    j = unchecked(x + tau);
+                    j = x + tau;
 
                     // Hann Window. Scale and calculate sinc
-                    r_w = unchecked(0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth)));
-                    r_a = unchecked(2 * Math.PI * (j - x) * fmaxDivSR);
+                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
+                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
                     r_snc = 1.0;
                     if (r_a != 0)
-                        r_snc = unchecked(Math.Sin(r_a) / r_a);
+                        r_snc = Math.Sin(r_a) / r_a;
 
                     if ((j >= 0) && (j < srcLength))
                     {
-                        r_y += unchecked(r_g * r_w * r_snc * samples[j]);
+                        r_y += r_g * r_w * r_snc * samples[j];
                     }
                 }
-                _samples[i] = unchecked((byte)r_y);
-                unchecked { x += dx; }
+                _samples[i] = (byte)r_y;
+                x += dx; 
             }
 
             return _samples;
@@ -863,7 +863,7 @@ const Log10e = Math.LOG10E;
             List<double> _samples = new List<double>();
 
             int srcLength = samples.Length;
-            var destLength = samples.Length * toSampleRate / fromSampleRate;
+            var destLength = (long)samples.Length * toSampleRate / fromSampleRate;
             var dx = srcLength / destLength;
 
             // fmax : nyqist half of destination sampleRate
@@ -903,7 +903,7 @@ const Log10e = Math.LOG10E;
                     }
                 }
                 _samples[i] = r_y;
-                x += dx;
+                x += (int)dx;
             }
 
             return _samples.ToArray();

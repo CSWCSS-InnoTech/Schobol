@@ -32,6 +32,7 @@
             this.Evaluate = new System.Windows.Forms.Button();
             this.Output = new System.Windows.Forms.TextBox();
             this.Request = new System.Windows.Forms.Button();
+            this.Resampler = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Input
@@ -51,7 +52,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Evaluate.Location = new System.Drawing.Point(0, 334);
             this.Evaluate.Name = "Evaluate";
-            this.Evaluate.Size = new System.Drawing.Size(391, 20);
+            this.Evaluate.Size = new System.Drawing.Size(322, 20);
             this.Evaluate.TabIndex = 1;
             this.Evaluate.Text = "Evaluate";
             this.Evaluate.UseVisualStyleBackColor = true;
@@ -78,11 +79,24 @@
             this.Request.UseVisualStyleBackColor = true;
             this.Request.Click += new System.EventHandler(this.Request_Click);
             // 
+            // Resampler
+            // 
+            this.Resampler.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Resampler.Location = new System.Drawing.Point(319, 334);
+            this.Resampler.Name = "Resampler";
+            this.Resampler.Size = new System.Drawing.Size(75, 23);
+            this.Resampler.TabIndex = 4;
+            this.Resampler.Text = "Resample";
+            this.Resampler.UseVisualStyleBackColor = true;
+            this.Resampler.Click += new System.EventHandler(this.Resampler_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(483, 376);
+            this.Controls.Add(this.Resampler);
             this.Controls.Add(this.Request);
             this.Controls.Add(this.Output);
             this.Controls.Add(this.Evaluate);
@@ -100,6 +114,7 @@
         private System.Windows.Forms.Button Evaluate;
         private System.Windows.Forms.TextBox Output;
         private System.Windows.Forms.Button Request;
+        private System.Windows.Forms.Button Resampler;
     }
 }
 

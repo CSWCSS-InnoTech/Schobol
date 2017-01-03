@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Microsoft.JScript;
 using Microsoft.JScript.Vsa;
 using Convert = Microsoft.JScript.Convert;
+using System.IO;
 
 namespace InnoTecheLearning.WinForms
 {
@@ -164,9 +165,74 @@ const Log10e = Math.LOG10E;
             using (System.IO.StreamReader sr = new System.IO.StreamReader(resp.GetResponseStream()))
                 return sr.ReadToEnd().Trim();
         }
+        public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
+        {
+            int srcLength = samples.Length;
+            var destLength = (long)samples.Length * toSampleRate / fromSampleRate;
+            byte[] _samples = new byte[destLength];
+            var dx = srcLength / destLength;
+
+            // fmax : nyqist half of destination sampleRate
+            // fmax / fsr = 0.5;
+            var fmaxDivSR = 0.5;
+            var r_g = 2 * fmaxDivSR;
+
+            // Quality is half the window width
+            var wndWidth2 = quality;
+            var wndWidth = quality * 2;
+
+            var x = 0;
+            int i, j;
+            double r_y;
+            int tau;
+            double r_w;
+            double r_a;
+            double r_snc;
+            for (i = 0; i < destLength; ++i)
+            {
+                r_y = 0.0;
+                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
+                {
+                    // input sample index
+                    j = x + tau;
+
+                    // Hann Window. Scale and calculate sinc
+                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
+                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
+                    r_snc = 1.0;
+                    if (r_a != 0)
+                        r_snc = Math.Sin(r_a) / r_a;
+
+                    if ((j >= 0) && (j < srcLength))
+                    {
+                        r_y += r_g * r_w * r_snc * samples[j];
+                    }
+                }
+                _samples[i] = (byte)r_y;
+                x += (int)dx;
+            }
+
+            return _samples;
+        }
         private void Request_Click(object sender, EventArgs e)
         {
             Output.Text = string.Join(",", Login());
+        }
+
+        private void Resampler_Click(object sender, EventArgs e)
+        {
+            using (var S = new FileStream(
+                @"C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\Sounds\CelloCC.wav"
+, FileMode.Open)) { 
+            S.Seek(24, SeekOrigin.Begin);
+            byte[] val = new byte[4];
+            S.Read(val, 0, 4);
+            var From = BitConverter.ToInt32(val, 0);
+            string s = "";
+            foreach (byte b in Resample(new BinaryReader(S).ReadBytes((int)S.Length), From, From))
+                s += b.ToString() + ",";
+                Input.Text = s;
+        }
         }
     }
 }
