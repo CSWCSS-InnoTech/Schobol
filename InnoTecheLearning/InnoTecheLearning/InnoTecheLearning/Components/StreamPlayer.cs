@@ -1187,7 +1187,7 @@ namespace InnoTecheLearning
                 Cello_D,
                 Cello_A
             }
-            public static StreamPlayer Create(Sounds Sound, float Volume = 1)
+            public static StreamPlayer Create(Sounds Sound, bool Loop = false, float Volume = 1)
             {
                 string Name = "";
                 switch (Sound)
@@ -1220,7 +1220,7 @@ namespace InnoTecheLearning
                         break;
                 }
                 return Create(new StreamPlayerOptions(Resources.GetStream("Sounds." + Name), Path.GetExtension(Name))
-                { Volume = Volume, Loop = true });
+                { Volume = Volume, Loop = Loop });
             }
             public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
             {
@@ -1263,9 +1263,9 @@ namespace InnoTecheLearning
                 Options.Content = Resources.GetStream("Sounds." + Name);
                 return Create(Options);
             }
-            public static StreamPlayer Play(Sounds Sound, float Volume = 1)
+            public static StreamPlayer Play(Sounds Sound, bool Loop = false, float Volume = 1)
             {
-                var Return = Create(Sound, Volume);
+                var Return = Create(Sound, Loop, Volume);
                 Return.Play();
                 return Return;
             }
@@ -1356,9 +1356,9 @@ namespace InnoTecheLearning
 #if false
                 _player.SetNotificationMarkerPosition(SizeInBytes / 2);
                 _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
-                       { if (_loop) e.Track.SetPlaybackHeadPosition(0); };
+                       { if (_loop) e.Track.SetPlaybackHeadPosition(0); };_player.Play();
 #else
-                Device.StartTimer(Options.Duration, () => { if (_loop) { _player.SetPlaybackHeadPosition(0); _player.Play(); } return _loop; });
+                Device.StartTimer(Options.Duration, () => { if (_loop) { _player.SetPlaybackHeadPosition(0);  } return _loop; });
 #endif
                 _prepared = true;
             }
