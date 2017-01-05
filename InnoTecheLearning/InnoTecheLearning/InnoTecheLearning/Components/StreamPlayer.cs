@@ -1356,9 +1356,9 @@ namespace InnoTecheLearning
 #if false
                 _player.SetNotificationMarkerPosition(SizeInBytes / 2);
                 _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
-                       { if (_loop) e.Track.SetPlaybackHeadPosition(0); };_player.Play();
+                       { if (_loop) e.Track.SetPlaybackHeadPosition(0); };
 #else
-                Device.StartTimer(Options.Duration, () => { if (_loop) { _player.SetPlaybackHeadPosition(0);  } return _loop; });
+                Device.StartTimer(Options.Duration, () => { if (_loop) { _player.SetPlaybackHeadPosition(0); _player.Play(); } return _loop; });
 #endif
                 _prepared = true;
             }
