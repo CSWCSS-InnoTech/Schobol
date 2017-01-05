@@ -5,8 +5,11 @@ using System.Collections.Generic;
 using AVFoundation;
 using Foundation;
 #elif __ANDROID__
-using Android.Net;
+using Exception = System.Exception;
+using Java.Lang;
 using Android.Media;
+using Logg = Android.Util.Log;
+using Android.Net;
 using Java.IO;
 using Xamarin.Forms;
 using Stream = System.IO.Stream;
@@ -1355,7 +1358,7 @@ namespace InnoTecheLearning
                 _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
                        { if (_loop) e.Track.SetPlaybackHeadPosition(0); };
 #else
-                Device.StartTimer(Options.Duration, () => { if (_loop) _player.SetPlaybackHeadPosition(0); return _loop; });
+                Device.StartTimer(Options.Duration, () => { if (_loop) { _player.SetPlaybackHeadPosition(0); _player.Play(); } return _loop; });
 #endif
                 _prepared = true;
             }
@@ -1388,6 +1391,71 @@ namespace InnoTecheLearning
                 _player.SetVolume(_volume = Volume);
                 _player.SetNotificationMarkerPosition((int)Content.Length / 2);
                 _prepared = true;
+            }
+            Thread m_PlayThread = null;
+            bool m_bStop = false;
+            int m_play_length = 1000;
+            void stop()
+            {
+                m_bStop = true;
+                if (m_PlayThread != null)
+                {
+                    try
+                    {
+                        m_PlayThread.Interrupt();
+                        m_PlayThread.Join();
+                        m_PlayThread = null;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+                if (_player != null)
+                {
+                    _player.Stop();
+                    _player.Release();
+                    _player = null;
+                }
+            }
+
+            void play(byte[] bytes, int sampleRate, int PlaySeconds)
+            {
+                m_play_length = PlaySeconds;
+                m_bStop = false;
+                m_PlayThread = new Thread(
+                () =>
+                {
+                    try
+                    {
+                        int iToneStep = 0;
+
+                        _player = new AudioTrack(Android.Media.Stream.Music,
+                                sampleRate, ChannelOut.Mono,
+                                Encoding.Pcm16bit, 2 * sampleRate,
+                                AudioTrackMode.Stream);
+
+                        while (!m_bStop && m_play_length-- > 0)
+                        {
+                            _player.Write(bytes, 0, bytes.Length);
+                            if (iToneStep == 1)
+                            {
+                                _player.Play();
+                            }
+                        }
+                    }
+                    catch (OutOfMemoryError e)
+                    {
+                        Logg.Error("Tone", e.ToString());
+                    }
+                    catch (Exception e)
+                    {
+                        Logg.Error("Tone", e.ToString());
+                    }
+
+                });
+            
+                m_PlayThread.Start();
             }
             public void Play()
             {
