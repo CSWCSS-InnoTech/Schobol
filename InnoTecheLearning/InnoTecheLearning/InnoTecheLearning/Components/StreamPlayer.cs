@@ -5,11 +5,8 @@ using System.Collections.Generic;
 using AVFoundation;
 using Foundation;
 #elif __ANDROID__
-using Exception = System.Exception;
-using Java.Lang;
-using Android.Media;
-using Logg = Android.Util.Log;
 using Android.Net;
+using Android.Media;
 using Java.IO;
 using Xamarin.Forms;
 using Stream = System.IO.Stream;
@@ -951,6 +948,20 @@ namespace InnoTecheLearning
                     //set { _SampleRate = value; }
                 }
                 /// <summary>
+                /// Number of channels.
+                /// </summary>
+                public int Channels
+                {
+                    get
+                    {
+                        if (!Content.CanSeek) return 1;
+                        Content.Seek(22, SeekOrigin.Begin);
+                        byte[] val = new byte[2];
+                        Content.Read(val, 0, 2);
+                        return System.BitConverter.ToInt16(val, 0);
+                    }
+                }
+                /// <summary>
                 /// Mono or stereo.
                 /// </summary>
                 public ChannelOut Config
@@ -1002,7 +1013,7 @@ namespace InnoTecheLearning
                 /// <summary>
                 /// Mode. Stream or static.
                 /// </summary>
-                public AudioTrackMode Mode = AudioTrackMode.Stream;
+                public AudioTrackMode Mode = AudioTrackMode.Static;
                 /// <summary>
                 /// Mime type. Default is audio/x-wav.
                 /// </summary>
@@ -1187,7 +1198,7 @@ namespace InnoTecheLearning
                 Cello_D,
                 Cello_A
             }
-            public static StreamPlayer Create(Sounds Sound, bool Loop = false, float Volume = 1)
+            public static StreamPlayer Create(Sounds Sound, float Volume = 1)
             {
                 string Name = "";
                 switch (Sound)
@@ -1220,7 +1231,7 @@ namespace InnoTecheLearning
                         break;
                 }
                 return Create(new StreamPlayerOptions(Resources.GetStream("Sounds." + Name), Path.GetExtension(Name))
-                { Volume = Volume, Loop = Loop });
+                { Volume = Volume, Loop = true });
             }
             public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
             {
@@ -1263,9 +1274,9 @@ namespace InnoTecheLearning
                 Options.Content = Resources.GetStream("Sounds." + Name);
                 return Create(Options);
             }
-            public static StreamPlayer Play(Sounds Sound, bool Loop = false, float Volume = 1)
+            public static StreamPlayer Play(Sounds Sound, float Volume = 1)
             {
-                var Return = Create(Sound, Loop, Volume);
+                var Return = Create(Sound, Volume);
                 Return.Play();
                 return Return;
             }
@@ -1315,12 +1326,10 @@ namespace InnoTecheLearning
             { _player.Dispose(); }
 #elif __ANDROID__
             AudioTrack _player;
-            byte[] _content;
-            bool _prepared;
+            Stream _content;
+            public bool _prepared { get; private set; }
             bool _loop;
             float _volume;
-            int SampleRate;
-            StreamPlayerOptions Options;
             public static StreamPlayer Create(StreamPlayerOptions Options)
             {
                 var Return = new StreamPlayer();
@@ -1331,24 +1340,43 @@ namespace InnoTecheLearning
             {// To get preferred buffer size and sampling rate.
                 AudioManager audioManager = (AudioManager)
                     Forms.Context.GetSystemService(Android.Content.Context.AudioService);
-                SampleRate = int.Parse(audioManager.GetProperty(AudioManager.PropertyOutputSampleRate));
-                //string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
+                string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
+                string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
                 byte[] Resampled =
-                _content = Resample(System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(
-                    Options.Content.ReadFully(true), 44)), Options.SampleRate, SampleRate);
-                this.Options = Options;
+                Resample(System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(
+                    Options.Content.ReadFully(true), 44)), Options.SampleRate, int.Parse(Rate));
+
+                _content = new MemoryStream(Resampled, true);
+                int SizeInBytes = Options.SizeInBytes - 44;
+                _player = new AudioTrack(
+                // Stream type
+                (Android.Media.Stream)Options.Type,
+                // Frequency
+                int.Parse(Rate),
+                // Mono or stereo
+                (ChannelOut)Options.Config,
+                // Audio encoding
+                (Encoding)Options.Format,
+                // Length of the audio clip.
+                SizeInBytes,
+                // Mode. Stream or static.
+                (AudioTrackMode)Options.Mode);
                 _loop = Options.Loop;
                 _volume = Options.Volume;
-#if false
-#if false
+                _player.SetVolume(_volume = Options.Volume);
+                int ch = Options.Channels;
+#if true
+                int start = (int)Options.Content.Length / ch / 2 / 2;
+                int stop = (int)Options.Content.Length / ch / 2 / 2 + 16000;
+                _player.SetLoopPoints(start, stop, -1);
+#elif false
                 _player.SetNotificationMarkerPosition(SizeInBytes / 2);
                 _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
                        { if (_loop) e.Track.SetPlaybackHeadPosition(0); };
-#else
-                Device.StartTimer(Options.Duration, () => { if (_loop) { _player.SetPlaybackHeadPosition(0); _player.Play(); } return _loop; });
+#elif false
+                Device.StartTimer(Options.Duration, () => { if (_loop) _player.SetPlaybackHeadPosition(0); return _loop; });
 #endif
                 _prepared = true;
-#endif
             }
             [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
             public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
@@ -1360,7 +1388,7 @@ namespace InnoTecheLearning
             [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
             protected void Init(Stream Content, bool Loop, float Volume)
             {
-                _content = Content.ReadFully();
+                _content = Content;
                 _player = new AudioTrack(
                 // Stream type
                 Android.Media.Stream.Music,
@@ -1380,116 +1408,44 @@ namespace InnoTecheLearning
                 _player.SetNotificationMarkerPosition((int)Content.Length / 2);
                 _prepared = true;
             }
-            Thread m_PlayThread = null;
-            bool m_bStop = false;
-            int m_play_length = 1000;
-            bool m_bPause = false;
-            void stop()
-            {
-                m_bStop = true;
-                if (m_PlayThread != null)
-                {
-                    try
-                    {
-                        m_PlayThread.Interrupt();
-                        m_PlayThread.Join();
-                        m_PlayThread = null;
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-                if (_player != null)
-                {
-                    _player.Stop();
-                    _player.Release();
-                    _player = null;
-                }
-            }
-
-            void play(byte[] bytes, int sampleRate, int LoopCount)
-            {
-                m_play_length = LoopCount;
-                m_bStop = false;
-                m_PlayThread = new Thread(
-                () =>
-                {
-                    try
-                    {
-                        int iToneStep = 1;
-
-                        int SizeInBytes = Options.SizeInBytes - 44;
-                        _player = new AudioTrack(
-                        // Stream type
-                        (Android.Media.Stream)Options.Type,
-                        // Frequency
-                        SampleRate,
-                        // Mono or stereo
-                        (ChannelOut)Options.Config,
-                        // Audio encoding
-                        (Encoding)Options.Format,
-                        // Length of the audio clip.
-                        SizeInBytes,
-                        // Mode. Stream or static.
-                        (AudioTrackMode)Options.Mode);
-                        _player.SetVolume(_volume);
-
-                        while (!m_bStop && _loop)//m_play_length-- > 0
-                        {
-                            _player.Write(bytes, 0, bytes.Length);
-                            if (iToneStep++ == 1)
-                            {
-                                _player.Play();
-                            }
-                            if (m_bPause)
-                            {
-                                while (m_bPause)
-                                    _player.Pause();
-                                _player.Play();
-                            }
-                        }
-                    }
-                    catch (OutOfMemoryError e)
-                    {
-                        Logg.Error("InnoTecheLearning.StreamPlayer", Throwable.FromException(e), e.Message);
-                    }
-                    catch (Exception e)
-                    {
-                        Logg.Error("InnoTecheLearning.StreamPlayer", Throwable.FromException(e), e.Message);
-                    }
-
-                });
-            
-                m_PlayThread.Start();
-            }
-            void pause()
-            {
-                if (m_PlayThread != null)
-                {
-                    try
-                    {
-                        m_bPause = true;
-                    }
-                    catch (Exception)
-                    {
-
-                    }
-                }
-            }
             public void Play()
             {
-                if (m_bPause == true)
-                { m_bPause = false; }
-                else { play(_content, SampleRate, _loop ? int.MaxValue : 1); }
+                if (!_prepared) return;
+                _player.Write(_content.ReadFully(), 0, (int)_content.Length);
+                _player.Flush();
+                _player.Play();
             }
             public void Pause()
-            {  _player.Pause(); }
+            { if (_prepared) _player.Pause(); }
             public void Stop()
             {
-                stop();
+                if (_player == null)
+                    return;
+
+                _player.Stop();
+                _player.Dispose();
+                _player = null;
+                _prepared = false;
             }
-            public event System.EventHandler Complete;
+            public event System.EventHandler Complete
+            {
+                add
+                {
+                    _player.MarkerReached += MarkerReachedEventHandler(value);
+                }
+                remove
+                {
+                    _player.MarkerReached -= MarkerReachedEventHandler(value);
+                }
+            }
+            protected System.EventHandler<AudioTrack.MarkerReachedEventArgs>
+                MarkerReachedEventHandler(System.EventHandler value)
+            {
+                return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
+                   {
+                       value(sender, e);
+                   };
+            }
             public float Volume { get { return _volume; } set { _player.SetVolume(_volume = value); } }
             public bool Loop { get { return _loop; } set { _loop = value; } }
             ~StreamPlayer()
