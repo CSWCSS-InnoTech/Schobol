@@ -1330,6 +1330,7 @@ namespace InnoTecheLearning
             public bool _prepared { get; private set; }
             bool _loop;
             float _volume;
+            //int _start, _stop;
             public static StreamPlayer Create(StreamPlayerOptions Options)
             {
                 var Return = new StreamPlayer();
@@ -1364,11 +1365,10 @@ namespace InnoTecheLearning
                 _loop = Options.Loop;
                 _volume = Options.Volume;
                 _player.SetVolume(_volume = Options.Volume);
-                int ch = Options.Channels;
 #if true
-                int start = (int)Options.Content.Length / ch / 2 / 2;
-                int stop = (int)Options.Content.Length / ch / 2 / 2 + 16000;
-                _player.SetLoopPoints(start, stop, -1);
+                //int ch = Options.Channels;
+                //_start = 0;// (int)Options.Content.Length / ch;
+                //_stop = (int)Options.Content.Length;// / ch / 2 / 2 + 16000
 #elif false
                 _player.SetNotificationMarkerPosition(SizeInBytes / 2);
                 _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) =>
@@ -1412,6 +1412,7 @@ namespace InnoTecheLearning
             {
                 if (!_prepared) return;
                 _player.Write(_content.ReadFully(), 0, (int)_content.Length);
+                _player.SetLoopPoints(0, (int)_content.Length, -1);
                 _player.Flush();
                 _player.Play();
             }
