@@ -1329,7 +1329,82 @@ namespace InnoTecheLearning
             public bool Loop { get { return _player.NumberOfLoops == -1; } set { _player.NumberOfLoops = value ? -1 : 0; } }
             ~StreamPlayer()
             { _player.Dispose(); }
-#elif __ANDROID__
+            #elif __ANDROID__
+            AudioTrack _player;
+            public bool _prepared { get; private set; }
+            bool _loop;
+            float _volume;
+            public static StreamPlayer Create(StreamPlayerOptions Options)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Options);
+                return Return;
+            }
+            protected void Init(StreamPlayerOptions Options)
+            {
+                int SizeInBytes = Options.SizeInBytes - 44;
+                _player = new AudioTrack(
+                // Stream type
+                (Android.Media.Stream)Options.Type,
+                // Frequency
+                Options.SampleRate,
+                // Mono or stereo
+                (ChannelOut)Options.Config,
+                // Audio encoding
+                (Encoding)Options.Format,
+                // Length of the audio clip.
+                SizeInBytes,
+                // Mode. Stream or static.
+                AudioTrackMode.Static);
+                _loop = Options.Loop;
+                _volume = Options.Volume;
+                _player.SetVolume(_volume = Options.Volume);
+                _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
+                if(_loop) _player.SetLoopPoints(0, (int)Options.Content.Length, -1);
+                _prepared = true;
+            }
+            public void Play()
+            {
+                if (!_prepared) return;
+                _player.ReloadStaticData();
+                _player.Play();
+            }
+            public void Pause()
+            { if (_prepared) _player.Pause(); }
+            public void Stop()
+            {
+                if (_player == null)
+                    return;
+
+                _player.Stop();
+                _player.Dispose();
+                _player = null;
+                _prepared = false;
+            }
+            public event EventHandler Complete
+            {
+                add
+                {
+                    _player.MarkerReached += MarkerReachedEventHandler(value);
+                }
+                remove
+                {
+                    _player.MarkerReached -= MarkerReachedEventHandler(value);
+                }
+            }
+            protected EventHandler<AudioTrack.MarkerReachedEventArgs>
+                MarkerReachedEventHandler(EventHandler value)
+            {
+                return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
+                   {
+                       value(sender, e);
+                   };
+            }
+            public float Volume { get { return _volume; } set { _player.SetVolume(_volume = value); } }
+            public bool Loop { get { return _loop; } set { _loop = value; } }
+            ~StreamPlayer()
+            { Stop(); }
+#elif __ANDROID__ && RESAMPLE
             AudioTrack _player;
             Stream _content;
             public bool _prepared { get; private set; }
@@ -1415,7 +1490,6 @@ namespace InnoTecheLearning
             const int ShortBuffer = 256;
             bool _pause, _stop;
             Task Ongoing;
-            System.Threading.CancellationToken Token;
             void PlayTask()
             {
                 if(!_pause)Resampled = new Iterator<byte>(
@@ -1538,7 +1612,7 @@ namespace InnoTecheLearning
                     _enumerator = enumerator;
                 }
 
-                #region IEnumerator implementation
+            #region IEnumerator implementation
                 public bool MoveNext()
                 {
                     return _didPeek ? !(_didPeek = false) : _enumerator.MoveNext();
@@ -1551,23 +1625,23 @@ namespace InnoTecheLearning
                 }
 
                 object IEnumerator.Current { get { return this.Current; } }
-                #endregion
+            #endregion
 
-                #region IDisposable implementation
+            #region IDisposable implementation
                 public void Dispose()
                 {
                     _enumerator.Dispose();
                 }
-                #endregion
+            #endregion
 
-                #region IEnumerator<T> implementation
+            #region IEnumerator<T> implementation
                 public T Current
                 {
                     get { return _didPeek ? _peek : _enumerator.Current; }
                 }
-                #endregion
+            #endregion
                 /*
-                #region IEnumerable implementation
+            #region IEnumerable implementation
                 public IEnumerator<T> GetEnumerator()
                 {
                     return this; 
@@ -1577,7 +1651,7 @@ namespace InnoTecheLearning
                 {
                     return this; 
                 }
-                #endregion
+            #endregion
                 */
                 private void TryFetchPeek()
                 {
