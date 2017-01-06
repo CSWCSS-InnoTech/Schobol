@@ -5,11 +5,16 @@ using System.Collections.Generic;
 using AVFoundation;
 using Foundation;
 #elif __ANDROID__
+using System;
 using Android.Net;
 using Android.Media;
 using Java.IO;
 using Xamarin.Forms;
 using Stream = System.IO.Stream;
+using System.Linq;
+using Math = Java.Lang.Math;
+using IEnumerator = System.Collections.IEnumerator;
+using IEnumerable = System.Collections.IEnumerable;
 #elif NETFX_CORE
 using System;
 using System.Runtime.InteropServices;
@@ -1013,7 +1018,7 @@ namespace InnoTecheLearning
                 /// <summary>
                 /// Mode. Stream or static.
                 /// </summary>
-                public AudioTrackMode Mode = AudioTrackMode.Static;
+                public AudioTrackMode Mode = AudioTrackMode.Stream;
                 /// <summary>
                 /// Mime type. Default is audio/x-wav.
                 /// </summary>
@@ -1330,7 +1335,7 @@ namespace InnoTecheLearning
             public bool _prepared { get; private set; }
             bool _loop;
             float _volume;
-            //int _start, _stop;
+            int Rate, SampleRate;
             public static StreamPlayer Create(StreamPlayerOptions Options)
             {
                 var Return = new StreamPlayer();
@@ -1341,19 +1346,17 @@ namespace InnoTecheLearning
             {// To get preferred buffer size and sampling rate.
                 AudioManager audioManager = (AudioManager)
                     Forms.Context.GetSystemService(Android.Content.Context.AudioService);
-                string Rate = audioManager.GetProperty(AudioManager.PropertyOutputSampleRate);
-                string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
-                byte[] Resampled =
-                Resample(System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Skip(
-                    Options.Content.ReadFully(true), 44)), Options.SampleRate, int.Parse(Rate));
+                Rate = int.Parse(audioManager.GetProperty(AudioManager.PropertyOutputSampleRate));
+                //string Size = audioManager.GetProperty(AudioManager.PropertyOutputFramesPerBuffer);
+                SampleRate = Options.SampleRate;
 
-                _content = new MemoryStream(Resampled, true);
+                _content = Options.Content;
                 int SizeInBytes = Options.SizeInBytes - 44;
                 _player = new AudioTrack(
                 // Stream type
                 (Android.Media.Stream)Options.Type,
                 // Frequency
-                int.Parse(Rate),
+                Rate,
                 // Mono or stereo
                 (ChannelOut)Options.Config,
                 // Audio encoding
@@ -1378,14 +1381,14 @@ namespace InnoTecheLearning
 #endif
                 _prepared = true;
             }
-            [System.Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
+            [Obsolete("Only used in 0.10.0a105. Use Create(StreamPlayerOptions).")]
             public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
             {
                 var Return = new StreamPlayer();
                 Return.Init(Content, Loop, Volume);
                 return Return;
             }
-            [System.Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
+            [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
             protected void Init(Stream Content, bool Loop, float Volume)
             {
                 _content = Content;
@@ -1408,27 +1411,50 @@ namespace InnoTecheLearning
                 _player.SetNotificationMarkerPosition((int)Content.Length / 2);
                 _prepared = true;
             }
+            Iterator<byte> Resampled;
+            const int ShortBuffer = 256;
+            bool _pause, _stop;
+            Task Ongoing;
+            System.Threading.CancellationToken Token;
+            void PlayTask()
+            {
+                if(!_pause)Resampled = new Iterator<byte>(
+                    Resample(_content.ReadFully(true).Skip(44).ToArray(), 44, SampleRate, Rate));
+                _stop = _pause = false;
+                int x;
+                do
+                {
+                    do
+                    {
+                        x = _player.PlaybackHeadPosition;
+                        _player.Write(Resampled.Take(ShortBuffer), 0, ShortBuffer);
+                        do
+                        {   // Montior playback to find when done
+                        } while (_player.PlaybackHeadPosition < x + ShortBuffer);
+                    } while (Resampled.HasPeek && !_pause && !_stop);
+                } while (_loop && !_pause && !_stop);
+            }
             public void Play()
             {
                 if (!_prepared) return;
-                _player.Write(_content.ReadFully(), 0, (int)_content.Length);
-                _player.SetLoopPoints(0, (int)_content.Length, -1);
-                _player.Flush();
                 _player.Play();
+                Ongoing = Task.Run(new Action(PlayTask));
             }
             public void Pause()
-            { if (_prepared) _player.Pause(); }
+            { if (_prepared) _pause = true; }
             public void Stop()
             {
                 if (_player == null)
                     return;
+                _stop = true;
+                Do(Ongoing);
 
                 _player.Stop();
                 _player.Dispose();
                 _player = null;
                 _prepared = false;
             }
-            public event System.EventHandler Complete
+            public event EventHandler Complete
             {
                 add
                 {
@@ -1439,8 +1465,8 @@ namespace InnoTecheLearning
                     _player.MarkerReached -= MarkerReachedEventHandler(value);
                 }
             }
-            protected System.EventHandler<AudioTrack.MarkerReachedEventArgs>
-                MarkerReachedEventHandler(System.EventHandler value)
+            protected EventHandler<AudioTrack.MarkerReachedEventArgs>
+                MarkerReachedEventHandler(EventHandler value)
             {
                 return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
                    {
@@ -1451,6 +1477,145 @@ namespace InnoTecheLearning
             public bool Loop { get { return _loop; } set { _loop = value; } }
             ~StreamPlayer()
             { Stop(); }
+            public static IEnumerable<byte> Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
+            {
+                int srcLength = samples.Length;
+                var destLength = (long)samples.Length * toSampleRate / fromSampleRate;
+                var dx = srcLength / destLength;
+
+                // fmax : nyqist half of destination sampleRate
+                // fmax / fsr = 0.5;
+                var fmaxDivSR = 0.5;
+                var r_g = 2 * fmaxDivSR;
+
+                // Quality is half the window width
+                var wndWidth2 = quality;
+                var wndWidth = quality * 2;
+
+                var x = 0;
+                int i, j;
+                double r_y;
+                int tau;
+                double r_w;
+                double r_a;
+                double r_snc;
+                for (i = 0; i < destLength; ++i)
+                {
+                    r_y = 0.0;
+                    for (tau = -wndWidth2; tau < wndWidth2; ++tau)
+                    {
+                        // input sample index
+                        j = x + tau;
+
+                        // Hann Window. Scale and calculate sinc
+                        r_w = 0.5 - 0.5 * Math.Cos(2 * Math.Pi * (0.5 + (j - x) / wndWidth));
+                        r_a = 2 * Math.Pi * (j - x) * fmaxDivSR;
+                        r_snc = 1.0;
+                        if (r_a != 0)
+                            r_snc = Math.Sin(r_a) / r_a;
+
+                        if ((j >= 0) && (j < srcLength))
+                        {
+                            r_y += r_g * r_w * r_snc * samples[j];
+                        }
+                    }
+                    yield return (byte)r_y;
+                    x += (int)dx;
+                }
+            }
+            public class Iterator<T> : IEnumerator<T>//, IEnumerable<T>
+            {
+                private IEnumerator<T> _enumerator;
+                private T _peek;
+                private bool _didPeek;
+
+                public Iterator(IEnumerable<T> enumerable) : this(enumerable.GetEnumerator()) { }
+
+                public Iterator(IEnumerator<T> enumerator)
+                {
+                    if (enumerator == null)
+                        throw new ArgumentNullException("enumerator");
+                    _enumerator = enumerator;
+                }
+
+                #region IEnumerator implementation
+                public bool MoveNext()
+                {
+                    return _didPeek ? !(_didPeek = false) : _enumerator.MoveNext();
+                }
+
+                public void Reset()
+                {
+                    _enumerator.Reset();
+                    _didPeek = false;
+                }
+
+                object IEnumerator.Current { get { return this.Current; } }
+                #endregion
+
+                #region IDisposable implementation
+                public void Dispose()
+                {
+                    _enumerator.Dispose();
+                }
+                #endregion
+
+                #region IEnumerator<T> implementation
+                public T Current
+                {
+                    get { return _didPeek ? _peek : _enumerator.Current; }
+                }
+                #endregion
+                /*
+                #region IEnumerable implementation
+                public IEnumerator<T> GetEnumerator()
+                {
+                    return this; 
+                }
+
+                IEnumerator IEnumerable.GetEnumerator()
+                {
+                    return this; 
+                }
+                #endregion
+                */
+                private void TryFetchPeek()
+                {
+                    if (!_didPeek && (_didPeek = _enumerator.MoveNext()))
+                    {
+                        _peek = _enumerator.Current;
+                    }
+                }
+
+                public T Peek
+                {
+                    get
+                    {
+                        TryFetchPeek();
+                        if (!_didPeek)
+                            throw new InvalidOperationException("Enumeration already finished.");
+
+                        return _peek;
+                    }
+                }
+
+                public bool HasPeek
+                { get { try { DoNothing(Peek); return true; } catch (InvalidOperationException) { return false; } } }
+
+                public T[] Take(int Count)
+                {
+                    var Return = new T[Count];
+                    for (int i = 0; i < Count && HasPeek; i++)
+                    { MoveNext(); Return[i] = Current; }
+                    return Return;
+                }
+
+                public void Skip(int Count)
+                {
+                    for (int i = 0; i < Count && HasPeek; i++)
+                        MoveNext();
+                }
+            }
 #elif NETFX_CORE
             MediaElement _player;
             public static StreamPlayer Create(StreamPlayerOptions Options)
