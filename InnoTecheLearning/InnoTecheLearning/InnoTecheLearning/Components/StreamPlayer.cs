@@ -1012,6 +1012,34 @@ namespace InnoTecheLearning
                     }
                 }
                 /// <summary>
+                /// Bits per sample.
+                /// </summary>
+                public int BitsPerSample
+                {
+                    get
+                    {
+                        if (!Content.CanSeek) return 16;
+                        Content.Seek(34, SeekOrigin.Begin);
+                        byte[] val = new byte[2];
+                        Content.Read(val, 0, 2);
+                        return System.BitConverter.ToInt16(val, 0);
+                    }
+                }
+                /// <summary>
+                /// Number of samples.
+                /// </summary>
+                public int Samples
+                {
+                    get
+                    {
+                        if (!Content.CanSeek) return 0;
+                        Content.Seek(40, SeekOrigin.Begin);
+                        byte[] val = new byte[4];
+                        Content.Read(val, 0, 4);
+                        return System.BitConverter.ToInt32(val, 0) * 8 / Channels / BitsPerSample;
+                    }
+                }
+                /// <summary>
                 /// Length of the audio clip.
                 /// </summary>.
                 public int SizeInBytes { get { return (int)Content.Length; } }
@@ -1203,7 +1231,7 @@ namespace InnoTecheLearning
                 Cello_D,
                 Cello_A
             }
-            public static StreamPlayer Create(Sounds Sound, float Volume = 1)
+            public static StreamPlayer Create(Sounds Sound, bool Loop = false, float Volume = 1)
             {
                 string Name = "";
                 switch (Sound)
@@ -1236,7 +1264,7 @@ namespace InnoTecheLearning
                         break;
                 }
                 return Create(new StreamPlayerOptions(Resources.GetStream("Sounds." + Name), Path.GetExtension(Name))
-                { Volume = Volume, Loop = true });
+                { Volume = Volume, Loop = Loop });
             }
             public static StreamPlayer Play(Sounds Sound, StreamPlayerOptions Options)
             {
@@ -1279,9 +1307,9 @@ namespace InnoTecheLearning
                 Options.Content = Resources.GetStream("Sounds." + Name);
                 return Create(Options);
             }
-            public static StreamPlayer Play(Sounds Sound, float Volume = 1)
+            public static StreamPlayer Play(Sounds Sound, bool Loop = false, float Volume = 1)
             {
-                var Return = Create(Sound, Volume);
+                var Return = Create(Sound, Loop, Volume);
                 Return.Play();
                 return Return;
             }
@@ -1360,7 +1388,7 @@ namespace InnoTecheLearning
                 _volume = Options.Volume;
                 _player.SetVolume(_volume = Options.Volume);
                 _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
-                if(_loop) _player.SetLoopPoints(0, (int)Options.Content.Length, -1);
+                if(_loop) _player.SetLoopPoints(0, Options.Samples, -1);
                 _prepared = true;
             }
             public void Play()
