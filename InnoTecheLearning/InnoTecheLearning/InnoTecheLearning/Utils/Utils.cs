@@ -78,7 +78,7 @@ namespace InnoTecheLearning
         /// <summary>
         /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
         /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.></typeparam>
+        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.</typeparam>
         /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
         /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
         /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
