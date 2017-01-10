@@ -148,7 +148,7 @@ namespace InnoTecheLearning
                 };
             }
 
-            public static StackLayout MainScreenRow(params StackLayout[] MainScreenItems)
+            public static StackLayout MainScreenRow(params View[] MainScreenItems)
             {
                 StackLayout MenuScreenRow = new StackLayout
                 {

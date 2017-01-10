@@ -179,7 +179,7 @@ namespace InnoTecheLearning
                              Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
                          ),
 
-                Button("Changelog", delegate {Showing = Pages.Changelog; }),
+                Button("Changelog", delegate { Showing = Pages.Changelog; }),
                 VersionDisplay
                     }
                 };
@@ -190,6 +190,27 @@ namespace InnoTecheLearning
         {
             get
             {
+                Button[] Violin = { MusicTunerPlay("G", Sounds.Violin_G),
+                        MusicTunerPlay("D", Sounds.Violin_D),
+                        MusicTunerPlay("A", Sounds.Violin_A),
+                        MusicTunerPlay("E", Sounds.Violin_E)};
+                for (int i = 0; i < 4; i++)
+                    Violin[i].Clicked += delegate {
+                        for (int j = 0; j < 4; j++)
+                            Violin[j].BackgroundColor = Color.Silver;
+                        Violin[i].BackgroundColor = new Color(-32944); //Coral (orange)
+                    };
+
+                Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C),
+                        MusicTunerPlay("'G", Sounds.Cello_G),
+                        MusicTunerPlay("D", Sounds.Cello_D),
+                        MusicTunerPlay("A", Sounds.Cello_A)};
+                for (int i = 0; i < 4; i++)
+                    Cello[i].Clicked += delegate {
+                        for (int j = 0; j < 4; j++)
+                            Cello[j].BackgroundColor = Color.Silver;
+                        Cello[i].BackgroundColor = new Color(-32944); //Coral (orange)
+                    };
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.StartAndExpand,
@@ -197,26 +218,25 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Vertical,
                     Children = {
                         Title("CSWCSS Music Tuner"),
-                        Row(false, Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
+                        Row(true, Violin),
 
-                        Row(false, Button("G",  delegate {MusicSound =  Play(Sounds.Violin_G, true); }),
-                        Button("D",  delegate {MusicSound =  Play(Sounds.Violin_D, true); }),
-                        Button("A",  delegate {MusicSound =  Play(Sounds.Violin_A, true); }),
-                        Button("E",  delegate {MusicSound =  Play(Sounds.Violin_E, true); })),
-
-                        Row(true, Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
+                        Row(true, Cello),
 
-                        Row(true, Button("'C",  delegate {MusicSound =  Play(Sounds.Cello_C, true); }),
-                        Button("'G",  delegate {MusicSound =  Play(Sounds.Cello_G, true); }),
-                        Button("D",  delegate {MusicSound =  Play(Sounds.Cello_D, true); }),
-                        Button("A",  delegate {MusicSound =  Play(Sounds.Cello_A, true); })),
+                        Button("Stop", delegate {
+                        for (int j = 0; j < 4; j++)
+                            { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
+                        MusicSound?.Stop(); }),
                         Back(this)
                     }
                 };
             }
         }
+        public Button MusicTunerPlay(Text Text, Sounds Sound)
+        { return Button(Text, delegate { MusicSound?.Stop(); MusicSound = Play(Sound, true); }); }
         public StackLayout CloudTest
         {
             get
