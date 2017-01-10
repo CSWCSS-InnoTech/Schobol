@@ -1388,7 +1388,7 @@ namespace InnoTecheLearning
                 _volume = Options.Volume;
                 _player.SetVolume(_volume = Options.Volume);
                 _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
-                if(_loop) _player.SetLoopPoints(0, Options.Samples, -1);
+                if(_loop) _player.SetLoopPoints(0, Options.Samples - 1, -1);
                 _prepared = true;
             }
             public void Play()
