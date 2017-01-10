@@ -220,11 +220,11 @@ namespace InnoTecheLearning
                         Title("CSWCSS Music Tuner"),
                         MainScreenRow(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
-                        Row(true, Violin),
+                        Row(true, Violin.Cast<View>().ToArray()),
 
                         MainScreenRow(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
-                        Row(true, Cello),
+                        Row(true, Cello.Cast<View>().ToArray()),
 
                         Button("Stop", delegate {
                         for (int j = 0; j < 4; j++)
