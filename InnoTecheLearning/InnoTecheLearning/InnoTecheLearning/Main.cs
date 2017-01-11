@@ -185,34 +185,24 @@ namespace InnoTecheLearning
                 };
             }
         }
-        static StreamPlayer MusicSound { get; set; }
-        Button[] MusicViolin = { MusicTunerPlay("G", Sounds.Violin_G),
-                        MusicTunerPlay("D", Sounds.Violin_D),
-                        MusicTunerPlay("A", Sounds.Violin_A),
-                        MusicTunerPlay("E", Sounds.Violin_E)};
-
-        Button[] MusicCello = { MusicTunerPlay("'C", Sounds.Cello_C),
-                        MusicTunerPlay("'G", Sounds.Cello_G),
-                        MusicTunerPlay("D", Sounds.Cello_D),
-                        MusicTunerPlay("A", Sounds.Cello_A)};
+        StreamPlayer MusicSound { get; set; }
         public StackLayout MusicTuner
         {
             get
             {
+                Button[] Violin = { MusicTunerPlay("G", Sounds.Violin_G),
+                        MusicTunerPlay("D", Sounds.Violin_D),
+                        MusicTunerPlay("A", Sounds.Violin_A),
+                        MusicTunerPlay("E", Sounds.Violin_E)};
                 for (int i = 0; i < 4; i++)
-                    MusicViolin[i].Clicked += delegate
-                    {
-                        for (int j = 0; j < 4; j++)
-                            MusicViolin[j].BackgroundColor = Color.Silver;
-                        MusicViolin[i].BackgroundColor = new Color(-32944); //Coral (orange)
-                    };
+                    MusicTunerSwitch(Violin, i);
+
+                Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C),
+                        MusicTunerPlay("'G", Sounds.Cello_G),
+                        MusicTunerPlay("D", Sounds.Cello_D),
+                        MusicTunerPlay("A", Sounds.Cello_A)};
                 for (int i = 0; i < 4; i++)
-                    MusicCello[i].Clicked += delegate
-                    {
-                        for (int j = 0; j < 4; j++)
-                            MusicCello[j].BackgroundColor = Color.Silver;
-                        MusicCello[i].BackgroundColor = new Color(-32944); //Coral (orange)
-                    };
+                    MusicTunerSwitch(Cello, i);
                 Label Volume = (Text)"  0";
                 return new StackLayout
                 {
@@ -223,15 +213,15 @@ namespace InnoTecheLearning
                         Title("CSWCSS Music Tuner"),
                         MainScreenRow(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
-                        Row(true, MusicViolin),
+                        Row(true, Violin),
 
                         MainScreenRow(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
-                        Row(true, MusicCello),
+                        Row(true, Cello),
 
                         Button("Stop", delegate {
                         for (int j = 0; j < 4; j++)
-                            { MusicViolin[j].BackgroundColor = Color.Silver; MusicCello[j].BackgroundColor = Color.Silver; }
+                            { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
                         MusicSound?.Stop(); }),
 
                         Row(false, Volume, Slider((object sender, ValueChangedEventArgs e) => {
@@ -243,7 +233,15 @@ namespace InnoTecheLearning
                 };
             }
         }
-        public static Button MusicTunerPlay(Text Text, Sounds Sound)
+        public void MusicTunerSwitch(Button[] Violin, int i)
+        {
+            Violin[i].Clicked += delegate {
+                for (int j = 0; j < 4; j++)
+                    Violin[j].BackgroundColor = Color.Silver;
+                Violin[i].BackgroundColor = new Color(-32944); //Coral (orange)
+            };
+        }
+        public Button MusicTunerPlay(Text Text, Sounds Sound)
         { return Button(Text, delegate { MusicSound?.Stop(); MusicSound = Play(Sound, true); }); }
         public StackLayout CloudTest
         {
@@ -494,11 +492,8 @@ namespace InnoTecheLearning
                 StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, Out } };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
-                Mode.Clicked += delegate
-                {
-                    AngleUnit++; if (AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
-                    Mode.Text = AngleUnit.ToString();
-                };
+                Mode.Clicked += delegate { AngleUnit++; if(AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
+                    Mode.Text = AngleUnit.ToString(); };
                 ScrollView Select = new ScrollView
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -527,7 +522,7 @@ namespace InnoTecheLearning
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
         }
-        #region Append
+#region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color))
         {
@@ -564,7 +559,7 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
-        #endregion
+#endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
@@ -645,7 +640,7 @@ namespace InnoTecheLearning
                 };
             }
         }
-        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
+        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40,0x40,0x40), NamedSize.Large);
         Label Sports_Time = BoldLabel("00:00:00", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Distance = BoldLabel("0 m", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Now = BoldLabel(DateTime.Now.ToString("HH:mm:ss"), Color.White,
@@ -659,15 +654,13 @@ namespace InnoTecheLearning
         {
             get
             {
-                Device.StartTimer(TimeSpan.FromSeconds(1),
-                    () =>
-                    {
+                Device.StartTimer(TimeSpan.FromSeconds(1), 
+                    () => {
                         Sports_Steps.Text = Pedometer.Steps.ToString();
                         Sports_Distance.Text = Pedometer.Distance.ToString() + " m";
                         Sports_Time.Text = Pedometer.TimePassed.ToString(@"hh\:mm\:ss");
                         Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
-                        return Showing == Pages.Sports;
-                    });
+                        return Showing == Pages.Sports; });
                 return new StackLayout
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
