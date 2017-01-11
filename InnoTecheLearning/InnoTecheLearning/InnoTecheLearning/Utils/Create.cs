@@ -155,10 +155,25 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.StartAndExpand,
+                    Spacing = 50,
+                    Children = { }
+                };
+                foreach (View MenuScreenItem in MainScreenItems)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+
+            public static StackLayout MainScreenRow<T>(params T[] MainScreenItems) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
 					Spacing = 50,
                     Children = { }
                 };
-                foreach (StackLayout MenuScreenItem in MainScreenItems)
+                foreach (T MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
@@ -456,6 +471,33 @@ namespace InnoTecheLearning
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
+
+            public static StackLayout Row<T>(bool VerticalExpand, params T[] Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Center,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+            public static StackLayout Column<T>(params T[] Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
             public static ScrollView ButtonStack(params Button[] Buttons)
             {
                 StackLayout Return = new StackLayout
@@ -509,6 +551,14 @@ namespace InnoTecheLearning
             }
             public static Version Version(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0)
             { return new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision); }
+            public static Slider Slider(EventHandler<ValueChangedEventArgs> ValueChanged, 
+               int Minimum = 0, int Maximum = 100, Color BackColor = default(Color))
+            {
+                var Return = new Slider { Minimum = Minimum, Maximum = Maximum,
+                    BackgroundColor = BackColor, HorizontalOptions = LayoutOptions.FillAndExpand };
+                Return.ValueChanged += ValueChanged;
+                return Return;
+            }
         }
     }
 }

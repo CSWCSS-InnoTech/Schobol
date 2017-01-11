@@ -211,6 +211,7 @@ namespace InnoTecheLearning
                             Cello[j].BackgroundColor = Color.Silver;
                         Cello[i].BackgroundColor = new Color(-32944); //Coral (orange)
                     };
+                var Volume = BoldLabel("  0");
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.StartAndExpand,
@@ -220,16 +221,20 @@ namespace InnoTecheLearning
                         Title("CSWCSS Music Tuner"),
                         MainScreenRow(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
-                        Row(true, Violin.Cast<View>().ToArray()),
+                        Row(true, Violin),
 
                         MainScreenRow(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
-                        Row(true, Cello.Cast<View>().ToArray()),
+                        Row(true, Cello),
 
                         Button("Stop", delegate {
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
                         MusicSound?.Stop(); }),
+
+                        Slider((object sender, ValueChangedEventArgs e) => {
+                            Volume.Text = ((int)e.NewValue).ToString().PadLeft(3);
+                            MusicSound.Volume = (float)e.NewValue / 100; }),
                         Back(this)
                     }
                 };
