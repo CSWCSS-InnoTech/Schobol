@@ -211,7 +211,7 @@ namespace InnoTecheLearning
                             Cello[j].BackgroundColor = Color.Silver;
                         Cello[i].BackgroundColor = new Color(-32944); //Coral (orange)
                     };
-                var Volume = BoldLabel("  0");
+                Label Volume = (Text)"  0";
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.StartAndExpand,
@@ -232,9 +232,10 @@ namespace InnoTecheLearning
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
                         MusicSound?.Stop(); }),
 
-                        Slider((object sender, ValueChangedEventArgs e) => {
+                        Row(false, Volume, Slider((object sender, ValueChangedEventArgs e) => {
                             Volume.Text = ((int)e.NewValue).ToString().PadLeft(3);
-                            MusicSound.Volume = (float)e.NewValue / 100; }),
+                            if(MusicSound == null) return;
+                            MusicSound.Volume = (float)e.NewValue / 100; }, BackColor: Color.Gray)),
                         Back(this)
                     }
                 };
