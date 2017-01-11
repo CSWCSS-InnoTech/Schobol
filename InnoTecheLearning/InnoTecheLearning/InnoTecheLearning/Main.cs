@@ -190,20 +190,27 @@ namespace InnoTecheLearning
         {
             get
             {
-                Button[] Violin = { MusicTunerPlay("G", Sounds.Violin_G),
-                        MusicTunerPlay("D", Sounds.Violin_D),
-                        MusicTunerPlay("A", Sounds.Violin_A),
-                        MusicTunerPlay("E", Sounds.Violin_E)};
+                Label Volume = (Text)"  0";
+                Slider Vol =
+                    Slider((object sender, ValueChangedEventArgs e) =>
+                    {
+                        Volume.Text = ((int)e.NewValue).ToString().PadLeft(3);
+                        if (MusicSound == null || MusicSound._disposedValue) return;
+                        MusicSound.Volume = (float)e.NewValue / 100;
+                    }, BackColor: Color.Gray);
+                Button[] Violin = { MusicTunerPlay("G", Sounds.Violin_G, Vol),
+                        MusicTunerPlay("D", Sounds.Violin_D, Vol),
+                        MusicTunerPlay("A", Sounds.Violin_A, Vol),
+                        MusicTunerPlay("E", Sounds.Violin_E, Vol)};
                 for (int i = 0; i < 4; i++)
                     MusicTunerSwitch(Violin, i);
 
-                Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C),
-                        MusicTunerPlay("'G", Sounds.Cello_G),
-                        MusicTunerPlay("D", Sounds.Cello_D),
-                        MusicTunerPlay("A", Sounds.Cello_A)};
+                Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C, Vol),
+                        MusicTunerPlay("'G", Sounds.Cello_G, Vol),
+                        MusicTunerPlay("D", Sounds.Cello_D, Vol),
+                        MusicTunerPlay("A", Sounds.Cello_A, Vol)};
                 for (int i = 0; i < 4; i++)
                     MusicTunerSwitch(Cello, i);
-                Label Volume = (Text)"  0";
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.StartAndExpand,
@@ -223,11 +230,7 @@ namespace InnoTecheLearning
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
                         MusicSound?.Dispose(); }),
-
-                        Row(false, Volume, Slider((object sender, ValueChangedEventArgs e) => {
-                            Volume.Text = ((int)e.NewValue).ToString().PadLeft(3);
-                            if(MusicSound == null || MusicSound._disposedValue) return;
-                            MusicSound.Volume = (float)e.NewValue / 100; }, BackColor: Color.Gray)),
+                        Row(false, Volume, Vol),
                         Back(this)
                     }
                 };
@@ -241,8 +244,8 @@ namespace InnoTecheLearning
                 Violin[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
             };
         }
-        public Button MusicTunerPlay(Text Text, Sounds Sound)
-        { return Button(Text, delegate { MusicSound?.Dispose(); MusicSound = Play(Sound, true); }); }
+        public Button MusicTunerPlay(Text Text, Sounds Sound, Slider Vol)
+        { return Button(Text, delegate { MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value); }); }
         public StackLayout CloudTest
         {
             get

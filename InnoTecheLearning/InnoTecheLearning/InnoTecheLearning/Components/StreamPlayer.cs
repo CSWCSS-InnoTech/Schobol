@@ -1763,7 +1763,7 @@ namespace InnoTecheLearning
             { _player.Pause(); }
             public void Stop()
             { _player.Stop(); }
-            public float Volume { get { return (float)_player.Volume; } set { _player.Volume = value; } }
+            public float Volume { get { return (float)_player.Volume * 2; } set { _player.Volume = value / 2; } }
             public event EventHandler Complete
             {
                 add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
