@@ -238,7 +238,7 @@ namespace InnoTecheLearning
             Violin[i].Clicked += delegate {
                 for (int j = 0; j < 4; j++)
                     Violin[j].BackgroundColor = Color.Silver;
-                Violin[i].BackgroundColor = new Color(-32944); //Coral (orange)
+                Violin[i].BackgroundColor = new Color(255, 127, 80); //Coral (orange)
             };
         }
         public Button MusicTunerPlay(Text Text, Sounds Sound)

@@ -1406,10 +1406,9 @@ namespace InnoTecheLearning
                 if (_player == null)
                     return;
 
+                if (_loop) _player.SetLoopPoints(0, 0, 0);
+
                 _player.Stop();
-                _player.Dispose();
-                _player = null;
-                _prepared = false;
             }
             public event EventHandler Complete
             {
@@ -1430,10 +1429,14 @@ namespace InnoTecheLearning
                        value(sender, e);
                    };
             }
-            public float Volume { get { return _volume; } set { _player.SetVolume(_volume = value); } }
+            public float Volume { get { return _volume; } set { _player?.SetVolume(_volume = value); } }
             public bool Loop { get { return _loop; } set { _loop = value; if (_prepared && !value) _player.SetLoopPoints(0, 0, 0); } }
             ~StreamPlayer()
-            { Stop(); }
+            {   Stop();
+                _player.Dispose();
+                _player = null;
+                _prepared = false;
+            }
 #elif __ANDROID__ && RESAMPLE
             AudioTrack _player;
             Stream _content;
