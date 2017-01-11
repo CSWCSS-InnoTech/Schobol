@@ -31,7 +31,7 @@ namespace InnoTecheLearning
         /// <summary>
         /// A <see cref="StreamPlayer"/> that plays streams.
         /// </summary>
-        public class StreamPlayer : ISoundPlayer
+        public class StreamPlayer : ISoundPlayer, System.IDisposable
         {
             public class StreamPlayerOptions
             {
@@ -1355,8 +1355,6 @@ namespace InnoTecheLearning
             }
             public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
             public bool Loop { get { return _player.NumberOfLoops == -1; } set { _player.NumberOfLoops = value ? -1 : 0; } }
-            ~StreamPlayer()
-            { _player.Dispose(); }
             #elif __ANDROID__
             AudioTrack _player;
             public bool _prepared { get; private set; }
@@ -1409,6 +1407,10 @@ namespace InnoTecheLearning
                 if (_loop) _player.SetLoopPoints(0, 0, 0);
 
                 _player.Stop();
+                _player.Release();
+                _player.Dispose();
+                _player = null;
+                _prepared = false;
             }
             public event EventHandler Complete
             {
@@ -1431,12 +1433,6 @@ namespace InnoTecheLearning
             }
             public float Volume { get { return _volume; } set { _player?.SetVolume(_volume = value); } }
             public bool Loop { get { return _loop; } set { _loop = value; if (_prepared && !value) _player.SetLoopPoints(0, 0, 0); } }
-            ~StreamPlayer()
-            {   Stop();
-                _player.Dispose();
-                _player = null;
-                _prepared = false;
-            }
 #elif __ANDROID__ && RESAMPLE
             AudioTrack _player;
             Stream _content;
@@ -1797,6 +1793,50 @@ namespace InnoTecheLearning
             }
 #endif
             private StreamPlayer() : base() { }
+
+            #region IDisposable Support
+            public bool _disposedValue { get; private set; } = false; // To detect redundant calls
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!_disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // TODO: dispose managed state (managed objects).
+                    }
+
+                    // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    // TODO: set large fields to null.
+                    _player.Stop();
+#if __IOS__
+                    _player.Dispose();
+#elif __ANDROID__
+                    _prepared = false;
+                    _player.Release();
+                    _player.Dispose();
+#elif NETFX_CORE
+#endif
+                    _player = null;
+                    _disposedValue = true;
+                }
+            }
+
+            // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+             ~StreamPlayer() {
+               // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+               Dispose(false);
+             }
+
+            // This code added to correctly implement the disposable pattern.
+            public void Dispose()
+            {
+                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+                Dispose(true);
+                // TODO: uncomment the following line if the finalizer is overridden above.
+                System.GC.SuppressFinalize(this);
+            }
+#endregion
         }
     }
 }

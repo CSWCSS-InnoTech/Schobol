@@ -222,11 +222,11 @@ namespace InnoTecheLearning
                         Button("Stop", delegate {
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
-                        MusicSound?.Stop(); }),
+                        MusicSound?.Dispose(); }),
 
                         Row(false, Volume, Slider((object sender, ValueChangedEventArgs e) => {
                             Volume.Text = ((int)e.NewValue).ToString().PadLeft(3);
-                            if(MusicSound == null) return;
+                            if(MusicSound == null || MusicSound._disposedValue) return;
                             MusicSound.Volume = (float)e.NewValue / 100; }, BackColor: Color.Gray)),
                         Back(this)
                     }
@@ -238,11 +238,11 @@ namespace InnoTecheLearning
             Violin[i].Clicked += delegate {
                 for (int j = 0; j < 4; j++)
                     Violin[j].BackgroundColor = Color.Silver;
-                Violin[i].BackgroundColor = new Color(255, 127, 80); //Coral (orange)
+                Violin[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
             };
         }
         public Button MusicTunerPlay(Text Text, Sounds Sound)
-        { return Button(Text, delegate { MusicSound?.Stop(); MusicSound = Play(Sound, true); }); }
+        { return Button(Text, delegate { MusicSound?.Dispose(); MusicSound = Play(Sound, true); }); }
         public StackLayout CloudTest
         {
             get
