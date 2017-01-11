@@ -190,7 +190,7 @@ namespace InnoTecheLearning
         {
             get
             {
-                Label Volume = (Text)"  0";
+                Label Volume = (Text)"100";
                 Slider Vol =
                     Slider((object sender, ValueChangedEventArgs e) =>
                     {
