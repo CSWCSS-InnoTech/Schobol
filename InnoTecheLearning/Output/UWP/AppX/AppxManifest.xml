@@ -21,19 +21,6 @@
   </Dependencies>
   <Resources>
     <Resource Language="EN-US" />
-    <Resource uap:Scale="100" />
-    <Resource uap:Scale="120" />
-    <Resource uap:Scale="140" />
-    <Resource uap:Scale="160" />
-    <Resource uap:Scale="180" />
-    <Resource uap:DXFeatureLevel="dx9" />
-    <Resource uap:DXFeatureLevel="dx10" />
-    <Resource uap:DXFeatureLevel="dx11" />
-    <Resource uap:Scale="200" />
-    <Resource uap:Scale="220" />
-    <Resource uap:Scale="240" />
-    <Resource uap:Scale="300" />
-    <Resource uap:Scale="400" />
   </Resources>
   <Applications>
     <Application Id="App" Executable="CSWCSS eLearning App.exe" EntryPoint="InnoTecheLearning.UWP.App">
