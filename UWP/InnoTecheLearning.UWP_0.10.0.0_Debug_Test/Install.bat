@@ -1,0 +1,1 @@
+powershell C:\Users\user\Source\Repos\InnoTech-eLearning-Versions\UWP\InnoTecheLearning.UWP_0.10.0.0_Debug_Test\Add-AppDevPackage.ps1
