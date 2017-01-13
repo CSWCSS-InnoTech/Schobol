@@ -8,17 +8,17 @@ namespace InnoTecheLearning
     partial class Utils
     {   public static TextLog Logger { get; } = new TextLog(Temp.GetFile("InnoTecheLearning.log"));
         public static string ReadAll()
-        { return Logger.ReadAll(); }
+        { return ""; }//Logger.ReadAll(); }
         public static string Log(string Message)
-        { return Logger.Log(Message); }
+        { return ""; }//Logger.Log(Message); }
         public static string Log(string Message, LogImportance Importance)
-        { return Logger.Log(Message, Importance); }
+        { return ""; }//Logger.Log(Message, Importance); }
         public static string Log(Exception e)
-        { return Logger.Log(e); }
+        { return ""; }//Logger.Log(e); }
         public static string Log(Exception e, LogImportance Importance)
-        { return Logger.Log(e, Importance); }
+        { return ""; }//Logger.Log(e, Importance); }
         public static string Region
-        { get { return Logger.Region; } set { Logger.Region = value; } }
+        { get { return ""; } set {  } }//Logger.Region; Logger.Region = value;
         public enum LogImportance : byte
         {
             /// <summary>
@@ -77,8 +77,24 @@ namespace InnoTecheLearning
             public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.FFF";
             string Path;
             public string Region { get; set; }
-            public TextLog(string Path) { this.Path = Path; }
-            public TextLog(string Path, string Region) { this.Path = Path; this.Region = Region; }
+            public TextLog(string Path) {
+                Path = Path.Replace('/', '\\');
+                this.Path = Path;
+#if __IOS__|| __ANDROID__
+                if (!File.Exists(Path)) File.Create(Path).Dispose();
+#elif NETFX_CORE
+                try
+                {
+                global::Windows.Storage.StorageFile File = Do(global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path));
+                }
+                catch (FileNotFoundException)
+                {
+                    Do(Do(global::Windows.Storage.StorageFolder.GetFolderFromPathAsync(System.IO.Path.GetDirectoryName(Path)))
+                        .CreateFileAsync(System.IO.Path.GetFileName(Path)));  
+                }
+#endif
+            }
+            public TextLog(string Path, string Region) : this(Path) { this.Region = Region; }
             public string Log(string Message)
             { return Log(Message, LogImportance.I); }
             public string Log(Exception e)
@@ -113,4 +129,3 @@ namespace InnoTecheLearning
         }
     }
 }
-    static class hi { }

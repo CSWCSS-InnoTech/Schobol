@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.IO;
 using static InnoTecheLearning.Utils;
-#if WINDOWS_APP || WINDOWS_PHONE_APP
+#if WINDOWS_APP || WINDOWS_PHONE_APP || WINDOWS_UWP
 using System;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -77,7 +77,7 @@ namespace InnoTecheLearning
             return FromBytes(await LoadBytesAsync(FileName));
         }
 
-#if __IOS__ || __ANDROID__ || WINDOWS_UWP
+#if __IOS__ || __ANDROID__
         public string TempPath { get { return Path.GetTempPath(); } }
         public string TempFile { get { return Path.GetTempFileName(); } }
         public void SaveLines(string FileName, string[] Lines)
@@ -148,7 +148,7 @@ namespace InnoTecheLearning
         {
            await Task.Run(() => { Delete(FileName); });
         }
-#elif WINDOWS_APP || WINDOWS_PHONE_APP
+#elif WINDOWS_APP || WINDOWS_PHONE_APP || WINDOWS_UWP
         public string TempPath { get { return TempFolder.Path; } }
         StorageFolder TempFolder { get { return ApplicationData.Current.TemporaryFolder; } }
         public string TempFile { get

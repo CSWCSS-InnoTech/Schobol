@@ -55,7 +55,8 @@ namespace InnoTecheLearning.UWP
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
-                Xamarin.Forms.Forms.Init(e); // requires the `e` parameter
+                Xamarin.Forms.Forms.Init(e, Utils.ToEnumerable(Utils.GetAssembly(typeof(ChakraHost.File))));
+                // requires the `e` parameter
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {

@@ -149,7 +149,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ChakraHost10">
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ChakraHost10, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\InnoTecheLearning\DLL\ChakraHost10.dll</HintPath>
     </Reference>
   </ItemGroup>

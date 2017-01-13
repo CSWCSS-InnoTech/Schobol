@@ -10,7 +10,7 @@
   <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.10.0.0" ProcessorArchitecture="x86" />
   <mp:PhoneIdentity PhoneProductId="47f0706c-3646-4de9-8968-b498fa30d6e7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>InnoTecheLearning App</DisplayName>
+    <DisplayName>eLearning App</DisplayName>
     <PublisherDisplayName>InnoTech Society of CSWCSS</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>

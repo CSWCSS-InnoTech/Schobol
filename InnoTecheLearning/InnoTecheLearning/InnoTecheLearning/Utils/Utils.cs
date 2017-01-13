@@ -406,9 +406,14 @@ namespace InnoTecheLearning
 
         public static T Do<T>(Task<T> Task)
         {
-            return Task.GetAwaiter().GetResult();
+            System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false);
+            T Result = default(T);
+            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                Helper.Run(Task, (Task<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
+            Wait.WaitOne();
+            Wait.Reset();
+            return Result;
         }
-
 #if NETFX_CORE
         public static void Do(global::Windows.Foundation.IAsyncAction Task)
         {
@@ -418,7 +423,7 @@ namespace InnoTecheLearning
 
         public static T Do<T>(global::Windows.Foundation.IAsyncOperation<T> Task)
         {
-            return Task.GetAwaiter().GetResult();
+            return Do(Task.AsTask());
         }
         public static void Do<TProgress>(global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
         {
@@ -429,7 +434,7 @@ namespace InnoTecheLearning
         public static TResult Do<TResult, TProgress>
             (global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task)
         {
-            return Task.GetAwaiter().GetResult();
+            return Do(Task.AsTask());
         }
 #endif
 
@@ -908,6 +913,13 @@ const Log10e = Math.LOG10E;
 
             return _samples.ToArray();
         }
+        public static IEnumerable<T> ToEnumerable<T>(params T[] Items)
+        {
+            foreach (T Item in Items)
+                yield return Item;
+        }
+        public static System.Reflection.Assembly GetAssembly(this Type T)
+        { return System.Reflection.IntrospectionExtensions.GetTypeInfo(T).Assembly; }
         /*
         public string TransformForCurrentPlatform(string url)
         {
