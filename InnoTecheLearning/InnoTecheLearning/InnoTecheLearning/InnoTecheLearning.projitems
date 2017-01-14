@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\TextLog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TextToSpeech.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\ToneGenerator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\TouchImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\Updater.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\UWPProgressDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
