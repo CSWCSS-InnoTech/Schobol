@@ -1734,7 +1734,7 @@ namespace InnoTecheLearning
                     IsMuted = false,
                     Position = new TimeSpan(0, 0, 0),
                     Volume = Options.Volume,
-                    IsLooping = Options.Loop
+                    IsLooping = Options.Loop,
                 };
                 _player.SetSource(Options.Content.AsRandomAccessStream(), Options.MimeType);
             }
@@ -1763,7 +1763,7 @@ namespace InnoTecheLearning
             { _player.Pause(); }
             public void Stop()
             { _player.Stop(); }
-            public float Volume { get { return (float)_player.Volume * 2; } set { _player.Volume = value / 2; } }
+            public float Volume { get { return (float)_player.Volume; } set { _player.Volume = value; } }
             public event EventHandler Complete
             {
                 add { _player.MediaEnded += (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
@@ -1816,6 +1816,7 @@ namespace InnoTecheLearning
                     _player.Release();
                     _player.Dispose();
 #elif NETFX_CORE
+                    _player.ClearValue(MediaElement.SourceProperty);
 #endif
                     _player = null;
                     _disposedValue = true;

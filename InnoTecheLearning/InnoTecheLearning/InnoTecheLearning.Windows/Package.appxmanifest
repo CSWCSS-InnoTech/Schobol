@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="InnoTecheLearning.Windows.App">
-      <m2:VisualElements DisplayName="eLearning App" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Developed by the Innovative Technology Society of CSWCSS" ForegroundText="light" BackgroundColor="#464646">
+      <m2:VisualElements DisplayName="CSWCSS eLearning App" Square150x150Logo="Assets\Logo.png" Square30x30Logo="Assets\SmallLogo.png" Description="Developed by the Innovative Technology Society of CSWCSS" ForegroundText="light" BackgroundColor="#464646">
         <m2:SplashScreen Image="Assets\SplashScreen.png" />
         <m2:InitialRotationPreference>
           <m2:Rotation Preference="portrait" />

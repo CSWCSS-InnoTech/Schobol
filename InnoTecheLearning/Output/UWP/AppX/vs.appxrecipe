@@ -16,7 +16,7 @@
     <PackageRegistrationPath>
     </PackageRegistrationPath>
     <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
-    <RegisteredManifestChecksum>1F80B0110CFE1C4211E8A83FC71C4B5DD69D23A8680AC5BC8962C262B4A2385A</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>BC71CC5C371B1D2ACA48AD2C7E33F65E586512E016EF00F2B6F280FF5E5629B7</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>47f0706c-3646-4de9-8968-b498fa30d6e7_0.10.0.0_x86__jfpdjxaq24k76</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>47f0706c-3646-4de9-8968-b498fa30d6e7_jfpdjxaq24k76!App</RegisteredUserModeAppID>
     <RegisteredPackageID>47f0706c-3646-4de9-8968-b498fa30d6e7</RegisteredPackageID>
@@ -28,13 +28,13 @@
     <AppXManifest Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-01-13T13:10:55.700</Modified>
+      <Modified>2017-01-14T03:40:19.979</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearning App.exe">
       <PackagePath>entrypoint\CSWCSS eLearning App.exe</PackagePath>
-      <Modified>2017-01-13T13:10:48.774</Modified>
+      <Modified>2017-01-14T03:40:19.433</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -581,11 +581,11 @@
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-01-13T13:10:55.013</Modified>
+      <Modified>2017-01-14T02:58:30.800</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearning App.exe">
       <PackagePath>CSWCSS eLearning App.exe</PackagePath>
-      <Modified>2017-01-13T13:10:55.697</Modified>
+      <Modified>2017-01-14T03:40:19.975</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
