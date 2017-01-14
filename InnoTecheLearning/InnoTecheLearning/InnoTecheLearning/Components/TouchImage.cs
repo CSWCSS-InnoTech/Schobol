@@ -21,6 +21,7 @@ using RectangleF = CoreGraphics.CGRect;
 using Windows.Devices.Input;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Xamarin.Forms;
@@ -315,32 +316,32 @@ namespace InnoTecheLearning
             }
 #elif NETFX_CORE
             public class Renderer : ViewRenderer<TouchImage, DrawView>
-    {
-        protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
             {
-                base.OnElementChanged(e);
-
-                SetNativeControl(DrawView.Create());
-            }
-
-            protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                base.OnElementPropertyChanged(sender, e);
-
-                if (e.PropertyName == TouchImage.CurrentLineColorProperty.PropertyName)
+                protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
                 {
-                    UpdateControl();
+                    base.OnElementChanged(e);
+
+                    SetNativeControl(DrawView.Create());
                 }
-            }
 
-            private void UpdateControl()
-            {
-                var converter = new ColorConverter();
+                protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+                {
+                    base.OnElementPropertyChanged(sender, e);
 
-                Control.CurrentBrush =
-                    (SolidColorBrush)
-                        converter.Convert(Element.CurrentLineColor, null, null, null);
-            }
+                    if (e.PropertyName == TouchImage.CurrentLineColorProperty.PropertyName)
+                    {
+                        UpdateControl();
+                    }
+                }
+
+                private void UpdateControl()
+                {
+                    var converter = new ColorConverter();
+
+                    Control.CurrentBrush =
+                        (SolidColorBrush)
+                            converter.Convert(Element.CurrentLineColor, null, null, null);
+                }
             }    // Original Source: http://www.geekchamp.com/tips/drawing-in-wp7-2-drawing-shapes-with-finger
             public partial class DrawView : UserControl
             {
@@ -351,8 +352,9 @@ namespace InnoTecheLearning
                 public float PenWidth { get; set; }
                 private Point CurrentPoint;
                 private Point PreviousPoint;
-                
-                public static DrawView Create() { 
+
+                public static DrawView Create()
+                {
                     DrawView Return = (DrawView)global::Windows.UI.Xaml.Markup.XamlReader.Load(
 @"<UserControl x:Class=""InnoTecheLearning.Utils.TouchImage.DrawView""
     xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
@@ -368,39 +370,37 @@ namespace InnoTecheLearning
     <Canvas x:Name=""ContentPanelCanvas"" Background=""Cornsilk"" HorizontalAlignment=""Stretch""
           VerticalAlignment=""Stretch"" />
 </UserControl>");
-                    Canvas canvas = (Canvas)LogicalTreeHelper.FindLogicalNode(Return, "canvas1");
+                    Canvas ContentPanelCanvas = (Canvas)VisualTreeHelper.GetChild(Return, 0);
 
                     Return.CurrentBrush = new SolidColorBrush(Colors.Black);
                     Return.PenWidth = 5.0f;
 
-                    ContentPanelCanvas.MouseMove += ContentPanelCanvas_MouseMove;
-                    ContentPanelCanvas.MouseLeftButtonDown += ContentPanelCanvas_MouseLeftButtonDown;
-                    return Return;
-                }
-
-                void ContentPanelCanvas_MouseLeftButtonDown(object sender, MouseEventArgs e)
-                {
-                    CurrentPoint = e.GetPosition(this);
-                    PreviousPoint = CurrentPoint;
-                }
-
-                void ContentPanelCanvas_MouseMove(object sender, MouseEventArgs e)
-                {
-                    CurrentPoint = e.GetPosition(ContentPanelCanvas);
-
-                    var line = new Line
+                    ContentPanelCanvas.PointerMoved += (object sender, PointerRoutedEventArgs e) =>
                     {
-                        X1 = CurrentPoint.X,
-                        Y1 = CurrentPoint.Y,
-                        X2 = PreviousPoint.X,
-                        Y2 = PreviousPoint.Y,
-                        Stroke = CurrentBrush,
-                        StrokeThickness = PenWidth
+                        var Point = e.GetCurrentPoint(Return).Position;
+                        Return.CurrentPoint = new Point(Point.X, Point.Y);
+
+                        var line = new Line
+                        {
+                            X1 = Return.CurrentPoint.X,
+                            Y1 = Return.CurrentPoint.Y,
+                            X2 = Return.PreviousPoint.X,
+                            Y2 = Return.PreviousPoint.Y,
+                            Stroke = Return.CurrentBrush,
+                            StrokeThickness = Return.PenWidth
+                        };
+
+                        ContentPanelCanvas.Children.Add(line);
+
+                        Return.PreviousPoint = Return.CurrentPoint;
                     };
-
-                    ContentPanelCanvas.Children.Add(line);
-
-                    PreviousPoint = CurrentPoint;
+                    ContentPanelCanvas.PointerPressed += (object sender, PointerRoutedEventArgs e) =>
+                    {
+                        var Point = e.GetCurrentPoint(Return).Position;
+                        Return.CurrentPoint = new Point(Point.X, Point.Y);
+                        Return.PreviousPoint = Return.CurrentPoint;
+                    };
+                    return Return;
                 }
             }
 #endif

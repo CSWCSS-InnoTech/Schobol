@@ -516,7 +516,7 @@ namespace InnoTecheLearning
                                 = Trig; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
                         Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
                                 = Const; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Mode
+                        Mode, Back(this)
                         //Light Green
                         }
                     }
@@ -591,10 +591,11 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children =
-                    {new ScrollView {Content = Editor,
+                    {new ScrollView { Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
-                    Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
+                    Row(false, Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
                         Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
+                        Back(this)),
                     Entry
                     }
                 };
@@ -638,7 +639,8 @@ namespace InnoTecheLearning
                             Factorize(TryParseDouble(S1.Text + C1.Text, 0d), TryParseDouble(S2.Text + C2.Text, 0d),
                             TryParseDouble(S3.Text + C3.Text, 0d), out X1, out X2, X, Y);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
-                            R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F
+                            R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F,
+                        Back(this)
                     }
                 };
             }
@@ -679,10 +681,13 @@ namespace InnoTecheLearning
                         Sports_Distance,
                         (Text)"Time Now",
                         Sports_Now,
-                        Button("Reset", delegate { Pedometer.Reset(); }, Color.Yellow)
+                        Button("Reset", delegate { Pedometer.Reset(); }, Color.Yellow),
+                        Back(this)
                     }
                 };
             }
         }
+        public StackLayout MathSolver
+        { get { return new StackLayout { }; } }
     }
 }
