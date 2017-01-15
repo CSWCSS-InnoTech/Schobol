@@ -290,7 +290,7 @@ namespace InnoTecheLearning
         /// <param name="Result">The result of conversion if successful.
         /// If not it will be the default value of the <see cref="Type"/> to convert to.</param>
         /// <returns>Whether the conversion has succeeded.</returns>
-        public static bool TryCast<T>(dynamic Object, out T Result)
+        public static bool TryCast<T>(object Object, out T Result)
         {
             try
             {
@@ -312,7 +312,7 @@ namespace InnoTecheLearning
         /// <param name="Object">The <see cref="object"/> instance to convert.</param>
         /// <returns>The result of conversion if successful. If not it will be the default value of
         /// the <see cref="Type"/> to convert to.</returns>
-        public static T TryCast<T>(dynamic Object)
+        public static T TryCast<T>(object Object)
         {
             try
             {
@@ -333,7 +333,7 @@ namespace InnoTecheLearning
         /// <param name="Result">The result of conversion if successful.
         /// If not it will be <paramref name="Default"/>.</param>
         /// <returns>Whether the conversion has succeeded.</returns>
-        public static bool TryCast<T>(dynamic Object, T Default, out T Result)
+        public static bool TryCast<T>(object Object, T Default, out T Result)
         {
             try
             {
@@ -355,7 +355,7 @@ namespace InnoTecheLearning
         /// <param name="Object">The <see cref="object"/> instance to convert.</param>
         /// <param name="Default">The result of conversion if failed.</param>
         /// <returns>The result of conversion if successful. If not it will be <paramref name="Default"/>.</returns>
-        public static T TryCast<T>(dynamic Object, T Default)
+        public static T TryCast<T>(object Object, T Default)
         {
             try
             {
@@ -379,7 +379,7 @@ namespace InnoTecheLearning
             return Return.ToCharArray();
         }
 
-        public static void DoNothing(params dynamic[] Params)
+        public static void DoNothing(params object[] Params)
         { }
 
         public static T Return<T>(T Return)
@@ -475,9 +475,6 @@ namespace InnoTecheLearning
             bool TrueFree =  false, bool MaxMin = true)
         {
             // Ask user to enter expression.
-#if __IOS__ || __ANDROID__
-            JSEvaluator Evaluator = new JSEvaluator();
-#endif
             try
             {
                 return JSEvaluteAns = Evaluator.Eval(TrueFree ? Expression :

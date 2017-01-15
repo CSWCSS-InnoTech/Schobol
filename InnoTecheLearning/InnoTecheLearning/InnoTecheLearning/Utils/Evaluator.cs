@@ -1,8 +1,7 @@
 ﻿#pragma warning disable 0618
-#if __IOS__ || __ANDROID__
-using Microsoft.JScript;
-using Microsoft.JScript.Vsa;
-#elif NETFX_CORE
+#if __IOS__ || __ANDROID__ || WINDOWS_UWP
+using Jint;
+#elif WINDOWS_PHONE_APP || WINDOWS_APP
 using ChakraHost.Hosting;
 using System;
 using System.Collections.ObjectModel;
@@ -12,50 +11,15 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-#if __IOS__ || __ANDROID__
-        public class JSEvaluator : INeedEngine
+#if __IOS__ || __ANDROID__ || WINDOWS_UWP
+        public class Evaluator
         {
-
-            // Methods
-            public JSEvaluator() { init(); }
-            private void init() { }
-            [JSFunction(JSFunctionAttributeEnum.HasStackFrame)]
-            public virtual string Eval(string expr)
-            {
-                string str = default(string);
-                JSLocalField[] fields = new JSLocalField[] { new JSLocalField("expr", typeof(string).TypeHandle, 0), new JSLocalField("return value", typeof(string).TypeHandle, 1) };
-                StackFrame.PushStackFrameForMethod(this, fields, ((INeedEngine)this).GetEngine());
-                try
-                {
-                    ((StackFrame)GetEngine().ScriptObjectStackTop()).localVars[0] = expr;
-                    ((StackFrame)GetEngine().ScriptObjectStackTop()).localVars[1] = str;
-                    expr = Convert.ToString(((StackFrame)GetEngine().ScriptObjectStackTop()).localVars[0], true);
-                    str = Convert.ToString(((StackFrame)GetEngine().ScriptObjectStackTop()).localVars[1], true);
-                    str = Convert.ToString(Microsoft.JScript.Eval.JScriptEvaluate(expr, GetEngine()), true);
-                    ((StackFrame)GetEngine().ScriptObjectStackTop()).localVars[0] = expr;
-                    ((StackFrame)GetEngine().ScriptObjectStackTop()).localVars[1] = str;
-                }
-                finally
-                {
-                    ((INeedEngine)this).GetEngine().PopScriptObject();
-                }
-                return str;
-            }
-            public VsaEngine GetEngine()
-            {
-                if (vsaEngine == null)
-                {
-                    vsaEngine = VsaEngine.CreateEngineWithType(typeof(JSEvaluator).TypeHandle);
-                }
-                return vsaEngine;
-            }
-            public void SetEngine(VsaEngine engine1)
-            {
-                vsaEngine = engine1;
-            }
-            private VsaEngine vsaEngine { get; set; }
+            public static string Eval(string CodeToExecute)
+            { return new Engine().Execute(CodeToExecute).GetCompletionValue().ToString(); }
+            public static T Eval<T>(string CodeToExecute)
+            { return (T)(new Engine().Execute(CodeToExecute).GetCompletionValue().ToObject()); }
         }
-#elif NETFX_CORE
+#elif WINDOWS_PHONE_APP || WINDOWS_APP
         public static MainViewModel Evaluator { get; } = new MainViewModel();
         public class MainViewModel
         {

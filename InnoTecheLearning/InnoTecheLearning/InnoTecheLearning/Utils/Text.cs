@@ -305,7 +305,7 @@ namespace InnoTecheLearning
             {
                 return Value.CompareTo(String);
             }
-            public int CompareTo(dynamic value)
+            public int CompareTo(object value)
             {
                 if (value == null)
                     return 1;

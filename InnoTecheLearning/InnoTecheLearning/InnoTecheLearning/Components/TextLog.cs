@@ -49,7 +49,7 @@ namespace InnoTecheLearning
                 case LogImportance.C:
                     return '❗';
                 case LogImportance.E:
-                    return '⮾';
+                    return 'ⓧ'; //⮾
                 case LogImportance.W:
                     return '⚠';
                 case LogImportance.I:
@@ -78,11 +78,10 @@ namespace InnoTecheLearning
             string Path;
             public string Region { get; set; }
             public TextLog(string Path) {
-                Path = Path.Replace('/', '\\');
-                this.Path = Path;
 #if __IOS__|| __ANDROID__
                 if (!File.Exists(Path)) File.Create(Path).Dispose();
 #elif NETFX_CORE
+                Path = Path.Replace('/', '\\');
                 try
                 {
                 global::Windows.Storage.StorageFile File = Do(global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path));
@@ -93,12 +92,13 @@ namespace InnoTecheLearning
                         .CreateFileAsync(System.IO.Path.GetFileName(Path)));  
                 }
 #endif
+                this.Path = Path;
             }
             public TextLog(string Path, string Region) : this(Path) { this.Region = Region; }
             public string Log(string Message)
             { return Log(Message, LogImportance.I); }
             public string Log(Exception e)
-            { return Log(e, LogImportance.I); }
+            { return Log(e, LogImportance.E); }
             public string Log(Exception e, LogImportance Importance)
             { return Log(e.ToString(), Importance); }
             public string Log(string Message, LogImportance Importance)
