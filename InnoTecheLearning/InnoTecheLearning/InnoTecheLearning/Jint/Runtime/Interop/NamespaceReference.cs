@@ -175,7 +175,7 @@ namespace Jint.Runtime.Interop
 
         private static void AddNestedTypesRecursively(List<Type> types, Type type)
         {
-          Type[] nestedTypes = type.GetNestedTypes(BindingFlags.Public);
+          var nestedTypes = type.GetNestedTypes(BindingFlags.Public);
           foreach (Type nestedType in nestedTypes)
           {
             types.Add(nestedType);

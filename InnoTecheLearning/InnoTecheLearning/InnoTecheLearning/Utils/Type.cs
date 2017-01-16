@@ -54,17 +54,39 @@ namespace System.Reflection
             {
                 bool Yes = false;
                 for (int i = 0; i < Types.Count(); i++)
-                    Yes |= Types[i] == Item.GetParameters()[i];
+                    Yes |= Types[i] == Item.GetParameters()[i].ParameterType;
+                if (Yes) return Item;
             }
+            return null;
         }
         public static IEnumerable<Type> GetNestedTypes(this Type T)
         { foreach (TypeInfo Info in T.GetTypeInfo().DeclaredNestedTypes)
                 yield return Info.AsType();
         }
-        public static IEnumerable<Type> GetPublicNestedTypes(this Type T)
+        public static IEnumerable<Type> GetNestedTypes(this Type T, BindingFlags Flags)
         {
             foreach (TypeInfo Info in T.GetTypeInfo().DeclaredNestedTypes)
-                if(Info.IsPublic) yield return Info.AsType();
+                if(Filter(T.GetTypeInfo(), Flags)) yield return Info.AsType();
+        }
+        private static bool Filter(TypeInfo Info, BindingFlags Flags)
+        {
+            bool Return = false;
+            if (Flags.HasFlag(BindingFlags.DeclaredOnly)) Return |= Info.IsNested;
+            if (Flags.HasFlag(BindingFlags.Instance)) Return |= !(Info.IsAbstract | Info.IsSealed);
+            if (Flags.HasFlag(BindingFlags.Static)) Return |= Info.IsAbstract | Info.IsSealed;
+            if (Flags.HasFlag(BindingFlags.Public)) Return |= Info.IsPublic;
+            if (Flags.HasFlag(BindingFlags.NonPublic)) Return |= Info.IsNotPublic;
+            return Return;
+        }
+        private static bool Filter(MethodInfo Info, BindingFlags Flags)
+        {
+            bool Return = false;
+            if (Flags.HasFlag(BindingFlags.DeclaredOnly)) Return |= Info.IsFamily;
+            if (Flags.HasFlag(BindingFlags.Instance)) Return |= !Info.IsStatic;
+            if (Flags.HasFlag(BindingFlags.Static)) Return |= Info.IsStatic;
+            if (Flags.HasFlag(BindingFlags.Public)) Return |= Info.IsPublic;
+            if (Flags.HasFlag(BindingFlags.NonPublic)) Return |= !Info.IsPublic;
+            return Return;
         }
         public static IEnumerable<Type> GetTypes(this Assembly A)
         { return A.ExportedTypes; }
@@ -76,7 +98,7 @@ namespace System.Reflection
             /// <summary>Specifies no binding flag.</summary>
             Default = 0,
             /// <summary>Specifies that the case of the member name should not be considered when binding.</summary>
-            IgnoreCase = 1,
+            //IgnoreCase = 1,
             /// <summary>Specifies that only members declared at the level of the supplied type's hierarchy should be considered. Inherited members are not considered.</summary>
             DeclaredOnly = 2,
             /// <summary>Specifies that instance members are to be included in the search.</summary>
@@ -87,6 +109,7 @@ namespace System.Reflection
             Public = 16,
             /// <summary>Specifies that non-public members are to be included in the search.</summary>
             NonPublic = 32,
+            /*
             /// <summary>Specifies that public and protected static members up the hierarchy should be returned. Private static members in inherited classes are not returned. Static members include fields, methods, events, and properties. Nested types are not returned.</summary>
             FlattenHierarchy = 64,
             /// <summary>Specifies that a method is to be invoked. This must not be a constructor or a type initializer.</summary>
@@ -113,6 +136,7 @@ namespace System.Reflection
             OptionalParamBinding = 262144,
             /// <summary>Used in COM interop to specify that the return value of the member can be ignored.</summary>
             IgnoreReturn = 16777216
+            */
         }
 }
 #endif

@@ -180,7 +180,7 @@ namespace InnoTecheLearning
 
             public static ImageSource Image(string FileName)
             {
-                return ImageSource.FromResource(CurrentNamespace + ".Images." + FileName);
+                return ImageSource.FromResource(CurrentNamespace + ".Images." + FileName, typeof(Utils));
             }
 
             public enum ImageFile : int
