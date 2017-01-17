@@ -468,6 +468,10 @@ namespace InnoTecheLearning
             }
         }
 
+        public static string Eval(string CodeToExecute)
+        { return new Jint.Engine().Execute(CodeToExecute).GetCompletionValue().ToString(); }
+        public static T Eval<T>(string CodeToExecute)
+        { return (T)(new Jint.Engine().Execute(CodeToExecute).GetCompletionValue().ToObject()); }
         private static string JSEvaluteAns = "";
         public enum AngleMode : byte
         { Degree, Radian, Gradian, Turn }
@@ -477,7 +481,7 @@ namespace InnoTecheLearning
             // Ask user to enter expression.
             try
             {
-                return JSEvaluteAns = Evaluator.Eval(TrueFree ? Expression :
+                return JSEvaluteAns = new Jint.Engine().Execute(TrueFree ? "" :
                     $@"var Prev = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
 var AngleUnit = {(byte)Mode};" + @"
 var Ans = Number(Prev);
@@ -657,20 +661,12 @@ const Root0_5 = Math.SQRT1_2;
 const Ln2 = Math.LN2;
 const Ln10 = Math.LN10;
 const Log2e = Math.LOG2E;
-const Log10e = Math.LOG10E;"
-+
-#if __IOS__ || __ANDROID__
-"\"\";"
-+ (MaxMin ?
+const Log10e = Math.LOG10E;
+"""";")
+.Execute(MaxMin ?
                     System.Text.RegularExpressions.Regex.
                     Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
-                    : Expression));
-#elif NETFX_CORE
-"String(eval("+ (MaxMin ?
-                    System.Text.RegularExpressions.Regex.
-                    Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
-                    : Expression) + "));");
-#endif
+                    : Expression).GetCompletionValue().ToString();
             }
             catch (Exception ex) when (Alert != null)
             {

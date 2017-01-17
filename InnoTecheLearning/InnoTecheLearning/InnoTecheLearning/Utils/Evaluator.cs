@@ -1,5 +1,5 @@
-﻿#pragma warning disable 0618
-#if __IOS__ || __ANDROID__ || WINDOWS_UWP
+﻿#if false
+#if true //__IOS__ || __ANDROID__ || WINDOWS_UWP
 using Jint;
 #elif WINDOWS_PHONE_APP || WINDOWS_APP
 using ChakraHost.Hosting;
@@ -11,7 +11,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-#if __IOS__ || __ANDROID__ || WINDOWS_UWP
+#if true //__IOS__ || __ANDROID__ || WINDOWS_UWP
         public class Evaluator
         {
             public static string Eval(string CodeToExecute)
@@ -80,4 +80,4 @@ namespace InnoTecheLearning
     }
 
 }
-#pragma warning restore 0618
+#endif

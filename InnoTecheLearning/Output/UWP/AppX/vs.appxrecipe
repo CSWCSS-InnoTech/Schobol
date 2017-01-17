@@ -16,7 +16,7 @@
     <PackageRegistrationPath>
     </PackageRegistrationPath>
     <RemoveNonLayoutFiles>true</RemoveNonLayoutFiles>
-    <RegisteredManifestChecksum>8B38C1880780F305F86BABD8BD34D1CCDB5019B88533F33043B58A23F2A8DD8B</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>A1F5994799DEC44C81C96995A21132A41FFDD50CDE69CC435933CFC244C811BF</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>47f0706c-3646-4de9-8968-b498fa30d6e7_0.10.0.0_x86__jfpdjxaq24k76</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>47f0706c-3646-4de9-8968-b498fa30d6e7_jfpdjxaq24k76!App</RegisteredUserModeAppID>
     <RegisteredPackageID>47f0706c-3646-4de9-8968-b498fa30d6e7</RegisteredPackageID>
@@ -28,7 +28,7 @@
     <AppXManifest Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-01-16T14:10:17.739</Modified>
+      <Modified>2017-01-17T10:30:56.351</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -84,104 +84,104 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\CSWCSS eLearning App.dll">
       <PackagePath>CSWCSS eLearning App.dll</PackagePath>
-      <Modified>2017-01-16T14:10:16.672</Modified>
+      <Modified>2017-01-17T10:30:55.426</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\CSWCSS eLearning App.exe">
       <PackagePath>CSWCSS eLearning App.exe</PackagePath>
-      <Modified>2017-01-16T14:10:17.707</Modified>
+      <Modified>2017-01-17T10:30:56.306</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\CSWCSS eLearning App.pdb">
       <PackagePath>CSWCSS eLearning App.pdb</PackagePath>
-      <Modified>2017-01-16T14:10:17.706</Modified>
+      <Modified>2017-01-17T10:30:56.271</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-01-16T14:10:19.981</Modified>
+      <Modified>2017-01-17T10:30:58.268</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\0.rsrc">
       <PackagePath>_Resources\0.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.251</Modified>
+      <Modified>2017-01-17T10:30:37.111</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\1.rsrc">
       <PackagePath>_Resources\1.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.267</Modified>
+      <Modified>2017-01-17T10:30:37.111</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\10.rsrc">
       <PackagePath>_Resources\10.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.270</Modified>
+      <Modified>2017-01-17T10:30:37.119</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\11.rsrc">
       <PackagePath>_Resources\11.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.271</Modified>
+      <Modified>2017-01-17T10:30:37.120</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\12.rsrc">
       <PackagePath>_Resources\12.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.274</Modified>
+      <Modified>2017-01-17T10:30:37.122</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\13.rsrc">
       <PackagePath>_Resources\13.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.277</Modified>
+      <Modified>2017-01-17T10:30:37.124</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\14.rsrc">
       <PackagePath>_Resources\14.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.279</Modified>
+      <Modified>2017-01-17T10:30:37.126</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\15.rsrc">
       <PackagePath>_Resources\15.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.285</Modified>
+      <Modified>2017-01-17T10:30:37.131</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\16.rsrc">
       <PackagePath>_Resources\16.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.290</Modified>
+      <Modified>2017-01-17T10:30:37.135</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\17.rsrc">
       <PackagePath>_Resources\17.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.309</Modified>
+      <Modified>2017-01-17T10:30:37.137</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\18.rsrc">
       <PackagePath>_Resources\18.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.311</Modified>
+      <Modified>2017-01-17T10:30:37.138</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\19.rsrc">
       <PackagePath>_Resources\19.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.313</Modified>
+      <Modified>2017-01-17T10:30:37.140</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\2.rsrc">
       <PackagePath>_Resources\2.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.267</Modified>
+      <Modified>2017-01-17T10:30:37.116</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\3.rsrc">
       <PackagePath>_Resources\3.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.268</Modified>
+      <Modified>2017-01-17T10:30:37.116</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\4.rsrc">
       <PackagePath>_Resources\4.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.268</Modified>
+      <Modified>2017-01-17T10:30:37.117</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\5.rsrc">
       <PackagePath>_Resources\5.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.268</Modified>
+      <Modified>2017-01-17T10:30:37.117</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\6.rsrc">
       <PackagePath>_Resources\6.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.269</Modified>
+      <Modified>2017-01-17T10:30:37.117</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\7.rsrc">
       <PackagePath>_Resources\7.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.269</Modified>
+      <Modified>2017-01-17T10:30:37.117</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\8.rsrc">
       <PackagePath>_Resources\8.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.269</Modified>
+      <Modified>2017-01-17T10:30:37.118</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\9.rsrc">
       <PackagePath>_Resources\9.rsrc</PackagePath>
-      <Modified>2017-01-16T14:09:56.269</Modified>
+      <Modified>2017-01-17T10:30:37.118</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\ilc\_Resources\index.txt">
       <PackagePath>_Resources\index.txt</PackagePath>
-      <Modified>2017-01-16T14:09:56.314</Modified>
+      <Modified>2017-01-17T10:30:37.141</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
