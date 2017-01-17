@@ -922,11 +922,7 @@ const Log10e = Math.LOG10E;
         }
         public static System.Reflection.Assembly GetAssembly(this Type T)
         { return System.Reflection.IntrospectionExtensions.GetTypeInfo(T).Assembly; }
-        public static string ToHex(this byte[] data)
-        {
-            return ToHex(data, "");
-        }
-        public static string ToHex(this byte[] data, string prefix)
+        public static string ToHex(this byte[] data, string prefix = "")
         {
             char[] lookup = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
             int i = 0, p = prefix.Length, l = data.Length;
@@ -944,15 +940,7 @@ const Log10e = Math.LOG10E;
             }
             return new string(c, 0, c.Length);
         }
-        public static byte[] FromHex(this string str)
-        {
-            return FromHex(str, 0, 0, 0);
-        }
-        public static byte[] FromHex(this string str, int offset, int step)
-        {
-            return FromHex(str, offset, step, 0);
-        }
-        public static byte[] FromHex(this string str, int offset, int step, int tail)
+        public static byte[] FromHex(this string str, int offset = 0, int step = 0, int tail = 0)
         {
             byte[] b = new byte[(str.Length - offset - tail + step) / (2 + step)];
             byte c1, c2;

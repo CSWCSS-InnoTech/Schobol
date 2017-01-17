@@ -100,6 +100,7 @@ namespace InnoTecheLearning
                         break;
                     case Pages.MathSolver:
                         Region = "MathSolver";
+                        Content = MathSolver;
                         break;
                     default:
                         Region = "App";
@@ -176,7 +177,7 @@ namespace InnoTecheLearning
                              Showing = Pages.MusicTuner;//Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
                          },BoldLabel("Music Tuner")),
                          MainScreenItem(Image(ImageFile.MathSolver), delegate {
-                             Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉"); },BoldLabel("Maths Solver Minigame"))
+                             Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))//Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉");
                          ),
 
                 Button("Changelog", delegate { Showing = Pages.Changelog; }),
@@ -688,6 +689,17 @@ namespace InnoTecheLearning
             }
         }
         public StackLayout MathSolver
-        { get { return new StackLayout { }; } }
+        {
+            get
+            {
+                var Draw = new TouchImage { HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill };
+                Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", NamedSize.Medium);
+                return new StackLayout
+                {
+                    Children = { Draw, Back(this) }  
+                };
+            }
+        }
     }
 }

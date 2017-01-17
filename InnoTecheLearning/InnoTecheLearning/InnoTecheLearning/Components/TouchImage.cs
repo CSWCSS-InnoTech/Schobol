@@ -57,6 +57,14 @@ namespace InnoTecheLearning
                     SetValue(CurrentLineColorProperty, value);
                 }
             }
+
+            protected internal delegate void NoParam();
+            protected internal delegate void TextDelegate(string Text, Xamarin.Forms.NamedSize Size);
+            protected internal event NoParam ClearEvent;
+            protected internal event TextDelegate DrawTextEvent;
+
+            public void Clear() => ClearEvent();
+            public void DrawText(string Text, Xamarin.Forms.NamedSize Size) => DrawTextEvent(Text, Size);
 #if __ANDROID__
 
             public class Renderer : ViewRenderer<TouchImage, DrawView>
@@ -67,7 +75,10 @@ namespace InnoTecheLearning
 
                     if (e.OldElement == null)
                     {
-                        SetNativeControl(new DrawView(Context));
+                        var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
+                        e.NewElement.DrawTextEvent = Draw.DrawText;
+                        e.NewElement.ClearEvent = Draw.Clear;
+                        SetNativeControl(Draw);
                     }
                 }
 
@@ -90,6 +101,9 @@ namespace InnoTecheLearning
             // Original Source: http://csharp-tricks-en.blogspot.com/2014/05/android-draw-on-screen-by-finger.html
             public class DrawView : View
             {
+                public static DrawView Create(Xamarin.Forms.Size Size) => 
+                new DrawView(Xamarin.Forms.Forms.Context) {
+                    CanvasBitmap = Bitmap.CreateBitmap((int)Size.Width, (int)Size.Height, Bitmap.Config.Argb8888)};
                 public DrawView(Context context)
                     : base(context)
                 {
@@ -171,6 +185,19 @@ namespace InnoTecheLearning
 
                     return true;
                 }
+
+                public void Clear()
+                {   DrawPath.Reset();
+                    CanvasBitmap = Bitmap.CreateBitmap(CanvasBitmap.Width, CanvasBitmap.Height, Bitmap.Config.Argb8888);
+                    DrawCanvas = new Canvas(CanvasBitmap);
+                    Invalidate();
+                }
+
+                public void DrawText(string Text, Xamarin.Forms.NamedSize Size)
+                { DrawCanvas.DrawText(Text, 0, 0,
+                    new Paint { TextSize = (float)Xamarin.Forms.Device.GetNamedSize(Size, typeof(Canvas)) });
+                    Invalidate();
+                }
             }
 #elif __IOS__
             public class Renderer : ViewRenderer<TouchImage, DrawView>
@@ -178,8 +205,11 @@ namespace InnoTecheLearning
                 protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
                 {
                     base.OnElementChanged(e);
-
-                    SetNativeControl(new DrawView(RectangleF.Empty));
+            
+                        var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
+                        e.NewElement.DrawTextEvent = Draw.DrawText;
+                        e.NewElement.ClearEvent = Draw.Clear;
+                        SetNativeControl(Draw);
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -200,6 +230,8 @@ namespace InnoTecheLearning
             // Original Source: http://stackoverflow.com/questions/21029440/xamarin-ios-drawing-onto-image-after-scaling-it
             public class DrawView : UIView
             {
+                public static DrawView Create(Size Size) => new DrawView(new RectangleF(PointF.Empty, Size.ToSizeF()));
+
                 public DrawView(RectangleF frame) : base(frame)
                 {
                     DrawPath = new CGPath();
@@ -217,8 +249,26 @@ namespace InnoTecheLearning
                 public UIColor CurrentLineColor { get; set; }
                 public float PenWidth { get; set; }
 
+                public event DrawDelegate DrawEvent;
+                public delegate void DrawDelegate(RectangleF rect);
+                public void DrawText(string Text, NamedSize Size)
+                { DrawEvent = DrawText;
+                    InnerText = Text;
+                    InnerSize = Size;
+                }
+                private string InnerText;
+                private NamedSize InnerSize;
+                private void DrawText(RectangleF rect)
+                { UIColor.Black.SetStroke();
+                    using (var Label = new UILabel(rect)
+                    {
+                        Text = InnerText,
+                        Font = Font.SystemFontOfSize(InnerSize).ToUIFont()
+                    }) Label.DrawText(rect); }
+
                 public void Clear()
                 {
+                    DrawEvent -= DrawText;
                     DrawPath.Dispose();
                     DrawPath = new CGPath();
                     SetNeedsDisplay();
@@ -292,6 +342,7 @@ namespace InnoTecheLearning
                         line.Color.SetStroke();
                         line.Path.Stroke();
                     }
+                    DrawEvent(rect);
                 }
             }
             public class VESLine
@@ -320,8 +371,11 @@ namespace InnoTecheLearning
                 protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
                 {
                     base.OnElementChanged(e);
-
-                    SetNativeControl(DrawView.Create());
+            
+                        var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
+                        e.NewElement.DrawTextEvent = Draw.DrawText;
+                        e.NewElement.ClearEvent = Draw.Clear;
+                        SetNativeControl(Draw);
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -343,7 +397,7 @@ namespace InnoTecheLearning
                             converter.Convert(Element.CurrentLineColor, null, null, null);
                 }
             }    // Original Source: http://www.geekchamp.com/tips/drawing-in-wp7-2-drawing-shapes-with-finger
-            public partial class DrawView : UserControl
+            public class DrawView : UserControl
             {
                 private DrawView() { }
 
@@ -353,7 +407,7 @@ namespace InnoTecheLearning
                 private Point CurrentPoint;
                 private Point PreviousPoint;
 
-                public static DrawView Create()
+                public static DrawView Create(Xamarin.Forms.Size Rect)
                 {
                     DrawView Return = (DrawView)global::Windows.UI.Xaml.Markup.XamlReader.Load(
 @"<UserControl x:Class=""InnoTecheLearning.Utils.TouchImage.DrawView""
@@ -365,7 +419,7 @@ namespace InnoTecheLearning
     FontFamily=""{StaticResource PhoneFontFamilyNormal}""
     FontSize=""{StaticResource PhoneFontSizeNormal}""
     Foreground=""{StaticResource PhoneForegroundBrush}""
-    d:DesignHeight=""480"" d:DesignWidth=""480"">
+    d:DesignHeight="""+Rect.Height+@""" d:DesignWidth="""+Rect.Width+@""">
 
     <Canvas x:Name=""ContentPanelCanvas"" Background=""Cornsilk"" HorizontalAlignment=""Stretch""
           VerticalAlignment=""Stretch"" />
@@ -400,8 +454,17 @@ namespace InnoTecheLearning
                         Return.CurrentPoint = new Point(Point.X, Point.Y);
                         Return.PreviousPoint = Return.CurrentPoint;
                     };
+                    Return.ClearEvent = () => { ContentPanelCanvas.Children.Clear(); };
+                    Return.TextEvent = (Text, Size) => { ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
+                        FontSize = Device.GetNamedSize(Size, typeof(TextBlock)) }); };
                     return Return;
                 }
+                private event NoParam ClearEvent;
+                private event TextDelegate TextEvent;
+                public void Clear()
+                { ClearEvent(); }
+                public void DrawText(string Text, NamedSize Size)
+                { TextEvent(Text, Size); }
             }
 #endif
 
