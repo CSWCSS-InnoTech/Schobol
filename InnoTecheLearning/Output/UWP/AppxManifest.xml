@@ -45,10 +45,8 @@
     <build:Item Name="OperatingSystem" Version="10.0.14393.0 (rs1_release.160715-1616)" />
     <build:Item Name="Microsoft.Build.AppxPackage.dll" Version="14.0.25431.1" />
     <build:Item Name="ProjectGUID" Value="{75CEA795-2D72-43D6-BF90-32C87C92AF13}" />
-    <build:Item Name="ilc.exe" Version="1.4.24208.01 built by: PROJECTNGDR2" />
-    <build:Item Name="OptimizingToolset" Value="ilc.exe" />
-    <build:Item Name="UseDotNetNativeSharedAssemblyFrameworkPackage" Value="True" />
-    <build:Item Name="UniversalGenericsOptOut" Value="false" />
+    <build:Item Name="OptimizingToolset" Value="None" />
+    <build:Item Name="TargetRuntime" Value="Managed" />
     <build:Item Name="Microsoft.Windows.UI.Xaml.Build.Tasks.dll" Version="14.0.25527.1" />
     <build:Item Name="MakePri.exe" Version="10.0.14393.33 (rs1_release_sec.160727-1952)" />
   </build:Metadata>

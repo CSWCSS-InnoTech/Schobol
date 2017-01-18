@@ -62,9 +62,18 @@ namespace InnoTecheLearning
             protected internal delegate void TextDelegate(string Text, Xamarin.Forms.NamedSize Size);
             protected internal event NoParam ClearEvent;
             protected internal event TextDelegate DrawTextEvent;
+            protected internal event NoParam Ready;
 
-            public void Clear() => ClearEvent();
-            public void DrawText(string Text, Xamarin.Forms.NamedSize Size) => DrawTextEvent(Text, Size);
+            public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
+            public void DrawText(string Text, Xamarin.Forms.NamedSize Size) => WaitExecute(() => DrawTextEvent?.Invoke(Text, Size));
+
+            static System.Threading.ManualResetEvent IsReady = new System.Threading.ManualResetEvent(true);
+            public void WaitExecute(Action Task)
+            {
+                Ready = () => IsReady.Set();
+                IsReady.WaitOne();
+                Task.Invoke();
+            }
 #if __ANDROID__
 
             public class Renderer : ViewRenderer<TouchImage, DrawView>
@@ -78,6 +87,7 @@ namespace InnoTecheLearning
                         var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
+                        e.NewElement.Ready();
                         SetNativeControl(Draw);
                     }
                 }
@@ -209,6 +219,7 @@ namespace InnoTecheLearning
                         var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
+                        e.NewElement.Ready();
                         SetNativeControl(Draw);
                 }
 
@@ -375,6 +386,7 @@ namespace InnoTecheLearning
                         var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
+                        e.NewElement.Ready();
                         SetNativeControl(Draw);
                 }
 
@@ -424,6 +436,7 @@ namespace InnoTecheLearning
     <Canvas x:Name=""ContentPanelCanvas"" Background=""Cornsilk"" HorizontalAlignment=""Stretch""
           VerticalAlignment=""Stretch"" />
 </UserControl>");
+                    
                     Canvas ContentPanelCanvas = (Canvas)VisualTreeHelper.GetChild(Return, 0);
 
                     Return.CurrentBrush = new SolidColorBrush(Colors.Black);

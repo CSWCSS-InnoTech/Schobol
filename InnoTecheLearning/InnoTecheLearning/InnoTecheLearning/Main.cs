@@ -114,6 +114,9 @@ namespace InnoTecheLearning
 #endif
         public Main()
         {
+
+            // Accomodate iPhone status bar.
+            Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 10);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;
@@ -692,12 +695,27 @@ namespace InnoTecheLearning
         {
             get
             {
-                var Draw = new TouchImage { HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill };
+                var Draw = new TouchImage
+                {
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
+                    BackgroundColor = Color.White,
+                    CurrentLineColor = Color.Black
+                };
+                Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
+
                 Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", NamedSize.Medium);
                 return new StackLayout
                 {
-                    Children = { Draw, Back(this) }  
+                    Children = {
+                    new Frame
+                    {
+                        BackgroundColor = Color.White,
+                        Padding = 5,
+                        HasShadow = false,
+                        OutlineColor = Color.Black,
+                        Content = Draw
+                    }, Back(this) }
                 };
             }
         }
