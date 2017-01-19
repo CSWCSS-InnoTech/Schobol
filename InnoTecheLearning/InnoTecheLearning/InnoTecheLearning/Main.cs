@@ -636,9 +636,9 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.Center,
                     Children = {
-                        Row(false, S1, C1, (Text)(X + "²"), S2),
-                        Row(false, C2, (Text)(X + Y), S3),
-                        Row(false, C3, (Text)(Y + "²")),
+                        Row(false, S1, C1, (Text)(X + "²")),
+                        Row(false, S2, C2, (Text)(X + Y)),
+                        Row(false, S3, C3, (Text)(Y + "²")),
                         Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
                             Factorize(TryParseDouble(S1.Text + C1.Text, 0d), TryParseDouble(S2.Text + C2.Text, 0d),
                             TryParseDouble(S3.Text + C3.Text, 0d), out X1, out X2, X, Y);

@@ -43,8 +43,9 @@ namespace InnoTecheLearning
     {
         public class TouchImage : Image
         {
+            public TouchImage() : base() { BackgroundColor = XColor.White; CurrentLineColor = XColor.Black; }
             public static readonly BindableProperty CurrentLineColorProperty =
-                BindableProperty.Create("CurrentLineColor", typeof(XColor), typeof(TouchImage), XColor.Default);
+                BindableProperty.Create("CurrentLineColor", typeof(XColor), typeof(TouchImage), XColor.Black);
 
             public XColor CurrentLineColor
             {
@@ -195,7 +196,8 @@ namespace InnoTecheLearning
 
                 public void DrawText(string Text, Xamarin.Forms.NamedSize Size)
                 { DrawCanvas.DrawText(Text, 0, 0,
-                    new Paint { TextSize = (float)Xamarin.Forms.Device.GetNamedSize(Size, typeof(Canvas)) });
+                    new Paint { TextSize = (float)Xamarin.Forms.Device.GetNamedSize(Size, typeof(Canvas)),
+                                Color = XColor.Black.ToAndroid() });
                     Invalidate();
                 }
             }
