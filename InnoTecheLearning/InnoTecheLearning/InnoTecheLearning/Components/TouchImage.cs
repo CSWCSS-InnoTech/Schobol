@@ -66,14 +66,8 @@ namespace InnoTecheLearning
 
             public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
             public void DrawText(string Text, Xamarin.Forms.NamedSize Size) => WaitExecute(() => DrawTextEvent?.Invoke(Text, Size));
-
-            static System.Threading.ManualResetEvent IsReady = new System.Threading.ManualResetEvent(true);
-            public void WaitExecute(Action Task)
-            {
-                Ready = () => IsReady.Set();
-                IsReady.WaitOne();
-                Task.Invoke();
-            }
+            
+            public void WaitExecute(Action Task) => Ready += () => Task();
 #if __ANDROID__
 
             public class Renderer : ViewRenderer<TouchImage, DrawView>
@@ -81,15 +75,14 @@ namespace InnoTecheLearning
                 protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
                 {
                     base.OnElementChanged(e);
-
-                    if (e.OldElement == null)
+                    try
                     {
                         var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
-                    }
+                    } catch (NullReferenceException) { }
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -215,12 +208,14 @@ namespace InnoTecheLearning
                 protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
                 {
                     base.OnElementChanged(e);
-            
+                    try
+                    {
                         var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
+                    } catch (NullReferenceException) { }
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -382,12 +377,14 @@ namespace InnoTecheLearning
                 protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
                 {
                     base.OnElementChanged(e);
-            
+                    try
+                    {
                         var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
+                    } catch (NullReferenceException) { }
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -409,33 +406,19 @@ namespace InnoTecheLearning
                             converter.Convert(Element.CurrentLineColor, null, null, null);
                 }
             }    // Original Source: http://www.geekchamp.com/tips/drawing-in-wp7-2-drawing-shapes-with-finger
-            public class DrawView : UserControl
+            public class DrawView : InnoTecheLearning.DrawView
             {
-                private DrawView() { }
+                private DrawView() : base() { }
 
                 public Brush CurrentBrush { get; set; }
 
                 public float PenWidth { get; set; }
                 private Point CurrentPoint;
                 private Point PreviousPoint;
-
+                
                 public static DrawView Create(Xamarin.Forms.Size Rect)
                 {
-                    DrawView Return = (DrawView)global::Windows.UI.Xaml.Markup.XamlReader.Load(
-@"<UserControl x:Class=""InnoTecheLearning.Utils.TouchImage.DrawView""
-    xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
-    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-    xmlns:d=""http://schemas.microsoft.com/expression/blend/2008""
-    xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006""
-    mc:Ignorable=""d""
-    FontFamily=""{StaticResource PhoneFontFamilyNormal}""
-    FontSize=""{StaticResource PhoneFontSizeNormal}""
-    Foreground=""{StaticResource PhoneForegroundBrush}""
-    d:DesignHeight="""+Rect.Height+@""" d:DesignWidth="""+Rect.Width+@""">
-
-    <Canvas x:Name=""ContentPanelCanvas"" Background=""Cornsilk"" HorizontalAlignment=""Stretch""
-          VerticalAlignment=""Stretch"" />
-</UserControl>");
+                    DrawView Return = new DrawView();
                     
                     Canvas ContentPanelCanvas = (Canvas)VisualTreeHelper.GetChild(Return, 0);
 
@@ -457,12 +440,20 @@ namespace InnoTecheLearning
                             StrokeThickness = Return.PenWidth
                         };
 
-                        ContentPanelCanvas.Children.Add(line);
+                        if(Return.PointerDown) ContentPanelCanvas.Children.Add(line);
 
                         Return.PreviousPoint = Return.CurrentPoint;
                     };
                     ContentPanelCanvas.PointerPressed += (object sender, PointerRoutedEventArgs e) =>
                     {
+                        Return.PointerDown = true;
+                        var Point = e.GetCurrentPoint(Return).Position;
+                        Return.CurrentPoint = new Point(Point.X, Point.Y);
+                        Return.PreviousPoint = Return.CurrentPoint;
+                    };
+                    ContentPanelCanvas.PointerReleased += (object sender, PointerRoutedEventArgs e) =>
+                    {
+                        Return.PointerDown = false;
                         var Point = e.GetCurrentPoint(Return).Position;
                         Return.CurrentPoint = new Point(Point.X, Point.Y);
                         Return.PreviousPoint = Return.CurrentPoint;
@@ -472,6 +463,7 @@ namespace InnoTecheLearning
                         FontSize = Device.GetNamedSize(Size, typeof(TextBlock)) }); };
                     return Return;
                 }
+                public bool PointerDown { get; set; }
                 private event NoParam ClearEvent;
                 private event TextDelegate TextEvent;
                 public void Clear()

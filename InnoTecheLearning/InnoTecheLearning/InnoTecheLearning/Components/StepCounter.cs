@@ -16,7 +16,7 @@ using Windows.Devices.Sensors;
 
 namespace InnoTecheLearning
 {
-    partial class Utils
+    public static partial class Utils
     {
         public delegate void StepCountChangedEventHandler(uint Steps, TimeSpan TimePassed, float Distance);
         /// <summary>
