@@ -105,13 +105,10 @@ namespace InnoTecheLearning
             public class DrawView : View
             {
                 public static DrawView Create(Xamarin.Forms.Size Size) => 
-                new DrawView(Xamarin.Forms.Forms.Context) {
-                    CanvasBitmap = Bitmap.CreateBitmap((int)Size.Width, (int)Size.Height, Bitmap.Config.Argb8888)};
-                public DrawView(Context context)
-                    : base(context)
-                {
-                    Start();
-                }
+                    new DrawView(Xamarin.Forms.Forms.Context) {
+                        CanvasBitmap = Bitmap.CreateBitmap(Size.Width < 1 ? 1 : (int)Size.Width,
+                            Size.Height < 1 ? 1 : (int)Size.Height, Bitmap.Config.Argb8888)};
+                public DrawView(Context context) : base(context) { Start(); }
 
                 public Color CurrentLineColor { get; set; }
 
