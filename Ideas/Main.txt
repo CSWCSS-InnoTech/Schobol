@@ -1,0 +1,54 @@
+Simple Games:
+  MoleMash
+    Canvas.Children = Mole;
+    Mole.OnTouch += () => {
+      Mole.MoveTo(RandomLocation - Mole.Size);
+      Score += 1;
+      Vibrate(TimeSpan.FromMilliSeconds(100));
+    };
+    Device.StartTimer(TimeSpan.FromMilliSeconds(500),
+      () => { Mole.MoveTo(RandomLocation - Mole.Size); });
+    Reset.Click += () => { Score = 0; };
+  
+  Paint
+    int Radius;
+    Canvas.OnTouch += (Point Location) => { Canvas.DrawFillCircle(Location, Radius); };
+    Canvas.OnDrag += (Line DragPath) => { Canvas.DrawLine(DragPath); };
+    BigButton.Click += () => { Radius = 10; };
+    SmallButton.Click += () => { Radius = 2; };
+    Wipe.Click += () => { Canvas.Clear(); };
+    TakePicture.Click += () => { Canvas.BackgroundImage = Camera.TakeImage(); };
+    AnyColor.Click += () => { Canvas.PaintColor = SelectedColor; };
+  
+  GoldCoin
+    Assert(Coins.Count == 5);
+    Pirate.Flung += (Angle Direction) => { Pirate.Direction = Direction; };
+    Pirate.BounceOnEdgeTouched = true;
+    Device.StartTimer(TimeSpan.FromMilliSeconds(2000),
+      () => { foreach(Coin Item in Coins) Item.MoveTo(RandomLocation - Item.Size); });
+    foreach(Coin Item in Coins) Item.DisappearIfCollidedWith(Pirate);
+    Reset.Clicked += () => { foreach(Coin Item in Coins) Item.Visible = true; };
+    HackOn.Clicked += () => { Pirate.Speed = 30; };
+    HackOff.Clicked += () => { Pirate.Speed = 10; };
+    
+  SpaceInvader
+    Ball.Radius = 7;
+    Ball.Color = Color.Green;
+    Banana.AttachPointerXCoords();
+    Ball.Visible = false;
+    Ball.DisappearOnTouchingEdge = true;
+    Ball.Speed = 15;
+    Ball.Direction = Angle.Up;
+    Banana.Touched += () => { Ball.MoveTo(Banana.X + Banana.Width / 2, Banana.Y - 20); Ball.Visible = true; };
+    Device.StartTimer(TimeSpan.FromMilliSeconds(3000),
+      () => { Monkey.MoveTo(RandomLocation - Monkey.Size); });
+    Ball.OnCollide += () => { Ball.Visible = false; Score += 1; Monkey.MoveTo(RandomLocation - Monkey.Size); };
+    Reset.Click += () => { Score = 0; };
+    
+  SpamIssacChan (Joke Only Don't Delete)
+    SpamEmail.Click += { SendEmail("ceo@issacchan.com"); }
+    DDoS1.Click += { Ping("issacchan.com"); }
+    DDoS2.Click += { Ping("techculus.info"); }
+    
+  HoloBot
+    Content = new WebBrowser("https://bot.api.ai/holobot");
