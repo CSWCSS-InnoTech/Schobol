@@ -79,10 +79,10 @@ namespace InnoTecheLearning
                 return ex.Message;
             }
         }
-        public static string Prefix(double n, NonNullable<string> Append = default(NonNullable<string>))
-        { return n == 0 ? "" : n == 1 ? Append.ToString() : n == -1 ? "-" + Append.ToString() : n.ToString(); }
-        public static string Suffix(double n, NonNullable<string> Append = default(NonNullable<string>))
-        { return n == 0 ? "" : (n > 0 ? "+" : "") + n.ToString() + Append.ToString(); }
+        public static string Prefix(double n, string Append = null)
+        { return n == 0 ? "" : n == 1 ? Append ?? "" : n == -1 ? "-" + Append ?? "" : n.ToString(); }
+        public static string Suffix(double n, string Append = null)
+        { return n == 0 ? "" : (n > 0 ? "+" : "") + n + Append ?? ""; }
         public static string ToABi(this Complex complex)
         {
             return (IsNaN(complex.Real) ? "NaN" : complex.Real.ToString()) +

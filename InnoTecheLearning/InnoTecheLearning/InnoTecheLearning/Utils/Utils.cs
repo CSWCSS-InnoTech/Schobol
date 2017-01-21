@@ -388,23 +388,23 @@ namespace InnoTecheLearning
         public static T Assign<T>(T Value, out T Object)
         { return Object = Value; }
 
-        public static void Do(Action Task)
+        public static void Do(this Action Task)
         {
             Task?.Invoke();
         }
 
-        public static T Do<T>(Delegate Task, params object[] Args)
+        public static T Do<T>(this Delegate Task, params object[] Args)
         {
             return (T)Task?.DynamicInvoke(Args);
         }
 
-        public static void Do(Task Task)
+        public static void Do(this Task Task)
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task);
         }
 
-        public static T Do<T>(Task<T> Task)
+        public static T Do<T>(this Task<T> Task)
         {
             System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false);
             T Result = default(T);
@@ -415,29 +415,39 @@ namespace InnoTecheLearning
             return Result;
         }
 #if NETFX_CORE
-        public static void Do(global::Windows.Foundation.IAsyncAction Task)
+        public static void Do(this global::Windows.Foundation.IAsyncAction Task)
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task.AsTask());
         }
 
-        public static T Do<T>(global::Windows.Foundation.IAsyncOperation<T> Task)
+        public static T Do<T>(this global::Windows.Foundation.IAsyncOperation<T> Task)
         {
             return Do(Task.AsTask());
         }
-        public static void Do<TProgress>(global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
+        public static void Do<TProgress>(this global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task.AsTask());
         }
 
         public static TResult Do<TResult, TProgress>
-            (global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task)
+            (this global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task)
         {
             return Do(Task.AsTask());
         }
 #endif
-
+        public static List<Task> Tasks { get; set; } = new List<Task>();
+        public static void TaskSet(Task Task, int Index)
+        {
+            if (Index > Tasks.Capacity) Tasks.Capacity = Index;
+            Tasks[Index] = Task;
+        }
+        public static void TaskDoAll()
+        {
+            foreach (var Task in Tasks)
+                Task.Do();
+        }
         public static ushort ToUShort(string String)
         {
             Retry: try
@@ -960,15 +970,20 @@ const Log10e = Math.LOG10E;
             }
             return b;
         }
-        // Formula for computing Luminance out of R G B, which is something close to
-        // luminance = (red * 0.3) + (green * 0.6) + (blue * 0.1).
+        /// <summary>Formula for computing Luminance out of R G B, which is something close to
+        /// luminance = (red * 0.3) + (green * 0.6) + (blue * 0.1).</summary>
         // Original Source: http://stackoverflow.com/questions/20978198/how-to-match-uilabels-textcolor-to-its-background
-        private static Color GetTextColor(Color backgroundColor)
+        public static Color GetTextColor(Color backgroundColor)
         {
             var backgroundColorDelta = ((backgroundColor.R * 0.3) + (backgroundColor.G * 0.6) + (backgroundColor.B * 0.1));
 
             return (backgroundColorDelta > 0.4f) ? Color.Black : Color.White;
         }
+        ///// <summary>
+        ///// An uninitialized Void object.
+        ///// </summary>
+        //public static object Void
+        //{ get { return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(void)); } }
         /*
         public string TransformForCurrentPlatform(string url)
         {

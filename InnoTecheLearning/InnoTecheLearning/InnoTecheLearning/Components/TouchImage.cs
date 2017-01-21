@@ -140,7 +140,8 @@ namespace InnoTecheLearning
 
                     CanvasPaint = new Paint
                     {
-                        Dither = true
+                        Dither = true,
+                        Color = CurrentLineColor
                     };
                 }
 

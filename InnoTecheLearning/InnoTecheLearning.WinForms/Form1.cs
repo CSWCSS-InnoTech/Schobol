@@ -234,5 +234,10 @@ const Log10e = Math.LOG10E;
                 Input.Text = s;
         }
         }
+
+        private void Hmmm_Click(object sender, EventArgs e)
+        {
+            Output.Text = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(void)).ToString();
+        }
     }
 }

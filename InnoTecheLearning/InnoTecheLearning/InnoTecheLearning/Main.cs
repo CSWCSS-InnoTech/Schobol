@@ -116,7 +116,7 @@ namespace InnoTecheLearning
         {
 
             // Accomodate iPhone status bar.
-            Padding = new Thickness(10, Device.OnPlatform(20, 0, 0), 10, 10);
+            Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor");
             Showing = Pages.Main;

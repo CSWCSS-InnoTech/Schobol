@@ -159,11 +159,11 @@ namespace InnoTecheLearning
             } }
         public void SaveLines(string FileName, string[] Lines)
         {
-            Do(SaveLinesAsync(FileName, Lines)); // HACK: to keep Interface return types simple (sorry!)
+            SaveLinesAsync(FileName, Lines).Do(); // HACK: to keep Interface return types simple (sorry!)
         }
         public string[] LoadLines(string FileName)
         {
-            return Do(LoadLinesAsync(FileName));// HACK: to keep Interface return types simple (sorry!)
+            return LoadLinesAsync(FileName).Do();// HACK: to keep Interface return types simple (sorry!)
         }
         public async Task SaveLinesAsync(string FileName, string[] Lines)
         {
@@ -180,13 +180,13 @@ namespace InnoTecheLearning
         }
         public void SaveText(string FileName, string Text)
         {
-            Do(SaveTextAsync(FileName, Text));
+            SaveTextAsync(FileName, Text).Do();
             //Task Task = SaveTextAsync(FileName, Text);
             //Task.Wait(); // HACK: to keep Interface return types simple (sorry!)
         }
         public string LoadText(string FileName)
         {
-            return Do(LoadTextAsync(FileName));// HACK: to keep Interface return types simple (sorry!)
+            return LoadTextAsync(FileName).Do();// HACK: to keep Interface return types simple (sorry!)
         }
         public async Task SaveTextAsync(string FileName, string Text)
         {
@@ -203,11 +203,11 @@ namespace InnoTecheLearning
         }
         public void SaveBytes(string FileName, byte[] Bytes)
         {
-            Do(SaveBytesAsync(FileName, Bytes));// HACK: to keep Interface return types simple (sorry!)
+            SaveBytesAsync(FileName, Bytes).Do();// HACK: to keep Interface return types simple (sorry!)
         }
         public byte[] LoadBytes(string FileName)
         {
-            return Do(LoadBytesAsync(FileName));// HACK: to keep Interface return types simple (sorry!)
+            return LoadBytesAsync(FileName).Do();// HACK: to keep Interface return types simple (sorry!)
         }
         public async Task SaveBytesAsync(string FileName, byte[] Bytes)
         {
@@ -224,7 +224,7 @@ namespace InnoTecheLearning
         }
         public void Delete(string FileName)
         {
-            Do(DeleteAsync(FileName));// HACK: to keep Interface return types simple (sorry!)
+            DeleteAsync(FileName).Do();// HACK: to keep Interface return types simple (sorry!)
         }
         public async Task DeleteAsync(string FileName)
         {

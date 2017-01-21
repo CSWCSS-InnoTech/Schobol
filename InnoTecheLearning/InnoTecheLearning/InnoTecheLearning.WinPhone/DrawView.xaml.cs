@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace InnoTecheLearning
 {
-    public sealed partial class DrawView : UserControl
+    public partial class DrawView : UserControl
     {
         public DrawView()
         {

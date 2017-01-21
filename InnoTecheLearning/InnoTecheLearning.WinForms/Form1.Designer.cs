@@ -33,6 +33,7 @@
             this.Output = new System.Windows.Forms.TextBox();
             this.Request = new System.Windows.Forms.Button();
             this.Resampler = new System.Windows.Forms.Button();
+            this.Hmmm = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Input
@@ -91,11 +92,22 @@
             this.Resampler.UseVisualStyleBackColor = true;
             this.Resampler.Click += new System.EventHandler(this.Resampler_Click);
             // 
+            // Hmmm
+            // 
+            this.Hmmm.Location = new System.Drawing.Point(408, 355);
+            this.Hmmm.Name = "Hmmm";
+            this.Hmmm.Size = new System.Drawing.Size(75, 23);
+            this.Hmmm.TabIndex = 5;
+            this.Hmmm.Text = "Press Me";
+            this.Hmmm.UseVisualStyleBackColor = true;
+            this.Hmmm.Click += new System.EventHandler(this.Hmmm_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(483, 376);
+            this.Controls.Add(this.Hmmm);
             this.Controls.Add(this.Resampler);
             this.Controls.Add(this.Request);
             this.Controls.Add(this.Output);
@@ -115,6 +127,7 @@
         private System.Windows.Forms.TextBox Output;
         private System.Windows.Forms.Button Request;
         private System.Windows.Forms.Button Resampler;
+        private System.Windows.Forms.Button Hmmm;
     }
 }
 
