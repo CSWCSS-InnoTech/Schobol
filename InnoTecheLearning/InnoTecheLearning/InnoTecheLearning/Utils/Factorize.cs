@@ -17,7 +17,7 @@ namespace InnoTecheLearning
         public static double FactorizeThrowable(double A, double B, double C
             , out Complex Root1, out Complex Root2,
             out double Factor1Co, out double Factor1CTerm,
-            out double Factor2Co, out double Factor2CTerm, double SafeCheck = 1e8)
+            out double Factor2Co, out double Factor2CTerm, double SafeCheck = 1e6)
         {
             double X, Y, M = 0;
             FactorizeNonthrowable(ref A, ref B, ref C, out Root1, out Root2);
@@ -61,7 +61,7 @@ namespace InnoTecheLearning
         /// [6] = The highest common factor among the coefficients.
         /// Factorized Result: [6]([2]X+[3]Y)([4]X+[5]Y)</returns>
         public static string Factorize(double A, double B, double C,
-            out Complex Root1, out Complex Root2, string X = "X", string Y = "Y", double SafeCheck = 1e8)
+            out Complex Root1, out Complex Root2, string X = "X", string Y = "Y", double SafeCheck = 1e6)
         {
             try
             {
@@ -80,9 +80,9 @@ namespace InnoTecheLearning
             }
         }
         public static string Prefix(double n, string Append = null)
-        { return n == 0 ? "" : n == 1 ? Append ?? "" : n == -1 ? "-" + Append ?? "" : n.ToString(); }
+        { return n == 0 ? "" : n == 1 ? Append ?? "" : n == -1 ? "-" + Append ?? "" : n.ToString() + Append ?? ""; }
         public static string Suffix(double n, string Append = null)
-        { return n == 0 ? "" : (n > 0 ? "+" : "") + n + Append ?? ""; }
+        { return n == 0 ? "" : (n > 0 ? "+" : "") + (Math.Abs(n) == -1 ? "" : n.ToString()) + Append ?? ""; }
         public static string ToABi(this Complex complex)
         {
             return (IsNaN(complex.Real) ? "NaN" : complex.Real.ToString()) +
