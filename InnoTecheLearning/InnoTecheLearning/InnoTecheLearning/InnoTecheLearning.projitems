@@ -230,4 +230,8 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinE.wav" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinG.wav" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\CNY.jpg" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CNY.wav" />
+  </ItemGroup>
 </Project>

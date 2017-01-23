@@ -49,6 +49,24 @@ namespace InnoTecheLearning
             MusicTuner,
             MathSolver
         }
+        public new View Content { get { return base.Content; }set {
+                var Layout = new RelativeLayout();
+                Layout.Children.Add(new Image {
+                    Aspect = Aspect.Fill,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Source = Image("CNY.jpg") },
+                    Constraint.Constant(0),
+                    Constraint.Constant(0),
+                    Constraint.RelativeToParent((parent) => { return parent.Width; }),
+                    Constraint.RelativeToParent((parent) => { return parent.Height; }));
+                Layout.Children.Add(value,
+                    Constraint.Constant(0),
+                    Constraint.Constant(0),
+                    Constraint.RelativeToParent((parent) => { return parent.Width; }),
+                    Constraint.RelativeToParent((parent) => { return parent.Height; }));
+                base.Content = Layout;
+            } }
         Pages _Showing;
         Pages Showing
         {
@@ -109,23 +127,20 @@ namespace InnoTecheLearning
                 _Showing = value;
             }
         }
-#if CHRISTMAS //|| __ANDROID__
-        Media __player = new Media();
-#endif
+        StreamPlayer _Player;
         public Main()
         {
 
             // Accomodate iPhone status bar.
             Padding = new Thickness(0, Device.OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
-            //Alert(this, "Main constructor");
+            //Alert(this, "Main constructor"); 
             Showing = Pages.Main;
+            _Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"),Loop:true));
+            _Player.Play();
             Log("Main page initialized.");
-#if CHRISTMAS //|| __ANDROID__
-            __player.Start("android.resource://androidTest.androidTest/raw/JoyToTheWorld.ogg"); 
-            BackgroundImage = "android_christmas_wallpaper_by_shinkoala_d351kv5.jpg";
-#endif
         }
+        ~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed()
         {
             if (Showing != Pages.Main)
@@ -233,7 +248,7 @@ namespace InnoTecheLearning
                         Button("Stop", delegate {
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
-                        MusicSound?.Dispose(); }),
+                        MusicSound?.Dispose(); _Player.Play(); }),
                         Row(false, Volume, Vol),
                         Back(this)
                     }
@@ -249,7 +264,7 @@ namespace InnoTecheLearning
             };
         }
         public Button MusicTunerPlay(Text Text, Sounds Sound, Slider Vol)
-        { return Button(Text, delegate { MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value); }); }
+        { return Button(Text, delegate { _Player.Pause(); MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value); }); }
         public StackLayout CloudTest
         {
             get

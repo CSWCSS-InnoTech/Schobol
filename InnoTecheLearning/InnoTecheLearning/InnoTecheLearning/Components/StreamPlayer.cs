@@ -923,7 +923,7 @@ namespace InnoTecheLearning
             { "zmm", "application/vnd.handheld-entertainment+xml" },
         };
                 #endregion
-                public StreamPlayerOptions(Stream Content, string Extension, bool Loop = false)
+                public StreamPlayerOptions(Stream Content, string Extension = "wav", bool Loop = false)
                 {
                     this.Content = Content; MimeType = MimeTypes[Extension.ToLower().Trim().TrimStart('.')]; this.Loop = Loop;
                 }
@@ -1044,7 +1044,7 @@ namespace InnoTecheLearning
                 /// </summary>.
                 public int SizeInBytes { get { return (int)Content.Length; } }
                 /// <summary>
-                /// Mode. Stream or static.
+                /// Mode. Stream or static. Forced to use static reguardless of this setting.
                 /// </summary>
                 public AudioTrackMode Mode = AudioTrackMode.Stream;
                 /// <summary>
