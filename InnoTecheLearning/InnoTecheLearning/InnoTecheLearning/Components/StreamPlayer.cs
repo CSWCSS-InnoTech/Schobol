@@ -1369,7 +1369,6 @@ namespace InnoTecheLearning
             }
             protected void Init(StreamPlayerOptions Options)
             {
-                int SizeInBytes = Options.SizeInBytes - 44;
                 _player = new AudioTrack(
                 // Stream type
                 (Android.Media.Stream)Options.Type,
@@ -1380,7 +1379,7 @@ namespace InnoTecheLearning
                 // Audio encoding
                 (Encoding)Options.Format,
                 // Length of the audio clip.
-                SizeInBytes,
+                Options.SizeInBytes,
                 // Mode. Stream or static.
                 AudioTrackMode.Static);
                 _loop = Options.Loop;
