@@ -1414,16 +1414,12 @@ namespace InnoTecheLearning
             byte[] _content;
             protected virtual void play()
             {
-                while (!_stop && _loop)
+                for (int i = 0; !_stop; i += _buffersize)
                 {
-                    for (int i = 0; !_stop; i += _buffersize)
-                    {
-                        _pauser.WaitOne();
-                        try { _player.Write(_content, i, _buffersize); }
-                        catch (Exception) { break; }
-                    }
-                    _Complete(this, new EventArgs());
+                    _pauser.WaitOne();
+                    _player.Write(_content, i, _buffersize);
                 }
+                _Complete(this, new EventArgs());
             }
             public void Play()
             {
@@ -1432,7 +1428,8 @@ namespace InnoTecheLearning
                     Init(_options);
                     if (_loop) _player.SetLoopPoints(0, _frames, -1);
                 }
-                else { if (_streamer == null) _streamer = Task.Run(action: play); _pauser.Set(); }
+                else { _Complete = (sender, e) => play();
+                    if (_streamer == null) _streamer = Task.Run(action: play); _pauser.Set(); }
                 _player.Play();
             }
             public void Pause()
