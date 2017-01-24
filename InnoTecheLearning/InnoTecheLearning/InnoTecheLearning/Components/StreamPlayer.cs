@@ -1432,13 +1432,14 @@ namespace InnoTecheLearning
                     Init(_options);
                     if (_loop) _player.SetLoopPoints(0, _frames, -1);
                 }
-                else _pauser.Set();
+                else { if (_streamer == null) _streamer = Task.Run(action: play); _pauser.Set(); }
                 _player.Play();
             }
             public void Pause()
             { _pauser.Reset(); if (_prepared) _player.Pause(); }
             public void Stop()
             {
+                _stop = true;
                 if (_player == null)
                     return;
                 _pauser.Set();
@@ -1852,8 +1853,11 @@ namespace InnoTecheLearning
                     _player.Dispose();
 #elif __ANDROID__
                     _prepared = false;
+                    _pauser.Dispose();
+                    _streamer.Dispose();
                     _player.Release();
                     _player.Dispose();
+                    _content = null;
 #elif NETFX_CORE
                     _player.ClearValue(MediaElement.SourceProperty);
 #endif
