@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using System.IO;
 using System.Collections.Generic;
+using System;
 #if __IOS__
 using AVFoundation;
 using Foundation;
 #elif __ANDROID__
-using System;
 using Android.Net;
 using Android.Media;
 using Java.IO;
@@ -16,7 +16,6 @@ using Math = Java.Lang.Math;
 using IEnumerator = System.Collections.IEnumerator;
 using IEnumerable = System.Collections.IEnumerable;
 #elif NETFX_CORE
-using System;
 using System.Runtime.InteropServices;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
@@ -948,7 +947,7 @@ namespace InnoTecheLearning
                         Content.Seek(24, SeekOrigin.Begin);
                         byte[] val = new byte[4];
                         Content.Read(val, 0, 4);
-                        return System.BitConverter.ToInt32(val, 0);
+                        return BitConverter.ToInt32(val, 0);
                     }
                     //set { _SampleRate = value; }
                 }
@@ -963,7 +962,7 @@ namespace InnoTecheLearning
                         Content.Seek(22, SeekOrigin.Begin);
                         byte[] val = new byte[2];
                         Content.Read(val, 0, 2);
-                        return System.BitConverter.ToInt16(val, 0);
+                        return BitConverter.ToInt16(val, 0);
                     }
                 }
                 /// <summary>
@@ -977,7 +976,7 @@ namespace InnoTecheLearning
                         Content.Seek(22, SeekOrigin.Begin);
                         byte[] val = new byte[2];
                         Content.Read(val, 0, 2);
-                        switch (System.BitConverter.ToInt16(val, 0))
+                        switch (BitConverter.ToInt16(val, 0))
                         {
                             case 1: return ChannelOut.Mono;
                             case 2: return ChannelOut.Stereo;
@@ -1002,7 +1001,7 @@ namespace InnoTecheLearning
                         Content.Seek(34, SeekOrigin.Begin);
                         byte[] val = new byte[2];
                         Content.Read(val, 0, 2);
-                        switch (System.BitConverter.ToInt16(val, 0))
+                        switch (BitConverter.ToInt16(val, 0))
                         {
                             case 8: return Encoding.Pcm8bit;
                             case 16: return Encoding.Pcm16bit;
@@ -1022,7 +1021,7 @@ namespace InnoTecheLearning
                         Content.Seek(34, SeekOrigin.Begin);
                         byte[] val = new byte[2];
                         Content.Read(val, 0, 2);
-                        return System.BitConverter.ToInt16(val, 0);
+                        return BitConverter.ToInt16(val, 0);
                     }
                 }
                 /// <summary>
@@ -1036,7 +1035,7 @@ namespace InnoTecheLearning
                         Content.Seek(40, SeekOrigin.Begin);
                         byte[] val = new byte[4];
                         Content.Read(val, 0, 4);
-                        return System.BitConverter.ToInt32(val, 0) * 8 / Channels / BitsPerSample;
+                        return BitConverter.ToInt32(val, 0) * 8 / Channels / BitsPerSample;
                     }
                 }
                 /// <summary>
@@ -1044,9 +1043,9 @@ namespace InnoTecheLearning
                 /// </summary>.
                 public int SizeInBytes { get { return (int)Content.Length; } }
                 /// <summary>
-                /// Mode. Stream or static. Forced to use static reguardless of this setting.
+                /// Mode. Stream or static. If content is more than 20 secs then use stream.
                 /// </summary>
-                public AudioTrackMode Mode = AudioTrackMode.Stream;
+                public AudioTrackMode Mode { get { return (AudioTrackMode)Convert.ToInt32(Duration > TimeSpan.FromSeconds(20)); } }
                 /// <summary>
                 /// Mime type. Default is audio/x-wav.
                 /// </summary>
@@ -1069,19 +1068,19 @@ namespace InnoTecheLearning
                 }
 
 
-                public System.TimeSpan Duration
+                public TimeSpan Duration
                 {
                     get
                     {
                         Content.Seek(40, SeekOrigin.Begin);
                         byte[] val = new byte[4];
                         Content.Read(val, 0, 4);
-                        double Size = System.BitConverter.ToUInt32(val, 0);
+                        double Size = BitConverter.ToUInt32(val, 0);
                         Content.Seek(28, SeekOrigin.Begin);
                         val = new byte[4];
                         Content.Read(val, 0, 4);
-                        double ByteRate = System.BitConverter.ToUInt32(val, 0);
-                        return System.TimeSpan.FromSeconds(Size / ByteRate);
+                        double ByteRate = BitConverter.ToUInt32(val, 0);
+                        return TimeSpan.FromSeconds(Size / ByteRate);
                     }
                 }
                 public enum ChannelOut
@@ -1360,7 +1359,9 @@ namespace InnoTecheLearning
             public bool _prepared { get; private set; }
             bool _loop;
             float _volume;
-            int _frames;
+            int _frames, _buffersize;
+            AudioTrackMode _mode;
+            protected StreamPlayerOptions _options { get; private set; }
             public static StreamPlayer Create(StreamPlayerOptions Options)
             {
                 var Return = new StreamPlayer();
@@ -1369,6 +1370,9 @@ namespace InnoTecheLearning
             }
             protected void Init(StreamPlayerOptions Options)
             {
+                _options = Options;
+                _mode = (AudioTrackMode)Options.Mode;
+                if(_mode == AudioTrackMode.Static)
                 _player = new AudioTrack(
                 // Stream type
                 (Android.Media.Stream)Options.Type,
@@ -1382,43 +1386,78 @@ namespace InnoTecheLearning
                 Options.SizeInBytes,
                 // Mode. Stream or static.
                 AudioTrackMode.Static);
+                else _player = new AudioTrack(
+                // Stream type
+                (Android.Media.Stream)Options.Type,
+                // Frequency
+                Options.SampleRate,
+                // Mono or stereo
+                (ChannelOut)Options.Config,
+                // Audio encoding
+                (Encoding)Options.Format,
+                // Length of the audio clip.
+                _buffersize = AudioTrack.GetMinBufferSize(Options.SampleRate,
+                    (ChannelOut)Options.Config, (Encoding)Options.Format),
+                // Mode. Stream or static.
+                AudioTrackMode.Stream);
                 _loop = Options.Loop;
-                _volume = Options.Volume;
                 _frames = Options.Samples / Options.Channels;
                 _player.SetVolume(_volume = Options.Volume);
-                _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
+                if (_mode == AudioTrackMode.Static)
+                    _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
+                else _content = Options.Content.ReadFully(true);
                 _prepared = true;
+            }
+            System.Threading.ManualResetEvent _pauser = new System.Threading.ManualResetEvent(true);
+            Task _streamer;
+            bool _stop;
+            byte[] _content;
+            protected virtual void play()
+            {
+                while (!_stop && _loop)
+                {
+                    for (int i = 0; !_stop; i += _buffersize)
+                    {
+                        _pauser.WaitOne();
+                        try { _player.Write(_content, i, _buffersize); }
+                        catch (Exception) { break; }
+                    }
+                    _Complete(this, new EventArgs());
+                }
             }
             public void Play()
             {
-                if (!_prepared) return;
-                _player.ReloadStaticData();
-                if (_loop) _player.SetLoopPoints(0, _frames, -1);
+                if (_mode == AudioTrackMode.Static)
+                {
+                    Init(_options);
+                    if (_loop) _player.SetLoopPoints(0, _frames, -1);
+                }
+                else _pauser.Set();
                 _player.Play();
             }
             public void Pause()
-            { if (_prepared) _player.Pause(); }
+            { _pauser.Reset(); if (_prepared) _player.Pause(); }
             public void Stop()
             {
                 if (_player == null)
                     return;
-
+                _pauser.Set();
                 if (_loop) _player.SetLoopPoints(0, 0, 0);
 
                 _player.Stop();
                 _player.Release();
-                _player.Dispose();
-                _player = null;
-                _prepared = false;
             }
+            public EventHandler _Complete;
             public event EventHandler Complete
             {
                 add
                 {
+                    _Complete += value;
                     _player.MarkerReached += MarkerReachedEventHandler(value);
                 }
                 remove
                 {
+                    _Complete -= value;
                     _player.MarkerReached -= MarkerReachedEventHandler(value);
                 }
             }
@@ -1431,7 +1470,8 @@ namespace InnoTecheLearning
                    };
             }
             public float Volume { get { return _volume; } set { _player?.SetVolume(_volume = value); } }
-            public bool Loop { get { return _loop; } set { _loop = value; if (_prepared && !value) _player.SetLoopPoints(0, 0, 0); } }
+            public bool Loop { get { return _loop; } set { _loop = value;
+                    if (_mode == AudioTrackMode.Static && _prepared && !value) _player.SetLoopPoints(0, 0, 0); } }
 #elif __ANDROID__ && RESAMPLE
             AudioTrack _player;
             Stream _content;
