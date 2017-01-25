@@ -1414,12 +1414,18 @@ namespace InnoTecheLearning
             byte[] _content;
             protected virtual void play()
             {
-                for (int i = 0; !_stop; i += _buffersize)
+                while (_loop && !_stop)
                 {
-                    _pauser.WaitOne();
-                    _player.Write(_content, i, _buffersize);
+                    for (int i = 0; !_stop; i += _buffersize)
+                    {
+                        _pauser.WaitOne();
+                        _player.Write(_content, i, _buffersize);
+                    }
+                    while (_player.PlaybackHeadPosition < _frames - 25) Do(Task.Run(() => Task.Delay(125)));
+                    _Complete(this, new EventArgs());
+                    _player.Stop();
+                    _player.Play();
                 }
-                _Complete(this, new EventArgs());
             }
             public void Play()
             {
