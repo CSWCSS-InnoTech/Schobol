@@ -1403,6 +1403,7 @@ namespace InnoTecheLearning
                 _loop = Options.Loop;
                 _frames = Options.Samples / Options.Channels;
                 _player.SetVolume(_volume = Options.Volume);
+                _player.SetNotificationMarkerPosition(_frames - 1);
                 if (_mode == AudioTrackMode.Static)
                     _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
                 else _content = Options.Content.ReadFully(true);
@@ -1420,9 +1421,9 @@ namespace InnoTecheLearning
                     {
                         _pauser.WaitOne();
                         _player.Write(_content, i, _buffersize);
+                        int Pos = _player.PlaybackHeadPosition;
+                        while (_player.PlaybackHeadPosition < Pos + _buffersize) Do(Task.Run(() => Task.Delay(125)));
                     }
-                    while (_player.PlaybackHeadPosition < _frames - 25) Do(Task.Run(() => Task.Delay(125)));
-                    _Complete(this, new EventArgs());
                     _player.Stop();
                     _player.Play();
                 }
@@ -1434,8 +1435,7 @@ namespace InnoTecheLearning
                     Init(_options);
                     if (_loop) _player.SetLoopPoints(0, _frames, -1);
                 }
-                else { _Complete = (sender, e) => play();
-                    if (_streamer == null) _streamer = Task.Run(action: play); _pauser.Set(); }
+                else { if (_streamer == null) _streamer = Task.Run(action: play); _pauser.Set(); }
                 _player.Play();
             }
             public void Pause()
@@ -1451,17 +1451,14 @@ namespace InnoTecheLearning
                 _player.Stop();
                 _player.Release();
             }
-            public EventHandler _Complete;
             public event EventHandler Complete
             {
                 add
                 {
-                    _Complete += value;
                     _player.MarkerReached += MarkerReachedEventHandler(value);
                 }
                 remove
                 {
-                    _Complete -= value;
                     _player.MarkerReached -= MarkerReachedEventHandler(value);
                 }
             }
