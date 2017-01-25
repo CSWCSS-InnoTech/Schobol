@@ -1433,9 +1433,11 @@ namespace InnoTecheLearning
                     if (_streamer == null) _streamer = Task.Run(action: play);
                     Device.StartTimer(_duration,
                         () => { Complete?.Invoke(this, EventArgs.Empty); return !_disposedValue; });
-                    _player.MarkerReached += (sender, e) =>
+                    Complete += (sender, e) =>
                     {
-                        if (_loop) play();
+                        if (_loop) {
+                            _streamer.Dispose();
+                            _streamer = Task.Run(action: play); };
                     };
                 }
                 _player.Play();
@@ -1448,7 +1450,8 @@ namespace InnoTecheLearning
                 if (_player == null)
                     return;
                 if (_loop) _player.SetLoopPoints(0, 0, 0);
-
+                _streamer.Dispose();
+                _streamer = null;
                 _player.Stop();
                 _player.Release();
             }
