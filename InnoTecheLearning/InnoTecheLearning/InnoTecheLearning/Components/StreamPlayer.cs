@@ -1404,6 +1404,7 @@ namespace InnoTecheLearning
                 _frames = Options.Samples / Options.Channels;
                 _player.SetVolume(_volume = Options.Volume);
                 _player.SetNotificationMarkerPosition(_frames - 1);
+                _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) => Complete(sender, e);
                 if (_mode == AudioTrackMode.Static)
                     _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
                 else _content = Options.Content.ReadFully(true);
@@ -1415,25 +1416,11 @@ namespace InnoTecheLearning
             byte[] _content;
             protected virtual void play()
             {
-                using (var _waitplay = new System.Threading.AutoResetEvent(true))
+                for (int i = 0; !_stop; i += _buffersize)
                 {
-                    _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) => _waitplay.Set();
-                    while (_loop && !_stop)
-                    {
-                        for (int i = 0; !_stop; i += _buffersize)
-                        {
-                            _waitplay.WaitOne();
-                            _pauser.WaitOne();
-                            _player.Write(_content, i, _buffersize);
-                            _player.SetNotificationMarkerPosition(i + _buffersize);
-                        }
-                        _player.SetNotificationMarkerPosition(0);
-                        Complete(this, EventArgs.Empty);
-                        _player.Stop();
-                        _player.Play();
-                        _waitplay.Set();
-                    }
+                    _player.Write(_content, i, _buffersize);
                 }
+                Complete += (sender, e) => { if (_loop) play(); };
             }
             public void Play()
             {
