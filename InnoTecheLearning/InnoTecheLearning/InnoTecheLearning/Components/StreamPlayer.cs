@@ -1425,6 +1425,7 @@ namespace InnoTecheLearning
             {
                 if (_mode == AudioTrackMode.Static)
                 {
+                    Stop();
                     Init(_options);
                     if (_loop) _player.SetLoopPoints(0, _frames, -1);
                 }
@@ -1436,7 +1437,6 @@ namespace InnoTecheLearning
                     Complete += (sender, e) =>
                     {
                         if (_loop) {
-                            _streamer.Dispose();
                             _streamer = Task.Run(action: play); };
                     };
                 }
@@ -1450,10 +1450,9 @@ namespace InnoTecheLearning
                 if (_player == null)
                     return;
                 if (_loop) _player.SetLoopPoints(0, 0, 0);
-                _streamer.Dispose();
-                _streamer = null;
                 _player.Stop();
                 _player.Release();
+                _player = null;
             }
             public event EventHandler Complete;
             public float Volume { get { return _volume; } set { _player?.SetVolume(_volume = value); } }
@@ -1839,7 +1838,6 @@ namespace InnoTecheLearning
                     _player.Dispose();
 #elif __ANDROID__
                     _prepared = false;
-                    _streamer.Dispose();
                     _player.Release();
                     _player.Dispose();
                     _content = null;
