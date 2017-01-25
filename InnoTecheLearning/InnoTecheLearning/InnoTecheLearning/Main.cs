@@ -713,10 +713,9 @@ namespace InnoTecheLearning
                 var Draw = new TouchImage
                 {
                     HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
                     BackgroundColor = Color.White,
-                    CurrentLineColor = Color.Black, 
-                    HeightRequest = Device.GetNamedSize(NamedSize.Large, typeof(TouchImage))
+                    CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
 

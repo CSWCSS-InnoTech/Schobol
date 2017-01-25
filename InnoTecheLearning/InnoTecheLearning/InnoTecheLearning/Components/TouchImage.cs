@@ -207,14 +207,17 @@ namespace InnoTecheLearning
                 }
 
                 public void Clear()
-                {   DrawPath.Reset();
-                    CanvasBitmap = Bitmap.CreateBitmap(CanvasBitmap.Width, CanvasBitmap.Height, Bitmap.Config.Argb8888);
-                    DrawCanvas = new Canvas(CanvasBitmap);
+                {
+                    DrawPath.Reset();
+                    DrawCanvas = new Canvas(CanvasBitmap =
+                        Bitmap.CreateBitmap(CanvasBitmap.Width, CanvasBitmap.Height, Bitmap.Config.Argb8888));
                     Invalidate();
                 }
 
                 public void DrawText(string Text, Xamarin.Forms.NamedSize Size)
-                { DrawCanvas.DrawText(Text, 0, 0,
+                {
+                    DrawCanvas.SetBitmap(CanvasBitmap);
+                    DrawCanvas.DrawText(Text, 0, 0,
                     new Paint { TextSize = (float)Xamarin.Forms.Device.GetNamedSize(Size, typeof(Canvas)),
                                 Color = XColor.Black.ToAndroid() });
                     Invalidate();
