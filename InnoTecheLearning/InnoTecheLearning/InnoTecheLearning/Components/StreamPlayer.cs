@@ -1416,6 +1416,7 @@ namespace InnoTecheLearning
             byte[] _content;
             protected virtual void play()
             {
+                _player.Flush();
                 for (int i = 0; !_stop; i += _buffersize)
                 {
                     _player.Write(_content, i, _buffersize);
@@ -1838,6 +1839,7 @@ namespace InnoTecheLearning
                     _player.Dispose();
 #elif __ANDROID__
                     _prepared = false;
+                    _player.Flush();
                     _player.Release();
                     _player.Dispose();
                     _content = null;

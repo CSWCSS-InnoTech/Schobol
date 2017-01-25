@@ -105,10 +105,17 @@ namespace InnoTecheLearning
             // Original Source: http://csharp-tricks-en.blogspot.com/2014/05/android-draw-on-screen-by-finger.html
             public class DrawView : View
             {
-                public static DrawView Create(Xamarin.Forms.Size Size) => 
-                    new DrawView(Xamarin.Forms.Forms.Context) {
+                public static DrawView Create(Xamarin.Forms.Size Size)
+                {
+                    var Return = new DrawView(Xamarin.Forms.Forms.Context)
+                    {
+                        _Size = Size,
                         CanvasBitmap = Bitmap.CreateBitmap(Size.Width < 1 ? 1 : (int)Size.Width,
-                            Size.Height < 1 ? 1 : (int)Size.Height, Bitmap.Config.Argb8888)};
+                        Size.Height < 1 ? 1 : (int)Size.Height, Bitmap.Config.Argb8888)
+                    };
+                    Return.DrawCanvas = new Canvas(Return.CanvasBitmap);
+                    return Return;
+                }
                 public DrawView(Context context) : base(context) { Start(); }
 
                 public Color CurrentLineColor { get; set; }
@@ -120,6 +127,17 @@ namespace InnoTecheLearning
                 private Paint CanvasPaint;
                 private Canvas DrawCanvas;
                 private Bitmap CanvasBitmap;
+                private Xamarin.Forms.Size _Size;
+                public Xamarin.Forms.Size Size
+                {
+                    get { return _Size; }
+                    set
+                    {
+                        OnSizeChanged((int)value.Width, (int)value.Height,
+                        (int)_Size.Width, (int)_Size.Height);
+                        _Size = value;
+                    }
+                }
 
                 private void Start()
                 {
