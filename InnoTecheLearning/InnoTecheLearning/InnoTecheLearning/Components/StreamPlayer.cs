@@ -1361,6 +1361,7 @@ namespace InnoTecheLearning
             float _volume;
             int _frames, _buffersize;
             AudioTrackMode _mode;
+            TimeSpan _duration;
             protected StreamPlayerOptions _options { get; private set; }
             public static StreamPlayer Create(StreamPlayerOptions Options)
             {
@@ -1400,11 +1401,11 @@ namespace InnoTecheLearning
                     (ChannelOut)Options.Config, (Encoding)Options.Format),
                 // Mode. Stream or static.
                 AudioTrackMode.Stream);
+                _duration = Options.Duration;
                 _loop = Options.Loop;
                 _frames = Options.Samples;
                 _player.SetVolume(_volume = Options.Volume);
-                _player.SetNotificationMarkerPosition(_frames - 1);
-                _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) => Complete?.Invoke(sender, e);
+                _player.SetNotificationMarkerPosition(_frames * 31 / 32);
                 if (_mode == AudioTrackMode.Static)
                     _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
                 else _content = Options.Content.ReadFully(true);
@@ -1427,8 +1428,16 @@ namespace InnoTecheLearning
                     Init(_options);
                     if (_loop) _player.SetLoopPoints(0, _frames, -1);
                 }
-                else { if (_streamer == null) _streamer = Task.Run(action: play); 
-                Complete += (sender, e) => { if (_loop) play(); }; }
+                else
+                {
+                    if (_streamer == null) _streamer = Task.Run(action: play);
+                    Device.StartTimer(_duration,
+                        () => { Complete?.Invoke(this, EventArgs.Empty); return !_disposedValue; });
+                    _player.MarkerReached += (sender, e) =>
+                    {
+                        if (_loop) play();
+                    };
+                }
                 _player.Play();
             }
             public void Pause()
