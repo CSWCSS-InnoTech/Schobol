@@ -1415,17 +1415,24 @@ namespace InnoTecheLearning
             byte[] _content;
             protected virtual void play()
             {
-                while (_loop && !_stop)
+                using (var _waitplay = new System.Threading.AutoResetEvent(true))
                 {
-                    for (int i = 0; !_stop; i += _buffersize)
+                    _player.MarkerReached += (object sender, AudioTrack.MarkerReachedEventArgs e) => _waitplay.Set();
+                    while (_loop && !_stop)
                     {
-                        _pauser.WaitOne();
-                        _player.Write(_content, i, _buffersize);
-                        int Pos = _player.PlaybackHeadPosition;
-                        while (_player.PlaybackHeadPosition < Pos + _buffersize) Do(Task.Run(() => Task.Delay(125)));
+                        for (int i = 0; !_stop; i += _buffersize)
+                        {
+                            _waitplay.WaitOne();
+                            _pauser.WaitOne();
+                            _player.Write(_content, i, _buffersize);
+                            _player.SetNotificationMarkerPosition(i + _buffersize);
+                        }
+                        _player.SetNotificationMarkerPosition(0);
+                        Complete(this, EventArgs.Empty);
+                        _player.Stop();
+                        _player.Play();
+                        _waitplay.Set();
                     }
-                    _player.Stop();
-                    _player.Play();
                 }
             }
             public void Play()
@@ -1451,25 +1458,7 @@ namespace InnoTecheLearning
                 _player.Stop();
                 _player.Release();
             }
-            public event EventHandler Complete
-            {
-                add
-                {
-                    _player.MarkerReached += MarkerReachedEventHandler(value);
-                }
-                remove
-                {
-                    _player.MarkerReached -= MarkerReachedEventHandler(value);
-                }
-            }
-            protected EventHandler<AudioTrack.MarkerReachedEventArgs>
-                MarkerReachedEventHandler(EventHandler value)
-            {
-                return (object sender, AudioTrack.MarkerReachedEventArgs e) =>
-                   {
-                       value(sender, e);
-                   };
-            }
+            public event EventHandler Complete;
             public float Volume { get { return _volume; } set { _player?.SetVolume(_volume = value); } }
             public bool Loop { get { return _loop; } set { _loop = value;
                     if (_mode == AudioTrackMode.Static && _prepared && !value) _player.SetLoopPoints(0, 0, 0); } }
