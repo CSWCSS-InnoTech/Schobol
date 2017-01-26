@@ -1,19 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
+using Xamarin.Forms;
 #if __ANDROID__
 using Android.Content;
 using Android.Graphics;
-using Android.Views;
 using Xamarin.Forms.Platform.Android;
-using BindableProperty = Xamarin.Forms.BindableProperty;
-using ExportRenderer = Xamarin.Forms.ExportRendererAttribute;
+using Color = Android.Graphics.Color;
+using View = Android.Views.View;
+using MotionEvent = Android.Views.MotionEvent;
+using MotionEventActions = Android.Views.MotionEventActions;
 #elif __IOS__
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using Xamarin.Forms;
+using System.Collections.Generic;;
 using Xamarin.Forms.Platform.iOS;
 using PointF = CoreGraphics.CGPoint;
 using RectangleF = CoreGraphics.CGRect;
@@ -43,7 +43,9 @@ namespace InnoTecheLearning
     {
         public class TouchImage : Image
         {
-            public TouchImage() : base() { BackgroundColor = XColor.White; CurrentLineColor = XColor.Black; }
+            public TouchImage() : base() {
+                BackgroundColor = XColor.White; CurrentLineColor = XColor.Black; Ready += () => IsReady = true;
+            }
             public static readonly BindableProperty CurrentLineColorProperty =
                 BindableProperty.Create("CurrentLineColor", typeof(XColor), typeof(TouchImage), XColor.Black);
 
@@ -60,15 +62,23 @@ namespace InnoTecheLearning
             }
 
             protected internal delegate void NoParam();
-            protected internal delegate void TextDelegate(string Text, Xamarin.Forms.NamedSize Size);
+            protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color);
             protected internal event NoParam ClearEvent;
             protected internal event TextDelegate DrawTextEvent;
             protected internal event NoParam Ready;
+            protected internal bool IsReady;
 
             public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
-            public void DrawText(string Text, Xamarin.Forms.NamedSize Size) => WaitExecute(() => DrawTextEvent?.Invoke(Text, Size));
-            
-            public void WaitExecute(Action Task) => Ready += () => Task();
+            public void DrawText(string Text) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, XColor.Black));
+            public void DrawText(string Text, NamedSize Size) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, XColor.Black));
+            public void DrawText(string Text, XColor Color) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, Color));
+            public void DrawText(string Text, NamedSize Size, XColor Color) => 
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color));
+
+            public void WaitExecute(Action Task) { if(IsReady) Task(); else Ready += () => Task(); }
 #if __ANDROID__
 
             public class Renderer : ViewRenderer<TouchImage, DrawView>
@@ -78,7 +88,7 @@ namespace InnoTecheLearning
                     base.OnElementChanged(e);
                     try
                     {
-                        var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
+                        var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
@@ -90,7 +100,7 @@ namespace InnoTecheLearning
                 {
                     base.OnElementPropertyChanged(sender, e);
 
-                    if (e.PropertyName == TouchImage.CurrentLineColorProperty.PropertyName)
+                    if (e.PropertyName == CurrentLineColorProperty.PropertyName)
                     {
                         UpdateControl();
                     }
@@ -214,12 +224,12 @@ namespace InnoTecheLearning
                     Invalidate();
                 }
 
-                public void DrawText(string Text, Xamarin.Forms.NamedSize Size)
+                public void DrawText(string Text, NamedSize Size, XColor Color)
                 {
                     DrawCanvas.SetBitmap(CanvasBitmap);
                     DrawCanvas.DrawText(Text, 0, 0,
                     new Paint { TextSize = (float)Xamarin.Forms.Device.GetNamedSize(Size, typeof(Canvas)),
-                                Color = XColor.Black.ToAndroid() });
+                                Color = Color.ToAndroid() });
                     Invalidate();
                 }
             }
@@ -231,7 +241,7 @@ namespace InnoTecheLearning
                     base.OnElementChanged(e);
                     try
                     {
-                        var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
+                        var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
@@ -278,20 +288,24 @@ namespace InnoTecheLearning
 
                 public event DrawDelegate DrawEvent;
                 public delegate void DrawDelegate(RectangleF rect);
-                public void DrawText(string Text, NamedSize Size)
+                public void DrawText(string Text, NamedSize Size, XColor Color)
                 { DrawEvent = DrawText;
                     InnerText = Text;
                     InnerSize = Size;
+                    InnerColor = Color;
                 }
                 private string InnerText;
                 private NamedSize InnerSize;
+                private XColor InnerColor;
                 private void DrawText(RectangleF rect)
-                { UIColor.Black.SetStroke();
+                { 
+                    InnerColor.ToUIColor().SetStroke();
                     using (var Label = new UILabel(rect)
                     {
                         Text = InnerText,
                         Font = Font.SystemFontOfSize(InnerSize).ToUIFont()
-                    }) Label.DrawText(rect); }
+                    }) 
+                        Label.DrawText(rect); }
 
                 public void Clear()
                 {
@@ -400,7 +414,7 @@ namespace InnoTecheLearning
                     base.OnElementChanged(e);
                     try
                     {
-                        var Draw = DrawView.Create(new Xamarin.Forms.Size(e.NewElement.Width, e.NewElement.Height));
+                        var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
@@ -437,7 +451,7 @@ namespace InnoTecheLearning
                 private Point CurrentPoint;
                 private Point PreviousPoint;
                 
-                public static DrawView Create(Xamarin.Forms.Size Rect)
+                public static DrawView Create(Size Rect)
                 {
                     DrawView Return = new DrawView();
                     
@@ -480,8 +494,9 @@ namespace InnoTecheLearning
                         Return.PreviousPoint = Return.CurrentPoint;
                     };
                     Return.ClearEvent = () => { ContentPanelCanvas.Children.Clear(); };
-                    Return.TextEvent = (Text, Size) => { ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
-                        FontSize = Device.GetNamedSize(Size, typeof(TextBlock)) }); };
+                    Return.TextEvent = (Text, Size, Color) => { ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
+                        FontSize = Device.GetNamedSize(Size, typeof(TextBlock)),
+                        Foreground = new SolidColorBrush(Color.ToWindows()) }); };
                     return Return;
                 }
                 public bool PointerDown { get; set; }
@@ -489,11 +504,38 @@ namespace InnoTecheLearning
                 private event TextDelegate TextEvent;
                 public void Clear()
                 { ClearEvent(); }
-                public void DrawText(string Text, NamedSize Size)
-                { TextEvent(Text, Size); }
+                public void DrawText(string Text, NamedSize Size, XColor Color)
+                { TextEvent(Text, Size, Color); }
             }
 #endif
 
         }
     }
+}
+namespace Xamarin.Forms.Platform
+{
+#if WINDOWS_APP || WINDOWS_PHONE_APP
+    namespace WinRT {
+        public static class ColorExtensions
+        {
+            public static Windows.UI.Color ToWindows(this XColor color)
+            {
+                return Windows.UI.Color.FromArgb(Convert.ToByte(color.A * 255), 
+                    Convert.ToByte(color.R * 255), Convert.ToByte(color.G * 255), Convert.ToByte(color.B * 255));
+            }
+        }
+    }
+#elif WINDOWS_UWP
+    namespace UWP
+    {
+        public static class ColorExtensions
+        {
+            public static Windows.UI.Color ToWindows(this XColor color)
+            {
+                return Windows.UI.Color.FromArgb(Convert.ToByte(color.A * 255),
+                    Convert.ToByte(color.R * 255), Convert.ToByte(color.G * 255), Convert.ToByte(color.B * 255));
+            }
+        }
+    }
+#endif
 }
