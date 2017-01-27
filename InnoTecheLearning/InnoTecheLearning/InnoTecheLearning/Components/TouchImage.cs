@@ -230,7 +230,7 @@ namespace InnoTecheLearning
                 {
                     DrawCanvas.SetBitmap(CanvasBitmap);
                     DrawCanvas.DrawText(Text, 0, 0,
-                    new Paint { TextSize = (float)Xamarin.Forms.Device.GetNamedSize(Size, typeof(Canvas)),
+                    new Paint { TextSize = (float)Device.GetNamedSize(Size, new Label()),
                                 Color = Color.ToAndroid() });
                     Invalidate();
                 }
