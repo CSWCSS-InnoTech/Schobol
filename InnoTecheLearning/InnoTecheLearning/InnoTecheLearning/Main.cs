@@ -49,13 +49,19 @@ namespace InnoTecheLearning
             MusicTuner,
             MathSolver
         }
-        public new View Content { get { return base.Content; }set {
+        public new View Content
+        {
+            get { return base.Content; }
+            set
+            {
                 var Layout = new RelativeLayout();
-                Layout.Children.Add(new Image {
+                Layout.Children.Add(new Image
+                {
                     Aspect = Aspect.Fill,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Source = Image("CNY.jpg") },
+                    Source = Image("CNY.jpg")
+                },
                     Constraint.Constant(0),
                     Constraint.Constant(0),
                     Constraint.RelativeToParent((parent) => { return parent.Width; }),
@@ -66,7 +72,8 @@ namespace InnoTecheLearning
                     Constraint.RelativeToParent((parent) => { return parent.Width; }),
                     Constraint.RelativeToParent((parent) => { return parent.Height; }));
                 base.Content = Layout;
-            } }
+            }
+        }
         Pages _Showing;
         Pages Showing
         {
@@ -136,7 +143,7 @@ namespace InnoTecheLearning
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
             Showing = Pages.Main;
-            _Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"),Loop:true));
+            _Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             _Player.Play();
             Log("Main page initialized.");
         }
@@ -257,7 +264,8 @@ namespace InnoTecheLearning
         }
         public void MusicTunerSwitch(Button[] Violin, int i)
         {
-            Violin[i].Clicked += delegate {
+            Violin[i].Clicked += delegate
+            {
                 for (int j = 0; j < 4; j++)
                     Violin[j].BackgroundColor = Color.Silver;
                 Violin[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
@@ -514,8 +522,11 @@ namespace InnoTecheLearning
                 StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, Out } };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
-                Mode.Clicked += delegate { AngleUnit++; if(AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
-                    Mode.Text = AngleUnit.ToString(); };
+                Mode.Clicked += delegate
+                {
+                    AngleUnit++; if (AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
+                    Mode.Text = AngleUnit.ToString();
+                };
                 ScrollView Select = new ScrollView
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -544,7 +555,7 @@ namespace InnoTecheLearning
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
         }
-#region Append
+        #region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color))
         {
@@ -581,7 +592,7 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
-#endregion
+        #endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
@@ -664,7 +675,7 @@ namespace InnoTecheLearning
                 };
             }
         }
-        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40,0x40,0x40), NamedSize.Large);
+        Label Sports_Steps = BoldLabel("0", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Time = BoldLabel("00:00:00", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Distance = BoldLabel("0 m", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Now = BoldLabel(DateTime.Now.ToString("HH:mm:ss"), Color.White,
@@ -678,13 +689,15 @@ namespace InnoTecheLearning
         {
             get
             {
-                Device.StartTimer(TimeSpan.FromSeconds(1), 
-                    () => {
+                Device.StartTimer(TimeSpan.FromSeconds(1),
+                    () =>
+                    {
                         Sports_Steps.Text = Pedometer.Steps.ToString();
                         Sports_Distance.Text = Pedometer.Distance.ToString() + " m";
                         Sports_Time.Text = Pedometer.TimePassed.ToString(@"hh\:mm\:ss");
                         Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
-                        return Showing == Pages.Sports; });
+                        return Showing == Pages.Sports;
+                    });
                 return new StackLayout
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -717,25 +730,32 @@ namespace InnoTecheLearning
                     BackgroundColor = Color.White,
                     CurrentLineColor = Color.Black
                 };
-                Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
-
-                Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", NamedSize.Medium, Color.Red);
-                return new StackLayout
+                    Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
+                using (var Size = Immutable.Create(NamedSize.Large))
+                using (var TColor = Immutable.Create(Color.Red))
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = {
-                    new Frame
+
+                    Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
+                    return new StackLayout
                     {
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         VerticalOptions = LayoutOptions.FillAndExpand,
-                        BackgroundColor = Color.White,
-                        Padding = 5,
-                        HasShadow = false,
-                        OutlineColor = Color.Black,
-                        Content = Draw
-                    }, Back(this) }
-                };
+                        Children = {
+                        Title("CSWCSS Maths Solver"),
+                        (Text)"The dragon is setting fire on everything!",
+                        (Text)"We must use the power of Mathematics to kill it!",
+                        new Frame
+                        {
+                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
+                            BackgroundColor = Color.White,
+                            Padding = 5,
+                            HasShadow = false,
+                            OutlineColor = Color.Black,
+                            Content = Draw
+                        }, Row(false, Duplicate(Image(ImageFile.Heart), 5).ToArray(), Back(this) }
+                    };
+                }
             }
         }
     }

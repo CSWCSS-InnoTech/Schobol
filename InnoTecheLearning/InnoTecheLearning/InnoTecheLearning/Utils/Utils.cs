@@ -282,6 +282,13 @@ namespace InnoTecheLearning
                 Return += String;
             return Return;
         }
+        public static List<T> Duplicate<T>(T Item, int Count)
+        {
+            List<T> Return = new List<T>();
+            for (int i = 0; i < Count; i++)
+                Return.Add(Item);
+            return Return;
+        }
         /// <summary>
         /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
         /// </summary>

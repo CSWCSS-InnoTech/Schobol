@@ -186,6 +186,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Immutable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Type.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Evaluator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
@@ -233,5 +234,10 @@
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\CNY.jpg" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CNY.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\8_bit_heart_stock_by_xquatrox-d4r844m.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\dragon.fw.png" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\dragon.jpg" />
   </ItemGroup>
 </Project>

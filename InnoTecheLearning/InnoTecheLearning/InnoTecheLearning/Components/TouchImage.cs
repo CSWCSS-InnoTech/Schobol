@@ -6,6 +6,7 @@ using Android.Content;
 using Android.Graphics;
 using Xamarin.Forms.Platform.Android;
 using Color = Android.Graphics.Color;
+using Point = Xamarin.Forms.Point;
 using View = Android.Views.View;
 using MotionEvent = Android.Views.MotionEvent;
 using MotionEventActions = Android.Views.MotionEventActions;
@@ -13,7 +14,7 @@ using MotionEventActions = Android.Views.MotionEventActions;
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using System.Collections.Generic;;
+using System.Collections.Generic;
 using Xamarin.Forms.Platform.iOS;
 using PointF = CoreGraphics.CGPoint;
 using RectangleF = CoreGraphics.CGRect;
@@ -24,7 +25,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
-using Xamarin.Forms;
 #if WINDOWS_APP || WINDOWS_PHONE_APP
 using Xamarin.Forms.Platform.WinRT;
 #elif WINDOWS_UWP
@@ -64,7 +64,7 @@ namespace InnoTecheLearning
             
 
             protected internal delegate void NoParam();
-            protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color);
+            protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color, Point Location);
             protected internal event NoParam ClearEvent;
             protected internal event TextDelegate DrawTextEvent;
             protected internal event NoParam Ready;
@@ -72,13 +72,21 @@ namespace InnoTecheLearning
 
             public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
             public void DrawText(string Text) =>
-                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, XColor.Black));
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, XColor.Black, new Point()));
+            public void DrawText(string Text, Point Location) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, XColor.Black, Location));
             public void DrawText(string Text, NamedSize Size) =>
-                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, XColor.Black));
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, XColor.Black, new Point()));
+            public void DrawText(string Text, NamedSize Size, Point Location) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, XColor.Black, Location));
             public void DrawText(string Text, XColor Color) =>
-                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, Color));
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, Color, new Point()));
+            public void DrawText(string Text, XColor Color, Point Location) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, Color, Location));
             public void DrawText(string Text, NamedSize Size, XColor Color) => 
-                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color));
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color, new Point()));
+            public void DrawText(string Text, NamedSize Size, XColor Color, Point Location) =>
+                WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color, Location));
 
             public void WaitExecute(Action Task) { if(IsReady) Task(); else Ready += () => Task(); }
 #if __ANDROID__
@@ -142,6 +150,7 @@ namespace InnoTecheLearning
                 private string Text;
                 private NamedSize NamedSize;
                 private XColor XColor;
+                private Point Location;
                 private Size _Size;
                 public Size Size
                 {
@@ -192,7 +201,7 @@ namespace InnoTecheLearning
 
                     DrawPaint.Color = CurrentLineColor;
                     canvas.DrawBitmap(CanvasBitmap, 0, 0, CanvasPaint);
-                    DrawCanvas.DrawText(Text, 0, 0,
+                    DrawCanvas.DrawText(Text, (float)Location.X, (float)Location.Y,
                     new Paint
                     {
                         TextSize = (float)Device.GetNamedSize(NamedSize, new Label()),
@@ -230,16 +239,21 @@ namespace InnoTecheLearning
                 public void Clear()
                 {
                     DrawPath.Reset();
+                    this.Text = string.Empty;
+                    this.NamedSize = NamedSize.Default;
+                    this.XColor = XColor.Default;
+                    this.Location = Point.Zero;
                     DrawCanvas = new Canvas(CanvasBitmap =
                         Bitmap.CreateBitmap(CanvasBitmap.Width, CanvasBitmap.Height, Bitmap.Config.Argb8888));
                     Invalidate();
                 }
 
-                public void DrawText(string Text, NamedSize Size, XColor Color)
+                public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
                 {
                     this.Text = Text;
                     this.NamedSize = Size;
                     this.XColor = Color;
+                    this.Location = Location;
                     Invalidate();
                 }
             }
@@ -298,7 +312,7 @@ namespace InnoTecheLearning
 
                 public event DrawDelegate DrawEvent;
                 public delegate void DrawDelegate(RectangleF rect);
-                public void DrawText(string Text, NamedSize Size, XColor Color)
+                public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
                 { DrawEvent = DrawText;
                     InnerText = Text;
                     InnerSize = Size;
@@ -307,13 +321,15 @@ namespace InnoTecheLearning
                 private string InnerText;
                 private NamedSize InnerSize;
                 private XColor InnerColor;
+                private Point InnerLocation;
                 private void DrawText(RectangleF rect)
                 { 
                     InnerColor.ToUIColor().SetStroke();
                     using (var Label = new UILabel(rect)
                     {
                         Text = InnerText,
-                        Font = Font.SystemFontOfSize(InnerSize).ToUIFont()
+                        Font = Font.SystemFontOfSize(InnerSize).ToUIFont(),
+                        Center = new PointF(InnerLocation.X, InnerLocation.Y)
                     }) 
                         Label.DrawText(rect); }
 
@@ -504,9 +520,12 @@ namespace InnoTecheLearning
                         Return.PreviousPoint = Return.CurrentPoint;
                     };
                     Return.ClearEvent = () => { ContentPanelCanvas.Children.Clear(); };
-                    Return.TextEvent = (Text, Size, Color) => { ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
+                    Return.TextEvent = (Text, Size, Color, Location) => {
+                        ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
                         FontSize = Device.GetNamedSize(Size, typeof(TextBlock)),
-                        Foreground = new SolidColorBrush(Color.ToWindows()) }); };
+                        Foreground = new SolidColorBrush(Color.ToWindows()),
+                        RenderTransform = new TranslateTransform { X = Location.X, Y = Location.Y }
+                        }); };
                     return Return;
                 }
                 public bool PointerDown { get; set; }
@@ -514,8 +533,8 @@ namespace InnoTecheLearning
                 private event TextDelegate TextEvent;
                 public void Clear()
                 { ClearEvent(); }
-                public void DrawText(string Text, NamedSize Size, XColor Color)
-                { TextEvent(Text, Size, Color); }
+                public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
+                { TextEvent(Text, Size, Color, Location); }
             }
 #endif
 

@@ -185,17 +185,20 @@ namespace InnoTecheLearning
 
             public enum ImageFile : int
             {
-                Forum = 1,
-                Translate = 2,
-                VocabBook = 3,
-                Calculator = 4,
-                Calculator_Free = 5,
-                Factorizer = 6,
-                Sports = 7,
-                MusicTuner = 8,
-                MathSolver = 9,
-                Cello = 10,
-                Violin = 11
+                Forum,
+                Translate,
+                VocabBook,
+                Calculator,
+                Calculator_Free,
+                Factorizer,
+                Sports,
+                MusicTuner,
+                MathSolver,
+                Cello,
+                Violin,
+                Heart,
+                Dragon,
+                Dragon_Dead
             }
 
 
@@ -236,6 +239,15 @@ namespace InnoTecheLearning
                         break;
                     case ImageFile.Violin:
                         ActualFile = "violin-icon.png";
+                        break;
+                    case ImageFile.Heart:
+                        ActualFile = "8_bit_heart_stock_by_xquatrox-d4r844m.png";
+                        break;
+                    case ImageFile.Dragon:
+                        ActualFile = "dragon.jpg";
+                        break;
+                    case ImageFile.Dragon_Dead:
+                        ActualFile = "dragon.fw.png";
                         break;
                     default:
                         ActualFile = "";
