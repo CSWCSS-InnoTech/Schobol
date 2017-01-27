@@ -1354,7 +1354,7 @@ namespace InnoTecheLearning
             }
             public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
             public bool Loop { get { return _player.NumberOfLoops == -1; } set { _player.NumberOfLoops = value ? -1 : 0; } }
-            #elif __ANDROID__
+#elif __ANDROID__
             AudioTrack _player;
             public bool _prepared { get; private set; }
             bool _loop;
@@ -1366,28 +1366,25 @@ namespace InnoTecheLearning
             protected StreamPlayerOptions _options { get; private set; }
             public static StreamPlayer Create(StreamPlayerOptions Options)
             {
-                var Return = new StreamPlayer();
-                Return.Init(Options);
-                return Return;
+                return new StreamPlayer { _options = Options };
             }
             protected void Init(StreamPlayerOptions Options)
             {
-                _options = Options;
                 _mode = (AudioTrackMode)Options.Mode;
-                if(_mode == AudioTrackMode.Static)
-                _player = new AudioTrack(
-                // Stream type
-                (Android.Media.Stream)Options.Type,
-                // Frequency
-                Options.SampleRate,
-                // Mono or stereo
-                (ChannelOut)Options.Config,
-                // Audio encoding
-                (Encoding)Options.Format,
-                // Length of the audio clip.
-                Options.SizeInBytes,
-                // Mode. Stream or static.
-                AudioTrackMode.Static);
+                if (_mode == AudioTrackMode.Static)
+                    _player = new AudioTrack(
+                    // Stream type
+                    (Android.Media.Stream)Options.Type,
+                    // Frequency
+                    Options.SampleRate,
+                    // Mono or stereo
+                    (ChannelOut)Options.Config,
+                    // Audio encoding
+                    (Encoding)Options.Format,
+                    // Length of the audio clip.
+                    Options.SizeInBytes,
+                    // Mode. Stream or static.
+                    AudioTrackMode.Static);
                 else _player = new AudioTrack(
                 // Stream type
                 (Android.Media.Stream)Options.Type,
@@ -1407,12 +1404,14 @@ namespace InnoTecheLearning
                 _frames = Options.Samples;
                 _player.SetVolume(_volume = Options.Volume);
                 _player.SetNotificationMarkerPosition(_frames * 31 / 32);
-                if(_mode == AudioTrackMode.Static) _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
+                if (_mode == AudioTrackMode.Static)
+                    _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
+                else
+                    Set((sender, e) => { if (_loop) { _player.Release(); Init(_options); play(); }; });
                 _prepared = true;
             }
             protected virtual void play()
             {
-                _player.Flush();
                 for (int i = 0; i <= _content.Length; i += _buffersize)
                 {
                     _player.Write(_content, i, _buffersize);
@@ -1420,21 +1419,20 @@ namespace InnoTecheLearning
             }
             public void Play()
             {
+                Stop();
+                Init(_options);
                 if (_mode == AudioTrackMode.Static)
                 {
-                    Stop();
-                    Init(_options);
                     if (_loop) _player.SetLoopPoints(0, _frames, -1);
                 }
                 else
                 {
-                    Task.Run(action: play);
+                    play();
                     Device.StartTimer(_duration,
                         () => { Complete?.Invoke(this, EventArgs.Empty); return !_disposedValue && _loop; });
-                    Complete += (sender, e) => { if (_loop) { _player.Release(); Init(_options); Task.Run(action: play); }; };
                 }
                 _player.Play();
-            }
+            } 
             public void Pause()
             { if (_prepared) _player.Pause(); }
             public void Stop()
@@ -1446,6 +1444,9 @@ namespace InnoTecheLearning
                 _player.Release();
                 _player = null;
             }
+            bool _Set;
+            void Set(EventHandler Handler)
+            { if (_Set) return; Complete += Handler; _Set = true; }
             public event EventHandler Complete;
             public float Volume { get { return _volume; } set { _player?.SetVolume(_volume = value); } }
             public bool Loop { get { return _loop; } set { _loop = value;

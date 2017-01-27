@@ -139,8 +139,11 @@ namespace InnoTecheLearning
                 private Paint CanvasPaint;
                 private Canvas DrawCanvas;
                 private Bitmap CanvasBitmap;
-                private Xamarin.Forms.Size _Size;
-                public Xamarin.Forms.Size Size
+                private string Text;
+                private NamedSize NamedSize;
+                private XColor XColor;
+                private Size _Size;
+                public Size Size
                 {
                     get { return _Size; }
                     set
@@ -189,6 +192,12 @@ namespace InnoTecheLearning
 
                     DrawPaint.Color = CurrentLineColor;
                     canvas.DrawBitmap(CanvasBitmap, 0, 0, CanvasPaint);
+                    DrawCanvas.DrawText(Text, 0, 0,
+                    new Paint
+                    {
+                        TextSize = (float)Device.GetNamedSize(NamedSize, new Label()),
+                        Color = XColor.ToAndroid()
+                    });
                     canvas.DrawPath(DrawPath, DrawPaint);
                 }
 
@@ -228,10 +237,9 @@ namespace InnoTecheLearning
 
                 public void DrawText(string Text, NamedSize Size, XColor Color)
                 {
-                    DrawCanvas.SetBitmap(CanvasBitmap);
-                    DrawCanvas.DrawText(Text, 0, 0,
-                    new Paint { TextSize = (float)Device.GetNamedSize(Size, new Label()),
-                                Color = Color.ToAndroid() });
+                    this.Text = Text;
+                    this.NamedSize = Size;
+                    this.XColor = Color;
                     Invalidate();
                 }
             }
