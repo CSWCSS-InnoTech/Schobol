@@ -1407,7 +1407,10 @@ namespace InnoTecheLearning
                 if (_mode == AudioTrackMode.Static)
                     _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
                 else
+                {
                     Set((sender, e) => { if (_loop) { _player.Release(); Init(_options); play(); }; });
+                    _content = Options.Content.ReadFully(true);
+                }
                 _prepared = true;
             }
             protected virtual void play()
