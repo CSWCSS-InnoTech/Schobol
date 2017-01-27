@@ -404,14 +404,15 @@ namespace InnoTecheLearning
                 Helper.Run(Task);
         }
 
-        public static T Do<T>(this Task<T> Task)
+        public static T Do<T>(this Task<T> Task, T Default = default(T))
         {
-            System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false);
-            T Result = default(T);
-            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
-                Helper.Run(Task, (Task<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
-            Wait.WaitOne();
-            Wait.Reset();
+            T Result = Default;
+            using (System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false))
+            {
+                using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                    Helper.Run(Task, (Task<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
+                Wait.WaitOne();
+            }
             return Result;
         }
 #if NETFX_CORE
@@ -421,9 +422,9 @@ namespace InnoTecheLearning
                 Helper.Run(Task.AsTask());
         }
 
-        public static T Do<T>(this global::Windows.Foundation.IAsyncOperation<T> Task)
+        public static T Do<T>(this global::Windows.Foundation.IAsyncOperation<T> Task, T Default = default(T))
         {
-            return Do(Task.AsTask());
+            return Do(Task.AsTask(), Default);
         }
         public static void Do<TProgress>(this global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
         {
@@ -432,22 +433,12 @@ namespace InnoTecheLearning
         }
 
         public static TResult Do<TResult, TProgress>
-            (this global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task)
+            (this global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task,
+            TResult Default = default(TResult))
         {
-            return Do(Task.AsTask());
+            return Do(Task.AsTask(), Default);
         }
 #endif
-        public static List<Task> Tasks { get; set; } = new List<Task>();
-        public static void TaskSet(Task Task, int Index)
-        {
-            if (Index > Tasks.Capacity) Tasks.Capacity = Index;
-            Tasks[Index] = Task;
-        }
-        public static void TaskDoAll()
-        {
-            foreach (var Task in Tasks)
-                Task.Do();
-        }
         public static ushort ToUShort(string String)
         {
             Retry: try

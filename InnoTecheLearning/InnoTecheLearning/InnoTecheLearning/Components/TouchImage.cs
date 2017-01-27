@@ -61,6 +61,8 @@ namespace InnoTecheLearning
                 }
             }
 
+            
+
             protected internal delegate void NoParam();
             protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color);
             protected internal event NoParam ClearEvent;

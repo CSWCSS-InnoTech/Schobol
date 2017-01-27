@@ -712,19 +712,23 @@ namespace InnoTecheLearning
             {
                 var Draw = new TouchImage
                 {
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     BackgroundColor = Color.White,
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
 
-                Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", NamedSize.Medium);
+                Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", NamedSize.Medium, Color.Red);
                 return new StackLayout
                 {
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
                     new Frame
                     {
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.FillAndExpand,
                         BackgroundColor = Color.White,
                         Padding = 5,
                         HasShadow = false,

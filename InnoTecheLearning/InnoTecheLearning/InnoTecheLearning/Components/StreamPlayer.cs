@@ -1406,21 +1406,8 @@ namespace InnoTecheLearning
                 _frames = Options.Samples;
                 _player.SetVolume(_volume = Options.Volume);
                 _player.SetNotificationMarkerPosition(_frames * 31 / 32);
-                if (_mode == AudioTrackMode.Static)
-                    _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
-                else _content = Options.Content.ReadFully(true);
+                _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
                 _prepared = true;
-            }
-            Task _streamer;
-            bool _stop;
-            byte[] _content;
-            protected virtual void play()
-            {
-                _player.Flush();
-                for (int i = 0; !_stop; i += _buffersize)
-                {
-                    _player.Write(_content, i, _buffersize);
-                }
             }
             public void Play()
             {
@@ -1432,13 +1419,11 @@ namespace InnoTecheLearning
                 }
                 else
                 {
-                    if (_streamer == null) _streamer = Task.Run(action: play);
                     Device.StartTimer(_duration,
                         () => { Complete?.Invoke(this, EventArgs.Empty); return !_disposedValue; });
                     Complete += (sender, e) =>
                     {
-                        if (_loop) {
-                            _streamer = Task.Run(action: play); };
+                        if (_loop) { _player.Release(); Init(_options); Play(); };
                     };
                 }
                 _player.Play();
@@ -1447,7 +1432,6 @@ namespace InnoTecheLearning
             { if (_prepared) _player.Pause(); }
             public void Stop()
             {
-                _stop = true;
                 if (_player == null)
                     return;
                 if (_loop) _player.SetLoopPoints(0, 0, 0);
@@ -1796,11 +1780,12 @@ namespace InnoTecheLearning
                 remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
             }
             public bool Loop { get { return _player.IsLooping; } set { _player.IsLooping = value; } }
-            [DllImport(@"urlmon.dll")]
+            [DllImport(@"urlmon.dll"), Obsolete("Only used in 0.10.0a105. Will very likely be removed soon.", true)]
             private extern static uint FindMimeFromData(uint pBC, [MarshalAs(UnmanagedType.LPStr)] string pwzUrl,
                                                         [MarshalAs(UnmanagedType.LPArray)] byte[] pBuffer, uint cbSize,
                                                         [MarshalAs(UnmanagedType.LPStr)] string pwzMimeProposed,
                                                         uint dwMimeFlags, out uint ppwzMimeOut, uint dwReserverd);
+            [Obsolete("Only used in 0.10.0a105. Will very likely be removed soon.", true)]
             public static string GetMime(byte[] buffer)
             {
                 try
@@ -1842,7 +1827,6 @@ namespace InnoTecheLearning
                     _player.Flush();
                     _player.Release();
                     _player.Dispose();
-                    _content = null;
 #elif NETFX_CORE
                     _player.ClearValue(MediaElement.SourceProperty);
 #endif
