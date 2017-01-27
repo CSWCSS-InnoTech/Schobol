@@ -1413,12 +1413,14 @@ namespace InnoTecheLearning
                 }
                 _prepared = true;
             }
+            Task _play;
             protected virtual void play()
             {
+                _play = Task.Run(() => { 
                 for (int i = 0; i <= _content.Length; i += _buffersize)
                 {
                     _player.Write(_content, i, _buffersize);
-                }
+                } });
             }
             public void Play()
             {
