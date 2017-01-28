@@ -730,7 +730,7 @@ namespace InnoTecheLearning
                     BackgroundColor = Color.White,
                     CurrentLineColor = Color.Black
                 };
-                    Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
+                Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
                 using (var Size = Immutable.Create(NamedSize.Large))
                 using (var TColor = Immutable.Create(Color.Red))
                 {
@@ -753,7 +753,7 @@ namespace InnoTecheLearning
                             HasShadow = false,
                             OutlineColor = Color.Black,
                             Content = Draw
-                        }, Row(false, Duplicate(Image(ImageFile.Heart), 5).ToArray(), Back(this) }
+                        }, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5).ToArray()), Back(this) }
                     };
                 }
             }
