@@ -753,7 +753,7 @@ namespace InnoTecheLearning
                             HasShadow = false,
                             OutlineColor = Color.Black,
                             Content = Draw
-                        }, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5).ToArray()), Back(this) }
+                        }, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
                     };
                 }
             }

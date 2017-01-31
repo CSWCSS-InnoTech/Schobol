@@ -89,7 +89,6 @@ namespace InnoTecheLearning
                 WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color, Location));
 
             public void WaitExecute(Action Task) { if(IsReady) Task(); else Ready += () => Task(); }
-#if __ANDROID__
 
             public class Renderer : ViewRenderer<TouchImage, DrawView>
             {
@@ -103,7 +102,8 @@ namespace InnoTecheLearning
                         e.NewElement.ClearEvent = Draw.Clear;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
-                    } catch (NullReferenceException) { }
+                    }
+                    catch (NullReferenceException) { }
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -118,16 +118,24 @@ namespace InnoTecheLearning
 
                 private void UpdateControl()
                 {
-                    Control.CurrentLineColor = Element.CurrentLineColor.ToAndroid();
+                    Control.CurrentLineColor = Element.CurrentLineColor.
+#if __IOS__
+                        ToUIColor
+#elif __ANDROID__
+                        ToAndroid
+#elif NETFX_CORE
+                        ToWindows
+#endif
+                            ();
                 }
             }
-
+#if __ANDROID__
             // Original Source: http://csharp-tricks-en.blogspot.com/2014/05/android-draw-on-screen-by-finger.html
             public class DrawView : View
             {
-                public static DrawView Create(Xamarin.Forms.Size Size)
+                public static DrawView Create(Size Size)
                 {
-                    var Return = new DrawView(Xamarin.Forms.Forms.Context)
+                    var Return = new DrawView(Forms.Context)
                     {
                         _Size = Size,
                         CanvasBitmap = Bitmap.CreateBitmap(Size.Width < 1 ? 1 : (int)Size.Width,
@@ -201,7 +209,7 @@ namespace InnoTecheLearning
 
                     DrawPaint.Color = CurrentLineColor;
                     canvas.DrawBitmap(CanvasBitmap, 0, 0, CanvasPaint);
-                    DrawCanvas.DrawText(Text, (float)Location.X, (float)Location.Y,
+                    canvas.DrawText(Text, (float)Location.X, (float)Location.Y,
                     new Paint
                     {
                         TextSize = (float)Device.GetNamedSize(NamedSize, new Label()),
@@ -258,36 +266,6 @@ namespace InnoTecheLearning
                 }
             }
 #elif __IOS__
-            public class Renderer : ViewRenderer<TouchImage, DrawView>
-            {
-                protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
-                {
-                    base.OnElementChanged(e);
-                    try
-                    {
-                        var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
-                        e.NewElement.DrawTextEvent = Draw.DrawText;
-                        e.NewElement.ClearEvent = Draw.Clear;
-                        e.NewElement.Ready();
-                        SetNativeControl(Draw);
-                    } catch (NullReferenceException) { }
-                }
-
-                protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
-                {
-                    base.OnElementPropertyChanged(sender, e);
-
-                    if (e.PropertyName == TouchImage.CurrentLineColorProperty.PropertyName)
-                    {
-                        UpdateControl();
-                    }
-                }
-
-                private void UpdateControl()
-                {
-                    Control.CurrentLineColor = Element.CurrentLineColor.ToUIColor();
-                }
-            }
             // Original Source: http://stackoverflow.com/questions/21029440/xamarin-ios-drawing-onto-image-after-scaling-it
             public class DrawView : UIView
             {
@@ -433,45 +411,24 @@ namespace InnoTecheLearning
                 }
             }
 #elif NETFX_CORE
-            public class Renderer : ViewRenderer<TouchImage, DrawView>
-            {
-                protected override void OnElementChanged(ElementChangedEventArgs<TouchImage> e)
-                {
-                    base.OnElementChanged(e);
-                    try
-                    {
-                        var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
-                        e.NewElement.DrawTextEvent = Draw.DrawText;
-                        e.NewElement.ClearEvent = Draw.Clear;
-                        e.NewElement.Ready();
-                        SetNativeControl(Draw);
-                    } catch (NullReferenceException) { }
-                }
-
-                protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
-                {
-                    base.OnElementPropertyChanged(sender, e);
-
-                    if (e.PropertyName == TouchImage.CurrentLineColorProperty.PropertyName)
-                    {
-                        UpdateControl();
-                    }
-                }
-
-                private void UpdateControl()
-                {
-                    var converter = new ColorConverter();
-
-                    Control.CurrentBrush =
-                        (SolidColorBrush)
-                            converter.Convert(Element.CurrentLineColor, null, null, null);
-                }
-            }    // Original Source: http://www.geekchamp.com/tips/drawing-in-wp7-2-drawing-shapes-with-finger
+            // Original Source: http://www.geekchamp.com/tips/drawing-in-wp7-2-drawing-shapes-with-finger
             public class DrawView : InnoTecheLearning.DrawView
             {
                 private DrawView() : base() { }
 
-                public Brush CurrentBrush { get; set; }
+
+                public global::Windows.UI.Color CurrentLineColor
+                {
+                    get
+                    {
+                        return CurrentBrush.Color;
+                    }
+                    set
+                    {
+                        CurrentBrush = new SolidColorBrush(value);
+                    }
+                }
+                public SolidColorBrush CurrentBrush { get; set; }
 
                 public float PenWidth { get; set; }
                 private Point CurrentPoint;

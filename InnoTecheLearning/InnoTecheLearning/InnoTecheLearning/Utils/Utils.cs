@@ -282,11 +282,11 @@ namespace InnoTecheLearning
                 Return += String;
             return Return;
         }
-        public static List<T> Duplicate<T>(T Item, int Count)
+        public static T[] Duplicate<T>(T Item, int Count)
         {
-            List<T> Return = new List<T>();
+            T[] Return = new T[Count];
             for (int i = 0; i < Count; i++)
-                Return.Add(Item);
+                Return[i] = Item;
             return Return;
         }
         /// <summary>
