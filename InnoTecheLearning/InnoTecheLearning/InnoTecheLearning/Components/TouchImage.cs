@@ -159,6 +159,7 @@ namespace InnoTecheLearning
                 private NamedSize NamedSize;
                 private XColor XColor;
                 private Point Location;
+                private bool HasText;
                 private Size _Size;
                 public Size Size
                 {
@@ -209,10 +210,10 @@ namespace InnoTecheLearning
 
                     DrawPaint.Color = CurrentLineColor;
                     canvas.DrawBitmap(CanvasBitmap, 0, 0, CanvasPaint);
-                    canvas.DrawText(Text, (float)Location.X, (float)Location.Y,
+                    if(HasText) canvas.DrawText(Text, (float)Location.X, (float)Location.Y,
                     new Paint
                     {
-                        TextSize = (float)Device.GetNamedSize(NamedSize, new Label()),
+                        TextSize = (float)Device.GetNamedSize(NamedSize, typeof(Android.Widget.TextView)),
                         Color = XColor.ToAndroid()
                     });
                     canvas.DrawPath(DrawPath, DrawPaint);
@@ -247,6 +248,7 @@ namespace InnoTecheLearning
                 public void Clear()
                 {
                     DrawPath.Reset();
+                    this.HasText = false;
                     this.Text = string.Empty;
                     this.NamedSize = NamedSize.Default;
                     this.XColor = XColor.Default;
@@ -258,6 +260,7 @@ namespace InnoTecheLearning
 
                 public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
                 {
+                    this.HasText = true;
                     this.Text = Text;
                     this.NamedSize = Size;
                     this.XColor = Color;
