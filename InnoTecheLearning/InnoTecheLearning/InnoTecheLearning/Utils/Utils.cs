@@ -662,6 +662,40 @@ function Factorial(aNumber){
       return  Factorial_(aNumber, 0);
    }
 }
+
+function Fraction(value) {
+  var best_numer = 1;
+  var best_denom = 1;
+  var best_err = Math.abs(value - best_numer / best_denom);
+  for (var denom = 1; best_err > 0 && denom <= 1e6; denom++) {
+    var numer = Math.round(value * denom);
+    var err = Math.abs(value - numer / denom);
+    if (err < best_err) {
+      best_numer = numer;
+      best_denom = denom;
+      best_err = err;
+      //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
+    }
+  }
+  return best_numer + "" / "" best_denom;
+}
+function Mixed(value) {
+  var best_numer = 1;
+  var best_denom = 1;
+  var best_err = Math.abs(value - best_numer / best_denom);
+  for (var denom = 1; best_err > 0 && denom <= 1e6; denom++) {
+    var numer = Math.round(value * denom);
+    var err = Math.abs(value - numer / denom);
+    if (err < best_err) {
+      best_numer = numer;
+      best_denom = denom;
+      best_err = err;
+      //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
+    }
+  }
+  return Math.floor(best_numer / best_denom) + "" "" + best_numer % best_denom + "" / "" best_denom;
+}
+
 const π = Math.PI;
 const e = Math.E;
 const Root2 = Math.SQRT2;
