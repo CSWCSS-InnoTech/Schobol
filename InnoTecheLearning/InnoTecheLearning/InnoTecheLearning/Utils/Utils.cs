@@ -489,10 +489,13 @@ namespace InnoTecheLearning
             // Ask user to enter expression.
             try
             {
+                //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
+                //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
                 return JSEvaluteAns = new Jint.Engine().Execute(TrueFree ? "" :
                     $@"var Prev = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
 var AngleUnit = {(byte)Mode};" + @"
 var Ans = Number(Prev);
+const global = Function('return this')();
 function AngleConvert(Num, Origin, Target){
     switch(Origin) {
         case 0://Degrees
@@ -612,6 +615,8 @@ function Imul(a, b) { return (a*(b%65536)+a*Math.floor(b/65536))%2147483648; }
 function Lb(x) { return Math.log(x) / Math.LN2; }
 function Ln(x) { return Math.log(x); }
 function Log(x, base) { return Math.log(x) / (base ? Math.log(base) : Math.LN10); }
+function Max() {return Math.max.apply(global, arguments);}
+function Min() {return Math.min.apply(global, arguments);}
 function Pow(x, y) { return Math.pow(x, y); }
 function Random() { return Math.random(); }
 function Round(x) { return Math.round(x); }
@@ -677,7 +682,7 @@ function Fraction(value) {
       //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
     }
   }
-  return best_numer + "" / "" best_denom;
+  return best_numer + ""/"" + best_denom;
 }
 function Mixed(value) {
   var best_numer = 1;
@@ -693,7 +698,7 @@ function Mixed(value) {
       //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
     }
   }
-  return Math.floor(best_numer / best_denom) + "" "" + best_numer % best_denom + "" / "" best_denom;
+  return Math.floor(best_numer / best_denom) + "" "" + best_numer % best_denom + ""/"" + best_denom;
 }
 
 const π = Math.PI;
@@ -705,10 +710,44 @@ const Ln10 = Math.LN10;
 const Log2e = Math.LOG2E;
 const Log10e = Math.LOG10E;
 """";")
-.Execute(MaxMin ?
-                    System.Text.RegularExpressions.Regex.
-                    Replace(Expression, @"(?<=^|[^\w.])M(in|ax)(?=\s*\()", "Math.m$1")
-                    : Expression).GetCompletionValue().ToString();
+#if false
+.SetValue("Fraction", new Func<double, string>((value) => {
+                var best_numer = 1;
+                var best_denom = 1;
+                var best_err = Math.Abs(value - best_numer / best_denom);
+                for (var denom = 1; best_err > 0 && denom <= 1e6; denom++)
+                {
+                    var numer = (int)Math.Round(value * denom);
+                    var err = Math.Abs(value - numer / denom);
+                    if (err < best_err)
+                    {
+                        best_numer = numer;
+                        best_denom = denom;
+                        best_err = err;
+                        //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
+                    }
+                }
+                return best_numer + " / " + best_denom;
+            })).SetValue("Mixed", new Func<double, string>((value) => {
+                var best_numer = 1;
+                var best_denom = 1;
+                var best_err = Math.Abs(value - best_numer / best_denom);
+                for (var denom = 1; best_err > 0 && denom <= 1e6; denom++)
+                {
+                    var numer = (int)Math.Round(value * denom);
+                    var err = Math.Abs(value - numer / denom);
+                    if (err < best_err)
+                    {
+                        best_numer = numer;
+                        best_denom = denom;
+                        best_err = err;
+                        //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
+                    }
+                }
+                return best_numer / best_denom + " " + best_numer % best_denom + " / " + best_denom;
+            }))
+#endif
+            .Execute(Expression).GetCompletionValue().ToString();
             }
             catch (Exception ex) when (Alert != null)
             {

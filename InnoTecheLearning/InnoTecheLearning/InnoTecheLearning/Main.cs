@@ -54,6 +54,7 @@ namespace InnoTecheLearning
             get { return base.Content; }
             set
             {
+#if false
                 var Layout = new RelativeLayout();
                 Layout.Children.Add(new Image
                 {
@@ -72,6 +73,9 @@ namespace InnoTecheLearning
                     Constraint.RelativeToParent((parent) => { return parent.Width; }),
                     Constraint.RelativeToParent((parent) => { return parent.Height; }));
                 base.Content = Layout;
+#else
+                base.Content = value;
+#endif
             }
         }
         Pages _Showing;
@@ -134,7 +138,7 @@ namespace InnoTecheLearning
                 _Showing = value;
             }
         }
-        StreamPlayer _Player;
+        //StreamPlayer _Player;
         public Main()
         {
 
@@ -143,11 +147,11 @@ namespace InnoTecheLearning
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
             Showing = Pages.Main;
-            _Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
-            _Player.Play();
+            //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
+            //_Player.Play();
             Log("Main page initialized.");
         }
-        ~Main() { _Player.Dispose(); }
+        //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed()
         {
             if (Showing != Pages.Main)
@@ -255,7 +259,7 @@ namespace InnoTecheLearning
                         Button("Stop", delegate {
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
-                        MusicSound?.Dispose(); _Player.Play(); }),
+                        MusicSound?.Dispose(); /*_Player.Play();*/ }),
                         Row(false, Volume, Vol),
                         Back(this)
                     }
@@ -272,7 +276,8 @@ namespace InnoTecheLearning
             };
         }
         public Button MusicTunerPlay(Text Text, Sounds Sound, Slider Vol)
-        { return Button(Text, delegate { _Player.Pause(); MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value); }); }
+        { return Button(Text, delegate { /*_Player.Pause();*/
+            MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value); }); }
         public StackLayout CloudTest
         {
             get
@@ -555,7 +560,7 @@ namespace InnoTecheLearning
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
         }
-        #region Append
+#region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color))
         {
@@ -592,7 +597,7 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
-        #endregion
+#endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
