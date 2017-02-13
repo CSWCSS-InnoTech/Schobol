@@ -600,17 +600,18 @@ function Clz32(x) { return 31 - Math.floor(Math.log(x) * Math.LOG2E); }
 function Exp(x) { return Math.exp(x); }
 function Expm1(x) { return Math.exp(x) - 1; }
 function Floor(x) { return Math.floor(x); }
-/*function Hypot(n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15, n16)
-{ 
+function Hypot() {
   var y = 0;
-  for (var i = 1; i < 17; i++) {
-    var n = Number(eval(""n"" + i));
-    if (n === Infinity || n === -Infinity) return Infinity;
-    if (isNaN(n)) return NaN;
-    y += n * n;
+  var length = arguments.length;
+
+  for (var i = 0; i < length; i++) {
+    if (arguments[i] === Infinity || arguments[i] === -Infinity) {
+      return Infinity;
+    }
+    y += arguments[i] * arguments[i];
   }
   return Math.sqrt(y);
-}*/
+};
 function Imul(a, b) { return (a*(b%65536)+a*Math.floor(b/65536))%2147483648; }
 function Lb(x) { return Math.log(x) / Math.LN2; }
 function Ln(x) { return Math.log(x); }
@@ -668,39 +669,6 @@ function Factorial(aNumber){
    }
 }
 
-function Fraction(value) {
-  var best_numer = 1;
-  var best_denom = 1;
-  var best_err = Math.abs(value - best_numer / best_denom);
-  for (var denom = 1; best_err > 0 && denom <= 1e6; denom++) {
-    var numer = Math.round(value * denom);
-    var err = Math.abs(value - numer / denom);
-    if (err < best_err) {
-      best_numer = numer;
-      best_denom = denom;
-      best_err = err;
-      //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
-    }
-  }
-  return best_numer + ""/"" + best_denom;
-}
-function Mixed(value) {
-  var best_numer = 1;
-  var best_denom = 1;
-  var best_err = Math.abs(value - best_numer / best_denom);
-  for (var denom = 1; best_err > 0 && denom <= 1e6; denom++) {
-    var numer = Math.round(value * denom);
-    var err = Math.abs(value - numer / denom);
-    if (err < best_err) {
-      best_numer = numer;
-      best_denom = denom;
-      best_err = err;
-      //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
-    }
-  }
-  return Math.floor(best_numer / best_denom) + "" "" + best_numer % best_denom + ""/"" + best_denom;
-}
-
 const π = Math.PI;
 const e = Math.E;
 const Root2 = Math.SQRT2;
@@ -710,41 +678,42 @@ const Ln10 = Math.LN10;
 const Log2e = Math.LOG2E;
 const Log10e = Math.LOG10E;
 """";")
-#if false
-.SetValue("Fraction", new Func<double, string>((value) => {
-                var best_numer = 1;
-                var best_denom = 1;
+#if true
+            .SetValue("Fraction", new Func<double, string>((value) => {
+                var best_numer = 1.0;
+                var best_denom = 1.0;
                 var best_err = Math.Abs(value - best_numer / best_denom);
-                for (var denom = 1; best_err > 0 && denom <= 1e6; denom++)
+                for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
                 {
-                    var numer = (int)Math.Round(value * denom);
+                    var numer = Math.Round(value * denom);
                     var err = Math.Abs(value - numer / denom);
                     if (err < best_err)
                     {
                         best_numer = numer;
                         best_denom = denom;
                         best_err = err;
-                        //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
+                        //Console.WriteLine(best_numer + " / " + best_denom + " = " + (best_numer / best_denom) + " error " + best_err);
                     }
                 }
                 return best_numer + " / " + best_denom;
-            })).SetValue("Mixed", new Func<double, string>((value) => {
-                var best_numer = 1;
-                var best_denom = 1;
+            })).SetValue("Mixed", new Func<double, string>((double value) =>
+            {
+                var best_numer = 1.0;
+                var best_denom = 1.0;
                 var best_err = Math.Abs(value - best_numer / best_denom);
-                for (var denom = 1; best_err > 0 && denom <= 1e6; denom++)
+                for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
                 {
-                    var numer = (int)Math.Round(value * denom);
+                    var numer = Math.Round(value * denom);
                     var err = Math.Abs(value - numer / denom);
                     if (err < best_err)
                     {
                         best_numer = numer;
                         best_denom = denom;
                         best_err = err;
-                        //console.log(best_numer + "" / "" + best_denom + "" = "" + (best_numer/best_denom) + "" error "" + best_err);
+                        //Console.WriteLine(best_numer + " / " + best_denom + " = " + (best_numer / best_denom) + " error " + best_err);
                     }
                 }
-                return best_numer / best_denom + " " + best_numer % best_denom + " / " + best_denom;
+                return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;
             }))
 #endif
             .Execute(Expression).GetCompletionValue().ToString();
@@ -754,7 +723,6 @@ const Log10e = Math.LOG10E;
                 return 'ⓧ' + ex.Message; //⮾
             }
         }
-
 #if false
         static void Hi()
         {
