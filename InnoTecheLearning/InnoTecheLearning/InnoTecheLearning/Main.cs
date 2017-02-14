@@ -401,7 +401,7 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", delegate
                 {
-                    Calculator_Value = JSEvaluate(In.Text, this, AngleUnit);
+                    Calculator_Value = JSEvaluate(In.Text, this, AngleUnit, Calculator_Modifier);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
@@ -524,7 +524,7 @@ namespace InnoTecheLearning
                 Append(Const.Children, Expressions.NaN, 2, 2);
                 Append(Const.Children, Expressions.Undefined, "UNDEF", 3, 2);
 
-                StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, Out } };
+                StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, new ScrollView(), Out } };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
                 Mode.Clicked += delegate
@@ -556,10 +556,28 @@ namespace InnoTecheLearning
                         }
                     }
                 };
-                Return.Children[1] = Select;
+                ScrollView Modificator = new ScrollView
+                {
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    Orientation = ScrollOrientation.Horizontal,
+                    Content = new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        Children = {
+                        Button("Norm", delegate { Calculator_Modifier = Modifier.Normal; }, Color.FromHex("#8AC249")) ,
+                        Button("%", delegate { Calculator_Modifier = Modifier.Percentage; }, Color.FromHex("#8AC249")) ,
+                        Button("a b / c", delegate { Calculator_Modifier = Modifier.Mixed_Fraction; }, Color.FromHex("#8AC249")) ,
+                        Button("d / b", delegate { Calculator_Modifier = Modifier.Fraction; }, Color.FromHex("#8AC249"))
+                        //Light Green
+                        }
+                    }
+                };
+                Return.Children[3] = Modificator;
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
         }
+        Modifier Calculator_Modifier;
 #region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color))

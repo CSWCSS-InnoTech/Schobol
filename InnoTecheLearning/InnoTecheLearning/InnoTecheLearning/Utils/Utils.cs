@@ -481,10 +481,10 @@ namespace InnoTecheLearning
         public static T Eval<T>(string CodeToExecute)
         { return (T)(new Jint.Engine().Execute(CodeToExecute).GetCompletionValue().ToObject()); }
         private static string JSEvaluteAns = "";
-        public enum AngleMode : byte
-        { Degree, Radian, Gradian, Turn }
+        public enum AngleMode : byte { Degree, Radian, Gradian, Turn }
+        public enum Modifier : byte { Normal, Percentage, Fraction, Mixed_Fraction }
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
-            bool TrueFree =  false, bool MaxMin = true)
+           Modifier Mod = Modifier.Normal, bool TrueFree =  false)
         {
             // Ask user to enter expression.
             try
@@ -493,7 +493,8 @@ namespace InnoTecheLearning
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
                 return JSEvaluteAns = new Jint.Engine().Execute(TrueFree ? "" :
                     $@"var Prev = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
-var AngleUnit = {(byte)Mode};" + @"
+var AngleUnit = {(byte)Mode};
+var Modifier = {(byte)Mod};" + @"
 var Ans = Number(Prev);
 const global = Function('return this')();
 function AngleConvert(Num, Origin, Target){
