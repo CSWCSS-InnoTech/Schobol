@@ -491,7 +491,7 @@ namespace InnoTecheLearning
             {
                 //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
-                return JSEvaluteAns = new Jint.Engine().Execute(TrueFree ? "" :
+                var Engine = new Jint.Engine().Execute(TrueFree ? "" :
                     $@"var Prev = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
 var AngleUnit = {(byte)Mode};
 var Modifier = {(byte)Mod};" + @"
@@ -670,6 +670,21 @@ function Factorial(aNumber){
    }
 }
 
+function Display(Text) { 
+    switch(Modifier) {
+        case 0: //Normal
+            return Text;
+        case 1: //%
+            return (Text * 100) + '%';
+        case 2: //d / c
+            return Fraction(Text);
+        case 3: //a b / c
+            return Mixed(Text);
+        default: //What?
+            throw('Invalid display modifier.');
+    }
+}
+
 const π = Math.PI;
 const e = Math.E;
 const Root2 = Math.SQRT2;
@@ -717,13 +732,16 @@ const Log10e = Math.LOG10E;
                 return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;
             }))
 #endif
-            .Execute(Expression).GetCompletionValue().ToString();
+            .Execute(Expression);
+            return JSEvaluteAns = Engine.Invoke("Display", Engine.GetCompletionValue()).ToString();
             }
             catch (Exception ex) when (Alert != null)
             {
                 return 'ⓧ' + ex.Message; //⮾
             }
         }
+
+        public static void AddRange<T>(this ICollection<T> ic, IEnumerable<T> ie) { foreach (T obj in ie) ic.Add(obj); }
 #if false
         static void Hi()
         {

@@ -12,7 +12,7 @@ namespace InnoTecheLearning
         /// </summary>
         public static class Create
         {
-            public static Button Button(Text Text, EventHandler OnClick, Color BackColor =
+            public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Color BackColor =
                 default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -23,7 +23,7 @@ namespace InnoTecheLearning
                 Button.Clicked += OnClick;
                 return Button;
             }
-            public static Button Button(Text Text, EventHandler OnClick, Size Size,
+            public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Size Size,
                  Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -39,6 +39,38 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor
                 };
                 Button.Clicked += OnClick;
+                return Button;
+            }
+            public delegate void ButtonOnClick(object sender, EventArgs e, ref Color bg);
+            public static Button Button(Text Text, ButtonOnClick OnClick, Color BackColor =
+                default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button { Text = Text, TextColor = TextColor, BackgroundColor = BackColor };
+                Button.Clicked += (sender, e) => 
+                { var temp = Button.BackgroundColor; OnClick(sender, e, ref temp); Button.BackgroundColor = temp; };
+                return Button;
+            }
+            public static Button Button(Text Text, ButtonOnClick OnClick, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button
+                {
+                    Text = Text,
+                    TextColor = TextColor,
+                    WidthRequest = Size.Width,
+                    HeightRequest = Size.Height,
+                    BackgroundColor = BackColor
+                };
+                Button.Clicked += (sender, e) =>
+                { var temp = Button.BackgroundColor; OnClick(sender, e, ref temp); Button.BackgroundColor = temp; };
                 return Button;
             }
             public class ExpressionEventArgs : EventArgs
@@ -571,6 +603,39 @@ namespace InnoTecheLearning
                 Return.ValueChanged += ValueChanged;
                 return Return;
             }
+            public static ScrollView RadioButtons(Color Base, Color Selected,
+                int DefaultIndex, Func<int, ButtonOnClick> Init, params string[] Names)
+            {
+                var Modificators = new Button[Names.Length];
+                for (int Index = 0; Index < Names.Length; Index++)
+                {
+                    Modificators[Index] = Button(Names[Index], Init(Index), Index == DefaultIndex ? Selected : Base);
+                    Modificators[Index].Clicked += (sender, e) => {
+                        var Sender = sender as Button;
+                        if (Sender.BackgroundColor == Base)
+                        {
+                            foreach (var Modify in Modificators)
+                                Modify.BackgroundColor = Base;
+                            Sender.BackgroundColor = Selected;
+                        }
+                        else Sender.BackgroundColor = Base;
+                    };
+                }
+                ScrollView Modificator = new ScrollView
+                {
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    Orientation = ScrollOrientation.Horizontal,
+                    Content = new StackLayout
+                    {
+                        Orientation = StackOrientation.Horizontal,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                    }
+                };
+                AppendScrollStack(Modificator, Modificators);
+                return Modificator;
+            }
+            public static void AppendScrollStack<T>(ScrollView Base, params T[] Items) where T : View =>
+                (Base.Content as StackLayout).Children.AddRange(Items);
         }
     }
 }

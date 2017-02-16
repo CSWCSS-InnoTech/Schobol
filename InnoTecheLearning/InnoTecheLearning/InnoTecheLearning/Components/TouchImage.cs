@@ -60,14 +60,11 @@ namespace InnoTecheLearning
                     SetValue(CurrentLineColorProperty, value);
                 }
             }
-
             
-
-            protected internal delegate void NoParam();
             protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color, Point Location);
-            protected internal event NoParam ClearEvent;
+            protected internal event Action ClearEvent;
             protected internal event TextDelegate DrawTextEvent;
-            protected internal event NoParam Ready;
+            protected internal event Action Ready;
             protected internal bool IsReady;
 
             public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
@@ -489,7 +486,7 @@ namespace InnoTecheLearning
                     return Return;
                 }
                 public bool PointerDown { get; set; }
-                private event NoParam ClearEvent;
+                private event Action ClearEvent;
                 private event TextDelegate TextEvent;
                 public void Clear()
                 { ClearEvent(); }

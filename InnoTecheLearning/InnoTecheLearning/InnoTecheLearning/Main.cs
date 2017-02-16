@@ -525,6 +525,7 @@ namespace InnoTecheLearning
                 Append(Const.Children, Expressions.Undefined, "UNDEF", 3, 2);
 
                 StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, new ScrollView(), Out } };
+                Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
                 Mode.Clicked += delegate
@@ -532,50 +533,60 @@ namespace InnoTecheLearning
                     AngleUnit++; if (AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
                     Mode.Text = AngleUnit.ToString();
                 };
-                ScrollView Select = new ScrollView
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Orientation = ScrollOrientation.Horizontal,
-                    Content = new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        Children = {
-                        Button("Norm", delegate {Try(delegate { if(Return.Children[2] != Norm) Return.Children[2]
-                                = Norm; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Button("Bin", delegate {Try(delegate { if(Return.Children[2] != Bin) Return.Children[2]
-                                = Bin; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Button("Func", delegate {Try(delegate { if(Return.Children[2] != Func) Return.Children[2]
-                                = Func; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Button("Trig", delegate {Try(delegate { if(Return.Children[2] != Trig) Return.Children[2]
-                                = Trig; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
-                                = Const; },(Exception e)=> { }); }, Color.FromHex("#8AC249")) ,
-                        Mode, Back(this)
-                        //Light Green
-                        }
-                    }
-                };
-                ScrollView Modificator = new ScrollView
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Orientation = ScrollOrientation.Horizontal,
-                    Content = new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        Children = {
-                        Button("Norm", delegate { Calculator_Modifier = Modifier.Normal; }, Color.FromHex("#8AC249")) ,
-                        Button("%", delegate { Calculator_Modifier = Modifier.Percentage; }, Color.FromHex("#8AC249")) ,
-                        Button("a b / c", delegate { Calculator_Modifier = Modifier.Mixed_Fraction; }, Color.FromHex("#8AC249")) ,
-                        Button("d / b", delegate { Calculator_Modifier = Modifier.Fraction; }, Color.FromHex("#8AC249"))
-                        //Light Green
-                        }
-                    }
-                };
-                Return.Children[3] = Modificator;
+                Return.Children[1] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"), 0,
+                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; },
+                    nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const));
+                AppendScrollStack(Return.Children[1] as ScrollView, Mode, Back(this));
+                Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"), 0,
+                    i => delegate { Calculator_Modifier = (Modifier)i; }, "Norm", "%", "a b / c", "d / c");
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
+            /*
+             
+            
+                        Button("Const", delegate {Try(delegate { if(Return.Children[2] != Const) Return.Children[2]
+                                = Const; },(Exception e)=> { }); }, Color.FromHex("#8AC249")
+
+             { "Default", Color.Default },
+
+{ "Black", Color.FromHex("#212121") },
+
+{ "Blue Grey", Color.FromHex("#607D8B") },
+{ "Cyan", Color.FromHex("#00BCD4") },
+
+{ "Dark Purple", Color.FromHex("#673AB7") },
+{ "Grey", Color.FromHex("#9E9E9E") },
+
+{ "Light Blue", Color.FromHex("#02A8F3") },
+{ "Lime", Color.FromHex("#CDDC39") },
+
+{ "Pink", Color.FromHex("#E91E63") },
+
+{ "Red", Color.FromHex("#D32F2F") },
+
+{ "White", Color.FromHex("#FFFFFF") },
+
+{ "Amber", Color.FromHex("#FFC107") },
+
+{ "Blue", Color.FromHex("#2196F3") },
+
+{ "Brown", Color.FromHex("#795548") },
+
+{ "Dark Orange", Color.FromHex("#FF5722") },
+{ "Green", Color.FromHex("#4CAF50") },
+
+{ "Indigo", Color.FromHex("#3F51B5") },
+
+{ "Light Green", Color.FromHex("#8AC249") },
+{ "Orange", Color.FromHex("#FF9800") },
+
+{ "Purple", Color.FromHex("#94499D") },
+
+{ "Teal", Color.FromHex("#009587") },
+
+{ "Yellow", Color.FromHex("#FFEB3B") },
+
+*/
         }
         Modifier Calculator_Modifier;
 #region Append
