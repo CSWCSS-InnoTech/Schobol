@@ -604,7 +604,7 @@ namespace InnoTecheLearning
                 return Return;
             }
             public static ScrollView RadioButtons(Color Base, Color Selected,
-                int DefaultIndex, Func<int, ButtonOnClick> Init, params string[] Names)
+                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, params string[] Names)
             {
                 var Modificators = new Button[Names.Length];
                 for (int Index = 0; Index < Names.Length; Index++)

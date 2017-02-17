@@ -533,12 +533,12 @@ namespace InnoTecheLearning
                     AngleUnit++; if (AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
                     Mode.Text = AngleUnit.ToString();
                 };
-                Return.Children[1] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"), 0,
-                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; },
+                Return.Children[1] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
+                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const));
                 AppendScrollStack(Return.Children[1] as ScrollView, Mode, Back(this));
-                Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"), 0,
-                    i => delegate { Calculator_Modifier = (Modifier)i; }, "Norm", "%", "a b / c", "d / c");
+                Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
+                    i => delegate { Calculator_Modifier = (Modifier)i; }, 0, "Norm", "%", "a b / c", "d / c");
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*
