@@ -768,8 +768,16 @@ namespace InnoTecheLearning
                 using (var Size = Immutable.Create(NamedSize.Large))
                 using (var TColor = Immutable.Create(Color.Red))
                 {
-
-                    Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
+                    var Chars = Duplicate(Duplicate(new Label(), 9), 4);
+                    var Return = new AbsoluteLayout
+                    {
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                        BackgroundColor = Color.White,
+                        Padding = 5,
+                        Children = { Draw }
+                    };
+                    //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
                     return new StackLayout
                     {
                         HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -778,16 +786,7 @@ namespace InnoTecheLearning
                         Title("CSWCSS Maths Solver"),
                         (Text)"The dragon is setting fire on everything!",
                         (Text)"We must use the power of Mathematics to kill it!",
-                        new Frame
-                        {
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            BackgroundColor = Color.White,
-                            Padding = 5,
-                            HasShadow = false,
-                            OutlineColor = Color.Black,
-                            Content = Draw
-                        }, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
+                        Return, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
                     };
                 }
             }

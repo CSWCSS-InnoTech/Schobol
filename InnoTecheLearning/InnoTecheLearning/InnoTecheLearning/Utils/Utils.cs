@@ -1037,6 +1037,46 @@ const Log10e = Math.LOG10E;
 
             return (backgroundColorDelta > 0.4f) ? Color.Black : Color.White;
         }
+        /// <summary>
+        /// Adds a <see cref="View"/> to an <see cref="AbsoluteLayout"/>.
+        /// </summary>
+        /// <param name="Layout">The <see cref="AbsoluteLayout"/> to add the <see cref="View"/> into.</param>
+        /// <param name="View">The <see cref="View"/> to add into the <see cref="AbsoluteLayout"/>.</param>
+        /// <param name="RelativeX">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="RelativeY">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="Flags">Options to layout in the <see cref="AbsoluteLayout"/>.</param>
+        public static void AddPosition(this AbsoluteLayout Layout, View View, double RelativeX, double RelativeY,
+            AbsoluteLayoutFlags Flags = AbsoluteLayoutFlags.PositionProportional)
+        {
+            // PositionProportional flag maps the range (0.0, 1.0) to
+            // the range "flush [left|top]" to "flush [right|bottom]"
+            AbsoluteLayout.SetLayoutFlags(View, Flags);
+            AbsoluteLayout.SetLayoutBounds(View, new Rectangle(RelativeX, RelativeY,
+                AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
+            Layout.Children.Add(View);
+        }/*
+        public static void Fill<T>(this IList<T> List) where T : new()
+        {
+            for (int i = 0; i < List.Count; i++)
+                List[i] = new T();
+        }
+        public static void Fill<T>(this T[] List) where T : new()
+        {
+            for (int i = 0; i < List.Length; i++)
+                List[i] = new T();
+        }
+        public static void Fill<T>(this T[,] List) where T : new()
+        {
+            for (int i = 0; i < List.Rank; i++)
+                for (int j = 0; j < List.GetLength(i); j++)
+                    List[i, j] = new T();
+        }
+        public static void Fill<T>(this T[][] List) where T : new()
+        {
+            for (int i = 0; i < List.Length; i++)
+                for (int j = 0; j < List[i].Length; j++)
+                    List[i][j] = new T();
+        }*/
         ///// <summary>
         ///// An uninitialized Void object.
         ///// </summary>

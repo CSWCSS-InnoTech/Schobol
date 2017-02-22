@@ -36,6 +36,7 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>false</UseDotNetNativeToolchain>
     <Optimize>false</Optimize>
+    <SuppressXamlWarnings />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>..\..\Release\UWP\</OutputPath>
