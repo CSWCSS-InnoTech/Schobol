@@ -1054,6 +1054,19 @@ const Log10e = Math.LOG10E;
             AbsoluteLayout.SetLayoutBounds(View, new Rectangle(RelativeX, RelativeY,
                 AbsoluteLayout.AutoSize, AbsoluteLayout.AutoSize));
             Layout.Children.Add(View);
+        }
+        /// <summary>
+        /// Adds a <see cref="View"/> to an <see cref="RelativeLayout"/>, and fills the <see cref="RelativeLayout"/>.
+        /// </summary>
+        /// <param name="Layout">The <see cref="RelativeLayout"/> to add the <see cref="View"/> into.</param>
+        /// <param name="View">The <see cref="View"/> to add into the <see cref="AbsoluteLayout"/>.</param>
+        public static void Add(this RelativeLayout Layout, View View)
+        {
+            Layout.Children.Add(View,
+                        Constraint.Constant(0),
+                        Constraint.Constant(0),
+                        Constraint.RelativeToParent((parent) => { return parent.Width; }),
+                        Constraint.RelativeToParent((parent) => { return parent.Height; }));
         }/*
         public static void Fill<T>(this IList<T> List) where T : new()
         {

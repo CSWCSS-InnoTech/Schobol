@@ -757,26 +757,43 @@ namespace InnoTecheLearning
         {
             get
             {
+                Alert(this, Duplicate(1.0, 9));
                 var Draw = new TouchImage
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.White,
+                    BackgroundColor = Color.Transparent,
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
                 using (var Size = Immutable.Create(NamedSize.Large))
                 using (var TColor = Immutable.Create(Color.Red))
                 {
-                    var Chars = Duplicate(Duplicate(new Label(), 9), 4);
-                    var Return = new AbsoluteLayout
+                    var Chars = Duplicate(Duplicate(new Label {
+                        HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Center,
+                    BackgroundColor = Color.Transparent, TextColor = Color.Black}
+                        , 9), 4);
+                    var Return = new RelativeLayout
+                    {
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        VerticalOptions = LayoutOptions.Fill,
+                        BackgroundColor = Color.Silver,
+                        Padding = 5,
+                    };
+                    Return.Add(Draw);
+                    var CharGrid = new Grid
                     {
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         VerticalOptions = LayoutOptions.FillAndExpand,
-                        BackgroundColor = Color.White,
-                        Padding = 5,
-                        Children = { Draw }
+                        RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, 9)),
+                        ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, 4)),
+                        BackgroundColor = Color.Transparent
                     };
+                    for (int i = 0; i < Chars.Length; i++)
+                        for (int j = 0; j < Chars[i].Length; j++)
+                        { Chars[i][j].Text = Text.RandomLatin; CharGrid.Children.Add(Chars[i][j], j, i); }
+                    Return.Add(CharGrid);
+                    Return.ForceLayout();
                     //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
                     return new StackLayout
                     {
@@ -786,7 +803,7 @@ namespace InnoTecheLearning
                         Title("CSWCSS Maths Solver"),
                         (Text)"The dragon is setting fire on everything!",
                         (Text)"We must use the power of Mathematics to kill it!",
-                        Return, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
+                        new Grid { Children = { new Label { Text = "a"}, new Label { Text = "a" } }  }, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
                     };
                 }
             }

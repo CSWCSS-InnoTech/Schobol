@@ -27,6 +27,13 @@ namespace InnoTecheLearning
                     return Chars;
                 }
             }
+            public static Text RandomChar
+            {
+                get
+                {
+                    return new Text((char)new Random().Next(char.MinValue, char.MaxValue));
+                }
+            }
             public static Text RandomLatin
             {
                 get
@@ -66,6 +73,10 @@ namespace InnoTecheLearning
                 }
             }
             public string Value { get; set; }
+            public Text(char Text)
+            { Value = new string(new[] { Text }); }
+            public Text(char[] Text)
+            { Value = new string(Text); }
             public Text(string Text)
             { Value = Text; }
             public Text Append(Text Text)
@@ -292,7 +303,7 @@ namespace InnoTecheLearning
             {
                 Text Text = new Text();
                 foreach (var Item in Array)
-                { Text.Append((char)Item); };
+                { char C; char.TryParse(Item.ToString(), out C); Text.Append(C); };
                 return Text;
             }
             public override string ToString()
