@@ -15,6 +15,27 @@ namespace InnoTecheLearning
             public static readonly Text Null = (string)null;
             public static readonly Text Empty = string.Empty;
             public static readonly Text Default = default(Text);
+            public static Text GetRandom()
+            {
+                return Random;
+            }
+            public static Text GetRandomChar()
+            {
+                
+                return RandomChar;
+            }
+            public static Text GetRandomLatin()
+            {
+                return RandomLatin;
+            }
+            public static Text GetRandomInteger()
+            {
+                return RandomInteger;
+            }
+            public static Text GetRandomUnicode()
+            {
+                return RandomUnicode;
+            }
             public static Text Random
             {
                 get

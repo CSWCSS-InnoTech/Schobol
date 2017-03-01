@@ -392,6 +392,9 @@ namespace InnoTecheLearning
         public static T Return<T>(T Return)
         { return Return; }
 
+        public static T Return<T>(T Return, params object[] Params)
+        { return Return; }
+
         public static T Assign<T>(T Value, out T Object)
         { return Object = Value; }
 
@@ -1067,7 +1070,22 @@ const Log10e = Math.LOG10E;
                         Constraint.Constant(0),
                         Constraint.RelativeToParent((parent) => { return parent.Width; }),
                         Constraint.RelativeToParent((parent) => { return parent.Height; }));
-        }/*
+        }
+        /// <summary>
+        /// Casting as a method.
+        /// </summary>
+        /// <typeparam name="T"><see cref="Type"/> to <see cref="Convert"/> to.</typeparam>
+        /// <param name="Object"><see cref="Object"/> to <see cref="Convert"/> from.</param>
+        /// <returns>The casted <see cref="Object"/>.</returns>
+        public static T Cast<T>(this object Object)
+        { return (T)Object; }
+#if NETFX_CORE
+        public static Color ToColor(this global::Windows.UI.Color Color)
+        { return new Color(Color.R / 255, Color.G / 255, Color.B / 255, Color.A / 255); }
+        public static Color ToColor(this global::Windows.UI.Xaml.Media.Brush Brush)
+        { return ToColor(((global::Windows.UI.Xaml.Media.SolidColorBrush)Brush).Color); }
+#endif
+        /*
         public static void Fill<T>(this IList<T> List) where T : new()
         {
             for (int i = 0; i < List.Count; i++)

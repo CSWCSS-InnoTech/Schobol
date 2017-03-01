@@ -60,7 +60,7 @@ namespace InnoTecheLearning
                     SetValue(CurrentLineColorProperty, value);
                 }
             }
-            
+
             protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color, Point Location);
             protected internal event Action ClearEvent;
             protected internal event TextDelegate DrawTextEvent;
@@ -97,6 +97,15 @@ namespace InnoTecheLearning
                         var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
                         e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
+                        e.NewElement.BackgroundColor = Draw.
+#if __IOS__
+                            BackgroundColor
+#elif __ANDROID__
+                            Background.Cast<Android.Graphics.Drawables.ColorDrawable>().Color
+#else
+                            Background
+#endif
+                            .ToColor();
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
                     }
