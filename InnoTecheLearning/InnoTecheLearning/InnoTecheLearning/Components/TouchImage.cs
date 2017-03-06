@@ -44,10 +44,11 @@ namespace InnoTecheLearning
         public class TouchImage : Image
         {
             public TouchImage() : base() {
-                BackgroundColor = XColor.White; CurrentLineColor = XColor.Black;// Ready += () => IsReady = true;
+                BackgroundColor = DefaultColor; CurrentLineColor = XColor.Black; Ready += () => IsReady = true;
             }
             public static readonly BindableProperty CurrentLineColorProperty =
                 BindableProperty.Create("CurrentLineColor", typeof(XColor), typeof(TouchImage), XColor.Black);
+            public static XColor DefaultColor = XColor.Transparent;
 
             public XColor CurrentLineColor
             {
@@ -70,13 +71,13 @@ namespace InnoTecheLearning
             public event EventHandler<PointerEventArgs> PointerEvent;
             public class PointerEventArgs : EventArgs
             {
-                public enum PointerEventType : byte { Down, Up, Move }
+                public enum PointerEventType : byte { Down, Up, Move, Cancel, /*Enter, Exit*/ }
                 public PointerEventType Type { get; }
-                public PointerEventArgs(PointerEventType Type) : base() { this.Type = Type; }
-                public static implicit operator PointerEventArgs(PointerEventType Type)
-                { return new PointerEventArgs(Type); }
-                public static explicit operator PointerEventType(PointerEventArgs Args)
-                { return Args.Type; }
+                public Point Previous { get; }
+                public Point Current { get; }
+                public bool PointerDown { get; }
+                public PointerEventArgs(PointerEventType Type, Point Previous, Point Current, bool Down) : base()
+                { this.Type = Type; this.Previous = Previous; this.Current = Current; PointerDown = Down; }
             }
             /*protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color, Point Location);
             protected internal event TextDelegate DrawTextEvent;
@@ -115,14 +116,13 @@ namespace InnoTecheLearning
 #elif __ANDROID__
                             Background.Cast<Android.Graphics.Drawables.ColorDrawable>().Color
 #else
-                            Background ?? new SolidColorBrush(Colors.White)
+                            Background ?? new SolidColorBrush(DefaultColor.ToWindows())
 #endif
                             ).ToColor();
-                        e.NewElement.PointerEvent = Draw.PointerEvent;
+                        Draw.PointerEvent = e.NewElement.PointerEvent;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
-                    }
-                    catch (NullReferenceException) { }
+                    } catch (NullReferenceException) { }
                 }
 
                 protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -239,26 +239,47 @@ namespace InnoTecheLearning
                     canvas.DrawPath(DrawPath, DrawPaint);
                 }
 
+                bool PointerDown;
                 internal EventHandler<PointerEventArgs> PointerEvent;
                 public override bool OnTouchEvent(MotionEvent e)
                 {
                     var touchX = e.GetX();
                     var touchY = e.GetY();
-
+                    PathMeasure pm = new PathMeasure(DrawPath, false);
+                    //coordinates will be here
+                    float[] PrevCoords = { 0f, 0f };
+                    //get coordinates of the middle point
+                    pm.GetPosTan(pm.Length, PrevCoords, null);
                     switch (e.Action)
                     {
                         case MotionEventActions.Down:
                             DrawPath.MoveTo(touchX, touchY);
-                            PointerEvent(this, PointerEventArgs.PointerEventType.Down);
+                            PointerDown = true;
+                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
+                                 PointerEventType.Down, new Point(PrevCoords[0], PrevCoords[1]),
+                                 new Point(touchX,touchY), PointerDown));
                             break;
                         case MotionEventActions.Move:
                             DrawPath.LineTo(touchX, touchY);
-                            PointerEvent(this, PointerEventArgs.PointerEventType.Move);
+                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
+                                 PointerEventType.Move, new Point(PrevCoords[0], PrevCoords[1]),
+                                 new Point(touchX, touchY), PointerDown));
                             break;
                         case MotionEventActions.Up:
                             DrawCanvas.DrawPath(DrawPath, DrawPaint);
                             DrawPath.Reset();
-                            PointerEvent(this, PointerEventArgs.PointerEventType.Up);
+                            PointerDown = false;
+                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
+                                 PointerEventType.Up, new Point(PrevCoords[0], PrevCoords[1]),
+                                 new Point(touchX, touchY), PointerDown));
+                            break;
+                        case MotionEventActions.Cancel:
+                            DrawCanvas.DrawPath(DrawPath, DrawPaint);
+                            DrawPath.Reset();
+                            PointerDown = false;
+                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
+                                 PointerEventType.Cancel, new Point(PrevCoords[0], PrevCoords[1]),
+                                 new Point(touchX, touchY), PointerDown));
                             break;
                         default:
                             return false;
@@ -346,6 +367,7 @@ namespace InnoTecheLearning
                     SetNeedsDisplay();
                 }
 
+                bool PointerDown;
                 internal EventHandler<PointerEventArgs> PointerEvent;
                 public override void TouchesBegan(NSSet touches, UIEvent evt)
                 {
@@ -374,8 +396,9 @@ namespace InnoTecheLearning
                     };
 
                     Lines.Add(line);
-
-                    PointerEvent(this, PointerEventArgs.PointerEventType.Down);
+                    PointerDown = true;
+                    PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
+                         PointerEventType.Down, PreviousPoint.ToPoint(), newPoint.ToPoint(), PointerDown));
                 }
 
                 public override void TouchesMoved(NSSet touches, UIEvent evt)
@@ -387,30 +410,42 @@ namespace InnoTecheLearning
                         Math.Abs(currentPoint.Y - PreviousPoint.Y) >= 4)
                     {
 
-                        var newPoint = new PointF((currentPoint.X + PreviousPoint.X) / 2, (currentPoint.Y + PreviousPoint.Y) / 2);
+                        var newPoint = new PointF((currentPoint.X + PreviousPoint.X) / 2,
+                            (currentPoint.Y + PreviousPoint.Y) / 2);
 
                         CurrentPath.AddQuadCurveToPoint(newPoint, PreviousPoint);
                         PreviousPoint = currentPoint;
+                        InvokeOnMainThread(SetNeedsDisplay);
+                        PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
+                             PointerEventType.Move, PreviousPoint.ToPoint(), newPoint.ToPoint(), PointerDown));
                     }
                     else
                     {
                         CurrentPath.AddLineTo(currentPoint);
+                        InvokeOnMainThread(SetNeedsDisplay);
                     }
 
-                    InvokeOnMainThread(SetNeedsDisplay);
-                    PointerEvent(this, PointerEventArgs.PointerEventType.Move);
                 }
 
                 public override void TouchesEnded(NSSet touches, UIEvent evt)
                 {
-                    InvokeOnMainThread(SetNeedsDisplay);
-                    PointerEvent(this, PointerEventArgs.PointerEventType.Up);
+                    RaisePointerEvent(touches, PointerEventArgs.PointerEventType.Up, PointerDown = false);
                 }
 
                 public override void TouchesCancelled(NSSet touches, UIEvent evt)
                 {
+                    RaisePointerEvent(touches, PointerEventArgs.PointerEventType.Cancel, PointerDown = false);
+                }
+
+                public void RaisePointerEvent(NSSet touches, PointerEventArgs.PointerEventType Type, bool PointerDown)
+                {
+                    var touch = (UITouch)touches.AnyObject;
+                    PreviousPoint = touch.PreviousLocationInView(this);
+
+                    var newPoint = touch.LocationInView(this);
                     InvokeOnMainThread(SetNeedsDisplay);
-                    PointerEvent(this, PointerEventArgs.PointerEventType.Up);
+                    PointerEvent?.Invoke(this, new PointerEventArgs(Type,
+                        PreviousPoint.ToPoint(), newPoint.ToPoint(), PointerDown));
                 }
 
                 public override void Draw(RectangleF rect)
@@ -461,19 +496,45 @@ namespace InnoTecheLearning
                         CurrentBrush.Color = value;
                     }
                 }
+
+                public new Brush Background
+                {
+                    get
+                    {
+                        return VisualTreeHelper.GetChild(this, 0).Cast<Canvas>().Background;
+                    }
+                    set
+                    {
+                        base.Background = value;
+                        VisualTreeHelper.GetChild(this, 0).Cast<Canvas>().Background = value;
+                    }
+                }
+                public global::Windows.UI.Color BackgroundColor
+                {
+                    get
+                    {
+                        return Background.Cast<SolidColorBrush>().Color;
+                    }
+                    set
+                    {
+                        base.Background.Cast<SolidColorBrush>().Color = value;
+                        Background.Cast<SolidColorBrush>().Color = value;
+                    }
+                }
                 public SolidColorBrush CurrentBrush { get; set; }
 
                 public float PenWidth { get; set; }
                 private Point CurrentPoint;
                 private Point PreviousPoint;
-                
+                internal EventHandler<PointerEventArgs> PointerEvent;
+
                 public static DrawView Create(Size Rect)
                 {
                     DrawView Return = new DrawView();
                     
                     Canvas ContentPanelCanvas = (Canvas)VisualTreeHelper.GetChild(Return, 0);
 
-                    Return.Background = new SolidColorBrush(Colors.White);
+                    ContentPanelCanvas.Background = new SolidColorBrush(DefaultColor.ToWindows());
                     Return.CurrentBrush = new SolidColorBrush(Colors.Black);
                     Return.PenWidth = 5.0f;
 
@@ -495,23 +556,16 @@ namespace InnoTecheLearning
                         if(Return.PointerDown) ContentPanelCanvas.Children.Add(line);
 
                         Return.PreviousPoint = Return.CurrentPoint;
+                        Return.PointerEvent?.Invoke(Return, new PointerEventArgs(PointerEventArgs.
+                             PointerEventType.Move, Return.PreviousPoint, Return.CurrentPoint, Return.PointerDown));
                     };
                     ContentPanelCanvas.PointerPressed += (object sender, PointerRoutedEventArgs e) =>
-                    {
-                        Return.PointerDown = true;
-                        var Point = e.GetCurrentPoint(Return).Position;
-                        Return.CurrentPoint = new Point(Point.X, Point.Y);
-                        Return.PreviousPoint = Return.CurrentPoint;
-                    };
-                    PointerEventHandler PointerAway = (object sender, PointerRoutedEventArgs e) =>
-                    {
-                        Return.PointerDown = false;
-                        var Point = e.GetCurrentPoint(Return).Position;
-                        Return.CurrentPoint = new Point(Point.X, Point.Y);
-                        Return.PreviousPoint = Return.CurrentPoint;
-                    };
-                    ContentPanelCanvas.PointerReleased += PointerAway;
-                    
+                    Handle(Return, e, PointerEventArgs.PointerEventType.Down, true);
+                    ContentPanelCanvas.PointerReleased += (object sender, PointerRoutedEventArgs e) =>
+                    Handle(Return, e, PointerEventArgs.PointerEventType.Up, false);
+                    ContentPanelCanvas.PointerCanceled += (object sender, PointerRoutedEventArgs e) =>
+                    Handle(Return, e, PointerEventArgs.PointerEventType.Cancel, false);
+
                     Return.ClearEvent = ContentPanelCanvas.Children.Clear;
                     /*Return.TextEvent = (Text, Size, Color, Location) => {
                         ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
@@ -521,6 +575,16 @@ namespace InnoTecheLearning
                         }); };*/
                     return Return;
                 }
+                private static void Handle(DrawView Return, PointerRoutedEventArgs e,
+                    PointerEventArgs.PointerEventType Type, bool PointerDown)
+                    {
+                        Return.PointerDown = PointerDown;
+                        var Point = e.GetCurrentPoint(Return).Position;
+                        Return.CurrentPoint = new Point(Point.X, Point.Y);
+                        Return.PreviousPoint = Return.CurrentPoint;
+                        Return.PointerEvent?.Invoke(Return, new PointerEventArgs(Type,
+                            Return.PreviousPoint, Return.CurrentPoint, PointerDown));
+                    }
                 public bool PointerDown { get; set; }
                 private event Action ClearEvent;
                 public void Clear()

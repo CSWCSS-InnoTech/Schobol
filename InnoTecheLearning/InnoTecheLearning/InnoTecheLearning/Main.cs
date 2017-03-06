@@ -765,10 +765,19 @@ namespace InnoTecheLearning
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.Orange,
+                    BackgroundColor = Color.Transparent,
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
+                var TouchChars = new StringBuilder();
+                var Display = new Label
+                {
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    TextColor = Color.Black,
+                    LineBreakMode = LineBreakMode.NoWrap
+                };
                 var Chars = new Label[9, 4];
                 var CharGrid = new Grid
                 {
@@ -778,7 +787,27 @@ namespace InnoTecheLearning
                     ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, 4)),
                     BackgroundColor = Color.Transparent
                 };
-                FillGrid(CharGrid, Draw);
+                Draw.PointerEvent += (sender, e) =>
+                {
+                    switch (e.Type)
+                    {
+                        case TouchImage.PointerEventArgs.PointerEventType.Down:
+                        case TouchImage.PointerEventArgs.PointerEventType.Move:
+                            if(e.PointerDown) TouchChars.Append(Chars[
+                                (int)Math.Floor(e.Current.X * CharGrid.RowDefinitions.Count / CharGrid.Width),
+                                (int)Math.Floor(e.Current.Y * CharGrid.ColumnDefinitions.Count / CharGrid.Height)
+                                ].Text);
+                            break;
+                        case TouchImage.PointerEventArgs.PointerEventType.Up:
+                        case TouchImage.PointerEventArgs.PointerEventType.Cancel:
+                            TouchChars.Clear();
+                            Draw.Clear();
+                            break;
+                        default:
+                            break;
+                    }
+                    Display.Text = TouchChars.ToString();
+                };
                 for (int i = 0; i < Chars.GetLength(0); i++)
                     for (int j = 0; j < Chars.GetLength(1); j++)
                     {
@@ -788,10 +817,11 @@ namespace InnoTecheLearning
                             VerticalOptions = LayoutOptions.Center,
                             BackgroundColor = Color.Transparent,
                             TextColor = Color.Black,
-                            Text = Return(Text.RandomLatin, i, j)
+                            Text = Return(Text.RandomChar, i, j)
                         };
                         CharGrid.Children.Add(Chars[i, j], i, j);
                     }
+                FillGrid(CharGrid, Draw);
                 //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
                 return new StackLayout
                 {
@@ -801,7 +831,8 @@ namespace InnoTecheLearning
                         Title("CSWCSS Maths Solver"),
                         (Text)"The dragon is setting fire on everything!",
                         (Text)"We must use the power of Mathematics to kill it!",
-                        CharGrid, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
+                        Display, CharGrid, 
+                        Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
                 };
             }
         }
