@@ -636,6 +636,8 @@ namespace InnoTecheLearning
             }
             public static void AppendScrollStack<T>(ScrollView Base, params T[] Items) where T : View =>
                 (Base.Content as StackLayout).Children.AddRange(Items);
+            public static void FillGrid(Grid Base, View Item) => 
+                Base.Children.Add(Item, 0, Base.RowDefinitions.Count, 0, Base.ColumnDefinitions.Count);
         }
     }
 }

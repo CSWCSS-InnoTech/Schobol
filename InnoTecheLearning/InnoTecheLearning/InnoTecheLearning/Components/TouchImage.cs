@@ -44,7 +44,7 @@ namespace InnoTecheLearning
         public class TouchImage : Image
         {
             public TouchImage() : base() {
-                BackgroundColor = XColor.White; CurrentLineColor = XColor.Black; Ready += () => IsReady = true;
+                BackgroundColor = XColor.White; CurrentLineColor = XColor.Black;// Ready += () => IsReady = true;
             }
             public static readonly BindableProperty CurrentLineColorProperty =
                 BindableProperty.Create("CurrentLineColor", typeof(XColor), typeof(TouchImage), XColor.Black);
@@ -60,14 +60,27 @@ namespace InnoTecheLearning
                     SetValue(CurrentLineColorProperty, value);
                 }
             }
-
-            protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color, Point Location);
-            protected internal event Action ClearEvent;
-            protected internal event TextDelegate DrawTextEvent;
+            
+            public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
+            public void WaitExecute(Action Task) { if(IsReady) Task(); else Ready += () => Task(); }
             protected internal event Action Ready;
             protected internal bool IsReady;
+            protected internal event Action ClearEvent;
 
-            public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
+            public event EventHandler<PointerEventArgs> PointerEvent;
+            public class PointerEventArgs : EventArgs
+            {
+                public enum PointerEventType : byte { Down, Up, Move }
+                public PointerEventType Type { get; }
+                public PointerEventArgs(PointerEventType Type) : base() { this.Type = Type; }
+                public static implicit operator PointerEventArgs(PointerEventType Type)
+                { return new PointerEventArgs(Type); }
+                public static explicit operator PointerEventType(PointerEventArgs Args)
+                { return Args.Type; }
+            }
+            /*protected internal delegate void TextDelegate(string Text, NamedSize Size, XColor Color, Point Location);
+            protected internal event TextDelegate DrawTextEvent;
+
             public void DrawText(string Text) =>
                 WaitExecute(() => DrawTextEvent?.Invoke(Text, NamedSize.Medium, XColor.Black, new Point()));
             public void DrawText(string Text, Point Location) =>
@@ -84,8 +97,7 @@ namespace InnoTecheLearning
                 WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color, new Point()));
             public void DrawText(string Text, NamedSize Size, XColor Color, Point Location) =>
                 WaitExecute(() => DrawTextEvent?.Invoke(Text, Size, Color, Location));
-
-            public void WaitExecute(Action Task) { if(IsReady) Task(); else Ready += () => Task(); }
+*/
 
             public class Renderer : ViewRenderer<TouchImage, DrawView>
             {
@@ -95,17 +107,18 @@ namespace InnoTecheLearning
                     try
                     {
                         var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
-                        e.NewElement.DrawTextEvent = Draw.DrawText;
+                        //e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
-                        e.NewElement.BackgroundColor = Draw.
+                        e.NewElement.BackgroundColor = (Draw.
 #if __IOS__
                             BackgroundColor
 #elif __ANDROID__
                             Background.Cast<Android.Graphics.Drawables.ColorDrawable>().Color
 #else
-                            Background
+                            Background ?? new SolidColorBrush(Colors.White)
 #endif
-                            .ToColor();
+                            ).ToColor();
+                        e.NewElement.PointerEvent = Draw.PointerEvent;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
                     }
@@ -116,10 +129,10 @@ namespace InnoTecheLearning
                 {
                     base.OnElementPropertyChanged(sender, e);
 
-                    if (e.PropertyName == CurrentLineColorProperty.PropertyName)
-                    {
+                    if (e.PropertyName == CurrentLineColorProperty.PropertyName
+                         //||e.PropertyName == BackgroundColorProperty.PropertyName
+                         )
                         UpdateControl();
-                    }
                 }
 
                 private void UpdateControl()
@@ -133,6 +146,7 @@ namespace InnoTecheLearning
                         ToWindows
 #endif
                             ();
+                    
                 }
             }
 #if __ANDROID__
@@ -160,12 +174,12 @@ namespace InnoTecheLearning
                 private Paint DrawPaint;
                 private Paint CanvasPaint;
                 private Canvas DrawCanvas;
-                private Bitmap CanvasBitmap;
+                private Bitmap CanvasBitmap;/* 
                 private string Text;
                 private NamedSize NamedSize;
                 private XColor XColor;
                 private Point Location;
-                private bool HasText;
+                private bool HasText;*/
                 private Size _Size;
                 public Size Size
                 {
@@ -216,15 +230,16 @@ namespace InnoTecheLearning
 
                     DrawPaint.Color = CurrentLineColor;
                     canvas.DrawBitmap(CanvasBitmap, 0, 0, CanvasPaint);
-                    if(HasText) canvas.DrawText(Text, (float)Location.X, (float)Location.Y,
+                    /*if(HasText) canvas.DrawText(Text, (float)Location.X, (float)Location.Y,
                     new Paint
                     {
                         TextSize = (float)Device.GetNamedSize(NamedSize, typeof(Android.Widget.TextView)),
                         Color = XColor.ToAndroid()
-                    });
+                    });*/
                     canvas.DrawPath(DrawPath, DrawPaint);
                 }
 
+                internal EventHandler<PointerEventArgs> PointerEvent;
                 public override bool OnTouchEvent(MotionEvent e)
                 {
                     var touchX = e.GetX();
@@ -234,13 +249,16 @@ namespace InnoTecheLearning
                     {
                         case MotionEventActions.Down:
                             DrawPath.MoveTo(touchX, touchY);
+                            PointerEvent(this, PointerEventArgs.PointerEventType.Down);
                             break;
                         case MotionEventActions.Move:
                             DrawPath.LineTo(touchX, touchY);
+                            PointerEvent(this, PointerEventArgs.PointerEventType.Move);
                             break;
                         case MotionEventActions.Up:
                             DrawCanvas.DrawPath(DrawPath, DrawPaint);
                             DrawPath.Reset();
+                            PointerEvent(this, PointerEventArgs.PointerEventType.Up);
                             break;
                         default:
                             return false;
@@ -250,20 +268,20 @@ namespace InnoTecheLearning
 
                     return true;
                 }
-
+                
                 public void Clear()
                 {
-                    DrawPath.Reset();
+                    DrawPath.Reset();/*
                     this.HasText = false;
                     this.Text = string.Empty;
                     this.NamedSize = NamedSize.Default;
                     this.XColor = XColor.Default;
-                    this.Location = Point.Zero;
+                    this.Location = Point.Zero;*/
                     DrawCanvas = new Canvas(CanvasBitmap =
                         Bitmap.CreateBitmap(CanvasBitmap.Width, CanvasBitmap.Height, Bitmap.Config.Argb8888));
                     Invalidate();
                 }
-
+/*
                 public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
                 {
                     this.HasText = true;
@@ -272,7 +290,7 @@ namespace InnoTecheLearning
                     this.XColor = Color;
                     this.Location = Location;
                     Invalidate();
-                }
+                }*/
             }
 #elif __IOS__
             // Original Source: http://stackoverflow.com/questions/21029440/xamarin-ios-drawing-onto-image-after-scaling-it
@@ -296,10 +314,10 @@ namespace InnoTecheLearning
 
                 public UIColor CurrentLineColor { get; set; }
                 public float PenWidth { get; set; }
-
+                
                 public event DrawDelegate DrawEvent;
                 public delegate void DrawDelegate(RectangleF rect);
-                public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
+                /*public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
                 { DrawEvent = DrawText;
                     InnerText = Text;
                     InnerSize = Size;
@@ -318,16 +336,17 @@ namespace InnoTecheLearning
                         Font = Font.SystemFontOfSize(InnerSize).ToUIFont(),
                         Center = new PointF(InnerLocation.X, InnerLocation.Y)
                     }) 
-                        Label.DrawText(rect); }
+                        Label.DrawText(rect); }*/
 
                 public void Clear()
                 {
-                    DrawEvent -= DrawText;
+                    //DrawEvent -= DrawText;
                     DrawPath.Dispose();
                     DrawPath = new CGPath();
                     SetNeedsDisplay();
                 }
 
+                internal EventHandler<PointerEventArgs> PointerEvent;
                 public override void TouchesBegan(NSSet touches, UIEvent evt)
                 {
                     IndexCount++;
@@ -355,6 +374,8 @@ namespace InnoTecheLearning
                     };
 
                     Lines.Add(line);
+
+                    PointerEvent(this, PointerEventArgs.PointerEventType.Down);
                 }
 
                 public override void TouchesMoved(NSSet touches, UIEvent evt)
@@ -377,16 +398,19 @@ namespace InnoTecheLearning
                     }
 
                     InvokeOnMainThread(SetNeedsDisplay);
+                    PointerEvent(this, PointerEventArgs.PointerEventType.Move);
                 }
 
                 public override void TouchesEnded(NSSet touches, UIEvent evt)
                 {
                     InvokeOnMainThread(SetNeedsDisplay);
+                    PointerEvent(this, PointerEventArgs.PointerEventType.Up);
                 }
 
                 public override void TouchesCancelled(NSSet touches, UIEvent evt)
                 {
                     InvokeOnMainThread(SetNeedsDisplay);
+                    PointerEvent(this, PointerEventArgs.PointerEventType.Up);
                 }
 
                 public override void Draw(RectangleF rect)
@@ -434,7 +458,7 @@ namespace InnoTecheLearning
                     }
                     set
                     {
-                        CurrentBrush = new SolidColorBrush(value);
+                        CurrentBrush.Color = value;
                     }
                 }
                 public SolidColorBrush CurrentBrush { get; set; }
@@ -449,6 +473,7 @@ namespace InnoTecheLearning
                     
                     Canvas ContentPanelCanvas = (Canvas)VisualTreeHelper.GetChild(Return, 0);
 
+                    Return.Background = new SolidColorBrush(Colors.White);
                     Return.CurrentBrush = new SolidColorBrush(Colors.Black);
                     Return.PenWidth = 5.0f;
 
@@ -478,59 +503,34 @@ namespace InnoTecheLearning
                         Return.CurrentPoint = new Point(Point.X, Point.Y);
                         Return.PreviousPoint = Return.CurrentPoint;
                     };
-                    ContentPanelCanvas.PointerReleased += (object sender, PointerRoutedEventArgs e) =>
+                    PointerEventHandler PointerAway = (object sender, PointerRoutedEventArgs e) =>
                     {
                         Return.PointerDown = false;
                         var Point = e.GetCurrentPoint(Return).Position;
                         Return.CurrentPoint = new Point(Point.X, Point.Y);
                         Return.PreviousPoint = Return.CurrentPoint;
                     };
-                    Return.ClearEvent = () => { ContentPanelCanvas.Children.Clear(); };
-                    Return.TextEvent = (Text, Size, Color, Location) => {
+                    ContentPanelCanvas.PointerReleased += PointerAway;
+                    
+                    Return.ClearEvent = ContentPanelCanvas.Children.Clear;
+                    /*Return.TextEvent = (Text, Size, Color, Location) => {
                         ContentPanelCanvas.Children.Add(new TextBlock { Text = Text,
                         FontSize = Device.GetNamedSize(Size, typeof(TextBlock)),
                         Foreground = new SolidColorBrush(Color.ToWindows()),
                         RenderTransform = new TranslateTransform { X = Location.X, Y = Location.Y }
-                        }); };
+                        }); };*/
                     return Return;
                 }
                 public bool PointerDown { get; set; }
                 private event Action ClearEvent;
-                private event TextDelegate TextEvent;
                 public void Clear()
                 { ClearEvent(); }
+                /*private event TextDelegate TextEvent;
                 public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
-                { TextEvent(Text, Size, Color, Location); }
+                { TextEvent(Text, Size, Color, Location); }*/
             }
 #endif
 
         }
     }
-}
-namespace Xamarin.Forms.Platform
-{
-#if WINDOWS_APP || WINDOWS_PHONE_APP
-    namespace WinRT {
-        public static class ColorExtensions
-        {
-            public static Windows.UI.Color ToWindows(this XColor color)
-            {
-                return Windows.UI.Color.FromArgb(Convert.ToByte(color.A * 255), 
-                    Convert.ToByte(color.R * 255), Convert.ToByte(color.G * 255), Convert.ToByte(color.B * 255));
-            }
-        }
-    }
-#elif WINDOWS_UWP
-    namespace UWP
-    {
-        public static class ColorExtensions
-        {
-            public static Windows.UI.Color ToWindows(this XColor color)
-            {
-                return Windows.UI.Color.FromArgb(Convert.ToByte(color.A * 255),
-                    Convert.ToByte(color.R * 255), Convert.ToByte(color.G * 255), Convert.ToByte(color.B * 255));
-            }
-        }
-    }
-#endif
 }

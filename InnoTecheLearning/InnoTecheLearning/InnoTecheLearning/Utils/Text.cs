@@ -12,38 +12,18 @@ namespace InnoTecheLearning
         /// </summary>
         public struct Text : IComparable
         {
+            private static Random Rnd { get; } = new Random();
             public static readonly Text Null = (string)null;
             public static readonly Text Empty = string.Empty;
             public static readonly Text Default = default(Text);
-            public static Text GetRandom()
-            {
-                return Random;
-            }
-            public static Text GetRandomChar()
-            {
-                
-                return RandomChar;
-            }
-            public static Text GetRandomLatin()
-            {
-                return RandomLatin;
-            }
-            public static Text GetRandomInteger()
-            {
-                return RandomInteger;
-            }
-            public static Text GetRandomUnicode()
-            {
-                return RandomUnicode;
-            }
             public static Text Random
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(0, 20)];
+                    char[] Chars = new char[Rnd.Next(0, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)new Random().Next(' ', '~');
+                        Chars[i] = (char)Rnd.Next(' ', '~');
                     }
                     return Chars;
                 }
@@ -52,18 +32,18 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    return new Text((char)new Random().Next(char.MinValue, char.MaxValue));
+                    return new Text((char)Rnd.Next(char.MinValue, char.MaxValue));
                 }
             }
             public static Text RandomLatin
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(1, 20)];
+                    char[] Chars = new char[Rnd.Next(1, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)(Convert.ToBoolean(new Random().Next(0, 1))?
-                            new Random().Next('A', 'Z'):new Random().Next('a', 'z'));
+                        Chars[i] = (char)(Convert.ToBoolean(Rnd.Next(0, 1))?
+                            Rnd.Next('A', 'Z'): Rnd.Next('a', 'z'));
                     }
                     return Chars;
                 }
@@ -72,12 +52,12 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(1, 20)];
+                    char[] Chars = new char[Rnd.Next(1, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)new Random().Next('0', '9');
+                        Chars[i] = (char)Rnd.Next('0', '9');
                     }
-                    if (Convert.ToBoolean(new Random().Next(0, 1))) Chars[0] = '-';
+                    if (Convert.ToBoolean(Rnd.Next(0, 1))) Chars[0] = '-';
                     return new string(Chars).TrimStart('0');
                 }
             }
@@ -85,10 +65,10 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(0, 20)];
+                    char[] Chars = new char[Rnd.Next(0, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)new Random().Next(char.MaxValue);
+                        Chars[i] = (char)Rnd.Next(char.MaxValue);
                     }
                     return Chars;
                 }

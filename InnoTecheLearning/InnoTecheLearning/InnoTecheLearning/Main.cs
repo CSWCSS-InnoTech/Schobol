@@ -276,8 +276,12 @@ namespace InnoTecheLearning
             };
         }
         public Button MusicTunerPlay(Text Text, Sounds Sound, Slider Vol)
-        { return Button(Text, delegate { /*_Player.Pause();*/
-            MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value); }); }
+        {
+            return Button(Text, delegate
+            { /*_Player.Pause();*/
+                MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value);
+            });
+        }
         public StackLayout CloudTest
         {
             get
@@ -589,7 +593,7 @@ namespace InnoTecheLearning
 */
         }
         Modifier Calculator_Modifier;
-#region Append
+        #region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color))
         {
@@ -626,7 +630,7 @@ namespace InnoTecheLearning
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
-#endregion
+        #endregion
         private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
@@ -757,60 +761,48 @@ namespace InnoTecheLearning
         {
             get
             {
-                Alert(this, Duplicate(1.0, 9));
                 var Draw = new TouchImage
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.Transparent,
+                    BackgroundColor = Color.Orange,
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
-                using (var Size = Immutable.Create(NamedSize.Large))
-                using (var TColor = Immutable.Create(Color.Red))
+                var Chars = new Label[9, 4];
+                var CharGrid = new Grid
                 {
-                    var Chars = new Label[9,4];
-                    var Return = new RelativeLayout
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, 9)),
+                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, 4)),
+                    BackgroundColor = Color.Transparent
+                };
+                FillGrid(CharGrid, Draw);
+                for (int i = 0; i < Chars.GetLength(0); i++)
+                    for (int j = 0; j < Chars.GetLength(1); j++)
                     {
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        VerticalOptions = LayoutOptions.Fill,
-                        BackgroundColor = Color.Transparent,
-                        Padding = 5,
-                    };
-                    var CharGrid = new Grid
-                    {
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        VerticalOptions = LayoutOptions.FillAndExpand,
-                        RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, 9)),
-                        ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, 4)),
-                        BackgroundColor = Color.Transparent
-                    };
-                    for (int i = 0; i < Chars.GetLength(0); i++)
-                        for (int j = 0; j < Chars.GetLength(1); j++)
+                        Chars[i, j] = new Label
                         {
-                            Chars[i,j] = new Label
-                            {
-                                HorizontalOptions = LayoutOptions.Center,
-                                VerticalOptions = LayoutOptions.Center,
-                                BackgroundColor = Color.Transparent,
-                                TextColor = Color.Black,
-                                Text = Utils.Return(Text.GetRandomLatin(), i, j)
-                            };
-                            CharGrid.Children.Add(Chars[i,j], i, j); }
-                    Return.Add(CharGrid);
-                    Return.Add(Draw);
-                    //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
-                    return new StackLayout
-                    {
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        VerticalOptions = LayoutOptions.FillAndExpand,
-                        Children = {
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center,
+                            BackgroundColor = Color.Transparent,
+                            TextColor = Color.Black,
+                            Text = Return(Text.RandomLatin, i, j)
+                        };
+                        CharGrid.Children.Add(Chars[i, j], i, j);
+                    }
+                //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
+                return new StackLayout
+                {
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children = {
                         Title("CSWCSS Maths Solver"),
                         (Text)"The dragon is setting fire on everything!",
                         (Text)"We must use the power of Mathematics to kill it!",
-                        Return, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
-                    };
-                }
+                        CharGrid, Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
+                };
             }
         }
     }

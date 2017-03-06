@@ -1080,6 +1080,11 @@ const Log10e = Math.LOG10E;
         public static T Cast<T>(this object Object)
         { return (T)Object; }
 #if NETFX_CORE
+        public static global::Windows.UI.Color ToWindows(this Color color)
+        {
+            return global::Windows.UI.Color.FromArgb(Convert.ToByte(color.A * 255),
+                Convert.ToByte(color.R * 255), Convert.ToByte(color.G * 255), Convert.ToByte(color.B * 255));
+        }
         public static Color ToColor(this global::Windows.UI.Color Color)
         { return new Color(Color.R / 255, Color.G / 255, Color.B / 255, Color.A / 255); }
         public static Color ToColor(this global::Windows.UI.Xaml.Media.Brush Brush)
