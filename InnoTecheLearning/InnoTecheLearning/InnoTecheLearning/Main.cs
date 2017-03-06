@@ -769,7 +769,6 @@ namespace InnoTecheLearning
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
-                var TouchChars = new StringBuilder();
                 var Display = new Label
                 {
                     HorizontalOptions = LayoutOptions.CenterAndExpand,
@@ -778,13 +777,14 @@ namespace InnoTecheLearning
                     TextColor = Color.Black,
                     LineBreakMode = LineBreakMode.NoWrap
                 };
-                var Chars = new Label[9, 4];
+                var Stack = new MathSolverStack<Tuple<int, int>>();
+                var Chars = new Label[9, 6];
                 var CharGrid = new Grid
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, 9)),
-                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, 4)),
+                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, Chars.GetLength(0))),
+                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, Chars.GetLength(1))),
                     BackgroundColor = Color.Transparent
                 };
                 Draw.PointerEvent += (sender, e) =>
@@ -793,28 +793,35 @@ namespace InnoTecheLearning
                     {
                         case TouchImage.PointerEventArgs.PointerEventType.Down:
                         case TouchImage.PointerEventArgs.PointerEventType.Move:
-                            if(e.PointerDown) TouchChars.Append(Chars[
-                                (int)Math.Floor(e.Current.X * CharGrid.RowDefinitions.Count / CharGrid.Width),
-                                (int)Math.Floor(e.Current.Y * CharGrid.ColumnDefinitions.Count / CharGrid.Height)
-                                ].Text);
+                            var X = (int)(Math.Floor(e.Current.X *
+                                CharGrid.RowDefinitions.Count / CharGrid.Width));
+                            var Y = (int)(Math.Floor(e.Current.Y *
+                                CharGrid.ColumnDefinitions.Count / CharGrid.Height));
+                            if (e.PointerDown) Stack.Push(new Tuple<int, int>(X, Y));
                             break;
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
                         case TouchImage.PointerEventArgs.PointerEventType.Cancel:
-                            TouchChars.Clear();
+                            Stack.Clear();
                             Draw.Clear();
                             break;
                         default:
                             break;
                     }
-                    Display.Text = TouchChars.ToString();
+                    var Sb = new StringBuilder();
+                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1.LowerBound(0),
+                        Item.Item2.LowerBound(0)].Text);
+                    Display.Text = Sb.ToString();
+                    //try { System.Diagnostics.Debug.WriteLine($"{Stack.Peek().Item1}, {Stack.Peek().Item2}"); } catch { }
                 };
                 for (int i = 0; i < Chars.GetLength(0); i++)
                     for (int j = 0; j < Chars.GetLength(1); j++)
                     {
                         Chars[i, j] = new Label
                         {
-                            HorizontalOptions = LayoutOptions.Center,
-                            VerticalOptions = LayoutOptions.Center,
+                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
                             BackgroundColor = Color.Transparent,
                             TextColor = Color.Black,
                             Text = Return(Text.RandomChar, i, j)

@@ -1090,6 +1090,10 @@ const Log10e = Math.LOG10E;
         public static Color ToColor(this global::Windows.UI.Xaml.Media.Brush Brush)
         { return ToColor(((global::Windows.UI.Xaml.Media.SolidColorBrush)Brush).Color); }
 #endif
+        public static int LowerBound(this int Num, int Bound) => (Num < Bound) ? Bound : Num;
+        public static int UpperBound(this int Num, int Bound) => (Num > Bound) ? Bound : Num;
+        public static double LowerBound(this double Num, double Bound) => (Num < Bound) ? Bound : Num;
+        public static double UpperBound(this double Num, double Bound) => (Num > Bound) ? Bound : Num;
         /*
         public static void Fill<T>(this IList<T> List) where T : new()
         {
