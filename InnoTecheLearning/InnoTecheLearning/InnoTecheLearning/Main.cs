@@ -771,9 +771,9 @@ namespace InnoTecheLearning
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
                 var Display = new Label
                 {
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
+                    HorizontalTextAlignment = TextAlignment.Center,
                     TextColor = Color.Black,
                     LineBreakMode = LineBreakMode.NoWrap
                 };
@@ -781,11 +781,12 @@ namespace InnoTecheLearning
                 var Chars = new Label[9, 6];
                 var CharGrid = new Grid
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, Chars.GetLength(0))),
                     ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, Chars.GetLength(1))),
-                    BackgroundColor = Color.Transparent
+                    BackgroundColor = Color.Transparent,
+                    HeightRequest = 0
                 };
                 Draw.PointerEvent += (sender, e) =>
                 {
@@ -793,11 +794,14 @@ namespace InnoTecheLearning
                     {
                         case TouchImage.PointerEventArgs.PointerEventType.Down:
                         case TouchImage.PointerEventArgs.PointerEventType.Move:
-                            var X = (int)(Math.Floor(e.Current.X *
-                                CharGrid.RowDefinitions.Count / CharGrid.Width));
-                            var Y = (int)(Math.Floor(e.Current.Y *
-                                CharGrid.ColumnDefinitions.Count / CharGrid.Height));
-                            if (e.PointerDown) Stack.Push(new Tuple<int, int>(X, Y));
+                            if (e.PointerDown)
+                            {
+                                var X = (int)(Math.Floor(e.Current.X *
+                                  CharGrid.RowDefinitions.Count / CharGrid.Width)).LowerBound(0);
+                                var Y = (int)(Math.Floor(e.Current.Y *
+                                    CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5)).LowerBound(0);
+                                Stack.Push(new Tuple<int, int>(X, Y));
+                            }
                             break;
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
                         case TouchImage.PointerEventArgs.PointerEventType.Cancel:
@@ -808,10 +812,8 @@ namespace InnoTecheLearning
                             break;
                     }
                     var Sb = new StringBuilder();
-                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1.LowerBound(0),
-                        Item.Item2.LowerBound(0)].Text);
+                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1, Item.Item2].Text);
                     Display.Text = Sb.ToString();
-                    //try { System.Diagnostics.Debug.WriteLine($"{Stack.Peek().Item1}, {Stack.Peek().Item2}"); } catch { }
                 };
                 for (int i = 0; i < Chars.GetLength(0); i++)
                     for (int j = 0; j < Chars.GetLength(1); j++)
@@ -830,16 +832,59 @@ namespace InnoTecheLearning
                     }
                 FillGrid(CharGrid, Draw);
                 //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
+                var Dragon = Image(ImageFile.Dragon, () => { });
+                var Hearts = Duplicate(() => Image(ImageFile.Heart, () => { }), 5);
+                Label Instruction = (Text)"The dragon is setting fire on everything!";
+                Label Question = (Text)"We must use the power of Mathematics to kill it!";
+                var Questions = NewDictionary(1, new
+                {
+                    Instruction = "Solve the following.",
+                    Question = "(8+54/6-5*3)/2",
+                    Answers = new[] { "1" },
+                    ExtraChars = "234567890"
+                } ).Append(2, new
+                {
+                    Instruction = "Find y.",
+                    Question = "9(8y)/4=16*5-26",
+                    Answers = new[] { "3" },
+                    ExtraChars = "124567890"
+                }).Append(3, new
+                {
+                    Instruction = "Solve the following. (Use / to indicate fractions.)",
+                    Question = "2(1/3+5/6)",
+                    Answers = new[] { "7/3" },
+                    ExtraChars = "\\124"
+                }).Append(4, new
+                {
+                    Instruction = "Factorize the following.",
+                    Question = "-ps-2qr-pr-2qs",
+                    Answers = new[] { "-(p+2q)(s+r)", "-(2q+p)(s+r)", "-(p+2q)(r+s)", "-(2q+p)(r+s)",
+                    "-(s+r)(p+2q)", "-(s+r)(2q+p)", "-(r+s)(p+2q)", "-(r+s)(2q+p)"},
+                    ExtraChars = ""
+                }).Append(5, new
+                {
+                    Instruction = "Calculate the following. (Don't use a calculator!)",
+                    Question = " 1+2+3+...+9998+9999+10000",
+                    Answers = new[] { "50005000" },
+                    ExtraChars = ""
+                });
+                int lvl;
+                string Answer;
+                Random Randomizer = new Random();
+                Action<int> Advance = (Level) => {
+                    var Answers = Questions[Level].Answers;
+                    Answer = Answers[Randomizer.Next(Answers.Length)];
+                    };
                 return new StackLayout
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
                         Title("CSWCSS Maths Solver"),
-                        (Text)"The dragon is setting fire on everything!",
-                        (Text)"We must use the power of Mathematics to kill it!",
-                        Display, CharGrid, 
-                        Row(false, Duplicate(Image(ImageFile.Heart, ()=>{}), 5)), Back(this) }
+                        Instruction,
+                        Question,
+                        Display, CharGrid, Dragon,
+                        Row(false, Hearts), Back(this) }
                 };
             }
         }

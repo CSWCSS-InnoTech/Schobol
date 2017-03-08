@@ -28,13 +28,13 @@
     <AppXManifest Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-03-06T14:41:34.377</Modified>
+      <Modified>2017-03-08T13:45:30.403</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearning App.exe">
       <PackagePath>entrypoint\CSWCSS eLearning App.exe</PackagePath>
-      <Modified>2017-03-06T14:41:33.943</Modified>
+      <Modified>2017-03-08T13:45:29.754</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -581,7 +581,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearning App.exe">
       <PackagePath>CSWCSS eLearning App.exe</PackagePath>
-      <Modified>2017-03-06T14:41:34.375</Modified>
+      <Modified>2017-03-08T13:45:30.400</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

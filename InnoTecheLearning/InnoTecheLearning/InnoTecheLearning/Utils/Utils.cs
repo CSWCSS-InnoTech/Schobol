@@ -285,8 +285,13 @@ namespace InnoTecheLearning
         public static T[] Duplicate<T>(T Item, int Count)
         {
             T[] Return = new T[Count];
-            for (int i = 0; i < Count; i++)
-                Return[i] = Item;
+            for (int i = 0; i < Count; i++) Return[i] = Item;
+            return Return;
+        }
+        public static T[] Duplicate<T>(Func<T> Creator, int Count)
+        {
+            T[] Return = new T[Count];
+            for (int i = 0; i < Count; i++) Return[i] = Creator();
             return Return;
         }
         /// <summary>
@@ -1094,6 +1099,11 @@ const Log10e = Math.LOG10E;
         public static int UpperBound(this int Num, int Bound) => (Num > Bound) ? Bound : Num;
         public static double LowerBound(this double Num, double Bound) => (Num < Bound) ? Bound : Num;
         public static double UpperBound(this double Num, double Bound) => (Num > Bound) ? Bound : Num;
+        public static Dictionary<TKey, TValue> NewDictionary<TKey, TValue>(TKey key, TValue value) => 
+            new Dictionary<TKey, TValue>() {[key] = value};
+        public static Dictionary<TKey, TValue> Append<TKey, TValue>
+            (this Dictionary<TKey, TValue> Dict, TKey key, TValue value)
+        { Dict.Add(key, value); return Dict; }
         /*
         public static void Fill<T>(this IList<T> List) where T : new()
         {
