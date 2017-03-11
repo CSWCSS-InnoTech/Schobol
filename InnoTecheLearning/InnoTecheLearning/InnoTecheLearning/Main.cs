@@ -103,6 +103,7 @@ namespace InnoTecheLearning
                         break;
                     case Pages.Translate:
                         Region = "Translate";
+                        Content = Translator;
                         break;
                     case Pages.VocabBook:
                         Region = "VocabBook";
@@ -183,8 +184,9 @@ namespace InnoTecheLearning
                "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5));*/
                Showing = Pages.CloudTest;
                          }, BoldLabel("Forum\n(⁠C⁠l⁠o⁠u⁠d⁠T⁠e⁠s⁠t⁠)") ),
-                         MainScreenItem(Image(ImageFile.Translate), delegate{Alert(this,
-                          "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish"); },
+                         MainScreenItem(Image(ImageFile.Translate), delegate{
+                             //Alert(this, "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish");
+                         Showing = Pages.Translate; },
                          BoldLabel("Translator") ),
                          MainScreenItem(Image(ImageFile.VocabBook),delegate {Alert(this,"Ida = 捱打，伸張靜儀、儆惡懲奸，\n" +
 "      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
@@ -955,6 +957,17 @@ namespace InnoTecheLearning
                         Display, CharGrid, Dragon,
                         Row(false, Row(false, Hearts), Continue, Back(this)) }
                 };
+            }
+        }
+        public StackLayout Translator
+        {
+            get
+            {
+                var Display = new Label();
+                var Input = Entry("", "Translate me...");
+                var Submit = Button("Translate", delegate { //http://developer.pearson.com/apis/dictionaries/
+                    Display.Text = Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text); });
+                return new StackLayout { Children = {Row(false, Input, Submit, Display)} };
             }
         }
     }

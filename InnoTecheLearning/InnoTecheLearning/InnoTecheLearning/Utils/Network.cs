@@ -24,7 +24,7 @@ namespace InnoTecheLearning
         }
         public const string Get = "GET";
         public const string Post = "POST";
-        public static string Request(string Method, string URI, string Parameters)
+        public static string Request(string Method, string URI, string Parameters = null)
         //, string ProxyString
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(URI);
@@ -32,6 +32,7 @@ namespace InnoTecheLearning
             //Add these, as we're doing a POST
             req.ContentType = "application/x-www-form-urlencoded";
             req.Method = Method;
+            if(!string.IsNullOrEmpty(Parameters))
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Do(req.GetRequestStreamAsync())))
             //We need to count how many bytes we're sending. Post'ed Faked Forms should be name=value&
             {
