@@ -788,33 +788,6 @@ namespace InnoTecheLearning
                     BackgroundColor = Color.Transparent,
                     HeightRequest = 0
                 };
-                Draw.PointerEvent += (sender, e) =>
-                {
-                    switch (e.Type)
-                    {
-                        case TouchImage.PointerEventArgs.PointerEventType.Down:
-                        case TouchImage.PointerEventArgs.PointerEventType.Move:
-                            if (e.PointerDown)
-                            {
-                                var X = (int)(Math.Floor(e.Current.X *
-                                  CharGrid.RowDefinitions.Count / CharGrid.Width)).LowerBound(0);
-                                var Y = (int)(Math.Floor(e.Current.Y *
-                                    CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5)).LowerBound(0);
-                                Stack.Push(new Tuple<int, int>(X, Y));
-                            }
-                            break;
-                        case TouchImage.PointerEventArgs.PointerEventType.Up:
-                        case TouchImage.PointerEventArgs.PointerEventType.Cancel:
-                            Stack.Clear();
-                            Draw.Clear();
-                            break;
-                        default:
-                            break;
-                    }
-                    var Sb = new StringBuilder();
-                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1, Item.Item2].Text);
-                    Display.Text = Sb.ToString();
-                };
                 for (int i = 0; i < Chars.GetLength(0); i++)
                     for (int j = 0; j < Chars.GetLength(1); j++)
                     {
@@ -868,10 +841,19 @@ namespace InnoTecheLearning
                     Answers = new[] { "50005000" },
                     ExtraChars = ""
                 });
-                int lvl;
-                string Answer;
+                int lvl = 1;
+                string Answer = "";
                 Random Randomizer = new Random();
                 Action<int> Advance = (Level) => {
+                    if (Level >= Questions.Count)
+                    {
+                        Dragon = Image(ImageFile.Dragon_Dead, () => { }); Instruction.Text = "You killed the dragon!";
+                        Question.Text = "You're a hero!";
+                        CharGrid.HeightRequest = 0;
+                    }
+                    CharGrid.HeightRequest = -1;
+                    Question.Text = Questions[Level].Question;
+                    Instruction.Text = Questions[Level].Instruction;
                     var Answers = Questions[Level].Answers;
                     Answer = Answers[Randomizer.Next(Answers.Length)];
                     Chars = new Label[Chars.GetLength(0), Chars.GetLength(1)];
@@ -888,6 +870,7 @@ namespace InnoTecheLearning
                             TextColor = Color.Black,
                             Text = Q.ToString()
                         };
+                        int Segfault = 0;
                         RandomMove: switch (Randomizer.Next(1, 8))
                         {
                             case 1: //NW
@@ -921,13 +904,14 @@ namespace InnoTecheLearning
                             default: //Impossible
                                 goto RandomMove;
                         }
+                        if (++Segfault >= 10) goto Distribute;
                         if (Location.X < 0 || Location.Y < 0 ||
                         Location.X > Chars.Length - 1 || Location.Y > Chars.Length - 1) goto RandomMove;
                     }
                     for (int i = 0; i < Chars.GetLength(0); i++)
                         for (int j = 0; j < Chars.GetLength(1); j++)
                         {
-                            Chars[i, j] = new Label
+                            if(Chars[i, j] is null) Chars[i, j] = new Label
                             {
                                 HorizontalOptions = LayoutOptions.FillAndExpand,
                                 VerticalOptions = LayoutOptions.FillAndExpand,
@@ -935,10 +919,38 @@ namespace InnoTecheLearning
                                 VerticalTextAlignment = TextAlignment.Center,
                                 BackgroundColor = Color.Transparent,
                                 TextColor = Color.Black,
-                                Text = Return(Text.RandomChar, i, j)
+                                Text = Questions[Level].ExtraChars.Random().ToString()
                             };
-                            CharGrid.Children.Add(Chars[i, j], i, j);
                         }
+                };
+                var Continue = Button("Continue", delegate { Advance(1); });
+                Continue.Clicked += delegate { Continue.IsVisible = false; };
+                Draw.PointerEvent += (sender, e) =>
+                {
+                    switch (e.Type)
+                    {
+                        case TouchImage.PointerEventArgs.PointerEventType.Down:
+                        case TouchImage.PointerEventArgs.PointerEventType.Move:
+                            if (e.PointerDown)
+                            {
+                                var X = (int)(Math.Floor(e.Current.X *
+                                  CharGrid.RowDefinitions.Count / CharGrid.Width)).LowerBound(0);
+                                var Y = (int)(Math.Floor(e.Current.Y *
+                                    CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5)).LowerBound(0);
+                                Stack.Push(new Tuple<int, int>(X, Y));
+                            }
+                            break;
+                        case TouchImage.PointerEventArgs.PointerEventType.Up:
+                        case TouchImage.PointerEventArgs.PointerEventType.Cancel:
+                            Stack.Clear();
+                            Draw.Clear();
+                            break;
+                        default:
+                            break;
+                    }
+                    var Sb = new StringBuilder();
+                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1, Item.Item2].Text);
+                    if(Answer == (Display.Text = Sb.ToString())) Advance(++lvl);
                 };
                 return new StackLayout
                 {
