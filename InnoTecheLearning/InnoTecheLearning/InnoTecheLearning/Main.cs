@@ -703,9 +703,9 @@ namespace InnoTecheLearning
                         Row(false, S1, C1, (Text)(X + "²")),
                         Row(false, S2, C2, (Text)(X + Y)),
                         Row(false, S3, C3, (Text)(Y + "²")),
-                        Button("Factorize", delegate {System.Numerics.Complex X1, X2; Factorizer_Result =
-                            Factorize(TryParseDouble(S1.Text + C1.Text, 0d), TryParseDouble(S2.Text + C2.Text, 0d),
-                            TryParseDouble(S3.Text + C3.Text, 0d), out X1, out X2, X, Y);
+                        Button("Factorize", delegate {Factorizer_Result = Factorize(TryParseDouble(S1.Text + C1.Text, 0d),
+                            TryParseDouble(S2.Text + C2.Text, 0d),
+                            TryParseDouble(S3.Text + C3.Text, 0d), out System.Numerics.Complex X1, out System.Numerics.Complex X2, X, Y);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F,
                         Back(this)
