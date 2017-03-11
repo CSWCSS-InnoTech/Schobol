@@ -487,7 +487,7 @@ namespace InnoTecheLearning
         { return (T)(new Jint.Engine().Execute(CodeToExecute).GetCompletionValue().ToObject()); }
         private static string JSEvaluteAns = "";
         public enum AngleMode : byte { Degree, Radian, Gradian, Turn }
-        public enum Modifier : byte { Normal, Percentage, Fraction, Mixed_Fraction }
+        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction }
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
            Modifier Mod = Modifier.Normal, bool TrueFree =  false)
         {
@@ -681,10 +681,10 @@ function Display(Text) {
             return Text;
         case 1: //%
             return (Text * 100) + '%';
-        case 2: //d / c
-            return Fraction(Text);
-        case 3: //a b / c
+        case 2: //a b / c
             return Mixed(Text);
+        case 3: //d / c
+            return Fraction(Text);
         default: //What?
             throw('Invalid display modifier.');
     }

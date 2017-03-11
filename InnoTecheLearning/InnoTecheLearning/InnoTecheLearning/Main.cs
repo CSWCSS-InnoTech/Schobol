@@ -777,19 +777,83 @@ namespace InnoTecheLearning
                     TextColor = Color.Black,
                     LineBreakMode = LineBreakMode.NoWrap
                 };
+                //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
+                var Dragon = new Image { Source = Image(ImageFile.Dragon), 
+                HorizontalOptions = LayoutOptions.CenterAndExpand, VerticalOptions = LayoutOptions.CenterAndExpand };
+                var Hearts = Duplicate(() => Image(ImageFile.Heart, () => { }), 5);
+                Label Instruction = new Label
+                { Text = "The dragon is setting fire on everything!" , HorizontalTextAlignment = TextAlignment.Center };
+                Label Question = new Label
+                { Text = "We must use the power of Mathematics to kill it!", HorizontalTextAlignment = TextAlignment.Center };
+                var Questions = NewDictionary(1, new
+                {
+                    Instruction = "Solve the following.",
+                    Question = "(8+54/6-5*3)/2",
+                    Answers = new[] { "1" },
+                    ExtraChars = "234567890",
+                    Rows = 9,
+                    Columns = 6
+                } ).Append(2, new
+                {
+                    Instruction = "Find y.",
+                    Question = "9(8y)/4=16*5-26",
+                    Answers = new[] { "3" },
+                    ExtraChars = "124567890",
+                    Rows = 9,
+                    Columns = 6
+                }).Append(3, new
+                {
+                    Instruction = "Solve the following. (Use / to indicate fractions.)",
+                    Question = "2(1/3+5/6)",
+                    Answers = new[] { "7/3" },
+                    ExtraChars = "\\124",
+                    Rows = 9,
+                    Columns = 6
+                }).Append(4, new
+                {
+                    Instruction = "Factorize the following.",
+                    Question = "-ps-2qr-pr-2qs",
+                    Answers = new[] { "-(p+2q)(s+r)", "-(2q+p)(s+r)", "-(p+2q)(r+s)", "-(2q+p)(r+s)",
+                    "-(s+r)(p+2q)", "-(s+r)(2q+p)", "-(r+s)(p+2q)", "-(r+s)(2q+p)"},
+                    ExtraChars = "",
+                    Rows = 9,
+                    Columns = 4
+                }).Append(5, new
+                {
+                    Instruction = "Calculate the following. (Don't use a calculator!)",
+                    Question = " 1+2+3+...+9998+9999+10000",
+                    Answers = new[] { "50005000" },
+                    ExtraChars = "",
+                    Rows = 9,
+                    Columns = 6
+                });
                 var Stack = new MathSolverStack<Tuple<int, int>>();
-                var Chars = new Label[9, 6];
+                var Chars = new Label[Questions.First().Value.Rows, Questions.First().Value.Columns];
                 var CharGrid = new Grid
                 {
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, Chars.GetLength(0))),
-                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, Chars.GetLength(1))),
+                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, Questions.First().Value.Rows)),
+                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, Questions.First().Value.Columns)),
                     BackgroundColor = Color.Transparent,
-                    HeightRequest = 0
+                    IsVisible = false
                 };
-                for (int i = 0; i < Chars.GetLength(0); i++)
-                    for (int j = 0; j < Chars.GetLength(1); j++)
+                int lvl = 1;
+                string[] Answers = new string[0];
+                Random Randomizer = new Random();
+                Action<int> Advance = (Level) => {
+                    CharGrid.Children.Clear();
+                    if(Level > 1) Hearts[Hearts.Length - Level + 1].IsVisible = false;
+                    if (Level > Questions.Count)
+                    {
+                        Dragon.Source = Image(ImageFile.Dragon_Dead);
+                        Instruction.Text = "You killed the dragon!";
+                        Question.Text = "You're a hero!";
+                        CharGrid.IsVisible = false;
+                        return;
+                    }
+                for (int i = 0; i < Questions[Level].Rows; i++)
+                    for (int j = 0; j < Questions[Level].Columns; j++)
                     {
                         Chars[i, j] = new Label
                         {
@@ -799,129 +863,56 @@ namespace InnoTecheLearning
                             VerticalTextAlignment = TextAlignment.Center,
                             BackgroundColor = Color.Transparent,
                             TextColor = Color.Black,
-                            Text = Return(Text.RandomChar, i, j)
+                            Text = ""
                         };
                         CharGrid.Children.Add(Chars[i, j], i, j);
                     }
-                FillGrid(CharGrid, Draw);
-                //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
-                var Dragon = Image(ImageFile.Dragon, () => { });
-                var Hearts = Duplicate(() => Image(ImageFile.Heart, () => { }), 5);
-                Label Instruction = (Text)"The dragon is setting fire on everything!";
-                Label Question = (Text)"We must use the power of Mathematics to kill it!";
-                var Questions = NewDictionary(1, new
-                {
-                    Instruction = "Solve the following.",
-                    Question = "(8+54/6-5*3)/2",
-                    Answers = new[] { "1" },
-                    ExtraChars = "234567890"
-                } ).Append(2, new
-                {
-                    Instruction = "Find y.",
-                    Question = "9(8y)/4=16*5-26",
-                    Answers = new[] { "3" },
-                    ExtraChars = "124567890"
-                }).Append(3, new
-                {
-                    Instruction = "Solve the following. (Use / to indicate fractions.)",
-                    Question = "2(1/3+5/6)",
-                    Answers = new[] { "7/3" },
-                    ExtraChars = "\\124"
-                }).Append(4, new
-                {
-                    Instruction = "Factorize the following.",
-                    Question = "-ps-2qr-pr-2qs",
-                    Answers = new[] { "-(p+2q)(s+r)", "-(2q+p)(s+r)", "-(p+2q)(r+s)", "-(2q+p)(r+s)",
-                    "-(s+r)(p+2q)", "-(s+r)(2q+p)", "-(r+s)(p+2q)", "-(r+s)(2q+p)"},
-                    ExtraChars = ""
-                }).Append(5, new
-                {
-                    Instruction = "Calculate the following. (Don't use a calculator!)",
-                    Question = " 1+2+3+...+9998+9999+10000",
-                    Answers = new[] { "50005000" },
-                    ExtraChars = ""
-                });
-                int lvl = 1;
-                string Answer = "";
-                Random Randomizer = new Random();
-                Action<int> Advance = (Level) => {
-                    if (Level >= Questions.Count)
-                    {
-                        Dragon = Image(ImageFile.Dragon_Dead, () => { }); Instruction.Text = "You killed the dragon!";
-                        Question.Text = "You're a hero!";
-                        CharGrid.HeightRequest = 0;
-                    }
-                    CharGrid.HeightRequest = -1;
+                    FillGrid(CharGrid, Draw);
+                    CharGrid.IsVisible = true;
+                    CharGrid.ForceLayout();
                     Question.Text = Questions[Level].Question;
                     Instruction.Text = Questions[Level].Instruction;
-                    var Answers = Questions[Level].Answers;
-                    Answer = Answers[Randomizer.Next(Answers.Length)];
-                    Chars = new Label[Chars.GetLength(0), Chars.GetLength(1)];
-                    Distribute: var Location = (X: Randomizer.Next(Chars.GetLength(0)), Y: Randomizer.Next(Chars.GetLength(1)));
+                    Answers = Questions[Level].Answers;
+                    var Answer = Answers[Randomizer.Next(Answers.Length)];
+                    Distribute: var Location = (X: Randomizer.Next(Questions[Level].Rows - 1),
+                    Y: Randomizer.Next(Questions[Level].Columns - 1));
+                    for (int i = 0; i < Questions[Level].Rows; i++)
+                        for (int j = 0; j < Questions[Level].Columns; j++)
+                            Chars[i, j].Text = "";
                     foreach (var Q in Questions[Level].Answers.Random())
                     {
-                        Chars[Location.X, Location.Y] = new Label
-                        {
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            HorizontalTextAlignment = TextAlignment.Center,
-                            VerticalTextAlignment = TextAlignment.Center,
-                            BackgroundColor = Color.Transparent,
-                            TextColor = Color.Black,
-                            Text = Q.ToString()
-                        };
+                        Chars[Location.X, Location.Y].Text = Q.ToString();
                         int Segfault = 0;
-                        RandomMove: switch (Randomizer.Next(1, 8))
+                        RandomMove: if (++Segfault >= 12) goto Distribute;
+                        switch (Randomizer.Next(1, 4))
                         {
-                            case 1: //NW
-                                Location.X--;
-                                Location.Y--;
+                            case 1: //N
+                                if(Location.Y - 1 > 0 && Chars[Location.X, Location.Y - 1].Text == "") Location.Y--;
+                                else goto RandomMove;
                                 break;
-                            case 2: //N
-                                Location.Y--;
+                            case 2: //W
+                                if (Location.X - 1 > 0 && Chars[Location.X - 1, Location.Y].Text == "") Location.X--;
+                                else goto RandomMove;
                                 break;
-                            case 3: //NE
-                                Location.X++;
-                                Location.Y--;
+                            case 3: //E
+                                if(Location.X < Questions[Level].Rows - 1 &&
+                                Chars[Location.X + 1, Location.Y].Text == "") Location.X++;
+                                else goto RandomMove;
                                 break;
-                            case 4: //W
-                                Location.X--;
-                                break;
-                            case 5: //E
-                                Location.X++;
-                                break;
-                            case 6: //SW
-                                Location.X--;
-                                Location.Y++;
-                                break;
-                            case 7: //S
-                                Location.Y++;
-                                break;
-                            case 8: //SE
-                                Location.X++;
-                                Location.Y++;
+                            case 4: //S
+                                if (Location.Y < Questions[Level].Columns - 1 &&
+                                Chars[Location.X, Location.Y + 1].Text == "") Location.Y++;
+                                else goto RandomMove;
                                 break;
                             default: //Impossible
                                 goto RandomMove;
                         }
-                        if (++Segfault >= 10) goto Distribute;
-                        if (Location.X < 0 || Location.Y < 0 ||
-                        Location.X > Chars.Length - 1 || Location.Y > Chars.Length - 1) goto RandomMove;
+                        Segfault = 0;
                     }
-                    for (int i = 0; i < Chars.GetLength(0); i++)
-                        for (int j = 0; j < Chars.GetLength(1); j++)
-                        {
-                            if(Chars[i, j] is null) Chars[i, j] = new Label
-                            {
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
-                                VerticalOptions = LayoutOptions.FillAndExpand,
-                                HorizontalTextAlignment = TextAlignment.Center,
-                                VerticalTextAlignment = TextAlignment.Center,
-                                BackgroundColor = Color.Transparent,
-                                TextColor = Color.Black,
-                                Text = Questions[Level].ExtraChars.Random().ToString()
-                            };
-                        }
+                    for (int i = 0; i < Questions[Level].Rows; i++)
+                        for (int j = 0; j < Questions[Level].Columns; j++)
+                            if (Chars[i, j].Text == "") Chars[i, j].Text =
+                                 string.Concat(Questions[Level].ExtraChars, Answer).Random().ToString();
                 };
                 var Continue = Button("Continue", delegate { Advance(1); });
                 Continue.Clicked += delegate { Continue.IsVisible = false; };
@@ -942,6 +933,7 @@ namespace InnoTecheLearning
                             break;
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
                         case TouchImage.PointerEventArgs.PointerEventType.Cancel:
+                            if (Answers.Contains(Display.Text)) Advance(++lvl);
                             Stack.Clear();
                             Draw.Clear();
                             break;
@@ -950,7 +942,7 @@ namespace InnoTecheLearning
                     }
                     var Sb = new StringBuilder();
                     foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1, Item.Item2].Text);
-                    if(Answer == (Display.Text = Sb.ToString())) Advance(++lvl);
+                    Display.Text = Sb.ToString();
                 };
                 return new StackLayout
                 {
@@ -961,7 +953,7 @@ namespace InnoTecheLearning
                         Instruction,
                         Question,
                         Display, CharGrid, Dragon,
-                        Row(false, Hearts), Back(this) }
+                        Row(false, Row(false, Hearts), Continue, Back(this)) }
                 };
             }
         }
