@@ -12,7 +12,7 @@ namespace InnoTecheLearning
         /// </summary>
         public struct Text : IComparable
         {
-            private static Random Rnd { get; } = new Random();
+            internal static Random Rnd { get; } = new Random();
             public static readonly Text Null = (string)null;
             public static readonly Text Empty = string.Empty;
             public static readonly Text Default = default(Text);

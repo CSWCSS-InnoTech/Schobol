@@ -874,7 +874,72 @@ namespace InnoTecheLearning
                 Action<int> Advance = (Level) => {
                     var Answers = Questions[Level].Answers;
                     Answer = Answers[Randomizer.Next(Answers.Length)];
-                    };
+                    Chars = new Label[Chars.GetLength(0), Chars.GetLength(1)];
+                    Distribute: var Location = (X: Randomizer.Next(Chars.GetLength(0)), Y: Randomizer.Next(Chars.GetLength(1)));
+                    foreach (var Q in Questions[Level].Answers.Random())
+                    {
+                        Chars[Location.X, Location.Y] = new Label
+                        {
+                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            BackgroundColor = Color.Transparent,
+                            TextColor = Color.Black,
+                            Text = Q.ToString()
+                        };
+                        RandomMove: switch (Randomizer.Next(1, 8))
+                        {
+                            case 1: //NW
+                                Location.X--;
+                                Location.Y--;
+                                break;
+                            case 2: //N
+                                Location.Y--;
+                                break;
+                            case 3: //NE
+                                Location.X++;
+                                Location.Y--;
+                                break;
+                            case 4: //W
+                                Location.X--;
+                                break;
+                            case 5: //E
+                                Location.X++;
+                                break;
+                            case 6: //SW
+                                Location.X--;
+                                Location.Y++;
+                                break;
+                            case 7: //S
+                                Location.Y++;
+                                break;
+                            case 8: //SE
+                                Location.X++;
+                                Location.Y++;
+                                break;
+                            default: //Impossible
+                                goto RandomMove;
+                        }
+                        if (Location.X < 0 || Location.Y < 0 ||
+                        Location.X > Chars.Length - 1 || Location.Y > Chars.Length - 1) goto RandomMove;
+                    }
+                    for (int i = 0; i < Chars.GetLength(0); i++)
+                        for (int j = 0; j < Chars.GetLength(1); j++)
+                        {
+                            Chars[i, j] = new Label
+                            {
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                VerticalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                VerticalTextAlignment = TextAlignment.Center,
+                                BackgroundColor = Color.Transparent,
+                                TextColor = Color.Black,
+                                Text = Return(Text.RandomChar, i, j)
+                            };
+                            CharGrid.Children.Add(Chars[i, j], i, j);
+                        }
+                };
                 return new StackLayout
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,

@@ -297,8 +297,7 @@ namespace InnoTecheLearning
             public static Image ImageD/*D = Default (size)*/(ImageSource Source, Action OnTap)
             {
                 Image Image = new Image{Source = Source};
-                var Tap = new TapGestureRecognizer();
-                Tap.Command = new Command(OnTap);
+                var Tap = new TapGestureRecognizer{ Command = new Command(OnTap) };
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
@@ -314,8 +313,7 @@ namespace InnoTecheLearning
                     WidthRequest = Size.Width,
                     HeightRequest = Size.Height
                 };
-                var Tap = new TapGestureRecognizer();
-                Tap.Command = new Command(OnTap);
+                var Tap = new TapGestureRecognizer{ Command = new Command(OnTap) };
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }

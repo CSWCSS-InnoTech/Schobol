@@ -1,11 +1,8 @@
-﻿using InnoTecheLearning;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 //[assembly: Dependency(typeof(Utils))]
 
@@ -843,7 +840,7 @@ const Log10e = Math.LOG10E;
             { if (((Entry)sender).Text != Value()) { ((Entry)sender).Text = Value(); } };
         }
         public static double TryParseDouble(string s, double @default)
-        { double d; if (double.TryParse(s, out d)) { return d; } else { return @default; }; }
+        { if (double.TryParse(s, out double d)) { return d; } else { return @default; }; }
         public static byte[] ReadFully(this Stream input, bool all = false)
         {
             long pos = input.Position;
@@ -1104,6 +1101,9 @@ const Log10e = Math.LOG10E;
         public static Dictionary<TKey, TValue> Append<TKey, TValue>
             (this Dictionary<TKey, TValue> Dict, TKey key, TValue value)
         { Dict.Add(key, value); return Dict; }
+        public static T Random<T>(this IEnumerable<T> IE) => 
+            System.Linq.Enumerable.Count(IE) == 0? default(T):
+            System.Linq.Enumerable.ElementAt(IE, Text.Rnd.Next(System.Linq.Enumerable.Count(IE)));
         /*
         public static void Fill<T>(this IList<T> List) where T : new()
         {
