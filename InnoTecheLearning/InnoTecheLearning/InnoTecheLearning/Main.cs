@@ -787,7 +787,7 @@ namespace InnoTecheLearning
                 { Text = "The dragon is setting fire on everything!" , HorizontalTextAlignment = TextAlignment.Center };
                 Label Question = new Label
                 { Text = "We must use the power of Mathematics to kill it!", HorizontalTextAlignment = TextAlignment.Center };
-                var Questions = NewDictionary(1, new
+                var Questions = NewArray(new
                 {
                     Instruction = "Solve the following.",
                     Question = "(8+54/6-5*3)/2",
@@ -795,7 +795,7 @@ namespace InnoTecheLearning
                     ExtraChars = "234567890",
                     Rows = 9,
                     Columns = 6
-                } ).Append(2, new
+                }, new
                 {
                     Instruction = "Find y.",
                     Question = "9(8y)/4=16*5-26",
@@ -803,7 +803,7 @@ namespace InnoTecheLearning
                     ExtraChars = "124567890",
                     Rows = 9,
                     Columns = 6
-                }).Append(3, new
+                }, new
                 {
                     Instruction = "Solve the following. (Use / to indicate fractions.)",
                     Question = "2(1/3+5/6)",
@@ -811,7 +811,7 @@ namespace InnoTecheLearning
                     ExtraChars = "\\124",
                     Rows = 9,
                     Columns = 6
-                }).Append(4, new
+                }, new
                 {
                     Instruction = "Factorize the following.",
                     Question = "-ps-2qr-pr-2qs",
@@ -820,7 +820,7 @@ namespace InnoTecheLearning
                     ExtraChars = "",
                     Rows = 9,
                     Columns = 4
-                }).Append(5, new
+                }, new
                 {
                     Instruction = "Calculate the following. (Don't use a calculator!)",
                     Question = " 1+2+3+...+9998+9999+10000",
@@ -829,24 +829,24 @@ namespace InnoTecheLearning
                     Rows = 9,
                     Columns = 6
                 });
-                var Stack = new MathSolverStack<Tuple<int, int>>();
-                var Chars = new Label[Questions.First().Value.Rows, Questions.First().Value.Columns];
+                var Stack = new MathSolverStack<(int X, int Y)>();
+                var Chars = new Label[Questions.First().Rows, Questions.First().Columns];
                 var CharGrid = new Grid
                 {
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, Questions.First().Value.Rows)),
-                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, Questions.First().Value.Columns)),
+                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, Questions.First().Rows)),
+                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, Questions.First().Columns)),
                     BackgroundColor = Color.Transparent,
                     IsVisible = false
                 };
-                int lvl = 1;
+                int lvl = -1;
                 string[] Answers = new string[0];
                 Random Randomizer = new Random();
                 Action<int> Advance = (Level) => {
                     CharGrid.Children.Clear();
-                    if(Level > 1) Hearts[Hearts.Length - Level + 1].IsVisible = false;
-                    if (Level > Questions.Count)
+                    if(Level > 0) Hearts[Level - 1].IsVisible = false;
+                    if (Level >= Questions.Length)
                     {
                         Dragon.Source = Image(ImageFile.Dragon_Dead);
                         Instruction.Text = "You killed the dragon!";
@@ -916,8 +916,8 @@ namespace InnoTecheLearning
                             if (Chars[i, j].Text == "") Chars[i, j].Text =
                                  string.Concat(Questions[Level].ExtraChars, Answer).Random().ToString();
                 };
-                var Continue = Button("Continue", delegate { Advance(1); });
-                Continue.Clicked += delegate { Continue.IsVisible = false; };
+                var Continue = Button("Continue", 
+                    (ref Button sender, EventArgs e) => { sender.IsVisible = false; Advance(++lvl); });
                 Draw.PointerEvent += (sender, e) =>
                 {
                     switch (e.Type)
@@ -926,16 +926,18 @@ namespace InnoTecheLearning
                         case TouchImage.PointerEventArgs.PointerEventType.Move:
                             if (e.PointerDown)
                             {
-                                var X = (int)(Math.Floor(e.Current.X *
-                                  CharGrid.RowDefinitions.Count / CharGrid.Width)).LowerBound(0);
-                                var Y = (int)(Math.Floor(e.Current.Y *
-                                    CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5)).LowerBound(0);
-                                Stack.Push(new Tuple<int, int>(X, Y));
+                                Stack.Push((
+                                  (int)(Math.Floor(e.Current.X *
+                                  CharGrid.RowDefinitions.Count / CharGrid.Width)).LowerBound(0), 
+                                  (int)(Math.Floor(e.Current.Y *
+                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5)).LowerBound(0)));
                             }
                             break;
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
                         case TouchImage.PointerEventArgs.PointerEventType.Cancel:
-                            if (Answers.Contains(Display.Text)) Advance(++lvl);
+                            if (Answers.Contains(Display.Text))
+                            { Alert(this, "Correct! The dragon got hurt!", "Yay!", "I'll go on and continue"); Advance(++lvl); }
+                            else Alert(this, "You got the answer wrong...\nPlease retry.", "Ooops!", "I'll retry");
                             Stack.Clear();
                             Draw.Clear();
                             break;
@@ -943,7 +945,7 @@ namespace InnoTecheLearning
                             break;
                     }
                     var Sb = new StringBuilder();
-                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.Item1, Item.Item2].Text);
+                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.X, Item.Y].Text);
                     Display.Text = Sb.ToString();
                 };
                 return new StackLayout

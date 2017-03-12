@@ -41,7 +41,7 @@ namespace InnoTecheLearning
                 Button.Clicked += OnClick;
                 return Button;
             }
-            public delegate void ButtonOnClick(object sender, EventArgs e, ref Color bg);
+            public delegate void ButtonOnClick(ref Button sender, EventArgs e);
             public static Button Button(Text Text, ButtonOnClick OnClick, Color BackColor =
                 default(Color), Color TextColor = default(Color))
             {
@@ -50,8 +50,7 @@ namespace InnoTecheLearning
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
                 Button Button = new Button { Text = Text, TextColor = TextColor, BackgroundColor = BackColor };
-                Button.Clicked += (sender, e) => 
-                { var temp = Button.BackgroundColor; OnClick(sender, e, ref temp); Button.BackgroundColor = temp; };
+                Button.Clicked += (sender, e) => { OnClick(ref Button, e); };
                 return Button;
             }
             public static Button Button(Text Text, ButtonOnClick OnClick, Size Size,
@@ -69,8 +68,7 @@ namespace InnoTecheLearning
                     HeightRequest = Size.Height,
                     BackgroundColor = BackColor
                 };
-                Button.Clicked += (sender, e) =>
-                { var temp = Button.BackgroundColor; OnClick(sender, e, ref temp); Button.BackgroundColor = temp; };
+                Button.Clicked += (sender, e) => { OnClick(ref Button, e); };
                 return Button;
             }
             public class ExpressionEventArgs : EventArgs
