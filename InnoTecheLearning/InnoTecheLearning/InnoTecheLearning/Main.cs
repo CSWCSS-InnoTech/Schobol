@@ -767,7 +767,7 @@ namespace InnoTecheLearning
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.Black.MultiplyAlpha(1/255),
+                    BackgroundColor = Color.Black.MultiplyAlpha(1 / 255),
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
@@ -780,15 +780,25 @@ namespace InnoTecheLearning
                     LineBreakMode = LineBreakMode.NoWrap
                 };
                 //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
-                var Dragon = new Image { Source = Image(ImageFile.Dragon), 
-                HorizontalOptions = LayoutOptions.CenterAndExpand, VerticalOptions = LayoutOptions.CenterAndExpand };
+                var Dragon = new Image
+                {
+                    Source = Image(ImageFile.Dragon),
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.CenterAndExpand
+                };
                 var Hearts = Duplicate(() => Image(ImageFile.Heart, () => { }), 5);
                 Label Instruction = new Label
-                { TextColor = Color.Black, Text = "The dragon is setting fire on everything!" ,
-                    HorizontalTextAlignment = TextAlignment.Center };
+                {
+                    TextColor = Color.Black,
+                    Text = "The dragon is setting fire on everything!",
+                    HorizontalTextAlignment = TextAlignment.Center
+                };
                 Label Question = new Label
-                { TextColor = Color.Black, Text = "We must use the power of Mathematics to kill it!",
-                    HorizontalTextAlignment = TextAlignment.Center };
+                {
+                    TextColor = Color.Black,
+                    Text = "We must use the power of Mathematics to kill it!",
+                    HorizontalTextAlignment = TextAlignment.Center
+                };
                 var Questions = new[]{new
                 {
                     Instruction = "Solve the following.",
@@ -845,9 +855,11 @@ namespace InnoTecheLearning
                 int lvl = -1;
                 string[] Answers = new string[0];
                 Random Randomizer = new Random();
-                Action<int> Advance = (Level) => {
+                Action<int> Advance = (Level) =>
+                {
+                    Draw.Clear();
                     CharGrid.Children.Clear();
-                    if(Level > 0) Hearts[Level - 1].IsVisible = false;
+                    if (Level > 0) Hearts[Level - 1].IsVisible = false;
                     if (Level >= Questions.Length)
                     {
                         Dragon.Source = Image(ImageFile.Dragon_Dead);
@@ -856,22 +868,22 @@ namespace InnoTecheLearning
                         CharGrid.IsVisible = false;
                         return;
                     }
-                for (int i = 0; i < Questions[Level].Rows; i++)
-                    for (int j = 0; j < Questions[Level].Columns; j++)
-                    {
-                        Chars[i, j] = new Label
+                    for (int i = 0; i < Questions[Level].Rows; i++)
+                        for (int j = 0; j < Questions[Level].Columns; j++)
                         {
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            HorizontalTextAlignment = TextAlignment.Center,
-                            VerticalTextAlignment = TextAlignment.Center,
-                            BackgroundColor = Color.Transparent,
-                            TextColor = Color.Black,
-                            Text = ""
-                        };
-                        CharGrid.Children.Add(Chars[i, j], i, j);
-                    }
-                    FillGrid(CharGrid, Draw);
+                            Chars[i, j] = new Label
+                            {
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                VerticalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                VerticalTextAlignment = TextAlignment.Center,
+                                BackgroundColor = Color.Transparent,
+                                TextColor = Color.Black,
+                                Text = ""
+                            };
+                            Ignore(() => CharGrid.Children.Add(Chars[i, j], i, j), typeof(InvalidOperationException));
+                        }
+                    Ignore(() => FillGrid(CharGrid, Draw), typeof(InvalidOperationException));
                     CharGrid.IsVisible = true;
                     CharGrid.ForceLayout();
                     Question.Text = Questions[Level].Question;
@@ -891,7 +903,7 @@ namespace InnoTecheLearning
                         switch (Randomizer.Next(1, 4))
                         {
                             case 1: //N
-                                if(Location.Y - 1 > 0 && Chars[Location.X, Location.Y - 1].Text == "") Location.Y--;
+                                if (Location.Y - 1 > 0 && Chars[Location.X, Location.Y - 1].Text == "") Location.Y--;
                                 else goto RandomMove;
                                 break;
                             case 2: //W
@@ -899,7 +911,7 @@ namespace InnoTecheLearning
                                 else goto RandomMove;
                                 break;
                             case 3: //E
-                                if(Location.X < Questions[Level].Rows - 1 &&
+                                if (Location.X < Questions[Level].Rows - 1 &&
                                 Chars[Location.X + 1, Location.Y].Text == "") Location.X++;
                                 else goto RandomMove;
                                 break;
@@ -918,7 +930,7 @@ namespace InnoTecheLearning
                             if (Chars[i, j].Text == "") Chars[i, j].Text =
                                  string.Concat(Questions[Level].ExtraChars, Answer).Random().ToString();
                 };
-                var Continue = Button("Continue", 
+                var Continue = Button("Continue",
                     (ref Button sender, EventArgs e) => { sender.IsVisible = false; Advance(++lvl); });
                 Draw.PointerEvent += (sender, e) =>
                 {
@@ -934,11 +946,11 @@ namespace InnoTecheLearning
 #if __ANDROID__
                                   / 2.5 - 1
 #endif
-                                  )).LowerBound(0).UpperBound(Questions[lvl].Rows - 1), 
+                                  )).LowerBound(0).UpperBound(Questions[lvl].Rows - 1),
                                   (int)(Math.Floor(e.Current.Y *
                                   CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5
 #if __ANDROID__
-                                  / 2.5
+                                  / 1.5
 #endif
                                   )).LowerBound(0).UpperBound(Questions[lvl].Columns - 1)));
                             }
@@ -978,9 +990,11 @@ namespace InnoTecheLearning
             {
                 var Display = new Label();
                 var Input = Entry("", "Translate me...");
-                var Submit = Button("Translate", delegate { //http://developer.pearson.com/apis/dictionaries/
-                    Display.Text = Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text); });
-                return new StackLayout { Children = {Row(false, Input, Submit, Display)} };
+                var Submit = Button("Translate", delegate
+                { //http://developer.pearson.com/apis/dictionaries/
+                    Display.Text = Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
+                });
+                return new StackLayout { Children = { Row(false, Input, Submit, Display) } };
             }
         }
     }

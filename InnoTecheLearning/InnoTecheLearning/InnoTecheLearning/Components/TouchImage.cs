@@ -242,6 +242,7 @@ namespace InnoTecheLearning
                 internal EventHandler<PointerEventArgs> PointerEvent;
                 public override bool OnTouchEvent(MotionEvent e)
                 {
+                    
                     var touchX = e.GetX();
                     var touchY = e.GetY();
                     PathMeasure pm = new PathMeasure(DrawPath, false);
@@ -254,12 +255,14 @@ namespace InnoTecheLearning
                         case MotionEventActions.Down:
                             DrawPath.MoveTo(touchX, touchY);
                             PointerDown = true;
+                            try { Invalidate(); } catch (ObjectDisposedException) { return false; }
                             PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
                                  PointerEventType.Down, new Point(PrevCoords[0], PrevCoords[1]),
                                  new Point(touchX,touchY), PointerDown));
                             break;
                         case MotionEventActions.Move:
                             DrawPath.LineTo(touchX, touchY);
+                            try { Invalidate(); } catch (ObjectDisposedException) { return false; }
                             PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
                                  PointerEventType.Move, new Point(PrevCoords[0], PrevCoords[1]),
                                  new Point(touchX, touchY), PointerDown));
@@ -268,6 +271,7 @@ namespace InnoTecheLearning
                             DrawCanvas.DrawPath(DrawPath, DrawPaint);
                             DrawPath.Reset();
                             PointerDown = false;
+                            try { Invalidate(); } catch (ObjectDisposedException) { return false; }
                             PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
                                  PointerEventType.Up, new Point(PrevCoords[0], PrevCoords[1]),
                                  new Point(touchX, touchY), PointerDown));
@@ -276,6 +280,7 @@ namespace InnoTecheLearning
                             DrawCanvas.DrawPath(DrawPath, DrawPaint);
                             DrawPath.Reset();
                             PointerDown = false;
+                            try { Invalidate(); } catch (ObjectDisposedException) { return false; }
                             PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
                                  PointerEventType.Cancel, new Point(PrevCoords[0], PrevCoords[1]),
                                  new Point(touchX, touchY), PointerDown));
@@ -283,8 +288,6 @@ namespace InnoTecheLearning
                         default:
                             return false;
                     }
-
-                    Invalidate();
 
                     return true;
                 }
