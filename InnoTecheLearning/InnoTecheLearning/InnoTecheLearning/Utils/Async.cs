@@ -182,10 +182,7 @@ namespace InnoTecheLearning
 
                 public ExclusiveSynchronizationContext(SynchronizationContext old)
                 {
-                    ExclusiveSynchronizationContext oldEx =
-                        old as ExclusiveSynchronizationContext;
-
-                    if (null != oldEx)
+                    if (old is ExclusiveSynchronizationContext oldEx)
                     {
                         _items = oldEx._items;
                     }
@@ -216,9 +213,7 @@ namespace InnoTecheLearning
                 {
                     while (!_done)
                     {
-                        EventTask task = null;
-
-                        if (!_items.TryDequeue(out task))
+                        if (!_items.TryDequeue(out EventTask task))
                         {
                             task = null;
                         }

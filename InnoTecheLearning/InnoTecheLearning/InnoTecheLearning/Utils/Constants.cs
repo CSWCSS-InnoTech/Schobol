@@ -8,7 +8,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 172); } }
+        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 174); } }
         public const string VersionName = "Xamarin Update";
 
         public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
@@ -37,14 +37,14 @@ namespace InnoTecheLearning
             return Version.ToString(3) +
                    (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
                    (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }
+        }/*
         public static VersionStage GetVersionState(this ModifiableVersion Version) { return (VersionStage)Version.MajorRevision; }
         public static string ToShort(this ModifiableVersion Version)
         {
             return Version.ToString(3) +
                    (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
                    (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }
+        }*/
 
         public enum VersionStage : byte
         {
@@ -183,7 +183,7 @@ oh = 喔
 yeah/ yup = 同意";
         }
 
-
+        /*
         // A Version object contains four hierarchical numeric components: major, minor,
         // build and revision.  Build and revision may be unspecified, which is represented 
         // internally as a -1.  By definition, an unspecified component matches anything 
@@ -579,8 +579,6 @@ yeah/ yup = 同意";
 
             private static bool TryParseVersion(string version, ref VersionResult result)
             {
-                int major, minor, build, revision;
-
                 if ((Object)version == null)
                 {
                     result.SetFailure(ParseFailureKind.ArgumentNullException);
@@ -595,12 +593,12 @@ yeah/ yup = 同意";
                     return false;
                 }
 
-                if (!TryParseComponent(parsedComponents[0], "version", ref result, out major))
+                if (!TryParseComponent(parsedComponents[0], "version", ref result, out int major))
                 {
                     return false;
                 }
 
-                if (!TryParseComponent(parsedComponents[1], "version", ref result, out minor))
+                if (!TryParseComponent(parsedComponents[1], "version", ref result, out int minor))
                 {
                     return false;
                 }
@@ -609,7 +607,7 @@ yeah/ yup = 同意";
 
                 if (parsedComponentsLength > 0)
                 {
-                    if (!TryParseComponent(parsedComponents[2], "build", ref result, out build))
+                    if (!TryParseComponent(parsedComponents[2], "build", ref result, out int build))
                     {
                         return false;
                     }
@@ -618,7 +616,7 @@ yeah/ yup = 同意";
 
                     if (parsedComponentsLength > 0)
                     {
-                        if (!TryParseComponent(parsedComponents[3], "revision", ref result, out revision))
+                        if (!TryParseComponent(parsedComponents[3], "revision", ref result, out int revision))
                         {
                             return false;
                         }
@@ -813,6 +811,6 @@ yeah/ yup = 同意";
                     return result;
                 }
             }
-        }
+        }*/
     }
 }

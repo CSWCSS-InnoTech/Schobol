@@ -28,14 +28,16 @@ namespace InnoTecheLearning
             /// <returns></returns>
             static public ToneGenerator PlayTone(int freq = 400, int play_length = 1000)
             {
-                ToneGenerator player = new ToneGenerator();
-                player.m_ifreq = freq;
-                player.m_play_length = play_length;
-                player.play();
+                ToneGenerator player = new ToneGenerator()
+                {
+                    m_ifreq = freq,
+                    m_play_length = play_length
+                };
+                player.Play();
                 return player;
             }
 
-            void stop()
+            void Stop()
             {
                 m_bStop = true;
                 if (m_PlayThread != null)
@@ -59,7 +61,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            void play()
+            void Play()
             {
                 m_bStop = false;
                 m_PlayThread = new Thread(
@@ -76,7 +78,7 @@ namespace InnoTecheLearning
 
                     while (!m_bStop && m_play_length-- > 0)
                     {
-                        genTone(iToneStep++);
+                        GenTone(iToneStep++);
 
                         m_audioTrack.Write(generatedSnd, 0, generatedSnd.Length);
                         if (iToneStep == 1)
@@ -100,7 +102,7 @@ namespace InnoTecheLearning
             }
 
             //Generate tone data for 1 seconds
-            void genTone(int iStep)
+            void GenTone(int iStep)
             {
                 sample = new double[sampleRate];
 

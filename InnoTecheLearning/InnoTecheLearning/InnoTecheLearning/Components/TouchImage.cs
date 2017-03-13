@@ -61,7 +61,7 @@ namespace InnoTecheLearning
                     SetValue(CurrentLineColorProperty, value);
                 }
             }
-            
+
             public void Clear() => WaitExecute(() => ClearEvent?.Invoke());
             public void WaitExecute(Action Task) { if(IsReady) Task(); else Ready += () => Task(); }
             protected internal event Action Ready;
@@ -110,15 +110,6 @@ namespace InnoTecheLearning
                         var Draw = DrawView.Create(new Size(e.NewElement.Width, e.NewElement.Height));
                         //e.NewElement.DrawTextEvent = Draw.DrawText;
                         e.NewElement.ClearEvent = Draw.Clear;
-                        e.NewElement.BackgroundColor = (Draw.
-#if __IOS__
-                            BackgroundColor
-#elif __ANDROID__
-                            Background.Cast<Android.Graphics.Drawables.ColorDrawable>().Color
-#else
-                            Background ?? new SolidColorBrush(DefaultColor.ToWindows())
-#endif
-                            ).ToColor();
                         Draw.PointerEvent = e.NewElement.PointerEvent;
                         e.NewElement.Ready();
                         SetNativeControl(Draw);
@@ -129,14 +120,7 @@ namespace InnoTecheLearning
                 {
                     base.OnElementPropertyChanged(sender, e);
 
-                    if (e.PropertyName == CurrentLineColorProperty.PropertyName
-                         //||e.PropertyName == BackgroundColorProperty.PropertyName
-                         )
-                        UpdateControl();
-                }
-
-                private void UpdateControl()
-                {
+                    if (e.PropertyName == CurrentLineColorProperty.PropertyName)
                     Control.CurrentLineColor = Element.CurrentLineColor.
 #if __IOS__
                         ToUIColor
@@ -146,7 +130,22 @@ namespace InnoTecheLearning
                         ToWindows
 #endif
                             ();
-                    
+                    else if(e.PropertyName == BackgroundColorProperty.PropertyName)
+                        Control.
+#if __IOS__
+                            BackgroundColor
+#else
+                            Background
+#endif
+                             =
+#if __IOS__
+                            Element.BackgroundColor.ToUIColor()
+#elif __ANDROID__
+                            new Android.Graphics.Drawables.ColorDrawable(Element.BackgroundColor.ToAndroid())
+#else
+                            new SolidColorBrush(Element.BackgroundColor.ToWindows())
+#endif
+                             ;
                 }
             }
 #if __ANDROID__
@@ -219,7 +218,7 @@ namespace InnoTecheLearning
                 protected override void OnSizeChanged(int w, int h, int oldw, int oldh)
                 {
                     base.OnSizeChanged(w, h, oldw, oldh);
-
+                    if (w < 1 || h < 1) return;
                     CanvasBitmap = Bitmap.CreateBitmap(w, h, Bitmap.Config.Argb8888);
                     DrawCanvas = new Canvas(CanvasBitmap);
                 }

@@ -1101,11 +1101,11 @@ const Log10e = Math.LOG10E;
         public static Dictionary<TKey, TValue> Append<TKey, TValue>
             (this Dictionary<TKey, TValue> Dict, TKey key, TValue value)
         { Dict.Add(key, value); return Dict; }
-        public static T[] NewArray<T>(params T[] value) => value;
         public static T Random<T>(this IEnumerable<T> IE) => 
             System.Linq.Enumerable.Count(IE) == 0? default(T):
             System.Linq.Enumerable.ElementAt(IE, Text.Rnd.Next(System.Linq.Enumerable.Count(IE)));
-        /*
+        /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
+        
         public static void Fill<T>(this IList<T> List) where T : new()
         {
             for (int i = 0; i < List.Count; i++)

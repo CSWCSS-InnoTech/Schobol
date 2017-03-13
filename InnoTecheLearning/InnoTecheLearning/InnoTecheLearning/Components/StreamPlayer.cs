@@ -1408,13 +1408,13 @@ namespace InnoTecheLearning
                     _player.Write(Options.Content.ReadFully(true), 0, (int)Options.Content.Length);
                 else
                 {
-                    Set((sender, e) => { if (_loop) { _player.Release(); Init(_options); play(); }; });
+                    Set((sender, e) => { if (_loop) { _player.Release(); Init(_options); Write(); }; });
                     _content = Options.Content.ReadFully(true);
                 }
                 _prepared = true;
             }
             Task _play;
-            protected virtual void play()
+            protected virtual void Write()
             {
                 _play = Task.Run(() => { 
                 for (int i = 0; i <= _content.Length; i += _buffersize)
@@ -1432,7 +1432,7 @@ namespace InnoTecheLearning
                 }
                 else
                 {
-                    play();
+                    Write();
                     Device.StartTimer(_duration,
                         () => { Complete?.Invoke(this, EventArgs.Empty); return !_disposedValue && _loop; });
                 }
@@ -1760,7 +1760,7 @@ namespace InnoTecheLearning
                     IsLooping = Options.Loop,
                 };
                 _player.SetSource(Options.Content.AsRandomAccessStream(), Options.MimeType);
-            }
+            }/*
             [Obsolete("Only used in 0.10.0a105. Use Init(StreamPlayerOptions).")]
             public static StreamPlayer Create(Stream Content, bool Loop = false, float Volume = 1)
             {
@@ -1779,7 +1779,7 @@ namespace InnoTecheLearning
                     IsLooping = Loop
                 };
                 _player.SetSource(Content.AsRandomAccessStream(), GetMime(Content.ReadFully()));
-            }
+            }*/
             public void Play()
             { _player.Play(); }
             public void Pause()
@@ -1793,6 +1793,7 @@ namespace InnoTecheLearning
                 remove { _player.MediaEnded -= (global::Windows.UI.Xaml.RoutedEventHandler)(MulticastDelegate)value; }
             }
             public bool Loop { get { return _player.IsLooping; } set { _player.IsLooping = value; } }
+            /*
             [DllImport(@"urlmon.dll"), Obsolete("Only used in 0.10.0a105. Will very likely be removed soon.", true)]
             private extern static uint FindMimeFromData(uint pBC, [MarshalAs(UnmanagedType.LPStr)] string pwzUrl,
                                                         [MarshalAs(UnmanagedType.LPArray)] byte[] pBuffer, uint cbSize,
@@ -1814,7 +1815,7 @@ namespace InnoTecheLearning
                 {
                     return "unknown/unknown";
                 }
-            }
+            }*/
 #endif
             private StreamPlayer() : base() { }
 

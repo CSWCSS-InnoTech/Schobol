@@ -453,7 +453,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            private bool areStepsEquallySpaced
+            private bool StepsEquallySpaced
             {
                 get
                 {
@@ -483,7 +483,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            private bool isPeak
+            private bool Peak
             {
                 get
                 {
@@ -504,7 +504,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            private bool isValley
+            private bool Valley
             {
                 get
                 {
@@ -630,7 +630,7 @@ namespace InnoTecheLearning
                 int mid = (winPos + WIN_SIZE / 2) % WIN_SIZE;
 
                 // Peak is detected
-                if (startPeaking && isPeak)
+                if (startPeaking && Peak)
                 {
                     if (foundValley && lastValues[mid] - lastValley > PEAK_VALLEY_RANGE)
                     {
@@ -639,7 +639,7 @@ namespace InnoTecheLearning
                         stepInterval[intervalPos] = timestamp - stepTimestamp;
                         intervalPos = (intervalPos + 1) % NUM_INTERVALS;
                         stepTimestamp = timestamp;
-                        if (areStepsEquallySpaced)
+                        if (StepsEquallySpaced)
                         {
                             if (foundNonStep)
                             {
@@ -660,7 +660,7 @@ namespace InnoTecheLearning
                         foundValley = false;
                     }
                 }
-                if (startPeaking && isValley)
+                if (startPeaking && Valley)
                 {
                     foundValley = true;
                     lastValley = lastValues[mid];
@@ -807,10 +807,10 @@ namespace InnoTecheLearning
                     BigSteps = (uint)readvalues.CumulativeSteps;
                 }
             }
-            public async void gettingHistory()
+            /*public async void gettingHistory()
             {
                 var history = await Pedometer.GetSystemHistoryAsync(DateTime.Now.AddDays(-30));
-            }
+            }*/
 #elif NETFX_CORE
         IStepCounter {
             private bool hasChanged;

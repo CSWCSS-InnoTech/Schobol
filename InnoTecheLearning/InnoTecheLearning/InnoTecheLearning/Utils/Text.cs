@@ -304,7 +304,7 @@ namespace InnoTecheLearning
             {
                 Text Text = new Text();
                 foreach (var Item in Array)
-                { char C; char.TryParse(Item.ToString(), out C); Text.Append(C); };
+                { char.TryParse(Item.ToString(), out char C); Text.Append(C); };
                 return Text;
             }
             public override string ToString()

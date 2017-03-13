@@ -65,9 +65,8 @@ namespace InnoTecheLearning
         {
             try
             {
-                double Factor1Co, Factor1CTerm, Factor2Co, Factor2CTerm;
-                double HCF = FactorizeThrowable(A, B, C, out Root1, out Root2, out Factor1Co, out Factor1CTerm,
-                    out Factor2Co, out Factor2CTerm, SafeCheck);
+                double HCF = FactorizeThrowable(A, B, C, out Root1, out Root2, out double Factor1Co, 
+                    out double Factor1CTerm, out double Factor2Co, out double Factor2CTerm, SafeCheck);
                 return Prefix(HCF) + (Factor2Co == 0 && Factor2CTerm == 0 ? X.ToString() :
                     "(" + Prefix(Factor1Co, X) + Suffix(Factor1CTerm, Y) + ")") +
                     (Factor2Co == 0 && Factor2CTerm == 0 ? "" : 

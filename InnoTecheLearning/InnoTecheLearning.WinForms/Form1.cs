@@ -97,8 +97,7 @@ const Log10e = Math.LOG10E;
         {
 
             // Methods
-            public JSEvaluator() { init(); }
-            private void init() { }
+            public JSEvaluator() { }
             [JSFunction(JSFunctionAttributeEnum.HasStackFrame)]
             public virtual string Eval(string expr)
             {
@@ -124,17 +123,17 @@ const Log10e = Math.LOG10E;
 #pragma warning disable 0618
             public VsaEngine GetEngine()
             {
-                if (vsaEngine == null)
+                if (VsaEngine == null)
                 {
-                    vsaEngine = VsaEngine.CreateEngineWithType(typeof(JSEvaluator).TypeHandle);
+                    VsaEngine = VsaEngine.CreateEngineWithType(typeof(JSEvaluator).TypeHandle);
                 }
-                return vsaEngine;
+                return VsaEngine;
             }
             public void SetEngine(VsaEngine engine1)
             {
-                vsaEngine = engine1;
+                VsaEngine = engine1;
             }
-            private VsaEngine vsaEngine { get; set; }
+            private VsaEngine VsaEngine { get; set; }
 #pragma warning restore 0618
         }
 

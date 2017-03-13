@@ -767,7 +767,7 @@ namespace InnoTecheLearning
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.Transparent,
+                    BackgroundColor = Color.Black.MultiplyAlpha(1/255),
                     CurrentLineColor = Color.Black
                 };
                 Draw.SetBinding(TouchImage.CurrentLineColorProperty, "CurrentLineColor");
@@ -784,10 +784,12 @@ namespace InnoTecheLearning
                 HorizontalOptions = LayoutOptions.CenterAndExpand, VerticalOptions = LayoutOptions.CenterAndExpand };
                 var Hearts = Duplicate(() => Image(ImageFile.Heart, () => { }), 5);
                 Label Instruction = new Label
-                { Text = "The dragon is setting fire on everything!" , HorizontalTextAlignment = TextAlignment.Center };
+                { TextColor = Color.Black, Text = "The dragon is setting fire on everything!" ,
+                    HorizontalTextAlignment = TextAlignment.Center };
                 Label Question = new Label
-                { Text = "We must use the power of Mathematics to kill it!", HorizontalTextAlignment = TextAlignment.Center };
-                var Questions = NewArray(new
+                { TextColor = Color.Black, Text = "We must use the power of Mathematics to kill it!",
+                    HorizontalTextAlignment = TextAlignment.Center };
+                var Questions = new[]{new
                 {
                     Instruction = "Solve the following.",
                     Question = "(8+54/6-5*3)/2",
@@ -828,7 +830,7 @@ namespace InnoTecheLearning
                     ExtraChars = "",
                     Rows = 9,
                     Columns = 6
-                });
+                } };
                 var Stack = new MathSolverStack<(int X, int Y)>();
                 var Chars = new Label[Questions.First().Rows, Questions.First().Columns];
                 var CharGrid = new Grid
@@ -928,9 +930,17 @@ namespace InnoTecheLearning
                             {
                                 Stack.Push((
                                   (int)(Math.Floor(e.Current.X *
-                                  CharGrid.RowDefinitions.Count / CharGrid.Width)).LowerBound(0), 
+                                  CharGrid.RowDefinitions.Count / CharGrid.Width
+#if __ANDROID__
+                                  / 2.5 - 1
+#endif
+                                  )).LowerBound(0).UpperBound(Questions[lvl].Rows - 1), 
                                   (int)(Math.Floor(e.Current.Y *
-                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5)).LowerBound(0)));
+                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5
+#if __ANDROID__
+                                  / 2.5
+#endif
+                                  )).LowerBound(0).UpperBound(Questions[lvl].Columns - 1)));
                             }
                             break;
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
@@ -945,7 +955,8 @@ namespace InnoTecheLearning
                             break;
                     }
                     var Sb = new StringBuilder();
-                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.X, Item.Y].Text);
+                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.X, Item.Y].Text//$"({Item.X}, {Item.Y})"
+                        );
                     Display.Text = Sb.ToString();
                 };
                 return new StackLayout

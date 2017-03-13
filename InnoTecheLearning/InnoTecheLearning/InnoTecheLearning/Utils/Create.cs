@@ -402,8 +402,8 @@ namespace InnoTecheLearning
                 Return.HorizontalOptions = LayoutOptions.End;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
-            }
-
+            }/*
+            [Obsolete("Not needed. Deprecated in 0.10.0a173")]
             public static Button UpdateAlpha(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -445,7 +445,7 @@ namespace InnoTecheLearning
                 Return.HorizontalOptions = LayoutOptions.Start;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
-            }
+            }*/
             public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
             {
                 ScrollView Changelog = Create.Changelog;
@@ -453,7 +453,7 @@ namespace InnoTecheLearning
                     BackColor = Color.White;
                 return new StackLayout
                 {
-                    Children = { Changelog, Row(false, UpdateAlpha(Page), Back(Page)) },
+                    Children = { Changelog, Row(false, /*UpdateAlpha(Page),*/ Back(Page)) },
                     BackgroundColor = BackColor,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill
