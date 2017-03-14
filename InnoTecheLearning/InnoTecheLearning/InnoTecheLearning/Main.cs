@@ -783,8 +783,9 @@ namespace InnoTecheLearning
                 var Dragon = new Image
                 {
                     Source = Image(ImageFile.Dragon),
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    VerticalOptions = LayoutOptions.CenterAndExpand
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Aspect = Aspect.AspectFit
                 };
                 var Hearts = Duplicate(() => Image(ImageFile.Heart, () => { }), 5);
                 Label Instruction = new Label
@@ -852,12 +853,11 @@ namespace InnoTecheLearning
                     BackgroundColor = Color.Transparent,
                     IsVisible = false
                 };
-                int lvl = -1;
+                int Level = -1;
                 string[] Answers = new string[0];
                 Random Randomizer = new Random();
-                Action<int> Advance = (Level) =>
+                Action Advance = () =>
                 {
-                    Draw.Clear();
                     CharGrid.Children.Clear();
                     if (Level > 0) Hearts[Level - 1].IsVisible = false;
                     if (Level >= Questions.Length)
@@ -881,9 +881,9 @@ namespace InnoTecheLearning
                                 TextColor = Color.Black,
                                 Text = ""
                             };
-                            Ignore(() => CharGrid.Children.Add(Chars[i, j], i, j), typeof(InvalidOperationException));
+                            CharGrid.Children.Add(Chars[i, j], i, j);
                         }
-                    Ignore(() => FillGrid(CharGrid, Draw), typeof(InvalidOperationException));
+                    FillGrid(CharGrid, Draw);
                     CharGrid.IsVisible = true;
                     CharGrid.ForceLayout();
                     Question.Text = Questions[Level].Question;
@@ -931,7 +931,7 @@ namespace InnoTecheLearning
                                  string.Concat(Questions[Level].ExtraChars, Answer).Random().ToString();
                 };
                 var Continue = Button("Continue",
-                    (ref Button sender, EventArgs e) => { sender.IsVisible = false; Advance(++lvl); });
+                    (ref Button sender, EventArgs e) => { sender.IsVisible = false; ++Level; Advance(); });
                 Draw.PointerEvent += (sender, e) =>
                 {
                     switch (e.Type)
@@ -944,21 +944,28 @@ namespace InnoTecheLearning
                                   (int)(Math.Floor(e.Current.X *
                                   CharGrid.RowDefinitions.Count / CharGrid.Width
 #if __ANDROID__
-                                  / 2.5 - 1
+                                  / 3
 #endif
-                                  )).LowerBound(0).UpperBound(Questions[lvl].Rows - 1),
+                                  )).LowerBound(0).UpperBound(Questions[Level].Rows - 1),
                                   (int)(Math.Floor(e.Current.Y *
-                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height * 1.5
+                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height
 #if __ANDROID__
-                                  / 1.5
+                                  * 0.5
+#elif NETFX_CORE
+                                  * 1.5
 #endif
-                                  )).LowerBound(0).UpperBound(Questions[lvl].Columns - 1)));
+                                  )).LowerBound(0).UpperBound(Questions[Level].Columns - 1)));
+                                //Display.Text = ((CharGrid.Width) / e.Current.X).ToString();
+                                //Display.Text = ((CharGrid.Height) / e.Current.Y).ToString();
                             }
                             break;
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
                         case TouchImage.PointerEventArgs.PointerEventType.Cancel:
                             if (Answers.Contains(Display.Text))
-                            { Alert(this, "Correct! The dragon got hurt!", "Yay!", "I'll go on and continue"); Advance(++lvl); }
+                            { 
+                                try { CharGrid.Children.Add(new Label()); } catch (InvalidOperationException) { return; }
+                                Alert(this, "Correct! The dragon got hurt!", "Yay!", "I'll go on and continue");
+                                ++Level; Advance(); }
                             else Alert(this, "You got the answer wrong...\nPlease retry.", "Ooops!", "I'll retry");
                             Stack.Clear();
                             Draw.Clear();
@@ -967,8 +974,7 @@ namespace InnoTecheLearning
                             break;
                     }
                     var Sb = new StringBuilder();
-                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.X, Item.Y].Text//$"({Item.X}, {Item.Y})"
-                        );
+                    foreach (var Item in Stack) Sb.Insert(0, Chars[Item.X, Item.Y].Text);
                     Display.Text = Sb.ToString();
                 };
                 return new StackLayout

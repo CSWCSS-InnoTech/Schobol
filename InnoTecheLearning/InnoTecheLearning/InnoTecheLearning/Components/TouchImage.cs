@@ -302,7 +302,7 @@ namespace InnoTecheLearning
                     this.Location = Point.Zero;*/
                     DrawCanvas = new Canvas(CanvasBitmap =
                         Bitmap.CreateBitmap(CanvasBitmap.Width, CanvasBitmap.Height, Bitmap.Config.Argb8888));
-                    Invalidate();
+                    Ignore(Invalidate, typeof(ObjectDisposedException));
                 }
 /*
                 public void DrawText(string Text, NamedSize Size, XColor Color, Point Location)
