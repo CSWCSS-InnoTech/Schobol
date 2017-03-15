@@ -486,11 +486,27 @@ namespace InnoTecheLearning
         public static T Eval<T>(string CodeToExecute)
         { return (T)(new Jint.Engine().Execute(CodeToExecute).GetCompletionValue().ToObject()); }
         private static string JSEvaluteAns = "";
+        private static string[] JSVariables = new string[26];
         public enum AngleMode : byte { Degree, Radian, Gradian, Turn }
-        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction }
+        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure }
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
            Modifier Mod = Modifier.Normal, bool TrueFree =  false)
         {
+            string GetVars(params string[] Vars)
+            {
+                IEnumerable<string> GetVarsIterator()
+                {
+                    IEnumerable<char> GetChars() { for (var C = 'A'; C <= 'Z'; C++) yield return C; }
+                    foreach (var Item in System.Linq.Enumerable.Zip(GetChars(), Vars, (C, S) => (C, S)))
+                        yield return $"var {Item.Item1} = {Item.Item2};";
+                }
+                return string.Concat(GetVarsIterator());
+            }
+            void SetVars(Jint.Engine Engine)
+            {
+                for (int i = 0; i <= 25; i++)
+                    JSVariables[i] = Engine.GetValue(((char)('A' + i)).ToString()).ToString();
+            }
             // Ask user to enter expression.
             try
             {
@@ -499,7 +515,8 @@ namespace InnoTecheLearning
                 var Engine = new Jint.Engine().Execute(TrueFree ? "" :
                     $@"var Prev = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
 var AngleUnit = {(byte)Mode};
-var Modifier = {(byte)Mod};" + @"
+var Modifier = {(byte)Mod};" + GetVars(JSVariables)
+                + @"
 var Ans = Number(Prev);
 const global = Function('return this')();
 function AngleConvert(Num, Origin, Target){
@@ -675,6 +692,9 @@ function Factorial(aNumber){
    }
 }
 
+function nPr(n, r) { if(r > n) return 0; return Factorial(n) / Factorial(n - r);}
+function nCr(n, r) { if(r > n) return 0; return Factorial(n) / (Factorial(n - r) * Factorial(r));}
+
 function Display(Text) { 
     switch(Modifier) {
         case 0: //Normal
@@ -685,6 +705,8 @@ function Display(Text) {
             return Mixed(Text);
         case 3: //d / c
             return Fraction(Text);
+        case 4: //° ′ ″
+            return AngleMeasure(Text);
         default: //What?
             throw('Invalid display modifier.');
     }
@@ -735,10 +757,17 @@ const Log10e = Math.LOG10E;
                     }
                 }
                 return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;
+            })).SetValue("AngleMeasure", new Func<double, string>((double value) =>
+            {
+                var degree = Math.Floor(value);
+                var minute = Math.Floor((value - degree) * 60);
+                var second = (value - degree - minute / 60) * 3600;
+                return $"{degree}° {minute}′ {second}″";
             }))
 #endif
             .Execute(Expression);
-            return JSEvaluteAns = Engine.Invoke("Display", Engine.GetCompletionValue()).ToString();
+                JSEvaluteAns = Engine.GetCompletionValue().ToString();
+            return Engine.Invoke("Display", Engine.GetCompletionValue()).ToString();
             }
             catch (Exception ex) when (Alert != null)
             {

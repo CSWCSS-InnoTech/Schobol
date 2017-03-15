@@ -441,7 +441,7 @@ namespace InnoTecheLearning
 
                 Func = new Grid
                 {
-                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1),
+                    ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
                     RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand
@@ -450,10 +450,12 @@ namespace InnoTecheLearning
                 Append(Func.Children, Expressions.Clz32, "Clz32", 1, 0);
                 Append(Func.Children, Expressions.Sqrt, "Sqrt", 2, 0);
                 Append(Func.Children, Expressions.Cbrt, "Cbrt", 3, 0);
+                Append(Func.Children, Expressions.nPr, "nPr", 4, 0);
                 Append(Func.Children, Expressions.Round, "Round", 0, 1);
                 Append(Func.Children, Expressions.Ceil, "Ceil", 1, 1);
                 Append(Func.Children, Expressions.Floor, "Floor", 2, 1);
                 Append(Func.Children, Expressions.Trunc, "Trunc", 3, 1);
+                Append(Func.Children, Expressions.nCr, "nCr", 4, 1);
                 Append(Func.Children, Expressions.Exp, "Exp", 0, 2);
                 Append(Func.Children, Expressions.Comma, 1, 2);
                 Append(Func.Children, Expressions.Imul, "Imul", 2, 2);
@@ -544,7 +546,7 @@ namespace InnoTecheLearning
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const));
                 AppendScrollStack(Return.Children[1] as ScrollView, Mode, Back(this));
                 Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { Calculator_Modifier = (Modifier)i; }, 0, "Norm", "%", "a b / c", "d / c");
+                    i => delegate { Calculator_Modifier = (Modifier)i; }, 0, "Norm", "%", "a b / c", "d / c", "° ′ ″");
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*
