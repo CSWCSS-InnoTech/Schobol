@@ -18,6 +18,9 @@
             nPr, nCr, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
+            Assign, AssignAdd, AssignSubtraction, AssignMultiplication, AssignDivision, AssignModulus, //Assignment
+            AssignBAnd, AssignBOr, AssignBXor, AssignLShift, AssignRShift, AssignUnsignRShift, //Assignment
+            A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, //Variables
         }
         public enum MoreExpressions : byte
         {
@@ -36,10 +39,10 @@
             nPr, nCr, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
-#endregion Hello this is a comment
-            Assign, AssignAdd, AssignBAnd, AssignBOr, AssignBXor, //Assignment
-            AssignDivision, AssignLShift, AssignModulus, AssignMultiplication, //Assignment
-            AssignRShift, AssignSubtraction, AssignUnsignRShift, //Assignment
+            Assign, AssignAdd, AssignSubtraction, AssignMultiplication, AssignDivision, AssignModulus, //Assignment
+            AssignBAnd, AssignBOr, AssignBXor, AssignLShift, AssignRShift, AssignUnsignRShift, //Assignment
+            A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, //Variables
+            #endregion Hello this is a comment
             InstanceOf, New, Reference, TypeOf, Void, //Types
             Ternary1, Ternary2, Separator, If, Else, Switch, //Control
             Class, Constant, Delete, Enum, Function,//Declaration
@@ -327,7 +330,6 @@
                     return "undefined";
                 case MoreExpressions.Comma:
                     return ",";
-                //Expressions - MoreExpressions Line
                 case MoreExpressions.Assign:
                     return "=";
                 case MoreExpressions.AssignAdd:
@@ -352,6 +354,59 @@
                     return "-=";
                 case MoreExpressions.AssignUnsignRShift:
                     return ">>>=";
+                case MoreExpressions.A:
+                    return "A";
+                case MoreExpressions.B:
+                    return "B";
+                case MoreExpressions.C:
+                    return "C";
+                case MoreExpressions.D:
+                    return "D";
+                case MoreExpressions.E:
+                    return "E";
+                case MoreExpressions.F:
+                    return "F";
+                case MoreExpressions.G:
+                    return "G";
+                case MoreExpressions.H:
+                    return "H";
+                case MoreExpressions.I:
+                    return "I";
+                case MoreExpressions.J:
+                    return "J";
+                case MoreExpressions.K:
+                    return "K";
+                case MoreExpressions.L:
+                    return "L";
+                case MoreExpressions.M:
+                    return "M";
+                case MoreExpressions.N:
+                    return "N";
+                case MoreExpressions.O:
+                    return "O";
+                case MoreExpressions.P:
+                    return "P";
+                case MoreExpressions.Q:
+                    return "Q";
+                case MoreExpressions.R:
+                    return "R";
+                case MoreExpressions.S:
+                    return "S";
+                case MoreExpressions.T:
+                    return "T";
+                case MoreExpressions.U:
+                    return "U";
+                case MoreExpressions.V:
+                    return "V";
+                case MoreExpressions.W:
+                    return "W";
+                case MoreExpressions.X:
+                    return "X";
+                case MoreExpressions.Y:
+                    return "Y";
+                case MoreExpressions.Z:
+                    return "Z";
+                //Expressions - MoreExpressions Line
                 case MoreExpressions.InstanceOf:
                     return "instanceof(";
                 case MoreExpressions.New:

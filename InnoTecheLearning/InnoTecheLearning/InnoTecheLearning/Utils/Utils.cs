@@ -494,26 +494,29 @@ namespace InnoTecheLearning
         {
             string GetVars(params string[] Vars)
             {
-                IEnumerable<string> GetVarsIterator()
-                {
-                    IEnumerable<char> GetChars() { for (var C = 'A'; C <= 'Z'; C++) yield return C; }
-                    foreach (var Item in System.Linq.Enumerable.Zip(GetChars(), Vars, (C, S) => (C, S)))
-                        yield return $"var {Item.Item1} = {Item.Item2};";
-                }
-                return string.Concat(GetVarsIterator());
+                var sb = new System.Text.StringBuilder();
+                for (int i = 0; i <= 25; i++)
+                    sb.Append($"var Var{((char)('A' + i)).ToString()} = \"{Escape(Vars[i])}\";");
+                for (int i = 0; i <= 25; i++)
+                    sb.Append($"var {((char)('A' + i)).ToString()} = Number(\"{Escape(Vars[i])}\");");
+                return sb.ToString();
             }
             void SetVars(Jint.Engine Engine)
             {
                 for (int i = 0; i <= 25; i++)
                     JSVariables[i] = Engine.GetValue(((char)('A' + i)).ToString()).ToString();
             }
+            string Escape(string Value) => new System.Text.StringBuilder(Value).
+                Replace("\\", @"\\").Replace("\b", @"\b").Replace("\f", @"\f").
+                Replace("\n", @"\n").Replace("\r", @"\r").Replace("\t", @"\t").Replace("\v", @"\v").
+                Replace("\0", @"\0").Replace("'", @"\'").Replace("\"", @"\""").ToString();
             // Ask user to enter expression.
             try
             {
                 //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
                 var Engine = new Jint.Engine().Execute(TrueFree ? "" :
-                    $@"var Prev = ""{JSEvaluteAns.Replace(@"\", @"\\").Replace(@"""", @"\""")}"";
+                    $@"var Prev = ""{Escape(JSEvaluteAns)}"";
 var AngleUnit = {(byte)Mode};
 var Modifier = {(byte)Mod};" + GetVars(JSVariables)
                 + @"
@@ -767,6 +770,7 @@ const Log10e = Math.LOG10E;
 #endif
             .Execute(Expression);
                 JSEvaluteAns = Engine.GetCompletionValue().ToString();
+                SetVars(Engine);
             return Engine.Invoke("Display", Engine.GetCompletionValue()).ToString();
             }
             catch (Exception ex) when (Alert != null)

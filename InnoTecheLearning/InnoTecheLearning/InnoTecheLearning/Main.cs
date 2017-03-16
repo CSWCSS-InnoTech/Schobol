@@ -366,7 +366,7 @@ namespace InnoTecheLearning
                 };
                 Out.TextChanged += Calculator_TextChanged;
                 Calculator_Changed += delegate { In.Text = Calculator_Expression.AsString(); };
-                Grid Const, Trig, Func, Bin, Norm = new Grid
+                Grid Vars, Const, Trig, Func, Bin, Norm = new Grid
                 {
                     ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
                     RowDefinitions = Rows(GridUnitType.Star, 1, 1, 1, 1, 1),
@@ -420,7 +420,7 @@ namespace InnoTecheLearning
                 };
                 Append(Bin.Children, Expressions.Less, 0, 0);
                 Append(Bin.Children, Expressions.Great, 1, 0);
-                Append(Bin.Children, Expressions.LAnd, 2, 0);
+                Append(Bin.Children, Expressions.BXor, 2, 0);
                 Append(Bin.Children, Expressions.UnsignRShift, 3, 0);
                 Append(Bin.Children, Expressions.LessEqual, 0, 1);
                 Append(Bin.Children, Expressions.GreatEqual, 1, 1);
@@ -432,11 +432,11 @@ namespace InnoTecheLearning
                 Append(Bin.Children, Expressions.Decrement, 3, 2);
                 Append(Bin.Children, Expressions.Identity, 0, 3);
                 Append(Bin.Children, Expressions.NIdentity, 1, 3);
-                Append(Bin.Children, Expressions.BNot, 2, 3);
+                Append(Bin.Children, Expressions.LAnd, 2, 3);
                 Append(Bin.Children, Expressions.BAnd, 3, 3);
                 Append(Bin.Children, Expressions.LNot, 0, 4);
-                Append(Bin.Children, Expressions.LOr, 1, 4);
-                Append(Bin.Children, Expressions.BXor, 2, 4);
+                Append(Bin.Children, Expressions.BNot, 1, 4);
+                Append(Bin.Children, Expressions.LOr, 2, 4);
                 Append(Bin.Children, Expressions.BOr, 3, 4);
 
                 Func = new Grid
@@ -532,8 +532,24 @@ namespace InnoTecheLearning
                 Append(Const.Children, Expressions.NaN, 2, 2);
                 Append(Const.Children, Expressions.Undefined, "UNDEF", 3, 2);
 
+                Vars = new Grid
+                {
+                    ColumnDefinitions = Columns(GridUnitType.Star, Duplicate(1.0, 6)),
+                    RowDefinitions = Rows(GridUnitType.Star, Duplicate(1.0, 7)),
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand
+                };
+                {
+                    int Left, Top;
+                    Left = Top = 0;
+                    for (var Item = Expressions.Assign; Item <= Expressions.Z; Item++)
+                    { Append(Vars.Children, Item, Left, Top); if (++Left >= 6) { Left = 0; Top++; } }
+                    Append(Vars.Children, Expressions.Increment, ++Left, Top);
+                    Append(Vars.Children, Expressions.Decrement, ++Left, Top);
+                }
+
                 StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, new ScrollView(), Out } };
-                Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const };
+                Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
                 Mode.Clicked += delegate
@@ -543,7 +559,7 @@ namespace InnoTecheLearning
                 };
                 Return.Children[1] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0,
-                    nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const));
+                    nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
                 AppendScrollStack(Return.Children[1] as ScrollView, Mode, Back(this));
                 Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate { Calculator_Modifier = (Modifier)i; }, 0, "Norm", "%", "a b / c", "d / c", "° ′ ″");
