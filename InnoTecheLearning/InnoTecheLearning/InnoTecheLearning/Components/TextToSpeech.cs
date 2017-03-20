@@ -8,13 +8,16 @@ using System.Linq;
 using AVFoundation;
 using Foundation;
 using Speech;
+using UIKit;
 #elif __ANDROID__
 using Android.OS;
 using Android.Speech.Tts;
+using Android.App.AlertDialog;
 using RecognizerIntent = Android.Speech.RecognizerIntent;
 #elif NETFX_CORE
 using Windows.Media.SpeechSynthesis;
 using Windows.UI.Xaml.Controls;
+using Windows.Media.SpeechRecognition;
 #endif
 [assembly: Dependency(typeof(Utils.TextToSpeechImplementation))]
 
@@ -42,6 +45,8 @@ namespace InnoTecheLearning
             void Start();
             void Stop();
             event EventHandler<VoiceRecognitionEventArgs> TextChanged;
+            bool IsRecognizing { get; }
+            string Text { get; }
         }
         public class VoiceRecognitionEventArgs : EventArgs
         {
@@ -79,7 +84,6 @@ namespace InnoTecheLearning
 #elif __ANDROID__
         public class TextToSpeechImplementation : Java.Lang.Object, ITextToSpeech, TextToSpeech.IOnInitListener
         {
-            public static Bundle Bundle { get; set; }
             public const string ID = "utteranceId";
             TextToSpeech speaker;
             string toSpeak;
@@ -95,7 +99,7 @@ namespace InnoTecheLearning
                 }
                 else
                 {
-                    speaker.Speak(toSpeak, QueueMode.Flush, Bundle, ID);
+                    speaker.Speak(toSpeak, QueueMode.Flush, Droid.MainActivity.Bundle, ID);
                 }
             }
 
@@ -104,7 +108,7 @@ namespace InnoTecheLearning
             {
                 if (status.Equals(OperationResult.Success))
                 {
-                    speaker.Speak(toSpeak, QueueMode.Flush, Bundle, ID);
+                    speaker.Speak(toSpeak, QueueMode.Flush, Droid.MainActivity.Bundle, ID);
                 }
             }
         #endregion
@@ -153,6 +157,8 @@ namespace InnoTecheLearning
         public class SpeechToTextImplementation : ISpeechToText
         {
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
+            public string Text { get; private set; }
+            public bool IsRecognizing { get => RecognitionTask?.State == SFSpeechRecognitionTaskState.Running; }
         #region Private Variables
             private AVAudioEngine AudioEngine = new AVAudioEngine();
             private SFSpeechRecognizer SpeechRecognizer = new SFSpeechRecognizer();
@@ -196,6 +202,11 @@ namespace InnoTecheLearning
                             break;
                         case SFSpeechRecognizerAuthorizationStatus.Restricted:
                             // The device is not permitted
+                            var alert = UIKit.UIAlertController.Create
+                            ("Whoops!", "You don't seem to have a microphone to record with", UIKit.UIAlertControllerStyle.Alert);
+                            alert.AddAction(UIKit.UIAlertAction.Create("OK", UIKit.UIAlertActionStyle.Default, null));
+                            UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController
+                            (alert, animated: true, completionHandler: null);
                             break;
                     }
                 });
@@ -302,18 +313,18 @@ namespace InnoTecheLearning
             }
             public void OnTextChanged(string text, bool isFinal = false)
             {
-                TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(text, isFinal));
+                TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = text, isFinal));
             }
         }
 #elif __ANDROID__
-        public class VoiceButtonRenderer : ISpeechToText
+        public class SpeechToTextImplementation : ISpeechToText
             {
-            private bool isRecording;
-            private readonly int VOICE = 10;
-            public VoiceButtonRenderer()
-            {
-                isRecording = false;
-            }
+            private bool isRecording = false;
+            private const int VOICE = 10;
+            public SpeechToTextImplementation() { }
+            public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
+            public string Text { get; private set; }
+            public bool IsRecognizing { get; private set; }
             public void Start()
             {
                 try
@@ -322,7 +333,8 @@ namespace InnoTecheLearning
                     {
                         // no microphone, no recording. Disable the button and output an alert
                         var alert = new Android.App.AlertDialog.Builder(Forms.Context);
-                        alert.SetTitle("You don't seem to have a microphone to record with");
+                        alert.SetTitle("Whoops!");
+                        alert.SetMessage("You don't seem to have a microphone to record with");
                         alert.SetPositiveButton("OK", (sender, e) => {
                             return;
                         });
@@ -345,7 +357,10 @@ namespace InnoTecheLearning
                         // if you wish it to recognise the default Locale language and German
                         // if you do use another locale, regional dialects may not be recognised very well
                         voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.Default);
-                        Forms.Context.StartActivity(voiceIntent);//, VOICE
+                        IsRecognizing = true;
+                        Droid.MainActivity.Current.StartActivityForResult(voiceIntent, VOICE);
+                        Droid.MainActivity.Current.ActivityResult += HandleActivityResult;
+                        StopAction = () => Droid.MainActivity.Current.FinishActivity(VOICE);
                     }
                 }
                 catch (Exception ex)
@@ -353,25 +368,30 @@ namespace InnoTecheLearning
                     Console.WriteLine(ex.Message);
                 }
             }
+            private Action StopAction = delegate { };
+            public void Stop() => StopAction();
             private void HandleActivityResult(object sender, Android.Preferences.PreferenceManager.ActivityResultEventArgs e)
             {
                 if (e.RequestCode == VOICE)
                 {
+                    IsRecognizing = false;
                     if (e.ResultCode == Android.App.Result.Ok)
                     {
                         var matches = e.Data.GetStringArrayListExtra(RecognizerIntent.ExtraResults);
                         if (matches.Count != 0)
                         {
-                            string textInput = matches[0];
                             // limit the output to 500 characters
-                            if (textInput.Length > 500)
-                                textInput = textInput.Substring(0, 500);
-                            sharedButton.OnTextChanged?.Invoke(textInput);
-                            //textBox.Text = textInput;
+                            // string textInput = matches[0]; if (textInput.Length > 500) textInput = textInput.Substring(0, 500);
+                            TextChanged?.Invoke(sender, new VoiceRecognitionEventArgs(Text = string.Join(" ", matches), true));
+                            // textBox.Text = textInput;
                         }
                         else
-                            sharedButton.OnTextChanged?.Invoke("No speech was recognised");
+                        {
+                            TextChanged?.Invoke(sender, new VoiceRecognitionEventArgs(Text = "", true));
+                            // sharedButton.OnTextChanged?.Invoke("No speech was recognised");
+                        }
                     }
+                    StopAction = delegate { };
                 }
             }
         }
@@ -379,15 +399,24 @@ namespace InnoTecheLearning
         public class SpeechToTextImplementation : ISpeechToText
         {
             public SpeechToTextImplementation() { }
-
-            public async void Speak(string text)
+            SpeechRecognizer _speechRecognizer;
+            Windows.UI.Core.CoreDispatcher _coreDispatcher;
+            public void Start() => Do(StartAsync());
+            public async System.Threading.Tasks.Task StartAsync()
             {
-                var mediaElement = new MediaElement();
-                var synth = new SpeechSynthesizer();
-                var stream = await synth.SynthesizeTextToStreamAsync(text);
+                var defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
+                _speechRecognizer = new SpeechRecognizer(defaultLanguage);
+                _coreDispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+                //var constraintList = new SpeechRecognitionListConstraint(new List<string>() { "Next", "Back" });
+                //_speechRecognizer.Constraints.Add(constraintList);
 
-                mediaElement.SetSource(stream, stream.ContentType);
-                mediaElement.Play();
+                var result = await _speechRecognizer.CompileConstraintsAsync();
+                if (result.Status == SpeechRecognitionResultStatus.Success)
+                {
+                    _speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
+                    _speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
+                    await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
+                }
             }
         }
 #endif
