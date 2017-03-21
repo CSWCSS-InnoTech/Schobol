@@ -398,7 +398,10 @@ namespace InnoTecheLearning
 #elif NETFX_CORE
         public class SpeechToTextImplementation : ISpeechToText
         {
+            public bool IsRecognizing { get => _speechRecognizer?.State != SpeechRecognizerState.Idle; }
             public SpeechToTextImplementation() { }
+            public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
+            public string Text { get; private set; }
             SpeechRecognizer _speechRecognizer;
             Windows.UI.Core.CoreDispatcher _coreDispatcher;
             public void Start() => Do(StartAsync());
@@ -407,17 +410,22 @@ namespace InnoTecheLearning
                 var defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
                 _speechRecognizer = new SpeechRecognizer(defaultLanguage);
                 _coreDispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
-                //var constraintList = new SpeechRecognitionListConstraint(new List<string>() { "Next", "Back" });
-                //_speechRecognizer.Constraints.Add(constraintList);
 
+                /*var constraintList = new SpeechRecognitionListConstraint(new List<string>() { "Next", "Back" });
+                _speechRecognizer.Constraints.Add(constraintList);
                 var result = await _speechRecognizer.CompileConstraintsAsync();
-                if (result.Status == SpeechRecognitionResultStatus.Success)
-                {
-                    _speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ContinuousRecognitionSession_ResultGenerated;
-                    _speechRecognizer.ContinuousRecognitionSession.Completed += ContinuousRecognitionSession_Completed;
-                    await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
-                }
+                if (result.Status != SpeechRecognitionResultStatus.Success) return;*/
+                
+                _speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ResultGenerated;
+                _speechRecognizer.ContinuousRecognitionSession.Completed += Completed;
+                await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
             }
+
+            private void Completed(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)
+            => TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text, true));
+
+            private void ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
+            => TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = args.Result.Text, false));
         }
 #endif
     }
