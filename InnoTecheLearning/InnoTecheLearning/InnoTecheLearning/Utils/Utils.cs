@@ -515,7 +515,9 @@ namespace InnoTecheLearning
             {
                 //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
-                var Engine = new Jint.Engine().Execute(TrueFree ? "" :
+                var Engine = new Jint.Engine();
+                if (TrueFree) return Engine.Execute(Expression).GetCompletionValue().ToString();
+                Engine.Execute(
                     $@"var Prev = ""{Escape(JSEvaluteAns)}"";
 var AngleUnit = {(byte)Mode};
 var Modifier = {(byte)Mod};" + GetVars(JSVariables)

@@ -28,8 +28,7 @@ namespace InnoTecheLearning
      /// Cross-platform access to <see cref="TextToSpeechImplementation.Speak(string)"/>.
      /// </summary>
      /// <param name="Text"></param>
-        public static void Speak(string Text)
-        { DependencyService.Get<ITextToSpeech>().Speak(Text); }
+        public static void Speak(string Text) { DependencyService.Get<ITextToSpeech>().Speak(Text); }
         /// <summary>
         /// Provides an interface for <see cref="TextToSpeechImplementation"/> and cross-platform Text To Speech.
         /// </summary>
@@ -38,7 +37,7 @@ namespace InnoTecheLearning
             void Speak(string text);
         }
         /// <summary>
-        /// Provides an interface for <see cref="SpeechToTextImplementation"/> and cross-platform Speech To Text.
+        /// Provides an interface for <see cref="SpeechToText"/> and cross-platform Speech To Text.
         /// </summary>
         public interface ISpeechToText
         {
@@ -154,7 +153,7 @@ namespace InnoTecheLearning
         /// The platform-specific implementation of <see cref="ISpeechToText"/>.
         /// </summary>
 #if __IOS__
-        public class SpeechToTextImplementation : ISpeechToText
+        public class SpeechToText : ISpeechToText
         {
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
@@ -166,10 +165,10 @@ namespace InnoTecheLearning
             private SFSpeechRecognitionTask RecognitionTask;
         #endregion
 
-            public SpeechToTextImplementation()
+            public SpeechToText()
             {
             }
-            public void InitializeProperties()
+            void InitializeProperties()
             {
                 AudioEngine = new AVAudioEngine();
                 SpeechRecognizer = new SFSpeechRecognizer();
@@ -211,7 +210,7 @@ namespace InnoTecheLearning
                     }
                 });
             }
-            public void StartRecordingSession()
+            void StartRecordingSession()
             {
                 // Start recording
                 AudioEngine.InputNode.InstallTapOnBus(
@@ -237,7 +236,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            public void CheckAndStartReconition()
+            void CheckAndStartReconition()
             {
                 if (RecognitionTask?.State == SFSpeechRecognitionTaskState.Running)
                 {
@@ -246,7 +245,7 @@ namespace InnoTecheLearning
                 StartVoiceRecognition();
             }
 
-            public void StartVoiceRecognition()
+            void StartVoiceRecognition()
             {
                 try
                 {
@@ -286,7 +285,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            public void StopRecording()
+            void StopRecording()
             {
                 try
                 {
@@ -299,7 +298,7 @@ namespace InnoTecheLearning
                 }
             }
 
-            public void CancelRecording()
+            void CancelRecording()
             {
                 try
                 {
@@ -311,17 +310,17 @@ namespace InnoTecheLearning
                     Console.WriteLine(ex.Message);
                 }
             }
-            public void OnTextChanged(string text, bool isFinal = false)
+            void OnTextChanged(string text, bool isFinal = false)
             {
                 TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = text, isFinal));
             }
         }
 #elif __ANDROID__
-        public class SpeechToTextImplementation : ISpeechToText
+        public class SpeechToText : ISpeechToText
             {
             private bool isRecording = false;
             private const int VOICE = 10;
-            public SpeechToTextImplementation() { }
+            public SpeechToText() { }
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             public bool IsRecognizing { get; private set; }
@@ -396,16 +395,16 @@ namespace InnoTecheLearning
             }
         }
 #elif NETFX_CORE
-        public class SpeechToTextImplementation : ISpeechToText
+        public class SpeechToText : ISpeechToText
         {
             public bool IsRecognizing { get => _speechRecognizer?.State != SpeechRecognizerState.Idle; }
-            public SpeechToTextImplementation() { }
+            public SpeechToText() { }
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             SpeechRecognizer _speechRecognizer;
             Windows.UI.Core.CoreDispatcher _coreDispatcher;
             public void Start() => Do(StartAsync());
-            public async System.Threading.Tasks.Task StartAsync()
+            async System.Threading.Tasks.Task StartAsync()
             {
                 var defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
                 _speechRecognizer = new SpeechRecognizer(defaultLanguage);
@@ -420,12 +419,15 @@ namespace InnoTecheLearning
                 _speechRecognizer.ContinuousRecognitionSession.Completed += Completed;
                 await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
             }
+            public void Stop() => Do(_speechRecognizer.StopRecognitionAsync());
 
-            private void Completed(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)
-            => TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text, true));
+            private void Completed(SpeechContinuousRecognitionSession sender,
+                SpeechContinuousRecognitionCompletedEventArgs args) => 
+            TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text, true));
 
-            private void ResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
-            => TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = args.Result.Text, false));
+            private void ResultGenerated(SpeechContinuousRecognitionSession sender,
+                SpeechContinuousRecognitionResultGeneratedEventArgs args) => 
+            TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = args.Result.Text, false));
         }
 #endif
     }
