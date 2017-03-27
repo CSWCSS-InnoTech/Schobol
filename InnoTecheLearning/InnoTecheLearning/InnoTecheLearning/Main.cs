@@ -211,7 +211,7 @@ namespace InnoTecheLearning
                              Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))//Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉");
                          ),
 
-                Button("Changelog", delegate { Showing = Pages.Changelog; }),
+                Button("Changelog", () => { Showing = Pages.Changelog; }),
                 VersionDisplay
                     }
                 };
@@ -258,7 +258,7 @@ namespace InnoTecheLearning
                         , (Text)"Cello and Double Bass"),
                         Row(true, Cello),
 
-                        Button("Stop", delegate {
+                        Button("Stop", () => {
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
                         MusicSound?.Dispose(); /*_Player.Play();*/ }),
@@ -279,7 +279,7 @@ namespace InnoTecheLearning
         }
         public Button MusicTunerPlay(Text Text, Sounds Sound, Slider Vol)
         {
-            return Button(Text, delegate
+            return Button(Text, () =>
             { /*_Player.Pause();*/
                 MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value);
             });
@@ -320,7 +320,7 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {ID, E, Button("Test the Cloud",
-                    delegate { var Response = Login(ToUShort(ID.Text), E.Text);
+                    () => { var Response = Login(ToUShort(ID.Text), E.Text);
                     Try(delegate {
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
                     L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
@@ -377,12 +377,12 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.Space, "␣", 0, 0);
                 Append(Norm.Children, Expressions.Modulus, 1, 0);
                 Append(Norm.Children, Expressions.Ans, 2, 0);
-                Norm.Children.Add(Button("⌫", delegate
+                Norm.Children.Add(Button("⌫", () =>
                 {
                     Calculator_Expression.RemoveLast();
                     Calculator_Changed();
                 }, Color.FromHex("#E91E63")), 3, 0);
-                Norm.Children.Add(Button("⎚", delegate
+                Norm.Children.Add(Button("⎚", () =>
                 {
                     Calculator_Expression.Clear();
                     Calculator_Changed();
@@ -405,7 +405,7 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.D0, 0, 4, Color.FromHex("#607D8B")); //Blue Grey
                 Append(Norm.Children, Expressions.DPoint, 1, 4);
                 Append(Norm.Children, Expressions.e, 2, 4);
-                Norm.Children.Add(Button("=", delegate
+                Norm.Children.Add(Button("=", () =>
                 {
                     Calculator_Value = JSEvaluate(In.Text, this, AngleUnit, Calculator_Modifier);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
@@ -681,7 +681,7 @@ namespace InnoTecheLearning
                     Children =
                     {new ScrollView { Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
-                    Row(false, Button("Evaluate", delegate { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
+                    Row(false, Button("Evaluate", () => { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
                         Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
                         Back(this)),
                     Entry
@@ -705,13 +705,13 @@ namespace InnoTecheLearning
                 const string X = "X";
                 const string Y = "Y";
                 Button S1 = null;
-                S1 = Button("+", delegate { S1.Text = S1.Text == "+" ? "-" : "+"; });
+                S1 = Button("+", () => { S1.Text = S1.Text == "+" ? "-" : "+"; });
                 Entry C1 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
                 Button S2 = null;
-                S2 = Button("+", delegate { S2.Text = S2.Text == "+" ? "-" : "+"; });
+                S2 = Button("+", () => { S2.Text = S2.Text == "+" ? "-" : "+"; });
                 Entry C2 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
                 Button S3 = null;
-                S3 = Button("+", delegate { S3.Text = S3.Text == "+" ? "-" : "+"; });
+                S3 = Button("+", () => { S3.Text = S3.Text == "+" ? "-" : "+"; });
                 Entry C3 = Entry("", "Coefficient", Keyboard: Keyboard.Numeric);
                 Entry R1 = Entry(Factorizer_Root1, "First Root", delegate { return Factorizer_Root1; });
                 Entry R2 = Entry(Factorizer_Root1, "Second Root", delegate { return Factorizer_Root2; });
@@ -723,7 +723,7 @@ namespace InnoTecheLearning
                         Row(false, S1, C1, (Text)(X + "²")),
                         Row(false, S2, C2, (Text)(X + Y)),
                         Row(false, S3, C3, (Text)(Y + "²")),
-                        Button("Factorize", delegate {Factorizer_Result = Factorize(TryParseDouble(S1.Text + C1.Text, 0d),
+                        Button("Factorize", () => {Factorizer_Result = Factorize(TryParseDouble(S1.Text + C1.Text, 0d),
                             TryParseDouble(S2.Text + C2.Text, 0d),
                             TryParseDouble(S3.Text + C3.Text, 0d), out System.Numerics.Complex X1, out System.Numerics.Complex X2, X, Y);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
@@ -761,8 +761,8 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Button("Start Running", delegate { Pedometer.Start(); }, Color.Blue, Color.White),
-                        Button("Stop Running", delegate { Pedometer.Stop(); }, Color.Red, Color.White),
+                        Button("Start Running", () => { Pedometer.Start(); }, Color.Blue, Color.White),
+                        Button("Stop Running", () => { Pedometer.Stop(); }, Color.Red, Color.White),
                         (Text)"Steps",
                         Sports_Steps,
                         (Text)"Elapsed Time",
@@ -771,7 +771,7 @@ namespace InnoTecheLearning
                         Sports_Distance,
                         (Text)"Time Now",
                         Sports_Now,
-                        Button("Reset", delegate { Pedometer.Reset(); }, Color.Yellow),
+                        Button("Reset", () => { Pedometer.Reset(); }, Color.Yellow),
                         Back(this)
                     }
                 };
@@ -1012,14 +1012,15 @@ namespace InnoTecheLearning
         {
             get
             {
-                var Recognizer = new SpeechToText();
+                var Recognizer = new SpeechToText("Say something to translate...");
                 var Display = new Label();
                 var Input = Entry("", "Translate me...");
                 Recognizer.TextChanged += delegate { Display.Text = Recognizer.Text; };
-                var Submit = Button("Translate", delegate
+                var Submit = Button("Translate", async () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
-                    Recognizer.Start();
+                    Recognizer.TextChanged += (sender, e) => { Display.Text = e.Text; };
+                    await Recognizer.Start();
                 });
                 return new StackLayout { Children = { Row(false, Input, Submit, Display) } };
             }

@@ -4,6 +4,7 @@ using System.Text;
 using Xamarin.Forms;
 using InnoTecheLearning;
 using System.Linq;
+using System.Threading.Tasks;
 #if __IOS__
 using AVFoundation;
 using Foundation;
@@ -12,7 +13,7 @@ using UIKit;
 #elif __ANDROID__
 using Android.OS;
 using Android.Speech.Tts;
-using Android.App.AlertDialog;
+using static Android.App.AlertDialog;
 using RecognizerIntent = Android.Speech.RecognizerIntent;
 #elif NETFX_CORE
 using Windows.Media.SpeechSynthesis;
@@ -41,11 +42,12 @@ namespace InnoTecheLearning
         /// </summary>
         public interface ISpeechToText
         {
-            void Start();
-            void Stop();
+            Task Start();
+            Task Stop();
             event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             bool IsRecognizing { get; }
             string Text { get; }
+            string Prompt { get; set; }
         }
         public class VoiceRecognitionEventArgs : EventArgs
         {
@@ -155,6 +157,7 @@ namespace InnoTecheLearning
 #if __IOS__
         public class SpeechToText : ISpeechToText
         {
+            public string Prompt { get; set; }
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             public bool IsRecognizing { get => RecognitionTask?.State == SFSpeechRecognitionTaskState.Running; }
@@ -165,8 +168,9 @@ namespace InnoTecheLearning
             private SFSpeechRecognitionTask RecognitionTask;
         #endregion
 
-            public SpeechToText()
+            public SpeechToText(string Prompt = null)
             {
+                this.Prompt = Prompt;
             }
             void InitializeProperties()
             {
@@ -174,13 +178,13 @@ namespace InnoTecheLearning
                 SpeechRecognizer = new SFSpeechRecognizer();
                 LiveSpeechRequest = new SFSpeechAudioBufferRecognitionRequest();
             }
-            public void Start()
+            public Task Start()
             {
-                AskPermission();
+                return Task.Run(action: AskPermission);
             }
-            public void Stop()
+            public Task Stop()
             {
-                CancelRecording();
+                return Task.Run(action: CancelRecording);
             }
             void AskPermission()
             {
@@ -314,17 +318,26 @@ namespace InnoTecheLearning
             {
                 TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = text, isFinal));
             }
+            ~SpeechToText()
+            {
+                AudioEngine.Dispose(); SpeechRecognizer.Dispose(); LiveSpeechRequest.Dispose(); RecognitionTask.Dispose();
+            }
         }
 #elif __ANDROID__
         public class SpeechToText : ISpeechToText
             {
+            public string Prompt { get; set; }
             private bool isRecording = false;
             private const int VOICE = 10;
-            public SpeechToText() { }
+            public SpeechToText(string Prompt = null)
+            {
+                this.Prompt = Prompt;
+            }
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             public bool IsRecognizing { get; private set; }
-            public void Start()
+            public Task Start() => Task.Run(action: Start_);
+            void Start_()
             {
                 try
                 {
@@ -345,7 +358,7 @@ namespace InnoTecheLearning
                         var voiceIntent = new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraLanguageModel, RecognizerIntent.LanguageModelFreeForm);
                         // put a message on the modal dialog
-                        voiceIntent.PutExtra(RecognizerIntent.ExtraPrompt, "Speak now!");
+                        voiceIntent.PutExtra(RecognizerIntent.ExtraPrompt, Prompt ?? "Say something...");
                         // if there is more then 1.5s of silence, consider the speech over
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputCompleteSilenceLengthMillis, 1500);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputPossiblyCompleteSilenceLengthMillis, 1500);
@@ -368,7 +381,7 @@ namespace InnoTecheLearning
                 }
             }
             private Action StopAction = delegate { };
-            public void Stop() => StopAction();
+            public Task Stop() => Task.Run(StopAction);
             private void HandleActivityResult(object sender, Android.Preferences.PreferenceManager.ActivityResultEventArgs e)
             {
                 if (e.RequestCode == VOICE)
@@ -393,33 +406,57 @@ namespace InnoTecheLearning
                     StopAction = delegate { };
                 }
             }
+
+            ~SpeechToText() { StopAction(); }
         }
 #elif NETFX_CORE
         public class SpeechToText : ISpeechToText
         {
+            public string Prompt { get; set; }
             public bool IsRecognizing { get => _speechRecognizer?.State != SpeechRecognizerState.Idle; }
-            public SpeechToText() { }
+            public SpeechToText(string Prompt = null)
+            {
+                this.Prompt = Prompt;
+            }
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             SpeechRecognizer _speechRecognizer;
-            Windows.UI.Core.CoreDispatcher _coreDispatcher;
-            public void Start() => Do(StartAsync());
-            async System.Threading.Tasks.Task StartAsync()
+            //Windows.UI.Core.CoreDispatcher _coreDispatcher;
+            public async Task Start()
             {
+                try
+                {
                 var defaultLanguage = SpeechRecognizer.SystemSpeechLanguage;
                 _speechRecognizer = new SpeechRecognizer(defaultLanguage);
-                _coreDispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
+                //_coreDispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
                 /*var constraintList = new SpeechRecognitionListConstraint(new List<string>() { "Next", "Back" });
-                _speechRecognizer.Constraints.Add(constraintList);
+                _speechRecognizer.Constraints.Add(constraintList);*/
                 var result = await _speechRecognizer.CompileConstraintsAsync();
-                if (result.Status != SpeechRecognitionResultStatus.Success) return;*/
-                
+                if (result.Status != SpeechRecognitionResultStatus.Success) return;
+                _speechRecognizer.UIOptions.AudiblePrompt = Prompt ?? "Say something...";
+                _speechRecognizer.UIOptions.ExampleText = "For example: Lego Mania says \"Cheeseburger\"";
+                _speechRecognizer.UIOptions.IsReadBackEnabled = true;
+                _speechRecognizer.UIOptions.ShowConfirmation = true;
                 _speechRecognizer.ContinuousRecognitionSession.ResultGenerated += ResultGenerated;
                 _speechRecognizer.ContinuousRecognitionSession.Completed += Completed;
-                await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
+                await _speechRecognizer.RecognizeWithUIAsync();
+                }
+                catch (System.Runtime.InteropServices.COMException e)
+                //The speech privacy policy was not accepted prior to attempting a speech recognition.
+                {
+                    ContentDialog noWifiDialog = new ContentDialog()
+                    {
+                        Title = "The speech privacy policy was not accepted",
+                        Content = "In order to recognize your speech, you need to tick the check box " +
+                        "titled 'Enable Speech Recognition Service' under Settings > Time & Language > Speech. ",
+                        PrimaryButtonText = "OK"
+                    };
+                    await noWifiDialog.ShowAsync();
+                    System.Diagnostics.Debugger.Break();
+                }
             }
-            public void Stop() => Do(_speechRecognizer.StopRecognitionAsync());
+            public Task Stop() => _speechRecognizer.StopRecognitionAsync().AsTask();
 
             private void Completed(SpeechContinuousRecognitionSession sender,
                 SpeechContinuousRecognitionCompletedEventArgs args) => 
@@ -428,6 +465,8 @@ namespace InnoTecheLearning
             private void ResultGenerated(SpeechContinuousRecognitionSession sender,
                 SpeechContinuousRecognitionResultGeneratedEventArgs args) => 
             TextChanged?.Invoke(this, new VoiceRecognitionEventArgs(Text = args.Result.Text, false));
+
+            ~SpeechToText() { _speechRecognizer.Dispose(); }
         }
 #endif
     }

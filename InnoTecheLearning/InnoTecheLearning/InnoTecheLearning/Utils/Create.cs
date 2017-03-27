@@ -42,6 +42,21 @@ namespace InnoTecheLearning
                 return Button;
             }
             public delegate void ButtonOnClick(ref Button sender, EventArgs e);
+            public static Button Button(Text Text, Action OnClick,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => OnClick(), BackColor, TextColor);
+            public static Button Button(Text Text, Action OnClick, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => OnClick(), Size,
+                    BackColor, TextColor);
+            public static Button Button(Text Text, Func<System.Threading.Tasks.Task> OnClickAsync,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => System.Threading.Tasks.Task.Run(OnClickAsync),
+                    BackColor, TextColor);
+            public static Button Button(Text Text, Func<System.Threading.Tasks.Task> OnClickAsync, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => System.Threading.Tasks.Task.Run(OnClickAsync), Size, 
+                    BackColor, TextColor);
             public static Button Button(Text Text, ButtonOnClick OnClick, Color BackColor =
                 default(Color), Color TextColor = default(Color))
             {
@@ -398,7 +413,7 @@ namespace InnoTecheLearning
                     BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Return = Button("Back", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
+                Button Return = Button("Back", OnClick: Page.SendBackButtonPressed().Ignore);
                 Return.HorizontalOptions = LayoutOptions.End;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;

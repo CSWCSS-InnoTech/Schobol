@@ -1139,16 +1139,17 @@ const Log10e = Math.LOG10E;
         public static T Random<T>(this IEnumerable<T> IE) => 
             System.Linq.Enumerable.Count(IE) == 0? default(T):
             System.Linq.Enumerable.ElementAt(IE, Text.Rnd.Next(System.Linq.Enumerable.Count(IE)));
-        public static void Ignore(Action Action, params Type[] Exceptions)
+        public static void IgnoreEx(Action Action, params Type[] Exceptions)
         {
             try { Action(); }
             catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { }
         }
-        public static T Ignore<T>(Func<T> Action, params Type[] Exceptions)
+        public static T IgnoreEx<T>(Func<T> Action, params Type[] Exceptions)
         {
             try { return Action(); }
             catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { return default(T); }
         }
+        public static void Ignore(this object Instance) { }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()
