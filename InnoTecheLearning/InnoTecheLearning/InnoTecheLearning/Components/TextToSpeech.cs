@@ -327,7 +327,6 @@ namespace InnoTecheLearning
         public class SpeechToText : ISpeechToText
             {
             public string Prompt { get; set; }
-            private bool isRecording = false;
             private const int VOICE = 10;
             public SpeechToText(string Prompt = null)
             {
@@ -336,22 +335,30 @@ namespace InnoTecheLearning
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             public bool IsRecognizing { get; private set; }
+            void Alert(string Message, string Title = "Whoops!", string ButtonText = "OK")
+            {
+                var alert = new Builder(Forms.Context);
+                alert.SetTitle(Title);
+                alert.SetMessage(Message);
+                alert.SetPositiveButton(ButtonText, (sender, e) =>
+                {
+                    return;
+                });
+                alert.Show().Show();
+            }
             public void Start() => Start_();
             void Start_()
             {
                 try
                 {
                     if (!Forms.Context.PackageManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureMicrophone))
-                    {
                         // no microphone, no recording. Disable the button and output an alert
-                        var alert = new Android.App.AlertDialog.Builder(Forms.Context);
-                        alert.SetTitle("Whoops!");
-                        alert.SetMessage("You don't seem to have a microphone to record with");
-                        alert.SetPositiveButton("OK", (sender, e) => {
-                            return;
-                        });
-                        alert.Show().Show();
-                    }
+                        Alert("You don't seem to have a microphone to record with");
+                    else if (Forms.Context.PackageManager.QueryIntentActivities(
+                        new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech), 0).Count == 0)
+                        Alert("You don't seem to have a recognition service");
+                    else if (!InternetAvaliable)
+                        Alert("You don't seem to have an Internet connection to analyze your speech");
                     else
                     {
                         // create the intent and start the activity
@@ -360,15 +367,15 @@ namespace InnoTecheLearning
                         // put a message on the modal dialog
                         voiceIntent.PutExtra(RecognizerIntent.ExtraPrompt, Prompt ?? "Say something...");
                         // if there is more then 1.5s of silence, consider the speech over
-                        voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputCompleteSilenceLengthMillis, 1500);
+                        /*voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputCompleteSilenceLengthMillis, 1500);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputPossiblyCompleteSilenceLengthMillis, 1500);
-                        voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputMinimumLengthMillis, 15000);
+                        voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputMinimumLengthMillis, 15000);*/
                         voiceIntent.PutExtra(RecognizerIntent.ExtraMaxResults, 1);
                         // you can specify other languages recognised here, for example
-                        // voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.German);
+                        //voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.German);
                         // if you wish it to recognise the default Locale language and German
                         // if you do use another locale, regional dialects may not be recognised very well
-                        voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.Default);
+                        //voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.Default);
                         IsRecognizing = true;
                         Droid.MainActivity.Current.StartActivityForResult(voiceIntent, VOICE);
                         Droid.MainActivity.Current.ActivityResult += HandleActivityResult;
@@ -487,5 +494,20 @@ namespace InnoTecheLearning
             ~SpeechToText() { _speechRecognizer.Dispose(); }
         }
 #endif
+        public static bool InternetAvaliable
+        {
+            get
+            {
+                try
+                {
+                    System.Net.Dns.GetHostEntryAsync("www.google.com").Do();
+                    return true;
+                }
+                catch (AggregateException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
+                {
+                    return false;
+                }
+            }
+        }
     }
 }

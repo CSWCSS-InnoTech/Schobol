@@ -1014,12 +1014,12 @@ namespace InnoTecheLearning
             {
                 var Recognizer = new SpeechToText("Say something to translate...");
                 Label Display = (Text)"";
-                var Input = Entry("", "Translate me...");
-                var Submit = Button("Translate", () =>
+                var Input = Entry("", "Enter words...");
+                var Submit = Button("Recognize", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
                     Recognizer.TextChanged += 
-                        (sender, e) => Device.BeginInvokeOnMainThread(() => Display.Text = e.Text);
+                        (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
                     Recognizer.Start();
                 });
                 return new StackLayout { Children = { Row(false, Input, Submit, Display) } };
