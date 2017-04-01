@@ -413,7 +413,7 @@ namespace InnoTecheLearning
                     BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Return = Button("Back", OnClick: Page.SendBackButtonPressed().Ignore);
+                Button Return = Button("Back", OnClick: () => Page.SendBackButtonPressed());
                 Return.HorizontalOptions = LayoutOptions.End;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;

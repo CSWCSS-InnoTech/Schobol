@@ -1150,6 +1150,77 @@ const Log10e = Math.LOG10E;
             catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { return default(T); }
         }
         public static void Ignore(this object Instance) { }
+
+#if __IOS__
+        public static Foundation.NSLocale ToLocale(this SpeechLanguages Lang)
+        {
+            switch (Lang)
+            {
+                case SpeechLanguages.Default:
+                    return Foundation.NSLocale.CurrentLocale;
+                case SpeechLanguages.System:
+                    return Foundation.NSLocale.SystemLocale;
+                case SpeechLanguages.English_US:
+                    return Foundation.NSLocale.FromLocaleIdentifier("en_US");
+                case SpeechLanguages.English_UK:
+                    return Foundation.NSLocale.FromLocaleIdentifier("en_GB");
+                case SpeechLanguages.Chinese_Simplified:
+                    return Foundation.NSLocale.FromLocaleIdentifier("zh_CN");
+                case SpeechLanguages.Chinese_Traditional:
+                    return Foundation.NSLocale.FromLocaleIdentifier("zh_HK");
+                case SpeechLanguages.Cantonese:
+                    return Foundation.NSLocale.FromLocaleIdentifier("yue_HK");
+                default:
+                    throw new ArgumentException($"Invalid language. Value: {Lang}", nameof(Lang));
+            }
+        }
+#elif __ANDROID__
+        public static Java.Util.Locale ToLocale(this SpeechLanguages Lang)
+        {
+            switch (Lang)
+            {
+                case SpeechLanguages.Default:
+                    return Java.Util.Locale.Default;
+                case SpeechLanguages.System:
+                    return Java.Util.Locale.Root;
+                case SpeechLanguages.English_US:
+                    return Java.Util.Locale.Us;
+                case SpeechLanguages.English_UK:
+                    return Java.Util.Locale.Uk;
+                case SpeechLanguages.Chinese_Simplified:
+                    return Java.Util.Locale.SimplifiedChinese;
+                case SpeechLanguages.Chinese_Traditional:
+                    return Java.Util.Locale.TraditionalChinese;
+                case SpeechLanguages.Cantonese:
+                    return new Java.Util.Locale("zh", "HK");
+                default:
+                    throw new ArgumentException($"Invalid language. Value: {Lang}", nameof(Lang));
+            }
+        }
+#else
+        public static Windows.Globalization.Language ToLocale(this SpeechLanguages Lang)
+        {
+            switch (Lang)
+            {
+                case SpeechLanguages.Default:
+                    return new Windows.Globalization.Language(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
+                case SpeechLanguages.System:
+                    return new Windows.Globalization.Language(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
+                case SpeechLanguages.English_US:
+                    return new Windows.Globalization.Language("en-US");
+                case SpeechLanguages.English_UK:
+                    return new Windows.Globalization.Language("en-UK");
+                case SpeechLanguages.Chinese_Simplified:
+                    return new Windows.Globalization.Language("zh-CN");
+                case SpeechLanguages.Chinese_Traditional:
+                    return new Windows.Globalization.Language("zh-HK");
+                case SpeechLanguages.Cantonese:
+                    return new Windows.Globalization.Language("yue-HK");
+                default:
+                    throw new ArgumentException($"Invalid language. Value: {Lang}", nameof(Lang));
+            }
+        }
+#endif
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

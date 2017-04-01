@@ -59,6 +59,18 @@ namespace InnoTecheLearning
             public string Text { get; }
             public bool Final { get; }
         }
+        [Flags]
+        public enum SpeechLanguages : byte
+        {
+            Unspecified         = 0b0000000,
+            Default             = 0b0000001,
+            System              = 0b0000010,
+            English_US          = 0b0000100,
+            English_UK          = 0b0001000,
+            Chinese_Simplified  = 0b0010000,
+            Chinese_Traditional = 0b0100000,
+            Cantonese           = 0b1000000
+        }
         /// <summary>
         /// The platform-specific implementation of <see cref="ITextToSpeech"/>.
         /// </summary>
@@ -104,7 +116,7 @@ namespace InnoTecheLearning
                 }
             }
 
-        #region IOnInitListener implementation
+#region IOnInitListener implementation
             public void OnInit(OperationResult status)
             {
                 if (status.Equals(OperationResult.Success))
@@ -112,7 +124,7 @@ namespace InnoTecheLearning
                     speaker.Speak(toSpeak, QueueMode.Flush, Droid.MainActivity.Bundle, ID);
                 }
             }
-        #endregion
+#endregion
 
             /*private List<string> AvaliableLanguages
               {  get{ var langAvailable = new List<string> { "Default" };
@@ -161,12 +173,12 @@ namespace InnoTecheLearning
             public event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             public string Text { get; private set; }
             public bool IsRecognizing { get => RecognitionTask?.State == SFSpeechRecognitionTaskState.Running; }
-        #region Private Variables
+#region Private Variables
             private AVAudioEngine AudioEngine = new AVAudioEngine();
             private SFSpeechRecognizer SpeechRecognizer = new SFSpeechRecognizer();
             private SFSpeechAudioBufferRecognitionRequest LiveSpeechRequest = new SFSpeechAudioBufferRecognitionRequest();
             private SFSpeechRecognitionTask RecognitionTask;
-        #endregion
+#endregion
 
             public SpeechToText(string Prompt = null)
             {
@@ -357,8 +369,7 @@ namespace InnoTecheLearning
                     else if (Forms.Context.PackageManager.QueryIntentActivities(
                         new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech), 0).Count == 0)
                         Alert("You don't seem to have a recognition service");
-                    else if (!InternetAvaliable)
-                        Alert("You don't seem to have an Internet connection to analyze your speech");
+                    //else if (!InternetAvaliable) Alert("You don't seem to have an Internet connection to analyze your speech");
                     else
                     {
                         // create the intent and start the activity
