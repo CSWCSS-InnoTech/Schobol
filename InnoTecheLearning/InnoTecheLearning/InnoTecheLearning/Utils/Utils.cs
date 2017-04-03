@@ -1205,7 +1205,7 @@ const Log10e = Math.LOG10E;
                 case SpeechLanguages.Default:
                     return new Windows.Globalization.Language(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
                 case SpeechLanguages.System:
-                    return new Windows.Globalization.Language(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
+                    return Windows.Media.SpeechRecognition.SpeechRecognizer.SystemSpeechLanguage;
                 case SpeechLanguages.English_US:
                     return new Windows.Globalization.Language("en-US");
                 case SpeechLanguages.English_UK:

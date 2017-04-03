@@ -1012,7 +1012,7 @@ namespace InnoTecheLearning
         {
             get
             {
-                var Recognizer = new SpeechToText("Say something to translate...");
+                var Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.Chinese_Simplified);
                 Label Display = (Text)"";
                 var Input = Entry("", "Enter words...");
                 var Submit = Button("Recognize", () =>

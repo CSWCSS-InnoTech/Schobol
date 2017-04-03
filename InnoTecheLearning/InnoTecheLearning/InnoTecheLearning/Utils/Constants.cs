@@ -181,6 +181,7 @@ hm = 嗯……
 oops = 弊啦！
 oh = 喔
 yeah/ yup = 同意";
+            public const string Something = @"▬▬▬▬▬▬▬▬ஜ۩۞۩ஜ▬▬▬▬▬▬▬▬▬▬";
         }
 
         /*
