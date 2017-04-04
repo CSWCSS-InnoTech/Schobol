@@ -175,12 +175,12 @@ namespace InnoTecheLearning
             public string Text { get; private set; }
             public bool IsRecognizing { get => RecognitionTask?.State == SFSpeechRecognitionTaskState.Running; }
             public SpeechLanguages Languages { get; set; }
-#region Private Variables
+        #region Private Variables
             private AVAudioEngine AudioEngine = new AVAudioEngine();
             private SFSpeechRecognizer SpeechRecognizer = new SFSpeechRecognizer();
             private SFSpeechAudioBufferRecognitionRequest LiveSpeechRequest = new SFSpeechAudioBufferRecognitionRequest();
             private SFSpeechRecognitionTask RecognitionTask;
-#endregion
+        #endregion
 
             public SpeechToText(string Prompt = null, SpeechLanguages Langs = SpeechLanguages.Unspecified)
             {
@@ -191,7 +191,7 @@ namespace InnoTecheLearning
             {
                 AudioEngine = new AVAudioEngine();
                 SpeechRecognizer = Languages == 
-                    SpeechLanguages.Unspecified ? new SFSpeechRecognizer() : new SFSpeechRecognizer(Languages.ToLocale());
+                    SpeechLanguages.Unspecified ? new SFSpeechRecognizer() : new SFSpeechRecognizer(Languages.ToLocale().First());
                 LiveSpeechRequest = new SFSpeechAudioBufferRecognitionRequest();
             }
             public void Start()
@@ -370,6 +370,7 @@ namespace InnoTecheLearning
                 });
                 alert.Show().Show();
             }
+            Android.Content.Intent voiceIntent;
             public void Start() => Start_();
             void Start_()
             {
@@ -385,7 +386,7 @@ namespace InnoTecheLearning
                     else
                     {
                         // create the intent and start the activity
-                        var voiceIntent = new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech);
+                        voiceIntent = new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraLanguageModel, RecognizerIntent.LanguageModelFreeForm);
                         // put a message on the modal dialog
                         voiceIntent.PutExtra(RecognizerIntent.ExtraPrompt, Prompt ?? "Say something...");
@@ -393,15 +394,19 @@ namespace InnoTecheLearning
                         /*voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputCompleteSilenceLengthMillis, 1500);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputPossiblyCompleteSilenceLengthMillis, 1500);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputMinimumLengthMillis, 15000);*/
-                        voiceIntent.PutExtra(RecognizerIntent.ExtraMaxResults, 1);
+                        //voiceIntent.PutExtra(RecognizerIntent.ExtraMaxResults, 1);
                         // you can specify other languages recognised here, for example
                         //voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.German);
                         // if you wish it to recognise the default Locale language and German
                         // if you do use another locale, regional dialects may not be recognised very well
-                        if(Languages != SpeechLanguages.Unspecified)
-                            voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Languages.ToLocale().Language);
+                        if (Languages != SpeechLanguages.Unspecified)
+                        {
+                            voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Languages.ToLocale().First().ToLanguageTag());
+                            voiceIntent.PutExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES",
+                                Languages.ToLocale().Select(loc => loc.ToLanguageTag()).ToArray());
+                        }
                         IsRecognizing = true;
-                        Droid.MainActivity.Current.StartActivityForResult(voiceIntent, VOICE);
+                        Droid.MainActivity.Current.StartActivityForResult(voiceIntent, VOICE, Droid.MainActivity.Bundle);
                         Droid.MainActivity.Current.ActivityResult += HandleActivityResult;
                         StopAction = () => Droid.MainActivity.Current.FinishActivity(VOICE);
                     }
@@ -418,14 +423,14 @@ namespace InnoTecheLearning
                 if (e.RequestCode == VOICE)
                 {
                     IsRecognizing = false;
-                    if (e.ResultCode == Android.App.Result.Ok)
+                    if (e.ResultCode == Android.App.Result.Ok && e.Data != null)
                     {
                         var matches = e.Data.GetStringArrayListExtra(RecognizerIntent.ExtraResults);
                         if (matches.Count != 0)
                         {
                             // limit the output to 500 characters
                             // string textInput = matches[0]; if (textInput.Length > 500) textInput = textInput.Substring(0, 500);
-                            TextChanged?.Invoke(sender, new VoiceRecognitionEventArgs(Text = string.Join(" ", matches), true));
+                            TextChanged?.Invoke(sender, new VoiceRecognitionEventArgs(Text = matches[0], true));
                             // textBox.Text = textInput;
                         }
                         else
@@ -438,8 +443,37 @@ namespace InnoTecheLearning
                 }
             }
 
-            ~SpeechToText() { StopAction(); }
-        }
+            ~SpeechToText() { Droid.MainActivity.Current.ActivityResult -= HandleActivityResult; StopAction(); }
+        }/*
+        public class LanguageDetailsChecker : Android.Content.BroadcastReceiver
+        {
+
+            private const string TAG = "LanguageDetailsChecker";
+
+            public IList<String> supportedLanguages;
+
+            public String languagePreference;
+
+            public LanguageDetailsChecker()
+            {
+                supportedLanguages = new List<String>();
+            }
+
+            public override void OnReceive(Android.Content.Context context, Android.Content.Intent intent)
+            {
+                Bundle results = GetResultExtras(true);
+                if (results.ContainsKey(RecognizerIntent.ExtraLanguagePreference))
+                {
+                    languagePreference = results
+                            .GetString(RecognizerIntent.ExtraLanguagePreference);
+                }
+                if (results.ContainsKey(RecognizerIntent.ExtraSupportedLanguages))
+                {
+                    supportedLanguages = results
+                            .GetStringArrayList(RecognizerIntent.ExtraSupportedLanguages);
+                }
+            }
+        }*/
 #elif NETFX_CORE
         public class SpeechToText : ISpeechToText
         {
@@ -486,7 +520,7 @@ namespace InnoTecheLearning
                 try
                 {
                     _speechRecognizer = Languages ==
-                        SpeechLanguages.Unspecified ? new SpeechRecognizer() : new SpeechRecognizer(Languages.ToLocale());
+                        SpeechLanguages.Unspecified ? new SpeechRecognizer() : new SpeechRecognizer(Languages.ToLocale().First());
                     //_coreDispatcher = Windows.UI.Core.CoreWindow.GetForCurrentThread().Dispatcher;
 
                     /*var constraintList = new SpeechRecognitionListConstraint(new List<string>() { "Next", "Back" });
@@ -513,7 +547,7 @@ namespace InnoTecheLearning
                 (e.HResult == unchecked((int)0x8004503a) || e.HResult == unchecked((int)0x800455bc))
                 //Corrosponding language pack is not installed.(SPERR_NOT_FOUND) || Language not supported.
                 {
-                    await OpenSettings($"The {Languages.ToLocale().DisplayName} speech service is not installed.",
+                    await OpenSettings($"The {Languages.ToLocale().First().DisplayName} speech service is not installed.",
                            "You need to install the package via 'Add a Language' > Select the language >" +
                            " Select the language again > 'Options' > 'Download' under 'Speech'...",
                            "ms-settings:regionlanguage");
@@ -532,7 +566,7 @@ namespace InnoTecheLearning
             ~SpeechToText() { _speechRecognizer.Dispose(); }
         }
 #endif
-        public static bool InternetAvaliable
+    public static bool InternetAvaliable
         {
             get
             {

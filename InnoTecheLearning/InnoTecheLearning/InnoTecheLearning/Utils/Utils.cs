@@ -1152,73 +1152,64 @@ const Log10e = Math.LOG10E;
         public static void Ignore(this object Instance) { }
 
 #if __IOS__
-        public static Foundation.NSLocale ToLocale(this SpeechLanguages Lang)
+        public static IEnumerable<Foundation.NSLocale> ToLocale(this SpeechLanguages Langs)
         {
-            switch (Lang)
-            {
-                case SpeechLanguages.Default:
-                    return Foundation.NSLocale.CurrentLocale;
-                case SpeechLanguages.System:
-                    return Foundation.NSLocale.SystemLocale;
-                case SpeechLanguages.English_US:
-                    return Foundation.NSLocale.FromLocaleIdentifier("en_US");
-                case SpeechLanguages.English_UK:
-                    return Foundation.NSLocale.FromLocaleIdentifier("en_GB");
-                case SpeechLanguages.Chinese_Simplified:
-                    return Foundation.NSLocale.FromLocaleIdentifier("zh_CN");
-                case SpeechLanguages.Chinese_Traditional:
-                    return Foundation.NSLocale.FromLocaleIdentifier("zh_HK");
-                case SpeechLanguages.Cantonese:
-                    return Foundation.NSLocale.FromLocaleIdentifier("yue_HK");
-                default:
-                    throw new ArgumentException($"Invalid language. Value: {Lang}", nameof(Lang));
-            }
+            if (Langs.HasFlag(SpeechLanguages.Default))
+                yield return Foundation.NSLocale.CurrentLocale;
+            else if (Langs.HasFlag(SpeechLanguages.System))
+                yield return Foundation.NSLocale.SystemLocale;
+            else if (Langs.HasFlag(SpeechLanguages.English_US))
+                yield return Foundation.NSLocale.FromLocaleIdentifier("en_US");
+            else if (Langs.HasFlag(SpeechLanguages.English_UK))
+                yield return Foundation.NSLocale.FromLocaleIdentifier("en_GB");
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
+                yield return Foundation.NSLocale.FromLocaleIdentifier("zh_CN");
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
+                yield return Foundation.NSLocale.FromLocaleIdentifier("zh_HK");
+            else if (Langs.HasFlag(SpeechLanguages.Cantonese))
+                yield return Foundation.NSLocale.FromLocaleIdentifier("yue_HK");
+            else
+                throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
 #elif __ANDROID__
-        public static Java.Util.Locale ToLocale(this SpeechLanguages Lang)
+        public static IEnumerable<Java.Util.Locale> ToLocale(this SpeechLanguages Langs)
         {
-            switch (Lang)
-            {
-                case SpeechLanguages.Default:
-                    return Java.Util.Locale.Default;
-                case SpeechLanguages.System:
-                    return Java.Util.Locale.Root;
-                case SpeechLanguages.English_US:
-                    return Java.Util.Locale.Us;
-                case SpeechLanguages.English_UK:
-                    return Java.Util.Locale.Uk;
-                case SpeechLanguages.Chinese_Simplified:
-                    return Java.Util.Locale.SimplifiedChinese;
-                case SpeechLanguages.Chinese_Traditional:
-                    return Java.Util.Locale.TraditionalChinese;
-                case SpeechLanguages.Cantonese:
-                    return new Java.Util.Locale("zh", "HK");
-                default:
-                    throw new ArgumentException($"Invalid language. Value: {Lang}", nameof(Lang));
-            }
+            if (Langs.HasFlag(SpeechLanguages.Default))
+                yield return Java.Util.Locale.Default;
+            else if (Langs.HasFlag(SpeechLanguages.System))
+                yield return Java.Util.Locale.Root;
+            else if (Langs.HasFlag(SpeechLanguages.English_US))
+                yield return Java.Util.Locale.Us;
+            else if (Langs.HasFlag(SpeechLanguages.English_UK))
+                yield return Java.Util.Locale.Uk;
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
+                yield return Java.Util.Locale.SimplifiedChinese;
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
+                yield return Java.Util.Locale.TraditionalChinese;
+            else if (Langs.HasFlag(SpeechLanguages.Cantonese))
+                yield return new Java.Util.Locale("zh", "HK");
+            else
+                throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
 #else
-        public static Windows.Globalization.Language ToLocale(this SpeechLanguages Lang)
+        public static IEnumerable<Windows.Globalization.Language> ToLocale(this SpeechLanguages Langs)
         {
-            switch (Lang)
-            {
-                case SpeechLanguages.Default:
-                    return new Windows.Globalization.Language(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
-                case SpeechLanguages.System:
-                    return Windows.Media.SpeechRecognition.SpeechRecognizer.SystemSpeechLanguage;
-                case SpeechLanguages.English_US:
-                    return new Windows.Globalization.Language("en-US");
-                case SpeechLanguages.English_UK:
-                    return new Windows.Globalization.Language("en-UK");
-                case SpeechLanguages.Chinese_Simplified:
-                    return new Windows.Globalization.Language("zh-CN");
-                case SpeechLanguages.Chinese_Traditional:
-                    return new Windows.Globalization.Language("zh-HK");
-                case SpeechLanguages.Cantonese:
-                    return new Windows.Globalization.Language("yue-HK");
-                default:
-                    throw new ArgumentException($"Invalid language. Value: {Lang}", nameof(Lang));
-            }
+            if (Langs.HasFlag(SpeechLanguages.Default))
+                yield return new Windows.Globalization.Language(Windows.System.UserProfile.GlobalizationPreferences.Languages[0]);
+            else if (Langs.HasFlag(SpeechLanguages.System))
+                yield return Windows.Media.SpeechRecognition.SpeechRecognizer.SystemSpeechLanguage;
+            else if (Langs.HasFlag(SpeechLanguages.English_US))
+                yield return new Windows.Globalization.Language("en-US");
+            else if (Langs.HasFlag(SpeechLanguages.English_UK))
+                yield return new Windows.Globalization.Language("en-UK");
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
+                yield return new Windows.Globalization.Language("zh-CN");
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
+                yield return new Windows.Globalization.Language("zh-HK");
+            else if (Langs.HasFlag(SpeechLanguages.Cantonese))
+                yield return new Windows.Globalization.Language("yue-HK");
+            else
+                throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
 #endif
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }

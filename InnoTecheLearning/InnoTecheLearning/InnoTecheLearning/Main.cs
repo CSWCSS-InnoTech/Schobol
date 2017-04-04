@@ -1008,19 +1008,25 @@ namespace InnoTecheLearning
                 };
             }
         }
+        SpeechToText Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
         public StackLayout Translator
         {
             get
             {
-                var Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.Chinese_Simplified);
                 Label Display = (Text)"";
                 var Input = Entry("", "Enter words...");
                 var Submit = Button("Recognize", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
-                    Recognizer.TextChanged += 
-                        (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
-                    Recognizer.Start();
+                  Recognizer.TextChanged += 
+                      (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
+                  Recognizer.Start();
+                    /*var detailsIntent = new Android.Content.Intent(Android.Speech.RecognizerIntent.ActionGetLanguageDetails);
+                    LanguageDetailsChecker checker = new LanguageDetailsChecker();
+                    Droid.MainActivity.Current.SendOrderedBroadcast(detailsIntent, null, checker, null,
+                            Android.App.Result.Ok, null, null);
+                    var a = checker.supportedLanguages;
+                    ;*/
                 });
                 return new StackLayout { Children = { Row(false, Input, Submit, Display) } };
             }

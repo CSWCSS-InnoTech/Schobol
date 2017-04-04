@@ -186,6 +186,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Immutable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Oxford.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Type.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Evaluator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
