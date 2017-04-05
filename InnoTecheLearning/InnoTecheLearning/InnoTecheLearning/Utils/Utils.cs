@@ -1212,6 +1212,46 @@ const Log10e = Math.LOG10E;
                 throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
 #endif
+        public static IEnumerable<string> ToIdentiifiers(this SpeechLanguages Langs)
+        {
+            if (Langs.HasFlag(SpeechLanguages.Default))
+                foreach (var Item in System.Linq.Enumerable.Select(Langs.ToLocale(), L => L.
+#if __IOS__
+                LocaleIdentifier
+#elif __ANDROID__
+                ToLanguageTag()
+#else
+                LanguageTag
+#endif
+                )) yield return Item;
+            else if (Langs.HasFlag(SpeechLanguages.System))
+                foreach (var Item in System.Linq.Enumerable.Select(Langs.ToLocale(), L => L.
+#if __IOS__
+                LocaleIdentifier
+#elif __ANDROID__
+                ToLanguageTag()
+#else
+                LanguageTag
+#endif
+                )) yield return Item;
+            else if (Langs.HasFlag(SpeechLanguages.English_US))
+                yield return "en-US";
+            else if (Langs.HasFlag(SpeechLanguages.English_UK))
+                yield return "en-UK";
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
+                yield return  "zh-CN";
+            else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
+                yield return  "zh-HK";
+            else if (Langs.HasFlag(SpeechLanguages.Cantonese))
+                yield return  "yue-HK";
+            else
+                throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
+        }
+        public static IEnumerable<string> ToGeneralIdentiifiers(this SpeechLanguages Langs)
+        {
+            foreach (var Item in Langs.ToIdentiifiers())
+                yield return Item.Split('_', '-')[0];
+        }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

@@ -1013,9 +1013,8 @@ namespace InnoTecheLearning
         {
             get
             {
-                Label Display = (Text)"";
                 var Input = Entry("", "Enter words...");
-                var Submit = Button("Recognize", () =>
+                var Recognize = Button("Recognize", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
                   Recognizer.TextChanged += 
@@ -1028,7 +1027,12 @@ namespace InnoTecheLearning
                     var a = checker.supportedLanguages;
                     ;*/
                 });
-                return new StackLayout { Children = { Row(false, Input, Submit, Display) } };
+                Label Display = (Text)"";
+                var Translate = Button("Translate", () =>
+                {
+                    Display.Text = Oxford.Translate("en", "zh", Input.Text).Do().results.First().word;
+                });
+                return new StackLayout { Children = { Row(false, Input, Recognize), Translate, Display } };
             }
         }
     }

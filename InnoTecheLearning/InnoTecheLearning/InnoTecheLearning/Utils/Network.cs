@@ -19,19 +19,17 @@ namespace InnoTecheLearning
         }
         public static string[] Login(ushort StudentID = 18999, string PassPhrase = "Y1234567")
         {
-            return Request(Post, "http://cloud.pedosa.org/platform/solutions/cswcss-innotech/test/index.php",
+            return Request(HttpMethod.Post, "http://cloud.pedosa.org/platform/solutions/cswcss-innotech/test/index.php",
              "STUDENT_ID=s" + StudentID.ToString() + "&STUDENT_PASSPHRASE=" + PassPhrase).Split(',');
         }
-        public const string Get = "GET";
-        public const string Post = "POST";
-        public static string Request(string Method, string URI, string Parameters = null)
+        public static string Request(HttpMethod Method, string URI, string Parameters = null)
         //, string ProxyString
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(URI);
             //req.Proxy = new System.Net.WebProxy(ProxyString, true);
             //Add these, as we're doing a POST
             req.ContentType = "application/x-www-form-urlencoded";
-            req.Method = Method;
+            req.Method = Method.Method;
             if(!string.IsNullOrEmpty(Parameters))
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(Do(req.GetRequestStreamAsync())))
             //We need to count how many bytes we're sending. Post'ed Faked Forms should be name=value&
@@ -45,14 +43,14 @@ namespace InnoTecheLearning
             using (System.IO.StreamReader sr = new System.IO.StreamReader(resp.GetResponseStream()))
                 return sr.ReadToEnd().Trim();
         }
-        public static async Task<string> RequestAsync(string Method, string URI, string Parameters)
+        public static async Task<string> RequestAsync(HttpMethod Method, string URI, string Parameters)
             //, string ProxyString
         {
             System.Net.WebRequest req = System.Net.WebRequest.Create(URI);
             //req.Proxy = new System.Net.WebProxy(ProxyString, true);
             //Add these, as we're doing a POST
             req.ContentType = "application/x-www-form-urlencoded";
-            req.Method = Method;
+            req.Method = Method.Method;
             using (System.IO.StreamWriter sw = new System.IO.StreamWriter(await req.GetRequestStreamAsync()))
             //We need to count how many bytes we're sending. Post'ed Faked Forms should be name=value&
             {
