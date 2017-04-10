@@ -1030,7 +1030,7 @@ namespace InnoTecheLearning
                 Label Display = (Text)"";
                 var Translate = Button("Translate", () =>
                 {
-                    Display.Text = Oxford.Translate("en", "zh", Input.Text).Do().results.First().word;
+                    Display.Text = OnlineDict.ToChinese(Input.Text).results.First().word;
                 });
                 return new StackLayout { Children = { Row(false, Input, Recognize), Translate, Display } };
             }
