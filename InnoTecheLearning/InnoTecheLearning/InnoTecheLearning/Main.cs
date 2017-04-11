@@ -1027,10 +1027,26 @@ namespace InnoTecheLearning
                     var a = checker.supportedLanguages;
                     ;*/
                 });
-                Label Display = (Text)"";
+                var Display = new Label();
                 var Translate = Button("Translate", () =>
                 {
-                    Display.Text = OnlineDict.ToChinese(Input.Text).results.First().word;
+                    var Formatted = new FormattedString();
+                    foreach (var Result in OnlineDict.ToChinese(Input.Text).Results)
+                    {
+                        Formatted.Spans.Add(new Span
+                        {
+                            Text = Result.PartOfSpeech,
+                            ForegroundColor = Color.Gray,
+                            FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label))
+                        });
+                        Formatted.Spans.Add(new Span
+                        {
+                            Text = Result.Senses.Single().Translation + "\n",
+                            ForegroundColor = Color.Black,
+                            FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
+                        });
+                    }
+                    Display.FormattedText = Formatted;
                 });
                 return new StackLayout { Children = { Row(false, Input, Recognize), Translate, Display } };
             }
