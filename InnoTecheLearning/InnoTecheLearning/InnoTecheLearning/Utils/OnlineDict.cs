@@ -15,35 +15,35 @@ namespace InnoTecheLearning
         //http://json2csharp.com/
         //[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
         //    Justification = "Following JSON model schema from Oxford Dictionaries.")]
-        //public (?!class)
-        //[DataMember] public 
+        //public ([^ ]+) ([^ ]+) { get; set; }
+        //[DataMember] public $1 $2;
         public static class OnlineDict
         {
             [DataContract] public abstract class OnlineResponse { internal OnlineResponse() { } }
-            public class DictionaryResponse : OnlineResponse
+            [DataContract] public class DictionaryResponse : OnlineResponse
             {
                 public class Sens
                 {
-                    public string translation { get; set; }
-                    public string synonym { get; set; }
+                    [DataMember] public string translation;
+                    [DataMember] public string synonym;
                 }
 
                 public class Result
                 {
-                    public List<string> datasets { get; set; }
-                    public string headword { get; set; }
-                    public string id { get; set; }
-                    public string part_of_speech { get; set; }
-                    public List<Sens> senses { get; set; }
-                    public string url { get; set; }
+                    [DataMember] public List<string> datasets;
+                    [DataMember] public string headword;
+                    [DataMember] public string id;
+                    [DataMember] public string part_of_speech;
+                    [DataMember] public List<Sens> senses;
+                    [DataMember] public string url;
                 }
-                public int status { get; set; }
-                public int offset { get; set; }
-                public int limit { get; set; }
-                public int count { get; set; }
-                public int total { get; set; }
-                public string url { get; set; }
-                public List<Result> results { get; set; }
+                [DataMember] public int status;
+                [DataMember] public int offset;
+                [DataMember] public int limit;
+                [DataMember] public int count;
+                [DataMember] public int total;
+                [DataMember] public string url;
+                [DataMember] public List<Result> results;
             }
 
             public static T Deserialize<T>(string Data)

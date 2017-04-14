@@ -1017,9 +1017,9 @@ namespace InnoTecheLearning
                 var Recognize = Button("Recognize", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
-                  Recognizer.TextChanged += 
-                      (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
-                  Recognizer.Start();
+                    Recognizer.TextChanged +=
+                        (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
+                    Recognizer.Start();
                     /*var detailsIntent = new Android.Content.Intent(Android.Speech.RecognizerIntent.ActionGetLanguageDetails);
                     LanguageDetailsChecker checker = new LanguageDetailsChecker();
                     Droid.MainActivity.Current.SendOrderedBroadcast(detailsIntent, null, checker, null,
@@ -1030,25 +1030,48 @@ namespace InnoTecheLearning
                 var Display = new Label();
                 var Translate = Button("Translate", () =>
                 {
-                    var Formatted = new FormattedString();
-                    foreach (var Result in OnlineDict.ToChinese(Input.Text).Results)
+                    string ProcessPoS(string Data)
                     {
+                        var sb = new StringBuilder(Data ?? "proper noun")
+                               .Replace("modal v", "modal verb")
+                               .Replace("sfx", "suffix")
+                               .Replace("interj", "interjection")
+                               .Replace("conj", "conjunction");
+                        return sb.Append(' ', 13 - sb.Length).ToString();
+                    }
+                    var Formatted = new FormattedString
+                    {
+                        Spans = {
+                            new Span
+                            {
+                                Text = "Not found!",
+                                ForegroundColor = Color.Red,
+                                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                                FontFamily = "Courier New, Georgia, Serif"
+                            }
+                        }
+                    };
+                    foreach (var Result in OnlineDict.ToChinese(Input.Text).results)
+                    {
+                        Formatted.Spans.Clear();
                         Formatted.Spans.Add(new Span
                         {
-                            Text = Result.PartOfSpeech,
+                            Text = ProcessPoS(Result.part_of_speech),
                             ForegroundColor = Color.Gray,
-                            FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label))
+                            FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                            FontFamily = "Courier New, Georgia, Serif"
                         });
                         Formatted.Spans.Add(new Span
                         {
-                            Text = Result.Senses.Single().Translation + "\n",
+                            Text = Result.senses.Single().translation + "\n",
                             ForegroundColor = Color.Black,
-                            FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label))
+                            FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                            FontFamily = "Courier New, Georgia, Serif"
                         });
                     }
                     Display.FormattedText = Formatted;
                 });
-                return new StackLayout { Children = { Row(false, Input, Recognize), Translate, Display } };
+                return new StackLayout { Children = { Row(false, Recognize, Input, Translate), Display, Back(this) } };
             }
         }
     }
