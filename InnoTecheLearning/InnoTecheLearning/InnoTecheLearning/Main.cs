@@ -1027,7 +1027,7 @@ namespace InnoTecheLearning
                     var a = checker.supportedLanguages;
                     ;*/
                 });
-                var Display = new Label();
+                var Formatted = new StackLayout();
                 var Translate = Button("Translate", () =>
                 {
                     string ProcessPoS(string Data)
@@ -1039,8 +1039,10 @@ namespace InnoTecheLearning
                                .Replace("conj", "conjunction");
                         return sb.Append(' ', 13 - sb.Length).ToString();
                     }
-                    var Formatted = new FormattedString
+                    Formatted = new StackLayout
                     {
+                        Children = { new Label { FormattedText =
+                    new FormattedString {
                         Spans = {
                             new Span
                             {
@@ -1050,28 +1052,33 @@ namespace InnoTecheLearning
                                 FontFamily = "Courier New, Georgia, Serif"
                             }
                         }
+                    } }}
                     };
-                    foreach (var Result in OnlineDict.ToChinese(Input.Text).results)
+                foreach (var Result in OnlineDict.ToChinese(Input.Text).results)
+                {
+                    Formatted.Children.Clear();
+                    Formatted.Children.Add(new Label
                     {
-                        Formatted.Spans.Clear();
-                        Formatted.Spans.Add(new Span
+                        FormattedText = new FormattedString
+                        {
+                            Spans = { new Span
                         {
                             Text = ProcessPoS(Result.part_of_speech),
                             ForegroundColor = Color.Gray,
                             FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                             FontFamily = "Courier New, Georgia, Serif"
-                        });
-                        Formatted.Spans.Add(new Span
+                        }, new Span
                         {
                             Text = Result.senses.Single().translation + "\n",
                             ForegroundColor = Color.Black,
                             FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                             FontFamily = "Courier New, Georgia, Serif"
-                        });
+                        } }
+                        }
+                    });
                     }
-                    Display.FormattedText = Formatted;
                 });
-                return new StackLayout { Children = { Row(false, Recognize, Input, Translate), Display, Back(this) } };
+                return new StackLayout { Children = { Row(false, Recognize, Input, Translate), Formatted, Back(this) } };
             }
         }
     }

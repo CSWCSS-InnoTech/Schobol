@@ -20,15 +20,15 @@ namespace InnoTecheLearning
         public static class OnlineDict
         {
             [DataContract] public abstract class OnlineResponse { internal OnlineResponse() { } }
-            [DataContract] public class DictionaryResponse : OnlineResponse
+            [DataContract] public sealed class DictionaryResponse : OnlineResponse
             {
-                public class Sens
+                public sealed class Sens
                 {
                     [DataMember] public string translation;
                     [DataMember] public string synonym;
                 }
 
-                public class Result
+                public sealed class Result
                 {
                     [DataMember] public List<string> datasets;
                     [DataMember] public string headword;
@@ -44,6 +44,43 @@ namespace InnoTecheLearning
                 [DataMember] public int total;
                 [DataMember] public string url;
                 [DataMember] public List<Result> results;
+            }
+
+            [DataContract] public sealed class DictionaryIDResponse : OnlineResponse
+            {
+                public sealed class GramaticalInfo
+                {
+                    [DataMember] public string type;
+                }
+
+                public sealed class Pronunciation
+                {
+                    [DataMember] public string ipa;
+                    [DataMember] public string kk;
+                }
+
+                public sealed class Sens
+                {
+                    [DataMember] public string translation;
+                    [DataMember] public string lexical_unit;
+                }
+
+                public sealed class Result
+                {
+                    [DataMember] public List<string> datasets;
+                    [DataMember] public GramaticalInfo gramatical_info;
+                    [DataMember] public string headword;
+                    [DataMember] public string id;
+                    [DataMember] public string part_of_speech;
+                    [DataMember] public List<Pronunciation> pronunciations;
+                    [DataMember] public List<Sens> senses;
+                    [DataMember] public string url;
+                }
+                [DataMember] public int status;
+                [DataMember] public string type;
+                [DataMember] public string id;
+                [DataMember] public string url;
+                [DataMember] public Result result;
             }
 
             public static T Deserialize<T>(string Data)
@@ -69,6 +106,8 @@ namespace InnoTecheLearning
 
             public static DictionaryResponse ToChinese(string Word) => Request<DictionaryResponse>
             (new System.Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Word.ToLower()));
+            public static DictionaryIDResponse LookupID(string ID) => Request<DictionaryIDResponse>
+            (new System.Uri("http://api.pearson.com/v2/dictionaries/entries/" + ID));
         }
     }
 }
