@@ -187,6 +187,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Immutable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OnlineDict.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Type.cs" />

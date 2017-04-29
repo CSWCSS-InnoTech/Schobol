@@ -42,6 +42,26 @@ namespace InnoTecheLearning
                 }
             }
 
+            public GridSplitter(DataTemplate ControlTemplate) => this.ControlTemplate = ControlTemplate;
+            public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) =>
+                ControlTemplate = new DataTemplate(
+                    () => new Grid {
+                        BackgroundColor = BackColor == default(Color) ? new Color(0, 0, 0, double.Epsilon) : BackColor,
+                        WidthRequest = 20,
+                        Children = {
+                            new StackLayout {
+                                HeightRequest = 10, Orientation = StackOrientation.Vertical, Padding = 5,
+                                VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center,
+                                Spacing = 2, Children = {
+                                    new BoxView { HeightRequest = 3,
+                                        BackgroundColor = HandleColor == default(Color) ? Color.Gray : HandleColor },
+                                    new BoxView { HeightRequest = 3,
+                                        BackgroundColor = HandleColor == default(Color) ? Color.Gray : HandleColor }
+                                }
+                            }
+                        }
+                    }
+                );
 #endregion
 
             public void UpdateGrid(double dragOffsetX, double dragOffsetY)
@@ -202,19 +222,19 @@ namespace InnoTecheLearning
             {
                 private Point _lastPoint;
 
-                public override bool OnTouchEvent(Android.Views.MotionEvent e)
+                public override bool OnTouchEvent(MotionEvent e)
                 {
                     int action = MotionEventCompat.GetActionMasked(e);
 
                     switch (action)
                     {
-                        case (int)Android.Views.MotionEventActions.Down:
+                        case (int)MotionEventActions.Down:
                             {
                                 _lastPoint = new Point(e.RawX, e.RawY);
                                 break;
                             }
 
-                        case (int)Android.Views.MotionEventActions.Move:
+                        case (int)MotionEventActions.Move:
                             {
                                 Element.UpdateGrid(Context.FromPixels(e.RawX - _lastPoint.X), Context.FromPixels(e.RawY - _lastPoint.Y));
                                 _lastPoint = new Point(e.RawX, e.RawY);
@@ -225,11 +245,11 @@ namespace InnoTecheLearning
                 }
             }
 #elif NETFX_CORE
-            public class Renderer : ViewRenderer<View, Windows.UI.Xaml.FrameworkElement>
+            public class Renderer : ViewRenderer<GridSplitter, Windows.UI.Xaml.FrameworkElement>
             {
                 private Windows.Foundation.Point? _lastPt;
 
-                protected override void OnElementChanged(ElementChangedEventArgs<View> e)
+                protected override void OnElementChanged(ElementChangedEventArgs<GridSplitter> e)
                 {
                     base.OnElementChanged(e);
 

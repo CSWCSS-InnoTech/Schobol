@@ -1009,7 +1009,8 @@ namespace InnoTecheLearning
             }
         }
         SpeechToText Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
-        List<string> IDs = new List<string>();
+        Dictionary<string, (string Eng, string PoS, string Chi)> Favourites = 
+            new Dictionary<string, (string Eng, string PoS, string Chi)>();
         public StackLayout Translator
         {
             get
@@ -1045,16 +1046,17 @@ namespace InnoTecheLearning
                     {
                         Formatted.Children.Add(
                             Row(true,
-                                Button(IDs.Contains(Result.id) ? "★-" : "★+", (ref Button sender, EventArgs e) =>
+                                Button(Favourites.ContainsKey(Result.id) ? "★-" : "★+", (ref Button sender, EventArgs e) =>
                                 {
-                                    if (IDs.Contains(Result.id))
+                                    if (Favourites.ContainsKey(Result.id))
                                     {
-                                        IDs.Remove(Result.id);
+                                        Favourites.Remove(Result.id);
                                         sender.Text = "★+";
                                     }
                                     else
                                     {
-                                        IDs.Add(Result.id);
+                                        Favourites.Add(Result.id, 
+                                            (Result.headword, ProcessPoS(Result.part_of_speech), Result.senses.Single().translation));
                                         sender.Text = "★-";
                                     }
                                     ;
@@ -1110,10 +1112,19 @@ namespace InnoTecheLearning
                     }
                 }, 0, 0);
                 Grid.Children.Add(new GridSplitter { VerticalOptions = LayoutOptions.Center }, 0, 1);
-                Grid.Children.Add(new StackLayout
+                Grid.Children.Add(new ScrollView
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = { new BoxView { Color = Color.Green } }
+                    Content = new ListView { ItemsSource = Favourites,
+                        ItemTemplate = new DataTemplate(() => {
+                            var PoS = new Label
+                            {
+                                VerticalTextAlignment = TextAlignment.Start,
+                                HorizontalTextAlignment = TextAlignment.Center,
+                                HorizontalOptions = LayoutOptions.Fill
+                            };
+                            PoS.SetBinding(Label.FormattedTextProperty, new Binding("Value.Item2", BindingMode.Default
+                            return Row(false, Item); }) }
                 }, 0, 2);
                 return new StackLayout
                 {
