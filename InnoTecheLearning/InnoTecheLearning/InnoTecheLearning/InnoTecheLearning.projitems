@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SoundPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SoundRecorder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\Splitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StepCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayerWrapper.cs" />

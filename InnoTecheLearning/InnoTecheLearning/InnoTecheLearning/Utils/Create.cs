@@ -330,6 +330,44 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
+            public static Label FormattedLabel(params Span[] Spans)
+            {
+                var Text = new FormattedString();
+                Text.Spans.AddRange(Spans);
+                return new Label
+                {
+                    FormattedText = Text,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    HorizontalOptions = LayoutOptions.Fill
+                };
+            }
+            public static Label FormattedLabel(Color BackColor, NamedSize Size, params Span[] Spans)
+            {
+                var Text = new FormattedString();
+                Text.Spans.AddRange(Spans);
+                return new Label
+                {
+                    FormattedText = Text,
+                    BackgroundColor = BackColor,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = Device.GetNamedSize(Size, targetElementType: typeof(Label)),
+                    HorizontalOptions = LayoutOptions.Fill
+                };
+            }
+            public static Label FormattedLabel(FormattedString Text, Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
+            {
+                return new Label
+                {
+                    FormattedText = Text,
+                    BackgroundColor = BackColor,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = Device.GetNamedSize(Size, targetElementType: typeof(Label)),
+                    HorizontalOptions = LayoutOptions.Fill
+                };
+            }
             public static Label BoldLabel(Text Text, Color TextColor = default(Color), 
                 Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
             {
@@ -574,6 +612,10 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand
                 };
             }
+            public static ColumnDefinition Column(GridUnitType Unit, double Width) =>
+                new ColumnDefinition { Width = new GridLength(Width, Unit) };
+            public static RowDefinition Row(GridUnitType Unit, double Height) =>
+                new RowDefinition { Height = new GridLength(Height, Unit) };
             public static ColumnDefinitionCollection Columns(GridUnitType Unit, params double[] Widths)
             {
                 ColumnDefinitionCollection Return = new ColumnDefinitionCollection();

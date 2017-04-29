@@ -1009,6 +1009,7 @@ namespace InnoTecheLearning
             }
         }
         SpeechToText Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
+        List<string> IDs = new List<string>();
         public StackLayout Translator
         {
             get
@@ -1030,6 +1031,7 @@ namespace InnoTecheLearning
                 var Formatted = new StackLayout();
                 var Translate = Button("Translate", () =>
                 {
+                    Formatted.Children.Clear();
                     string ProcessPoS(string Data)
                     {
                         var sb = new StringBuilder(Data ?? "proper noun")
@@ -1039,46 +1041,85 @@ namespace InnoTecheLearning
                                .Replace("conj", "conjunction");
                         return sb.Append(' ', 13 - sb.Length).ToString();
                     }
-                    Formatted = new StackLayout
+                    foreach (var Result in OnlineDict.ToChinese(Input.Text).results)
                     {
-                        Children = { new Label { FormattedText =
-                    new FormattedString {
-                        Spans = {
-                            new Span
-                            {
-                                Text = "Not found!",
-                                ForegroundColor = Color.Red,
-                                FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                                FontFamily = "Courier New, Georgia, Serif"
-                            }
-                        }
-                    } }}
-                    };
-                foreach (var Result in OnlineDict.ToChinese(Input.Text).results)
-                {
-                    Formatted.Children.Clear();
-                    Formatted.Children.Add(new Label
-                    {
-                        FormattedText = new FormattedString
-                        {
-                            Spans = { new Span
-                        {
-                            Text = ProcessPoS(Result.part_of_speech),
-                            ForegroundColor = Color.Gray,
-                            FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                            FontFamily = "Courier New, Georgia, Serif"
-                        }, new Span
-                        {
-                            Text = Result.senses.Single().translation + "\n",
-                            ForegroundColor = Color.Black,
-                            FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                            FontFamily = "Courier New, Georgia, Serif"
-                        } }
-                        }
-                    });
+                        Formatted.Children.Add(
+                            Row(true,
+                                Button(IDs.Contains(Result.id) ? "★-" : "★+", (ref Button sender, EventArgs e) =>
+                                {
+                                    if (IDs.Contains(Result.id))
+                                    {
+                                        IDs.Remove(Result.id);
+                                        sender.Text = "★+";
+                                    }
+                                    else
+                                    {
+                                        IDs.Add(Result.id);
+                                        sender.Text = "★-";
+                                    }
+                                    ;
+                                }, TextColor: Color.Yellow),
+                                FormattedLabel(
+                                    new Span
+                                    {
+                                        Text = ProcessPoS(Result.part_of_speech),
+                                        ForegroundColor = Color.Gray,
+                                        FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                                        FontFamily = "Courier New, Georgia, Serif"
+                                    }, new Span
+                                    {
+                                        Text = Result.senses.Single().translation + "\n",
+                                        ForegroundColor = Color.Black,
+                                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                                        FontFamily = "Courier New, Georgia, Serif"
+                                    }
+                                )
+                            )
+                        );
                     }
+                    if (Formatted.Children.Count == 0)
+                        Formatted.Children.Add(new Label
+                        {
+                            FormattedText =
+                            new FormattedString
+                            {
+                                Spans = {
+                                    new Span
+                                    {
+                                        Text = "Not found!",
+                                        ForegroundColor = Color.Red,
+                                        FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                                        FontFamily = "Courier New, Georgia, Serif"
+                                    }
+                                }
+                            }
+                        });
                 });
-                return new StackLayout { Children = { Row(false, Recognize, Input, Translate), Formatted, Back(this) } };
+                var Grid = new Grid
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    RowDefinitions = { new RowDefinition(), Row(GridUnitType.Auto, 1), new RowDefinition() },
+                    RowSpacing = 0
+                };
+                Grid.Children.Add(new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children = {
+                        Row(false, Recognize, Input, Translate),
+                        new ScrollView { Orientation = ScrollOrientation.Both, Content = Formatted }
+                    }
+                }, 0, 0);
+                Grid.Children.Add(new GridSplitter { VerticalOptions = LayoutOptions.Center }, 0, 1);
+                Grid.Children.Add(new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children = { new BoxView { Color = Color.Green } }
+                }, 0, 2);
+                return new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children = { Grid, Back(this) }
+                };
             }
         }
     }
