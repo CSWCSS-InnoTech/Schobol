@@ -1009,8 +1009,8 @@ namespace InnoTecheLearning
             }
         }
         SpeechToText Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
-        Dictionary<string, (string Eng, string PoS, string Chi)> Favourites = 
-            new Dictionary<string, (string Eng, string PoS, string Chi)>();
+        List<(string ID, string Eng, string PoS, string Chi)> Favourites = 
+            new List<(string ID, string Eng, string PoS, string Chi)>();
         public StackLayout Translator
         {
             get
@@ -1046,17 +1046,19 @@ namespace InnoTecheLearning
                     {
                         Formatted.Children.Add(
                             Row(true,
-                                Button(Favourites.ContainsKey(Result.id) ? "★-" : "★+", (ref Button sender, EventArgs e) =>
+                                Button(
+                                    Favourites.Exists(((string ID, string, string, string) Item) => Item.ID == Result.id) ?
+                                    "★-" : "★+", (ref Button sender, EventArgs e) =>
                                 {
-                                    if (Favourites.ContainsKey(Result.id))
+                                    if (Favourites.Exists(((string ID, string, string, string) Item) => Item.ID == Result.id))
                                     {
-                                        Favourites.Remove(Result.id);
+                                        Favourites.RemoveAll(((string ID, string, string, string) Item) => Item.ID == Result.id);
                                         sender.Text = "★+";
                                     }
                                     else
                                     {
-                                        Favourites.Add(Result.id, 
-                                            (Result.headword, ProcessPoS(Result.part_of_speech), Result.senses.Single().translation));
+                                        Favourites.Add((Result.id, 
+                                            Result.headword, ProcessPoS(Result.part_of_speech), Result.senses.Single().translation));
                                         sender.Text = "★-";
                                     }
                                     ;
@@ -1111,19 +1113,21 @@ namespace InnoTecheLearning
                         new ScrollView { Orientation = ScrollOrientation.Both, Content = Formatted }
                     }
                 }, 0, 0);
-                Grid.Children.Add(new GridSplitter { VerticalOptions = LayoutOptions.Center }, 0, 1);
+                Grid.Children.Add(new GridSplitter(Color.FromRgb(223, 223, 223)){ VerticalOptions = LayoutOptions.Center }, 0, 1);
+                var ListTemplate = new DataTemplate(typeof(ListView));
                 Grid.Children.Add(new ScrollView
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Content = new ListView { ItemsSource = Favourites,
                         ItemTemplate = new DataTemplate(() => {
-                            var PoS = new Label
+                            var Item = new Label
                             {
                                 VerticalTextAlignment = TextAlignment.Start,
                                 HorizontalTextAlignment = TextAlignment.Center,
                                 HorizontalOptions = LayoutOptions.Fill
                             };
-                            PoS.SetBinding(Label.FormattedTextProperty, new Binding("Value.Item2", BindingMode.Default
+                            Item.SetBinding(Label.FormattedTextProperty, 
+                                new Binding("Value", BindingMode.OneWay, new VocabBookLabelConverter()));
                             return Row(false, Item); }) }
                 }, 0, 2);
                 return new StackLayout
