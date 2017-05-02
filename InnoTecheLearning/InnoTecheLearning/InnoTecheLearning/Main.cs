@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
+using static InnoTecheLearning.Utils.OnlineDict.DictionaryResponse;
 using static InnoTecheLearning.Utils.StreamPlayer;
 using Xamarin.Forms;
 
@@ -1008,9 +1011,32 @@ namespace InnoTecheLearning
                 };
             }
         }
-        SpeechToText Recognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
-        List<(string ID, string Eng, string PoS, string Chi)> Favourites = 
-            new List<(string ID, string Eng, string PoS, string Chi)>();
+        SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
+        ObservableCollection<Result> Favourites = new ObservableCollection<Result>();
+        Button TranslatorButton(Result R)
+        {
+            var B = Button(Favourites.Contains(R) ? "★-" : "★+",
+                (ref Button sender, EventArgs e) =>
+                {
+                    if (Favourites.Contains(R))
+                    {
+                        Favourites.Remove(R);
+                        sender.Text = "★+";
+                    }
+                    else
+                    {
+                        Favourites.Add(R);
+                        sender.Text = "★-";
+                    }
+                }, TextColor: Color.Yellow);
+            Favourites.CollectionChanged +=
+                (object sender, NotifyCollectionChangedEventArgs e) =>
+                {
+                    if (e.OldItems?.Contains(R) == true) B.Text = "★+";
+                    if (e.NewItems?.Contains(R) == true) B.Text = "★-";
+                };
+            return B;
+        }
         public StackLayout Translator
         {
             get
@@ -1019,9 +1045,9 @@ namespace InnoTecheLearning
                 var Recognize = Button("Recognize", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
-                    Recognizer.TextChanged +=
+                    TranslatorRecognizer.TextChanged +=
                         (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
-                    Recognizer.Start();
+                    TranslatorRecognizer.Start();
                     /*var detailsIntent = new Android.Content.Intent(Android.Speech.RecognizerIntent.ActionGetLanguageDetails);
                     LanguageDetailsChecker checker = new LanguageDetailsChecker();
                     Droid.MainActivity.Current.SendOrderedBroadcast(detailsIntent, null, checker, null,
@@ -1029,44 +1055,24 @@ namespace InnoTecheLearning
                     var a = checker.supportedLanguages;
                     ;*/
                 });
-                var Formatted = new StackLayout();
-                var Translate = Button("Translate", () =>
+                void ViewUpdate(StackLayout Layout, IEnumerable<Result> Results, params Span[] NoResults)
                 {
-                    Formatted.Children.Clear();
-                    string ProcessPoS(string Data)
+                    Layout.Children.Clear();
+                    foreach (var Result in Results)
                     {
-                        var sb = new StringBuilder(Data ?? "proper noun")
-                               .Replace("modal v", "modal verb")
-                               .Replace("sfx", "suffix")
-                               .Replace("interj", "interjection")
-                               .Replace("conj", "conjunction");
-                        return sb.Append(' ', 13 - sb.Length).ToString();
-                    }
-                    foreach (var Result in OnlineDict.ToChinese(Input.Text).results)
-                    {
-                        Formatted.Children.Add(
-                            Row(true,
-                                Button(
-                                    Favourites.Exists(((string ID, string, string, string) Item) => Item.ID == Result.id) ?
-                                    "★-" : "★+", (ref Button sender, EventArgs e) =>
-                                {
-                                    if (Favourites.Exists(((string ID, string, string, string) Item) => Item.ID == Result.id))
-                                    {
-                                        Favourites.RemoveAll(((string ID, string, string, string) Item) => Item.ID == Result.id);
-                                        sender.Text = "★+";
-                                    }
-                                    else
-                                    {
-                                        Favourites.Add((Result.id, 
-                                            Result.headword, ProcessPoS(Result.part_of_speech), Result.senses.Single().translation));
-                                        sender.Text = "★-";
-                                    }
-                                    ;
-                                }, TextColor: Color.Yellow),
+                        Layout.Children.Add(
+                            Row(false, TranslatorButton(Result),
                                 FormattedLabel(
                                     new Span
                                     {
-                                        Text = ProcessPoS(Result.part_of_speech),
+                                        Text = Result.headword.PadRight(27),
+                                        ForegroundColor = Color.Black,
+                                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                                        FontFamily = "Courier New, Georgia, Serif"
+                                    },
+                                    new Span
+                                    {
+                                        Text = Result.part_of_speech.PadRight(13),
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                                         FontFamily = "Courier New, Georgia, Serif"
@@ -1081,28 +1087,38 @@ namespace InnoTecheLearning
                             )
                         );
                     }
-                    if (Formatted.Children.Count == 0)
-                        Formatted.Children.Add(new Label
-                        {
-                            FormattedText =
-                            new FormattedString
+                    if (Layout.Children.Count == 0) Layout.Children.Add(FormattedLabel(NoResults));
+                };
+                var Formatted = new StackLayout
+                {
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = {
+                        FormattedLabel(
+                            new Span
                             {
-                                Spans = {
-                                    new Span
-                                    {
-                                        Text = "Not found!",
-                                        ForegroundColor = Color.Red,
-                                        FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                                        FontFamily = "Courier New, Georgia, Serif"
-                                    }
-                                }
+                                Text = "Enter something and press translate,\nand the results will appear here.",
+                                ForegroundColor = Color.Gray,
+                                FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
+                                FontFamily = "Courier New, Georgia, Serif"
                             }
-                        });
+                        )
+                    }
+                };
+                var Translate = Button("Translate", () =>
+                {
+                    ViewUpdate(Formatted, OnlineDict.ToChinese(Input.Text).results, new Span
+                    {
+                        Text = "Not found!",
+                        ForegroundColor = Color.Red,
+                        FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                        FontFamily = "Courier New, Georgia, Serif"
+                    });
                 });
                 var Grid = new Grid
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    RowDefinitions = { new RowDefinition(), Row(GridUnitType.Auto, 1), new RowDefinition() },
+                    RowDefinitions = { new RowDefinition(), Row(GridUnitType.Auto, 1),
+                        new RowDefinition(), Row(GridUnitType.Auto, 1) },
                     RowSpacing = 0
                 };
                 Grid.Children.Add(new StackLayout
@@ -1114,21 +1130,28 @@ namespace InnoTecheLearning
                     }
                 }, 0, 0);
                 Grid.Children.Add(new GridSplitter(Color.FromRgb(223, 223, 223)){ VerticalOptions = LayoutOptions.Center }, 0, 1);
-                var ListTemplate = new DataTemplate(typeof(ListView));
+                var FavouritesView = new StackLayout();
+                void FavouritesUpdate() => ViewUpdate(FavouritesView, Favourites, new Span
+                {
+                    Text = "There's nothing here...\n",
+                    ForegroundColor = Color.Gray,
+                    FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                    FontFamily = "Courier New, Georgia, Serif"
+                }, new Span
+                {
+                    Text = "Press the button on the left of one of the\ntranslated results to add it into the Favourites!",
+                    ForegroundColor = Color.Gray,
+                    FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
+                    FontFamily = "Courier New, Georgia, Serif"
+                });
+                Favourites.CollectionChanged += (_1, _2) => FavouritesUpdate();
+                FavouritesUpdate();
                 Grid.Children.Add(new ScrollView
                 {
+                    BackgroundColor = Color.White,
+                    Orientation = ScrollOrientation.Both,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Content = new ListView { ItemsSource = Favourites,
-                        ItemTemplate = new DataTemplate(() => {
-                            var Item = new Label
-                            {
-                                VerticalTextAlignment = TextAlignment.Start,
-                                HorizontalTextAlignment = TextAlignment.Center,
-                                HorizontalOptions = LayoutOptions.Fill
-                            };
-                            Item.SetBinding(Label.FormattedTextProperty, 
-                                new Binding("Value", BindingMode.OneWay, new VocabBookLabelConverter()));
-                            return Row(false, Item); }) }
+                    Content = FavouritesView
                 }, 0, 2);
                 return new StackLayout
                 {

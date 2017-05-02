@@ -11,6 +11,7 @@ using CoreGraphics;
 using Xamarin.Forms.Platform.Android;
 using Android.Support.V4.View;
 using Android.Views;
+using View = Xamarin.Forms.View;
 #elif NETFX_CORE
 using Xamarin.Forms.Platform.UWP;
 #endif

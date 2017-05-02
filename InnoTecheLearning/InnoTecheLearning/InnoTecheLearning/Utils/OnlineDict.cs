@@ -36,6 +36,11 @@ namespace InnoTecheLearning
                     [DataMember] public string part_of_speech;
                     [DataMember] public List<Sens> senses;
                     [DataMember] public string url;
+
+                    public override bool Equals(object obj) => obj is Result R ? R.id == id : false;
+                    public override int GetHashCode() => unchecked(headword.GetHashCode() / id.GetHashCode() - url.GetHashCode());
+                    public static bool operator ==(Result R1, Result R2) => R1.id == R2.id;
+                    public static bool operator !=(Result R1, Result R2) => R1.id != R2.id;
                 }
                 [DataMember] public int status;
                 [DataMember] public int offset;
@@ -104,8 +109,28 @@ namespace InnoTecheLearning
                 }
             }
 
-            public static DictionaryResponse ToChinese(string Word) => Request<DictionaryResponse>
-            (new System.Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Word.ToLower()));
+            static DictionaryResponse ProcessPoS(DictionaryResponse Data)
+            {
+                for (int i = 0; i < Data.results.Count; i++)
+                {
+                    Data.results[i].part_of_speech = 
+                        new System.Text.StringBuilder(Data.results[i].part_of_speech ??
+#if DEBUG
+                        "noun."
+#else
+                        "noun"
+#endif
+                        )
+                           .Replace("modal v", "modal verb")
+                           .Replace("sfx", "suffix")
+                           .Replace("interj", "interjection")
+                           .Replace("conj", "conjunction").ToString();
+                }
+                return Data;
+            }
+
+            public static DictionaryResponse ToChinese(string Word) => ProcessPoS(Request<DictionaryResponse>
+            (new System.Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Word.ToLower())));
             public static DictionaryIDResponse LookupID(string ID) => Request<DictionaryIDResponse>
             (new System.Uri("http://api.pearson.com/v2/dictionaries/entries/" + ID));
         }
