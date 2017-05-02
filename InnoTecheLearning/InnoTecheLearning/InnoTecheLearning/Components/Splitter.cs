@@ -224,18 +224,18 @@ namespace InnoTecheLearning
                 private Point _lastPoint;
 
                 public override bool OnTouchEvent(MotionEvent e)
-                {
-                    int action = MotionEventCompat.GetActionMasked(e);
-
-                    switch (action)
+                { 
+                    new Android.App.AlertDialog.Builder(Context).SetTitle("OnTouchEvent").Create().Show();
+                    switch (e.Action)
                     {
-                        case (int)MotionEventActions.Down:
+                        case MotionEventActions.Down:
                             {
+                                new Android.App.AlertDialog.Builder(Context).SetTitle("Down").Create().Show();
                                 _lastPoint = new Point(e.RawX, e.RawY);
                                 break;
                             }
 
-                        case (int)MotionEventActions.Move:
+                        case MotionEventActions.Move:
                             {
                                 Element.UpdateGrid(Context.FromPixels(e.RawX - _lastPoint.X), Context.FromPixels(e.RawY - _lastPoint.Y));
                                 _lastPoint = new Point(e.RawX, e.RawY);
@@ -246,7 +246,7 @@ namespace InnoTecheLearning
                 }
             }
 #elif NETFX_CORE
-            public class Renderer : ViewRenderer<GridSplitter, Windows.UI.Xaml.FrameworkElement>
+            public class Renderer : VisualElementRenderer<GridSplitter, Windows.UI.Xaml.FrameworkElement>
             {
                 private Windows.Foundation.Point? _lastPt;
 
