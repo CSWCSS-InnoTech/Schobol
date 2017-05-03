@@ -43,16 +43,32 @@ namespace InnoTecheLearning
                 }
             }
 
-            private GridSplitter()
+            [System.Diagnostics.Conditional("__ANDROID__")]
+            void Android()
             {
-                double LastX = 0.0, LastY = 0.0;
+                double LastX = 0.0, LastY = 0.0, CurrX, CurrY;
                 var R = new PanGestureRecognizer { TouchPoints = 1 };
                 R.PanUpdated += (sender, e) =>
                 {
-                    UpdateGrid(LastX = e.TotalX - LastX, LastY = e.TotalY - LastY * 1.5);
+                    
+                    (CurrX, CurrY) = (e.TotalX, e.TotalY);
+                    switch (e.StatusType)
+                    {
+                        case GestureStatus.Started:
+                            break;
+                        case GestureStatus.Running:
+                            break;
+                        case GestureStatus.Completed:
+                        case GestureStatus.Canceled:
+                        default:
+                            break;
+                    }
+                    UpdateGrid(LastX = CurrX - LastX, LastY = CurrY);
                 };
                 GestureRecognizers.Add(R);
             }
+
+            private GridSplitter() => Android();
             public GridSplitter(DataTemplate ControlTemplate) : this() => this.ControlTemplate = ControlTemplate;
             public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) : this() =>
                 ControlTemplate = new DataTemplate(
@@ -181,7 +197,7 @@ namespace InnoTecheLearning
                 return actualWidth;
             }
             
-#if true
+#if false
 #elif __IOS__
             public class Renderer : VisualElementRenderer<GridSplitter>
             {
@@ -230,7 +246,7 @@ namespace InnoTecheLearning
                     Element.UpdateGrid(ptOffset.X, ptOffset.Y);
                 }
             }
-#elif __ANDROID__
+#elif __ANDROID__A
             public class Renderer : VisualElementRenderer<GridSplitter>
             {
                 private Point _lastPoint;

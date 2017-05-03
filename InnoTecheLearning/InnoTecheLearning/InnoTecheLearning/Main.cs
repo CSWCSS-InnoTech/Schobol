@@ -1,4 +1,7 @@
-﻿using System;
+﻿/*System.Runtime.Serialization.FormatterServices.GetUninitializedObject((Type)
+    System.Runtime.Serialization.FormatterServices.GetUninitializedObject(Type.GetType("System.RuntimeType")))*/
+//Hosting process exited with exit code -1073741819.
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -565,7 +568,8 @@ namespace InnoTecheLearning
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
                 AppendScrollStack(Return.Children[1] as ScrollView, Mode, Back(this));
                 Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { Calculator_Modifier = (Modifier)i; }, 0, "Norm", "%", "a b / c", "d / c", "° ′ ″");
+                    i => delegate { Calculator_Modifier = (Modifier)i; }, 0,
+                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatformOld("e√f̅", "e√f̅", "e√̅f"));
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*

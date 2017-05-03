@@ -82,7 +82,7 @@ namespace InnoTecheLearning
         /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
         /// <param name="Default">The value to return if no value was provided for the current OS.</param>
         /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-        public static T OnPlatform<T>(Func<T> iOS = null, Func<T> Android = null,
+        public static T OnPlatformOld<T>(Func<T> iOS = null, Func<T> Android = null,
             Func<T> Windows = null, Func<T> WinPhone = null, Func<T> Default = null)
         {
             switch (Device.OS)
@@ -119,7 +119,7 @@ namespace InnoTecheLearning
         /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
         /// <param name="Default">The value to return if no value was provided for the current OS.</param>
         /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-        public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
+        public static T OnPlatformOld<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
                                       T WinPhone = default(T), T Default = default(T))
         {
             switch (Device.OS)
@@ -712,6 +712,8 @@ function Display(Text) {
             return Fraction(Text);
         case 4: //° ′ ″
             return AngleMeasure(Text);
+        case 5: //e√̅f
+            return AsSurd(Text);
         default: //What?
             throw('Invalid display modifier.');
     }
@@ -768,6 +770,22 @@ const Log10e = Math.LOG10E;
                 var minute = Math.Floor((value - degree) * 60);
                 var second = (value - degree - minute / 60) * 3600;
                 return $"{degree}° {minute}′ {second}″";
+            })).SetValue("AsSurd", new Func<double, string>((double value) =>
+            {
+                var A = value = Math.Round(value * value);
+                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) == 0);
+                var B = new System.Text.StringBuilder($"{A}√");
+                foreach(var C in (value / (A * A)).ToString())
+                {
+#if __IOS__ || __ANDROID__
+                    B.Append(C);
+                    B.Append("̅");
+#else
+                    B.Append("̅");
+                    B.Append(C);
+#endif
+                }
+                return B.ToString();
             }))
 #endif
             .Execute(Expression);
@@ -1252,6 +1270,8 @@ const Log10e = Math.LOG10E;
             foreach (var Item in Langs.ToIdentiifiers())
                 yield return Item.Split('_', '-')[0];
         }
+        public static T DebugWrite<T>(this T Object, string Format = "{0}\n", string Category = null)
+        { System.Diagnostics.Debug.Write(string.Format(Format, Object), Category); return Object; }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()
