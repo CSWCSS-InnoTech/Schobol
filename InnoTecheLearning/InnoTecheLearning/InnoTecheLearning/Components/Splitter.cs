@@ -15,7 +15,7 @@ using View = Xamarin.Forms.View;
 #elif NETFX_CORE
 using Xamarin.Forms.Platform.UWP;
 #endif
-[assembly: ExportRendererAttribute(typeof(GridSplitter), typeof(GridSplitter.Renderer))]
+//[assembly: ExportRendererAttribute(typeof(GridSplitter), typeof(GridSplitter.Renderer))]
 namespace InnoTecheLearning
 {
     partial class Utils
@@ -43,8 +43,18 @@ namespace InnoTecheLearning
                 }
             }
 
-            public GridSplitter(DataTemplate ControlTemplate) => this.ControlTemplate = ControlTemplate;
-            public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) =>
+            private GridSplitter()
+            {
+                double LastX = 0.0, LastY = 0.0;
+                var R = new PanGestureRecognizer { TouchPoints = 1 };
+                R.PanUpdated += (sender, e) =>
+                {
+                    UpdateGrid(LastX = e.TotalX - LastX, LastY = e.TotalY - LastY * 1.5);
+                };
+                GestureRecognizers.Add(R);
+            }
+            public GridSplitter(DataTemplate ControlTemplate) : this() => this.ControlTemplate = ControlTemplate;
+            public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) : this() =>
                 ControlTemplate = new DataTemplate(
                     () => new Grid {
                         BackgroundColor = BackColor == default(Color) ? new Color(0, 0, 0, double.Epsilon) : BackColor,
@@ -170,7 +180,9 @@ namespace InnoTecheLearning
                 }
                 return actualWidth;
             }
-#if __IOS__
+            
+#if true
+#elif __IOS__
             public class Renderer : VisualElementRenderer<GridSplitter>
             {
                 private UIPanGestureRecognizer _panGestureRecognizer;

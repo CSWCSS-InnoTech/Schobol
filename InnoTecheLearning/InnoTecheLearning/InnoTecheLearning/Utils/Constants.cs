@@ -11,6 +11,25 @@ namespace InnoTecheLearning
         public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 178); } }
         public const string VersionName = "Xamarin Update";
 
+        public const float RawXMultiplier =
+#if __IOS__
+            1
+#elif __ANDROID__
+            1.0f / 3
+#elif NETFX_CORE
+            1
+#endif
+            ;
+
+        public const float RawYMultiplier =
+#if __IOS__
+            1
+#elif __ANDROID__
+            0.5f
+#elif NETFX_CORE
+            1.5f
+#endif
+            ;
         public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
         public static string VersionFull
         {
