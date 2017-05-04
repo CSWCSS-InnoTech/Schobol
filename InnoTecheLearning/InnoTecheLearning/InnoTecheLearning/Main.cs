@@ -522,12 +522,12 @@ namespace InnoTecheLearning
                 };
                 Append(Const.Children, Expressions.π, 0, 0);
                 Append(Const.Children, Expressions.e, 1, 0);
-#if __IOS__ || __ANDROID__
-                Append(Const.Children, Expressions.Root2, "√2̅", 2, 0);
-                Append(Const.Children, Expressions.Root0_5, "√0̅.̅5̅", 3, 0);
-#elif NETFX_CORE
+#if WINDOWS_UWP
                 Append(Const.Children, Expressions.Root2, "√̅2", 2, 0);
                 Append(Const.Children, Expressions.Root0_5, "√̅0̅.̅5", 3, 0);
+#else
+                Append(Const.Children, Expressions.Root2, "√2̅", 2, 0);
+                Append(Const.Children, Expressions.Root0_5, "√0̅.̅5̅", 3, 0);
 #endif
                 Append(Const.Children, Expressions.Ln2, "Logₑ2", 0, 1);
                 Append(Const.Children, Expressions.Ln10, "Logₑ10", 1, 1);
@@ -554,7 +554,7 @@ namespace InnoTecheLearning
                     Append(Vars.Children, Expressions.Decrement, ++Left, Top);
                 }
 
-                StackLayout Return = new StackLayout { Children = { In, new ScrollView(), Norm, new ScrollView(), Out } };
+                StackLayout Return = new StackLayout { Children = { In, new StackLayout(), Norm, new StackLayout(), Out } };
                 Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
@@ -563,13 +563,15 @@ namespace InnoTecheLearning
                     AngleUnit++; if (AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
                     Mode.Text = AngleUnit.ToString();
                 };
-                Return.Children[1] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
+                var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
-                AppendScrollStack(Return.Children[1] as ScrollView, Mode, Back(this));
-                Return.Children[3] = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
+                Return.Children[1] = Row(false, Select[0], 
+                    Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode })), Back(this));
+                var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate { Calculator_Modifier = (Modifier)i; }, 0,
-                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatformOld("e√f̅", "e√f̅", "e√̅f"));
+                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"));
+                Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*

@@ -565,6 +565,33 @@ namespace InnoTecheLearning
                 return MenuScreenRow;
             }
 
+            public static StackLayout Row<T>(bool VerticalExpand, IEnumerable<T> Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Center,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+            public static StackLayout Column<T>(IEnumerable<T> Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+
             public static StackLayout Row<T>(bool VerticalExpand, params T[] Items) where T : View
             {
                 StackLayout MenuScreenRow = new StackLayout
@@ -656,14 +683,15 @@ namespace InnoTecheLearning
                 Return.ValueChanged += ValueChanged;
                 return Return;
             }
-            public static ScrollView RadioButtons(Color Base, Color Selected,
+            public static Button[] RadioButtons(Color Base, Color Selected,
                 Func<int, ButtonOnClick> Init, int DefaultIndex = 0, params string[] Names)
             {
                 var Modificators = new Button[Names.Length];
                 for (int Index = 0; Index < Names.Length; Index++)
                 {
                     Modificators[Index] = Button(Names[Index], Init(Index), Index == DefaultIndex ? Selected : Base);
-                    Modificators[Index].Clicked += (sender, e) => {
+                    Modificators[Index].Clicked += (sender, e) =>
+                    {
                         var Sender = sender as Button;
                         if (Sender.BackgroundColor == Base)
                         {
@@ -674,23 +702,57 @@ namespace InnoTecheLearning
                         else Sender.BackgroundColor = Base;
                     };
                 }
-                ScrollView Modificator = new ScrollView
-                {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    Orientation = ScrollOrientation.Horizontal,
-                    Content = new StackLayout
-                    {
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                    }
-                };
-                AppendScrollStack(Modificator, Modificators);
-                return Modificator;
+                return Modificators;
+            }
+            public static ScrollView RadioButtonsView(Color Base, Color Selected,
+                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, params string[] Names)
+            {
+                return Scroll(StackOrientation.Horizontal, RadioButtons(Base, Selected, Init, DefaultIndex, Names));
             }
             public static void AppendScrollStack<T>(ScrollView Base, params T[] Items) where T : View =>
                 (Base.Content as StackLayout).Children.AddRange(Items);
+            public static void AppendScrollStack<T>(ScrollView Base, IEnumerable<T> Items) where T : View =>
+                (Base.Content as StackLayout).Children.AddRange(Items);
             public static void FillGrid(Grid Base, View Item) => 
                 Base.Children.Add(Item, 0, Base.RowDefinitions.Count, 0, Base.ColumnDefinitions.Count);
+            public static ScrollView Scroll<T>(StackOrientation Orientation, params T[] Views) where T : View
+            {
+                ScrollView Modificator = new ScrollView
+                {
+                    Orientation = (ScrollOrientation)Orientation,
+                    Content = new StackLayout
+                    {
+                        Orientation = Orientation
+                    }
+                };
+                if (Orientation == StackOrientation.Horizontal)
+                    (Modificator.Content as StackLayout).HorizontalOptions = 
+                        Modificator.HorizontalOptions = LayoutOptions.FillAndExpand;
+                else
+                    (Modificator.Content as StackLayout).VerticalOptions = 
+                        Modificator.VerticalOptions = LayoutOptions.FillAndExpand;
+                AppendScrollStack(Modificator, Views);
+                return Modificator;
+            }
+            public static ScrollView Scroll<T>(StackOrientation Orientation, IEnumerable<T> IEViews) where T : View
+            {
+                ScrollView Modificator = new ScrollView
+                {
+                    Orientation = (ScrollOrientation)Orientation,
+                    Content = new StackLayout
+                    {
+                        Orientation = Orientation,
+                    }
+                };
+                if (Orientation == StackOrientation.Horizontal)
+                    (Modificator.Content as StackLayout).HorizontalOptions =
+                        Modificator.HorizontalOptions = LayoutOptions.FillAndExpand;
+                else
+                    (Modificator.Content as StackLayout).VerticalOptions =
+                        Modificator.VerticalOptions = LayoutOptions.FillAndExpand;
+                AppendScrollStack(Modificator, IEViews);
+                return Modificator;
+            }
         }
     }
 }

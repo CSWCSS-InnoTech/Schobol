@@ -82,28 +82,27 @@ namespace InnoTecheLearning
         /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
         /// <param name="Default">The value to return if no value was provided for the current OS.</param>
         /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-        public static T OnPlatformOld<T>(Func<T> iOS = null, Func<T> Android = null,
+        public static T OnPlatform<T>(Func<T> iOS = null, Func<T> Android = null,
             Func<T> Windows = null, Func<T> WinPhone = null, Func<T> Default = null)
         {
-            switch (Device.OS)
+            switch (Device.RuntimePlatform)
             {
-                case TargetPlatform.iOS:
+                case Device.iOS:
                     if (iOS != null)
                         return (T)iOS.DynamicInvoke();
                     break;
-                case TargetPlatform.Android:
+                case Device.Android:
                     if (Android != null)
                         return (T)Android.DynamicInvoke();
                     break;
-                case TargetPlatform.WinPhone:
+                case Device.WinPhone:
                     if (WinPhone != null)
                         return (T)WinPhone.DynamicInvoke();
                     break;
-                case TargetPlatform.Windows:
+                case Device.Windows:
                     if (Windows != null)
                         return (T)Windows.DynamicInvoke();
                     break;
-                case TargetPlatform.Other:
                 default:
                     break;
             }
@@ -119,28 +118,27 @@ namespace InnoTecheLearning
         /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
         /// <param name="Default">The value to return if no value was provided for the current OS.</param>
         /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-        public static T OnPlatformOld<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
+        public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
                                       T WinPhone = default(T), T Default = default(T))
         {
-            switch (Device.OS)
+            switch (Device.RuntimePlatform)
             {
-                case TargetPlatform.iOS:
+                case Device.iOS:
                     if (!iOS.Equals(default(T)))
                         return iOS;
                     break;
-                case TargetPlatform.Android:
+                case Device.Android:
                     if (!Android.Equals(default(T)))
                         return Android;
                     break;
-                case TargetPlatform.WinPhone:
+                case Device.WinPhone:
                     if (!WinPhone.Equals(default(T)))
                         return WinPhone;
                     break;
-                case TargetPlatform.Windows:
+                case Device.Windows:
                     if (!Windows.Equals(default(T)))
                         return Windows;
                     break;
-                case TargetPlatform.Other:
                 default:
                     break;
             }
@@ -773,16 +771,17 @@ const Log10e = Math.LOG10E;
             })).SetValue("AsSurd", new Func<double, string>((double value) =>
             {
                 var A = value = Math.Round(value * value);
-                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) == 0);
+                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0 && A > 0);
+                if (A == 0) return value.ToString();
                 var B = new System.Text.StringBuilder($"{A}√");
                 foreach(var C in (value / (A * A)).ToString())
                 {
-#if __IOS__ || __ANDROID__
-                    B.Append(C);
+#if WINDOWS_UWP
                     B.Append("̅");
+                    B.Append(C);
 #else
-                    B.Append("̅");
                     B.Append(C);
+                    B.Append("̅");
 #endif
                 }
                 return B.ToString();
@@ -894,12 +893,12 @@ const Log10e = Math.LOG10E;
         }
         public static double TryParseDouble(string s, double @default)
         { if (double.TryParse(s, out double d)) { return d; } else { return @default; }; }
-        public static byte[] ReadFully(this Stream input, bool all = false)
+        public static byte[] ReadFully(this Stream input, bool reset = false)
         {
             long pos = input.Position;
             try
             {
-                if (all && input.CanSeek) input.Seek(0, SeekOrigin.Begin);
+                if (reset && input.CanSeek) input.Seek(0, SeekOrigin.Begin);
                 if (input is MemoryStream)
                 {
                     return ((MemoryStream)input).ToArray();
@@ -915,7 +914,7 @@ const Log10e = Math.LOG10E;
             }
             finally
             {
-                if (all && input.CanSeek) input.Seek(pos, SeekOrigin.Begin);
+                if (reset && input.CanSeek) input.Seek(pos, SeekOrigin.Begin);
             }
         }
         public static IEnumerable<T> SliceRow<T>(this T[,] array, int row)
@@ -1132,8 +1131,7 @@ const Log10e = Math.LOG10E;
         /// <typeparam name="T"><see cref="Type"/> to <see cref="Convert"/> to.</typeparam>
         /// <param name="Object"><see cref="Object"/> to <see cref="Convert"/> from.</param>
         /// <returns>The casted <see cref="Object"/>.</returns>
-        public static T Cast<T>(this object Object)
-        { return (T)Object; }
+        public static T Cast<T>(this object Object) => (T)Object;
 #if NETFX_CORE
         public static global::Windows.UI.Color ToWindows(this Color color)
         {

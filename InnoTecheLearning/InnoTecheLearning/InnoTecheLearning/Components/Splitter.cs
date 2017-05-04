@@ -15,7 +15,7 @@ using View = Xamarin.Forms.View;
 #elif NETFX_CORE
 using Xamarin.Forms.Platform.UWP;
 #endif
-//[assembly: ExportRendererAttribute(typeof(GridSplitter), typeof(GridSplitter.Renderer))]
+[assembly: ExportRendererAttribute(typeof(GridSplitter), typeof(GridSplitter.Renderer))]
 namespace InnoTecheLearning
 {
     partial class Utils
@@ -69,8 +69,8 @@ namespace InnoTecheLearning
             }
 
             private GridSplitter() => Android();
-            public GridSplitter(DataTemplate ControlTemplate) : this() => this.ControlTemplate = ControlTemplate;
-            public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) : this() =>
+            public GridSplitter(DataTemplate ControlTemplate) => this.ControlTemplate = ControlTemplate;
+            public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) =>
                 ControlTemplate = new DataTemplate(
                     () => new Grid {
                         BackgroundColor = BackColor == default(Color) ? new Color(0, 0, 0, double.Epsilon) : BackColor,
