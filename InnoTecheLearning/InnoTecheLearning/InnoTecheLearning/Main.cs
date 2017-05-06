@@ -581,7 +581,8 @@ namespace InnoTecheLearning
                             Out.Text = "";
                         }
                     }, 0,
-                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"));
+                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"), 
+                    OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
                 Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/

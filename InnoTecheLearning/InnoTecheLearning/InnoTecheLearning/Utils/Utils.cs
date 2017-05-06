@@ -486,7 +486,7 @@ namespace InnoTecheLearning
         private static string JSEvaluteAns = "";
         private static string[] JSVariables = new string[26];
         public enum AngleMode : byte { Degree, Radian, Gradian, Turn }
-        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure, IntSurd }
+        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure, IntSurd, FracSurd }
         public static Jint.Engine JSEngine = new Jint.Engine();
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
            Modifier Mod = Modifier.Normal, bool TrueFree =  false)
@@ -713,6 +713,8 @@ function Display(Text, Modifier) {
             return AngleMeasure(Text);
         case 5: //e√̅f
             return IntSurd(Text);
+        case 6: //g / h √̅f
+            return FracSurd(Text);
         default: //What?
             throw('Invalid display modifier.');
     }
@@ -771,10 +773,11 @@ const Log10e = Math.LOG10E;
                 return $"{degree}° {minute}′ {second}″";
             })).SetValue("IntSurd", new Func<double, string>((double value) =>
             {
+                // A = AVariable, B = Builder, C = Char
                 if (value > 5000) throw new ArgumentOutOfRangeException(nameof(value), value, "Value is too large (>5000).");
                 var A = value = Math.Round(value * value);
                 do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0);
-                if (A == 0) return value.ToString();
+                //if (A == 0) throw new ArithmeticException("Cannot find appropiate surd.");
                 var B = new System.Text.StringBuilder($"{A}√");
                 foreach(var C in (value / (A * A)).ToString())
                 {
@@ -791,24 +794,29 @@ const Log10e = Math.LOG10E;
             {
                 for (int i = 0; i <= 1e6; i++)
                 {
-                    //value / Math.Sqrt(i);
-                }
-
-                var A = value = Math.Round(value * value);
-                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0 && A > 0);
-                if (A == 0) return value.ToString();
-                var B = new System.Text.StringBuilder($"{A}√");
-                foreach (var C in (value / (A * A)).ToString())
-                {
+                    var SubjectToTest = value / Math.Sqrt(i);
+                    for (var denom = 1.0; denom <= 500; denom++)
+                    {
+                        var numer = Math.Round(SubjectToTest * denom);
+                        if (SubjectToTest - numer / denom == 0)
+                        {
+                            var Builder = new System.Text.StringBuilder(numer.ToString());
+                            Builder.Append(" / ").Append(denom).Append(" √");
+                            foreach (var Char in i.ToString())
+                            {
 #if WINDOWS_UWP
-                    B.Append("̅");
-                    B.Append(C);
+                                Builder.Append("̅");
+                                Builder.Append(Char);
 #else
-                    B.Append(C);
-                    B.Append("̅");
+                                Builder.Append(Char);
+                                Builder.Append("̅");
 #endif
+                            }
+                            return Builder.ToString();
+                        }
+                    }
                 }
-                return B.ToString();
+                throw new ArithmeticException("Cannot find appropiate fraction and surd.");
             }))
 #endif
             .Execute(Expression);
