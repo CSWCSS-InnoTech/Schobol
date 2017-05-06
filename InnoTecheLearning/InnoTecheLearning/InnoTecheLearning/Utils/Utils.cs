@@ -486,7 +486,8 @@ namespace InnoTecheLearning
         private static string JSEvaluteAns = "";
         private static string[] JSVariables = new string[26];
         public enum AngleMode : byte { Degree, Radian, Gradian, Turn }
-        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure }
+        public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure, IntSurd }
+        public static Jint.Engine JSEngine = new Jint.Engine();
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
            Modifier Mod = Modifier.Normal, bool TrueFree =  false)
         {
@@ -513,9 +514,9 @@ namespace InnoTecheLearning
             {
                 //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
-                var Engine = new Jint.Engine();
-                if (TrueFree) return Engine.Execute(Expression).GetCompletionValue().ToString();
-                Engine.Execute(
+                JSEngine = new Jint.Engine();
+                if (TrueFree) return JSEngine.Execute(Expression).GetCompletionValue().ToString();
+                JSEngine.Execute(
                     $@"var Prev = ""{Escape(JSEvaluteAns)}"";
 var AngleUnit = {(byte)Mode};
 var Modifier = {(byte)Mod};" + GetVars(JSVariables)
@@ -698,7 +699,7 @@ function Factorial(aNumber){
 function nPr(n, r) { if(r > n) return 0; return Factorial(n) / Factorial(n - r);}
 function nCr(n, r) { if(r > n) return 0; return Factorial(n) / (Factorial(n - r) * Factorial(r));}
 
-function Display(Text) { 
+function Display(Text, Modifier) {
     switch(Modifier) {
         case 0: //Normal
             return Text;
@@ -711,7 +712,7 @@ function Display(Text) {
         case 4: //° ′ ″
             return AngleMeasure(Text);
         case 5: //e√̅f
-            return AsSurd(Text);
+            return IntSurd(Text);
         default: //What?
             throw('Invalid display modifier.');
     }
@@ -768,10 +769,11 @@ const Log10e = Math.LOG10E;
                 var minute = Math.Floor((value - degree) * 60);
                 var second = (value - degree - minute / 60) * 3600;
                 return $"{degree}° {minute}′ {second}″";
-            })).SetValue("AsSurd", new Func<double, string>((double value) =>
+            })).SetValue("IntSurd", new Func<double, string>((double value) =>
             {
+                if (value > 5000) throw new ArgumentOutOfRangeException(nameof(value), value, "Value is too large (>5000).");
                 var A = value = Math.Round(value * value);
-                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0 && A > 0);
+                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0);
                 if (A == 0) return value.ToString();
                 var B = new System.Text.StringBuilder($"{A}√");
                 foreach(var C in (value / (A * A)).ToString())
@@ -785,17 +787,38 @@ const Log10e = Math.LOG10E;
 #endif
                 }
                 return B.ToString();
+            })).SetValue("FracSurd", new Func<double, string>((double value) =>
+            {
+                for (int i = 0; i <= 1e6; i++)
+                {
+                    //value / Math.Sqrt(i);
+                }
+
+                var A = value = Math.Round(value * value);
+                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0 && A > 0);
+                if (A == 0) return value.ToString();
+                var B = new System.Text.StringBuilder($"{A}√");
+                foreach (var C in (value / (A * A)).ToString())
+                {
+#if WINDOWS_UWP
+                    B.Append("̅");
+                    B.Append(C);
+#else
+                    B.Append(C);
+                    B.Append("̅");
+#endif
+                }
+                return B.ToString();
             }))
 #endif
             .Execute(Expression);
-                JSEvaluteAns = Engine.GetCompletionValue().ToString();
-                SetVars(Engine);
-            return Engine.Invoke("Display", Engine.GetCompletionValue()).ToString();
+                JSEvaluteAns = JSEngine.GetCompletionValue().ToString();
+                SetVars(JSEngine);
+            return JSEngine.Invoke("Display", JSEngine.GetCompletionValue(), JSEngine.GetValue("Modifier")).ToString();
             }
-            catch (Exception ex) when (Alert != null)
-            {
-                return 'ⓧ' + ex.Message; //⮾
-            }
+            catch (System.Reflection.TargetInvocationException ex) when (Alert != null)
+            { return ('ⓧ' + ex.InnerException.Message).Split('\r', '\n', '\f')[0]; }
+            catch (Exception ex) when (Alert != null) { return ('ⓧ' + ex.Message).Split('\r', '\n', '\f')[0]; } //⮾ 
         }
 
         public static void AddRange<T>(this ICollection<T> ic, IEnumerable<T> ie) { foreach (T obj in ie) ic.Add(obj); }

@@ -569,7 +569,18 @@ namespace InnoTecheLearning
                 Return.Children[1] = Row(false, Select[0], 
                     Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode })), Back(this));
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { Calculator_Modifier = (Modifier)i; }, 0,
+                    i => delegate
+                    {
+                        if (Calculator_Modifier != (Modifier)i)
+                        {
+                            Calculator_Modifier = (Modifier)i;
+                            try { Calculator_Value = JSEngine.Invoke("Display", JSEngine.GetCompletionValue(), i).ToString(); }
+                            catch (System.Reflection.TargetInvocationException ex)
+                            { Calculator_Value = ('ⓧ' + ex.InnerException.Message).Split('\r', '\n', '\f')[0]; }
+                            catch (Exception ex) { Calculator_Value = ('ⓧ' + ex.Message).Split('\r', '\n', '\f')[0]; }
+                            Out.Text = "";
+                        }
+                    }, 0,
                     "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"));
                 Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
