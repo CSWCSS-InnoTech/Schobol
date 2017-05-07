@@ -8,7 +8,20 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
+        //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
+        public const string VersionShort = "0.10.0a179";
+        public static Version Version
+        {
+            get
+            {
+                var VersionDecomposition = VersionShort.Split('.');
+                var IndexOfStage = VersionDecomposition[2].IndexOfAny(new[] { 'a', 'b', 'c' });
+                return Create.Version(int.Parse(VersionDecomposition[0]), int.Parse(VersionDecomposition[1]), 
+                    int.Parse(IndexOfStage == -1 ? VersionDecomposition[2] : VersionDecomposition[2].Remove(IndexOfStage)),
+                    IndexOfStage == -1 ? VersionStage.Release :(VersionStage)(VersionDecomposition[2][IndexOfStage] - 'a' + 1),
+                    IndexOfStage == -1 ? 0 : short.Parse(VersionDecomposition[2].S)
+            }
+        }
         public const string VersionName = "Xamarin Update";
 
         public const float RawXMultiplier =
@@ -38,15 +51,6 @@ namespace InnoTecheLearning
                 return Version.ToString(3) + (string.IsNullOrEmpty(VersionName) ? "" : $" ({VersionName})") +
                        (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
                        " " + VersionState.ToString().Replace('_', ' ') + " " + Version.MinorRevision : "");
-            }
-        }
-        public static string VersionShort
-        {
-            get
-            {
-                return Version.ToString(3) +
-                       (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                       (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
             }
         }
 

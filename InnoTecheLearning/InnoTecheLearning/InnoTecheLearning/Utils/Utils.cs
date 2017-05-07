@@ -1249,10 +1249,12 @@ const Log10e = Math.LOG10E;
                 yield return Foundation.NSLocale.FromLocaleIdentifier("en_GB");
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
                 yield return Foundation.NSLocale.FromLocaleIdentifier("zh_CN");
+#pragma warning disable 618 //Justification: Intended to use (disable 612 for Obsolete without message)
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
                 yield return Foundation.NSLocale.FromLocaleIdentifier("zh_HK");
             else if (Langs.HasFlag(SpeechLanguages.Cantonese))
                 yield return Foundation.NSLocale.FromLocaleIdentifier("yue_HK");
+#pragma warning restore 618
             else
                 throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
@@ -1269,10 +1271,12 @@ const Log10e = Math.LOG10E;
                 yield return Java.Util.Locale.Uk;
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
                 yield return Java.Util.Locale.SimplifiedChinese;
+#pragma warning disable 618 //Justification: Intended to use (disable 612 for Obsolete without message)
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
                 yield return Java.Util.Locale.TraditionalChinese;
             else if (Langs.HasFlag(SpeechLanguages.Cantonese))
                 yield return new Java.Util.Locale("zh", "HK");
+#pragma warning restore 618
             else
                 throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
@@ -1289,10 +1293,12 @@ const Log10e = Math.LOG10E;
                 yield return new Windows.Globalization.Language("en-UK");
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
                 yield return new Windows.Globalization.Language("zh-CN");
+#pragma warning disable 618 //Justification: Intended to use (disable 612 for Obsolete without message)
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
                 yield return new Windows.Globalization.Language("zh-HK");
             else if (Langs.HasFlag(SpeechLanguages.Cantonese))
                 yield return new Windows.Globalization.Language("yue-HK");
+#pragma warning restore 618
             else
                 throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
@@ -1325,10 +1331,12 @@ const Log10e = Math.LOG10E;
                 yield return "en-UK";
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Simplified))
                 yield return  "zh-CN";
+#pragma warning disable 618 //Justification: Intended to use (disable 612 for Obsolete without message)
             else if (Langs.HasFlag(SpeechLanguages.Chinese_Traditional))
                 yield return  "zh-HK";
             else if (Langs.HasFlag(SpeechLanguages.Cantonese))
                 yield return  "yue-HK";
+#pragma warning restore 618
             else
                 throw new ArgumentException($"Invalid language. Value: {Langs}", nameof(Langs));
         }
