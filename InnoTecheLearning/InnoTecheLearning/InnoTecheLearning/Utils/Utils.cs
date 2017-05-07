@@ -792,6 +792,28 @@ const Log10e = Math.LOG10E;
                 return B.ToString();
             })).SetValue("FracSurd", new Func<double, string>((double value) =>
             {
+                /*
+                void Simplify(int[] numbers)
+                {
+                    int gcd = GCD(numbers);
+                    for (int i = 0; i < numbers.Length; i++)
+                        numbers[i] /= gcd;
+                }*/
+                double GCD(double a, double b)
+                {
+                    while (b > 0)
+                    {
+                        var rem = a % b;
+                        a = b;
+                        b = rem;
+                    }
+                    return a;
+                }
+                /*int GCD(int[] args)
+                {
+                    // using LINQ:
+                    return System.Linq.Enumerable.Aggregate(args, (gcd, arg) => GCD(gcd, arg));
+                }*/
                 for (int i = 0; i <= 1e6; i++)
                 {
                     var SubjectToTest = value / Math.Sqrt(i);
@@ -800,9 +822,25 @@ const Log10e = Math.LOG10E;
                         var numer = Math.Round(SubjectToTest * denom);
                         if (SubjectToTest - numer / denom == 0)
                         {
+                            int Square = 1, a = i;
+                            for (int b = 2; a > 1; b++)
+                                if (a % b == 0)
+                                {
+                                    int x = 0;
+                                    while (a % b == 0)
+                                    {
+                                        a /= b;
+                                        x++;
+                                    }
+                                    //Console.WriteLine("{0} is a prime factor {1} times!", b, x);
+                                    for (int j = 2; j <= x; j += 2) Square *= b;
+                                }
+                            var LCM = GCD(numer, denom);
+                            numer /= LCM;
+                            denom /= LCM;
                             var Builder = new System.Text.StringBuilder(numer.ToString());
                             Builder.Append(" / ").Append(denom).Append(" √");
-                            foreach (var Char in i.ToString())
+                            foreach (var Char in (i / Square).ToString())
                             {
 #if WINDOWS_UWP
                                 Builder.Append("̅");

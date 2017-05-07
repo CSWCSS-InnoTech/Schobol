@@ -246,7 +246,7 @@ namespace InnoTecheLearning
                     Element.UpdateGrid(ptOffset.X, ptOffset.Y);
                 }
             }
-#elif __ANDROID__A
+#elif __ANDROID__
             public class Renderer : VisualElementRenderer<GridSplitter>
             {
                 private Point _lastPoint;
