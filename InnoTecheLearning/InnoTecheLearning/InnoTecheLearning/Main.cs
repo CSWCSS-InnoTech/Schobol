@@ -1060,7 +1060,7 @@ namespace InnoTecheLearning
             get
             {
                 var Input = Entry("", "Enter words...");
-                var Recognize = Button("Recognize", () =>
+                var Recognize = Button("🎤", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
                     TranslatorRecognizer.TextChanged +=
@@ -1122,7 +1122,7 @@ namespace InnoTecheLearning
                         )
                     }
                 };
-                var Translate = Button("Translate", () =>
+                var Translate = Button("→", () =>
                 {
                     ViewUpdate(Formatted, OnlineDict.ToChinese(Input.Text).results, new Span
                     {

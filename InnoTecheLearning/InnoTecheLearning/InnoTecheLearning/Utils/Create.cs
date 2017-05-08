@@ -673,8 +673,8 @@ namespace InnoTecheLearning
                 if(ReadOnly!= null) Return.TextChanged += TextChanged(ReadOnly);
                 return Return;
             }
-            public static Version Version(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0)
-            { return new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision); }
+            public static Version Version(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0) =>
+                new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision);
             public static Slider Slider(EventHandler<ValueChangedEventArgs> ValueChanged, 
                int Minimum = 0, int Maximum = 100, int Position = 100, Color BackColor = default(Color))
             {

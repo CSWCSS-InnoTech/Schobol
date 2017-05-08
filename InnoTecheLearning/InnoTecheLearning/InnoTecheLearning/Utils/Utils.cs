@@ -773,12 +773,16 @@ const Log10e = Math.LOG10E;
                 return $"{degree}° {minute}′ {second}″";
             })).SetValue("IntSurd", new Func<double, string>((double value) =>
             {
+                var Negative = value < 0;
                 // A = AVariable, B = Builder, C = Char
                 if (value > 5000) throw new ArgumentOutOfRangeException(nameof(value), value, "Value is too large (>5000).");
                 var A = value = Math.Round(value * value);
                 do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0);
                 //if (A == 0) throw new ArithmeticException("Cannot find appropiate surd.");
-                var B = new System.Text.StringBuilder($"{A}√");
+                if (A < 0) A = 1;
+                var B = new System.Text.StringBuilder();
+                if (Negative) B.Append("-");
+                B.Append(A).Append("√");
                 foreach(var C in (value / (A * A)).ToString())
                 {
 #if WINDOWS_UWP
@@ -792,6 +796,7 @@ const Log10e = Math.LOG10E;
                 return B.ToString();
             })).SetValue("FracSurd", new Func<double, string>((double value) =>
             {
+                var Negative = value < 0;
                 /*
                 void Simplify(int[] numbers)
                 {
@@ -814,6 +819,7 @@ const Log10e = Math.LOG10E;
                     // using LINQ:
                     return System.Linq.Enumerable.Aggregate(args, (gcd, arg) => GCD(gcd, arg));
                 }*/
+                value = Math.Abs(value);
                 for (int i = 0; i <= 1e6; i++)
                 {
                     var SubjectToTest = value / Math.Sqrt(i);
@@ -838,8 +844,9 @@ const Log10e = Math.LOG10E;
                             var LCM = GCD(numer, denom);
                             numer /= LCM;
                             denom /= LCM;
-                            var Builder = new System.Text.StringBuilder(numer.ToString());
-                            Builder.Append(" / ").Append(denom).Append(" √");
+                            var Builder = new System.Text.StringBuilder();
+                            if (Negative) Builder.Append("-");
+                            Builder.Append(numer.ToString()).Append(" / ").Append(denom).Append(" √");
                             foreach (var Char in (i / Square).ToString())
                             {
 #if WINDOWS_UWP
@@ -863,8 +870,8 @@ const Log10e = Math.LOG10E;
             return JSEngine.Invoke("Display", JSEngine.GetCompletionValue(), JSEngine.GetValue("Modifier")).ToString();
             }
             catch (System.Reflection.TargetInvocationException ex) when (Alert != null)
-            { return ('ⓧ' + ex.InnerException.Message).Split('\r', '\n', '\f')[0]; }
-            catch (Exception ex) when (Alert != null) { return ('ⓧ' + ex.Message).Split('\r', '\n', '\f')[0]; } //⮾ 
+            { return 'ⓧ' + ex.InnerException.Message.Split('\r', '\n', '\f')[0]; }
+            catch (Exception ex) when (Alert != null) { return 'ⓧ' + ex.Message.Split('\r', '\n', '\f')[0]; } //⮾ 
         }
 
         public static void AddRange<T>(this ICollection<T> ic, IEnumerable<T> ie) { foreach (T obj in ie) ic.Add(obj); }

@@ -9,20 +9,40 @@ namespace InnoTecheLearning
     partial class Utils
     {
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionShort = "0.10.0a179";
+        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 179";
+        public static string VersionShort
+        { get => (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 3))
+                .Replace("Alpha ", "a").Replace("Beta ", "b").Replace("Release Candidate ", "c"); }
         public static Version Version
         {
             get
             {
                 var VersionDecomposition = VersionShort.Split('.');
                 var IndexOfStage = VersionDecomposition[2].IndexOfAny(new[] { 'a', 'b', 'c' });
-                return Create.Version(int.Parse(VersionDecomposition[0]), int.Parse(VersionDecomposition[1]), 
+                return Create.Version(int.Parse(VersionDecomposition[0]), int.Parse(VersionDecomposition[1]),
                     int.Parse(IndexOfStage == -1 ? VersionDecomposition[2] : VersionDecomposition[2].Remove(IndexOfStage)),
-                    IndexOfStage == -1 ? VersionStage.Release :(VersionStage)(VersionDecomposition[2][IndexOfStage] - 'a' + 1),
-                    IndexOfStage == -1 ? 0 : short.Parse(VersionDecomposition[2].S)
+                    IndexOfStage == -1 ? VersionStage.Release : (VersionStage)(VersionDecomposition[2][IndexOfStage] - 'a'),
+                    IndexOfStage == -1 ? (short)0 : short.Parse(VersionDecomposition[2].Substring(IndexOfStage + 1)));
             }
         }
-        public const string VersionName = "Xamarin Update";
+        public static string VersionName
+        { get => VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1); }
+        public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
+
+        public const string AssemblyTitle = "CSWCSS eLearn App";
+        public const string AssemblyDescription = "";
+        public const string AssemblyConfiguration = "";
+        public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";
+        public const string AssemblyProduct = "InnoTecheLearning";
+        public const string AssemblyCopyright = "Copyright © Innovative Technology Society of CSWCSS 2017";
+        public const string AssemblyTrademark = "";
+        public const string AssemblyCulture = "";
+        public const bool ComVisible = false;
+        public const string ComGuid = "72bdc44f-c588-44f3-b6df-9aace7daafdd";
+
+        public const string VersionAssembly = "0.10.0";
+        public const string VersionAssemblyFile = "0.10";
+        public const string VersionAssemblyInfo = VersionFull;
 
         public const float RawXMultiplier =
 #if __IOS__
@@ -43,23 +63,13 @@ namespace InnoTecheLearning
             1.5f
 #endif
             ;
-        public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
-        public static string VersionFull
-        {
-            get
-            {
-                return Version.ToString(3) + (string.IsNullOrEmpty(VersionName) ? "" : $" ({VersionName})") +
-                       (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                       " " + VersionState.ToString().Replace('_', ' ') + " " + Version.MinorRevision : "");
-            }
-        }
 
         public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
         public static string ToShort(this Version Version)
         {
             return Version.ToString(3) +
-                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
+                   (Version.GetVersionState() > VersionStage.Undefined && Version.GetVersionState() < VersionStage.Release ?
+                   (char)((int)Version.GetVersionState() + 'a' - 1) + Version.MinorRevision.ToString() : "");
         }/*
         public static VersionStage GetVersionState(this ModifiableVersion Version) { return (VersionStage)Version.MajorRevision; }
         public static string ToShort(this ModifiableVersion Version)
