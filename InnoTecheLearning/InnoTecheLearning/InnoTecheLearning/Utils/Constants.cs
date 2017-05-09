@@ -8,8 +8,14 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
+#region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
         public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 179";
+        public const string VersionAssembly = "0.10.0";
+        public const string VersionAssemblyFile = "0.10";
+        public const string VersionAssemblyInfo = VersionFull;
+
+#region VersionFunctions
         public static string VersionShort
         { get => (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 3))
                 .Replace("Alpha ", "a").Replace("Beta ", "b").Replace("Release Candidate ", "c"); }
@@ -29,56 +35,13 @@ namespace InnoTecheLearning
         { get => VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1); }
         public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
 
-        public const string AssemblyTitle = "CSWCSS eLearn App";
-        public const string AssemblyDescription = "";
-        public const string AssemblyConfiguration = "";
-        public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";
-        public const string AssemblyProduct = "InnoTecheLearning";
-        public const string AssemblyCopyright = "Copyright © Innovative Technology Society of CSWCSS 2017";
-        public const string AssemblyTrademark = "";
-        public const string AssemblyCulture = "";
-        public const bool ComVisible = false;
-        public const string ComGuid = "72bdc44f-c588-44f3-b6df-9aace7daafdd";
-
-        public const string VersionAssembly = "0.10.0";
-        public const string VersionAssemblyFile = "0.10";
-        public const string VersionAssemblyInfo = VersionFull;
-
-        public const float RawXMultiplier =
-#if __IOS__
-            1
-#elif __ANDROID__
-            1.0f / 3
-#elif NETFX_CORE
-            1
-#endif
-            ;
-
-        public const float RawYMultiplier =
-#if __IOS__
-            1
-#elif __ANDROID__
-            0.5f
-#elif NETFX_CORE
-            1.5f
-#endif
-            ;
-
         public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
         public static string ToShort(this Version Version)
         {
             return Version.ToString(3) +
                    (Version.GetVersionState() > VersionStage.Undefined && Version.GetVersionState() < VersionStage.Release ?
                    (char)((int)Version.GetVersionState() + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }/*
-        public static VersionStage GetVersionState(this ModifiableVersion Version) { return (VersionStage)Version.MajorRevision; }
-        public static string ToShort(this ModifiableVersion Version)
-        {
-            return Version.ToString(3) +
-                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }*/
-
+        }
         public enum VersionStage : byte
         {
             /// <summary>
@@ -102,6 +65,43 @@ namespace InnoTecheLearning
             /// </summary>
             Release
         }
+        #endregion
+#endregion
+
+#region AssemblyInfo
+        public const string AssemblyTitle = "CSWCSS eLearn App";
+        public const string AssemblyDescription = "";
+        public const string AssemblyConfiguration = "";
+        public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";
+        public const string AssemblyProduct = "InnoTecheLearning";
+        public const string AssemblyCopyright = "Copyright © Innovative Technology Society of CSWCSS 2017";
+        public const string AssemblyTrademark = "";
+        public const string AssemblyCulture = "";
+        public const bool ComVisible = false;
+        public const string ComGuid = "72bdc44f-c588-44f3-b6df-9aace7daafdd";
+#endregion 
+
+        public const float RawXMultiplier =
+#if __IOS__
+            1
+#elif __ANDROID__
+            1.0f / 3
+#elif NETFX_CORE
+            1
+#endif
+            ;
+
+        public const float RawYMultiplier =
+#if __IOS__
+            1
+#elif __ANDROID__
+            0.5f
+#elif NETFX_CORE
+            1.5f
+#endif
+            ;
+
+
 
         public static class Constants
         {
@@ -216,6 +216,16 @@ oh = 喔
 yeah/ yup = 同意";
             public const string Something = @"▬▬▬▬▬▬▬▬ஜ۩۞۩ஜ▬▬▬▬▬▬▬▬▬▬";
         }
+
+#region ModifiableVersion
+        /*
+        public static VersionStage GetVersionState(this ModifiableVersion Version) { return (VersionStage)Version.MajorRevision; }
+        public static string ToShort(this ModifiableVersion Version)
+        {
+            return Version.ToString(3) +
+                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
+                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
+        }*/
 
         /*
         // A Version object contains four hierarchical numeric components: major, minor,
@@ -846,5 +856,6 @@ yeah/ yup = 同意";
                 }
             }
         }*/
+#endregion
     }
 }

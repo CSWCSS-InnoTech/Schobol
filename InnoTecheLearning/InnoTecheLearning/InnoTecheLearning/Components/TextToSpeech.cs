@@ -374,6 +374,46 @@ namespace InnoTecheLearning
             public void Start() => Start_();
             void Start_()
             {
+                /**
+                 * Asking the permission for installing Google Voice Search. 
+                 * If permission granted – sent user to Google Play
+                 * @param callerActivity – Activity, that initialized installing
+                */
+                void InstallGoogleVoiceSearch(Android.Content.Context context)
+                {
+
+                    // creating a dialog asking user if he want
+                    // to install the Voice Search
+                    new Builder(context)
+                    .SetMessage("For recognition it’s necessary to install \"Google Voice Search\"")    // dialog message
+                    .SetTitle("Install Voice Search from Google Play?")    // dialog header
+                    .SetPositiveButton("Install",
+                    // confirm button
+                    // Install Button click handler
+                    (sender, e) =>
+                    {
+                        try
+                        {
+                            // creating an Intent for opening applications page in Google Play
+                            // Voice Search package name: com.google.android.voicesearch
+                            var intent = new Android.Content.Intent(
+                                Android.Content.Intent.ActionView,
+                                Android.Net.Uri.Parse("market://details?id=com.google.android.voicesearch"));
+                            // setting flags to avoid going in application history (Activity call stack)
+                            intent.SetFlags(Android.Content.ActivityFlags.NoHistory | Android.Content.ActivityFlags.ClearWhenTaskReset);
+                            // sending an Intent
+                            context.StartActivity(intent);
+                        }
+                        catch (Exception)
+                        {
+                            // if something going wrong
+                            // doing nothing
+                        }
+                    })
+                    .SetNegativeButton("Cancel", delegate { })    // cancel button
+                    .Create()
+                    .Show();// showing dialog
+                }
                 try
                 {
                     if (!Forms.Context.PackageManager.HasSystemFeature(Android.Content.PM.PackageManager.FeatureMicrophone))
@@ -382,7 +422,7 @@ namespace InnoTecheLearning
                     else if (Forms.Context.PackageManager.QueryIntentActivities(
                         new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech), 0).Count == 0)
                         Alert("You don't seem to have a recognition service");
-                    //else if (!InternetAvaliable) Alert("You don't seem to have an Internet connection to analyze your speech");
+                    else if (!InternetAvaliable) Alert("You don't seem to have an Internet connection to analyze your speech");
                     else
                     {
                         // create the intent and start the activity
@@ -392,6 +432,7 @@ namespace InnoTecheLearning
                         // put a message on the modal dialog
                         voiceIntent.PutExtra(RecognizerIntent.ExtraPrompt, "Speak now!");
 
+                        /*
                         // if there is more then 1.5s of silence, consider the speech over
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputCompleteSilenceLengthMillis, 1500);
                         voiceIntent.PutExtra(RecognizerIntent.ExtraSpeechInputPossiblyCompleteSilenceLengthMillis, 1500);
@@ -404,12 +445,13 @@ namespace InnoTecheLearning
                         // if you do use another locale, regional dialects may not be recognised very well
 
                         voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Java.Util.Locale.Us);
-                        /*if (Languages != SpeechLanguages.Unspecified)
+                        */
+                        if (Languages != SpeechLanguages.Unspecified)
                         {
                             voiceIntent.PutExtra(RecognizerIntent.ExtraLanguage, Languages.ToLocale().First().ToLanguageTag());
                             /*voiceIntent.PutExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES",
-                                Languages.ToLocale().Select(loc => loc.ToLanguageTag()).ToArray());
-                        }*/
+                                Languages.ToLocale().Select(loc => loc.ToLanguageTag()).ToArray());*/
+                        }
                         IsRecognizing = true;
                         Droid.MainActivity.Current.StartActivityForResult(voiceIntent, VOICE, Droid.MainActivity.Bundle);
                         Droid.MainActivity.Current.ActivityResult += HandleActivityResult;
