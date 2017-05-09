@@ -79,8 +79,9 @@ namespace InnoTecheLearning
         public const string AssemblyCulture = "";
         public const bool ComVisible = false;
         public const string ComGuid = "72bdc44f-c588-44f3-b6df-9aace7daafdd";
-#endregion 
+#endregion
 
+#region Numbers
         public const float RawXMultiplier =
 #if __IOS__
             1
@@ -100,8 +101,19 @@ namespace InnoTecheLearning
             1.5f
 #endif
             ;
+        #endregion
 
-
+#region Fonts
+        public const string FontChinese =
+#if __IOS__
+            "KAIU.TTF"
+#elif __ANDROID__
+            "KAIU.TTF#標楷體"
+#else
+            "Assets/Fonts/KAIU.TTF#標楷體"
+#endif
+            ;
+#endregion
 
         public static class Constants
         {

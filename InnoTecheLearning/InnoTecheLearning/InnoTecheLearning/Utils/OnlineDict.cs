@@ -113,7 +113,8 @@ namespace InnoTecheLearning
             {
                 for (int i = 0; i < Data.results.Count; i++)
                 {
-                    Data.results[i].part_of_speech = 
+                    Data.results[i].headword = Data.results[i].headword.Replace('’', '\'');
+                    Data.results[i].part_of_speech =
                         new System.Text.StringBuilder(Data.results[i].part_of_speech ??
 #if DEBUG
                         "noun."
@@ -121,10 +122,10 @@ namespace InnoTecheLearning
                         "noun"
 #endif
                         )
-                           .Replace("modal v", "modal verb")
-                           .Replace("sfx", "suffix")
-                           .Replace("interj", "interjection")
-                           .Replace("conj", "conjunction").ToString();
+                        .Replace("modal v", "modal verb")
+                        .Replace("sfx", "suffix")
+                        .Replace("interj", "interjection")
+                        .Replace("conj", "conjunction").ToString();
                 }
                 return Data;
             }

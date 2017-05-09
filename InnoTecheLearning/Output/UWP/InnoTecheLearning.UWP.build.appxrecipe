@@ -25,8 +25,8 @@
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearning App.exe">
-      <PackagePath>entrypoint\CSWCSS eLearning App.exe</PackagePath>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn App.exe">
+      <PackagePath>entrypoint\CSWCSS eLearn App.exe</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -385,6 +385,9 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.3.4.231\lib\uap10.0\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\Fonts\KAIU.TTF">
+      <PackagePath>Assets\Fonts\KAIU.TTF</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\BadgeLogo.scale-100.png">
       <PackagePath>Assets\BadgeLogo.scale-100.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
@@ -594,8 +597,8 @@
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearning App.xr.xml">
-      <PackagePath>CSWCSS eLearning App.xr.xml</PackagePath>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn App.xr.xml">
+      <PackagePath>CSWCSS eLearn App.xr.xml</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -610,8 +613,8 @@
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearning App.exe">
-      <PackagePath>CSWCSS eLearning App.exe</PackagePath>
+    <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn App.exe">
+      <PackagePath>CSWCSS eLearn App.exe</PackagePath>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

@@ -148,11 +148,11 @@ namespace InnoTecheLearning
         //StreamPlayer _Player;
         public Main()
         {
-
             // Accomodate iPhone status bar.
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
+            Favourites = (ObservableCollection<Result>)Storage.SerializedRead(Storage.VocabFile, Favourites.GetType());
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
@@ -1086,20 +1086,20 @@ namespace InnoTecheLearning
                                         Text = Result.headword.PadRight(27),
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                        FontFamily = "Courier New, Georgia, Serif"
+                                        FontFamily = FontChinese//"Courier New, Georgia, Serif"
                                     },
                                     new Span
                                     {
                                         Text = Result.part_of_speech.PadRight(13),
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                                        FontFamily = "Courier New, Georgia, Serif"
+                                        FontFamily = FontChinese//"Courier New, Georgia, Serif"
                                     }, new Span
                                     {
                                         Text = Result.senses.Single().translation + "\n",
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                        FontFamily = "Courier New, Georgia, Serif"
+                                        FontFamily = FontChinese
                                     }
                                 )
                             )
@@ -1178,5 +1178,7 @@ namespace InnoTecheLearning
                 };
             }
         }
+
+        ~Main() { Storage.SerializedWrite(Storage.VocabFile, Favourites); }
     }
 }

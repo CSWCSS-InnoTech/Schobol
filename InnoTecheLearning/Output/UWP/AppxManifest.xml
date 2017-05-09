@@ -21,7 +21,7 @@
     <Resource Language="EN-US" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="CSWCSS eLearning App.exe" EntryPoint="InnoTecheLearning.UWP.App">
+    <Application Id="App" Executable="CSWCSS eLearn App.exe" EntryPoint="InnoTecheLearning.UWP.App">
       <uap:VisualElements DisplayName="CSWCSS eLearning App" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Developed by the Innovative Technology Society of CSWCSS" BackgroundColor="transparent">
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png" ShortName="eLearn App">

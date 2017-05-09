@@ -44,5 +44,9 @@
 	<string>LaunchScreen.storyboard</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.10.0 (Xamarin Update)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>KAIU.ttf</string>
+	</array>
 </dict>
 </plist>
