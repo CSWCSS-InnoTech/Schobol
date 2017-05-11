@@ -331,6 +331,8 @@ namespace InnoTecheLearning
         public static T DebugWrite<T>(this T Object, string Format = "{0}\n", string Category = null)
         { System.Diagnostics.Debug.Write(string.Format(Format, Object), Category); return Object; }
         
+        public static Stream GetUnderlyingStream(this StreamImageSource ImageSource) =>
+            ImageSource.Stream?.Invoke(System.Threading.CancellationToken.None).Do()
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

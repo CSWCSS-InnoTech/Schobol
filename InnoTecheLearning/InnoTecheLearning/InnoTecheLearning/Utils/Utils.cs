@@ -1046,6 +1046,29 @@ const Log10e = Math.LOG10E;
             catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { return default(T); }
         }
 
+        public static Stream GetStream(ImageSource Source)
+        {
+            switch (Source)
+            {
+                case FileImageSource File:
+                    return Storage.GetReadStream(File.File);
+                case StreamImageSource Stream:
+                    return Stream.GetUnderlyingStream();
+                case UriImageSource Uri:
+                    switch (Uri.Uri.Scheme)
+                    {
+                        case "http":
+                        case "https":
+                        case "ftp":
+                        case "file":
+                            return System.Net.WebRequest.Create(Uri.Uri).GetResponseAsync().Do().GetResponseStream();
+                    }
+                    break;
+            }
+            throw new ArgumentException(
+                "Source is either an UriImageSource with unknown scheme or an unknown class derivating from ImageSource."
+                , nameof(Source));
+        }
         ///// <summary>
         ///// An uninitialized Void object.
         ///// </summary>

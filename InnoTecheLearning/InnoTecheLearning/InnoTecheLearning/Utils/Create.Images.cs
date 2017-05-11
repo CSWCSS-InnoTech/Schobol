@@ -47,10 +47,9 @@ namespace InnoTecheLearning
                     "dragon.fw.png",
                     "folded-paper_318-31112.jpg"
                 };
-            public static ImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[(int)File]);
-
-            public static ImageSource ImageSource(string FileName) =>
-                Xamarin.Forms.ImageSource.FromResource(CurrentNamespace + ".Images." + FileName, typeof(Utils));
+            public static StreamImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[(int)File]);
+            public static StreamImageSource ImageSource(string FileName) => Xamarin.Forms.ImageSource.FromResource
+                (CurrentNamespace + ".Images." + FileName, typeof(Utils)) as StreamImageSource;
 
             public static Image Image(ImageFile File, Action OnTap) => Image(ImageSource(File), OnTap);
             public static Image Image(ImageFile File, Action OnTap, Size Size) => Image(ImageSource(File), OnTap, Size);

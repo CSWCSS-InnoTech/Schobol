@@ -77,16 +77,24 @@ namespace InnoTecheLearning
 
             public static Stream CreateReadStream(string FileName) =>
 #if WINDOWS_UWP
-                Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(FileName, new Uri(GetSaveLocation(FileName))).Do()
-                    .OpenStreamForReadAsync().Do()
+                Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(
+                    FileName, new Uri(GetSaveLocation(FileName)), 
+                    Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(
+                        Create.ImageSource(Create.ImageFile.File_Icon).GetUnderlyingStream().AsRandomAccessStream()
+                    )
+                ).Do().OpenStreamForReadAsync().Do()
 #else
                 new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Read)
 #endif
                 ;
             public static Stream CreateWriteStream(string FileName) =>
 #if WINDOWS_UWP
-                Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(FileName, new Uri(GetSaveLocation(FileName))).Do()
-                    .OpenStreamForWriteAsync().Do()
+                Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(
+                    FileName, new Uri(GetSaveLocation(FileName)),
+                    Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(
+                        Create.ImageSource(Create.ImageFile.File_Icon).GetUnderlyingStream().AsRandomAccessStream()
+                    )
+                ).Do().OpenStreamForWriteAsync().Do()
 #else
                 new FileStream(GetSaveLocation(FileName), FileMode.OpenOrCreate, FileAccess.Write)
 #endif
