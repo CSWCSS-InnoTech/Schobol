@@ -152,7 +152,7 @@ namespace InnoTecheLearning
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
-            Favourites = (ObservableCollection<Result>)Storage.SerializedRead(Storage.VocabFile, Favourites.GetType());
+            Storage.SerializedRead(Storage.VocabFile, out Favourites);
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
@@ -182,7 +182,7 @@ namespace InnoTecheLearning
                         Title("CSWCSS eLearning App"),
                         Society,
 
-           MainScreenRow(MainScreenItem(Image(ImageFile.Forum),delegate{
+           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Forum),delegate{
                /*Alert(this,"[2016-11-1 18:00:00] 1E03: Hi\n"+
                "[2016-11-1 18:00:09] 3F43: No one likes you loser\n[2016-11-1 18:00:16] 1E03: 😢😭😢😭😢😭😢😭😢\n"+
                "[2016-11-1 18:00:22] 2E12: Hey don't bully him!\n[2016-11-1 18:00:28] 3F43: Go kill yourself because you"+
@@ -190,30 +190,30 @@ namespace InnoTecheLearning
                "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5));*/
                Showing = Pages.CloudTest;
                          }, BoldLabel("Forum\n(⁠C⁠l⁠o⁠u⁠d⁠T⁠e⁠s⁠t⁠)") ),
-                         MainScreenItem(Image(ImageFile.Translate), delegate{
+                         MainScreenItem(ImageSource(ImageFile.Translate), delegate{
                              //Alert(this, "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish");
                          Showing = Pages.Translate; },
                          BoldLabel("Translator") ),
-                         MainScreenItem(Image(ImageFile.VocabBook),delegate {Alert(this,"Ida = 捱打，伸張靜儀、儆惡懲奸，\n" +
+                         MainScreenItem(ImageSource(ImageFile.VocabBook),delegate {Alert(this,"Ida = 捱打，伸張靜儀、儆惡懲奸，\n" +
 "      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
 
-           MainScreenRow(MainScreenItem(Image(ImageFile.Calculator),delegate {
+           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Calculator),delegate {
                             Showing = Pages.Calculator;// Alert(this, "1+1=2");
                              },BoldLabel("Calculator")),
-                         MainScreenItem(Image(ImageFile.Calculator_Free),delegate {
+                         MainScreenItem(ImageSource(ImageFile.Calculator_Free),delegate {
                              Showing = Pages.Calculator_Free;//Alert(this, StrDup("1+",100) + "1\n=101");
                              },BoldLabel("Calculator\nFree Mode")),
-                         MainScreenItem(Image(ImageFile.Factorizer),delegate {
+                         MainScreenItem(ImageSource(ImageFile.Factorizer),delegate {
                              Showing = Pages.Factorizer;//Alert(this,"Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³\n = 𝐗(𝐗−1)²(5𝐗−2)");
                              },BoldLabel("Quadratic Factorizer"))),
 
-           MainScreenRow(MainScreenItem(Image(ImageFile.Sports), delegate {
+           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Sports), delegate {
                              Showing = Pages.Sports;//Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃");
                          },BoldLabel("Sports")),
-                         MainScreenItem(Image(ImageFile.MusicTuner), delegate {
+                         MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
                              Showing = Pages.MusicTuner;//Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
                          },BoldLabel("Music Tuner")),
-                         MainScreenItem(Image(ImageFile.MathSolver), delegate {
+                         MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
                              Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))//Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉");
                          ),
 
@@ -821,7 +821,7 @@ namespace InnoTecheLearning
                 //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
                 var Dragon = new Image
                 {
-                    Source = Image(ImageFile.Dragon),
+                    Source = ImageSource(ImageFile.Dragon),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Aspect = Aspect.AspectFit
@@ -901,7 +901,7 @@ namespace InnoTecheLearning
                     if (Level > 0) Hearts[Level - 1].IsVisible = false;
                     if (Level >= Questions.Length)
                     {
-                        Dragon.Source = Image(ImageFile.Dragon_Dead);
+                        Dragon.Source = ImageSource(ImageFile.Dragon_Dead);
                         Instruction.Text = "You killed the dragon!";
                         Question.Text = "You're a hero!";
                         CharGrid.IsVisible = false;

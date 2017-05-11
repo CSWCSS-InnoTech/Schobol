@@ -10,7 +10,7 @@ namespace InnoTecheLearning
         /// <summary>
         /// A class that provides methods to help create the UI.
         /// </summary>
-        public static class Create
+        public static partial class Create
         {
             public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Color BackColor =
                 default(Color), Color TextColor = default(Color))
@@ -153,45 +153,6 @@ namespace InnoTecheLearning
                 Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, new ExpressionEventArgs(Expression)); };
                 return Button;
             }
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
-            public static Button ButtonB(FileImageSource Image, EventHandler OnClick)
-            {   return ButtonB(Image, OnClick, new Size(50, 50));}
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
-            public static Button ButtonB(FileImageSource Image, EventHandler OnClick, Size Size)
-            {
-                Button Button = new Button
-                {
-                    Image = Image,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
-                };
-                Button.Clicked += OnClick;
-                return Button;
-            }
-
-            [Obsolete("Use MainScreenItem(ImageSource Source, Action OnTap, Label Display) instead.\nDeprecated in 0.10.0a46")]
-            public static StackLayout MainScreenItemB/*B = Button*/(FileImageSource Image, EventHandler OnClick, Text Display)
-            {
-                return new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Children = { ButtonB(Image: Image, OnClick: OnClick), Display }
-                };
-            }
-
-            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display)
-            {
-                return new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
-                    WidthRequest = 70,
-                    Children = { Image(Source: Source, OnTap: OnTap), Display }
-                };
-            }
 
             public static StackLayout MainScreenRow(params View[] MainScreenItems)
             {
@@ -222,114 +183,7 @@ namespace InnoTecheLearning
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
-
-            public static ImageSource Image(string FileName)
-            {
-                return ImageSource.FromResource(CurrentNamespace + ".Images." + FileName, typeof(Utils));
-            }
-
-            public enum ImageFile : int
-            {
-                Forum,
-                Translate,
-                VocabBook,
-                Calculator,
-                Calculator_Free,
-                Factorizer,
-                Sports,
-                MusicTuner,
-                MathSolver,
-                Cello,
-                Violin,
-                Heart,
-                Dragon,
-                Dragon_Dead
-            }
-
-
-            public static ImageSource Image(ImageFile File)
-            {
-                string ActualFile = "";
-                switch (File)
-                {
-                    case ImageFile.Forum:
-                        ActualFile = "forum-message-3.png";
-                        break;
-                    case ImageFile.Translate:
-                        ActualFile = "translator-tool-3.png";
-                        break;
-                    case ImageFile.VocabBook:
-                        ActualFile = "book-2.png";
-                        break;
-                    case ImageFile.Calculator:
-                        ActualFile = "square-root-of-x-mathematical-signs.png";
-                        break;
-                    case ImageFile.Calculator_Free:
-                        ActualFile = "square-root-of-x-mathematical-signs.png";
-                        break;
-                    case ImageFile.Factorizer:
-                        ActualFile = "mathematical-operation.png";
-                        break;
-                    case ImageFile.Sports:
-                        ActualFile = "man-sprinting.png";
-                        break;
-                    case ImageFile.MusicTuner:
-                        ActualFile = "treble-clef-2.png";
-                        break;
-                    case ImageFile.MathSolver:
-                        ActualFile = "japanese-dragon.png";
-                        break;
-                    case ImageFile.Cello:
-                        ActualFile = "cello-icon.png";
-                        break;
-                    case ImageFile.Violin:
-                        ActualFile = "violin-icon.png";
-                        break;
-                    case ImageFile.Heart:
-                        ActualFile = "8_bit_heart_stock_by_xquatrox-d4r844m.png";
-                        break;
-                    case ImageFile.Dragon:
-                        ActualFile = "dragon.jpg";
-                        break;
-                    case ImageFile.Dragon_Dead:
-                        ActualFile = "dragon.fw.png";
-                        break;
-                    default:
-                        ActualFile = "";
-                        break;
-                }
-                return Image(ActualFile);
-                ;
-            }
-            public static Image Image(ImageFile File, Action OnTap)
-            { return Image(Image(File), OnTap); }
-            public static Image Image(ImageFile File, Action OnTap, Size Size)
-            { return Image(Image(File), OnTap, Size); }
-            public static Image ImageD/*D = Default (size)*/(ImageFile File, Action OnTap)
-            { return ImageD(Image(File), OnTap); }
-            public static Image ImageD/*D = Default (size)*/(ImageSource Source, Action OnTap)
-            {
-                Image Image = new Image{Source = Source};
-                var Tap = new TapGestureRecognizer{ Command = new Command(OnTap) };
-                Image.GestureRecognizers.Add(Tap);
-                return Image;
-            }
-            public static Image Image(ImageSource Source, Action OnTap)
-            {
-                return Image(Source, OnTap, new Size(50, 50));
-            }
-            public static Image Image(ImageSource Source, Action OnTap, Size Size)
-            {
-                Image Image = new Image
-                {
-                    Source = Source,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
-                };
-                var Tap = new TapGestureRecognizer{ Command = new Command(OnTap) };
-                Image.GestureRecognizers.Add(Tap);
-                return Image;
-            }
+            
             public static Label FormattedLabel(params Span[] Spans)
             {
                 var Text = new FormattedString();
