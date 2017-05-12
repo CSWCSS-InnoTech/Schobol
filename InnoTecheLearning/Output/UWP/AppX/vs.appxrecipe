@@ -19,7 +19,7 @@
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
     <LayoutDir>C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\AppX</LayoutDir>
-    <RegisteredManifestChecksum>6D97B265C7EE4BBEDCF19BCF0283E806AEF7D4638C92D1F390D99DBAD33391D6</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>880C006AB0FC21DE6CD2A00AAFB86A8B6208D41ABF4C756108992F9F0AA2FCBF</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>47f0706c-3646-4de9-8968-b498fa30d6e7_0.10.0.0_x86__jfpdjxaq24k76</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>47f0706c-3646-4de9-8968-b498fa30d6e7_jfpdjxaq24k76!App</RegisteredUserModeAppID>
     <RegisteredPackageID>47f0706c-3646-4de9-8968-b498fa30d6e7</RegisteredPackageID>
@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-05-11T10:41:28.022</Modified>
+      <Modified>2017-05-12T09:45:01.875</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn App.exe">
       <PackagePath>entrypoint\CSWCSS eLearn App.exe</PackagePath>
-      <Modified>2017-05-11T10:41:26.031</Modified>
+      <Modified>2017-05-12T09:45:01.046</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -800,11 +800,11 @@
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-05-09T14:17:08.107</Modified>
+      <Modified>2017-05-12T09:35:21.618</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn App.exe">
       <PackagePath>CSWCSS eLearn App.exe</PackagePath>
-      <Modified>2017-05-11T10:41:28.020</Modified>
+      <Modified>2017-05-12T09:45:01.854</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
@@ -837,27 +837,27 @@
     </ResolvedSDKReference>
     <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
       <Name>Microsoft.VCLibs.140.00.Debug</Name>
-      <Version>14.0.25019.0</Version>
+      <Version>14.0.25022.0</Version>
       <Architecture>ARM</Architecture>
-      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.25019.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.25022.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
       <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\ARM\Microsoft.VCLibs.ARM.Debug.14.00.appx</AppxLocation>
       <MoreInfo>
       </MoreInfo>
     </ResolvedSDKReference>
     <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
       <Name>Microsoft.VCLibs.140.00.Debug</Name>
-      <Version>14.0.25019.0</Version>
+      <Version>14.0.25022.0</Version>
       <Architecture>x64</Architecture>
-      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.25019.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.25022.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
       <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\x64\Microsoft.VCLibs.x64.Debug.14.00.appx</AppxLocation>
       <MoreInfo>
       </MoreInfo>
     </ResolvedSDKReference>
     <ResolvedSDKReference Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\">
       <Name>Microsoft.VCLibs.140.00.Debug</Name>
-      <Version>14.0.25019.0</Version>
+      <Version>14.0.25022.0</Version>
       <Architecture>x86</Architecture>
-      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.25019.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
+      <FrameworkIdentity>Name = Microsoft.VCLibs.140.00.Debug, MinVersion = 14.0.25022.0, Publisher = %27CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US%27</FrameworkIdentity>
       <AppxLocation>C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.VCLibs\14.0\.\AppX\Debug\x86\Microsoft.VCLibs.x86.Debug.14.00.appx</AppxLocation>
       <MoreInfo>
       </MoreInfo>

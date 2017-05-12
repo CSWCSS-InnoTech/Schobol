@@ -152,7 +152,7 @@ namespace InnoTecheLearning
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
-            Storage.SerializedRead(Storage.VocabFile, out Favourites);
+            Storage.SerializedReadOrCreate(Storage.VocabFile, out Favourites);
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();

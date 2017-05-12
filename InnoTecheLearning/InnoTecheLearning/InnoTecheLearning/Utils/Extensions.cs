@@ -330,9 +330,36 @@ namespace InnoTecheLearning
         }
         public static T DebugWrite<T>(this T Object, string Format = "{0}\n", string Category = null)
         { System.Diagnostics.Debug.Write(string.Format(Format, Object), Category); return Object; }
-        
-        public static Stream GetUnderlyingStream(this StreamImageSource ImageSource) =>
-            ImageSource.Stream?.Invoke(System.Threading.CancellationToken.None).Do()
+
+        public static Stream GetStream(this ImageSource Source)
+        {
+            switch (Source)
+            {
+                case FileImageSource File:
+                    return Storage.GetReadStream(File.File);
+                case StreamImageSource Stream:
+                    return Stream.Stream?.Invoke(System.Threading.CancellationToken.None).Do();
+                case UriImageSource Uri:
+                    switch (Uri.Uri.Scheme)
+                    {
+                        case "http":
+                        case "https":
+                        case "ftp":
+                        case "file":
+                            return System.Net.WebRequest.Create(Uri.Uri).GetResponseAsync().Do().GetResponseStream();
+#if WINDOWS_UWP
+                        case "ms-appdata":
+                        case "ms-appx":
+                            return Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(Uri.Uri)
+                                .Do().OpenStreamForReadAsync().Do();
+#endif
+                    }
+                    break;
+            }
+            throw new ArgumentException(
+                "Source is either an UriImageSource with unknown scheme or an unknown class derivating from ImageSource."
+                , nameof(Source));
+        }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

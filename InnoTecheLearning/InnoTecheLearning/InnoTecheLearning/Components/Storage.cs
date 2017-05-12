@@ -9,7 +9,7 @@ namespace InnoTecheLearning
     {
         public static class Storage
         {
-            public const string VocabFile = "Vocabs.txt";
+            public const string VocabFile = "Vocabs.xml";
 
             public static string GetSaveLocation(string FileName) =>
 #if WINDOWS_UWP
@@ -36,10 +36,15 @@ namespace InnoTecheLearning
                     Writer.Flush();
                 }
             }
-
             public static string Read(string FileName)
             {
                 using (var File = GetReadStream(FileName))
+                using (var Reader = new StreamReader(File))
+                    return Reader.ReadToEnd();
+            }
+            public static string ReadOrCreate(string FileName)
+            {
+                using (var File = GetOrCreateReadStream(FileName))
                 using (var Reader = new StreamReader(File))
                     return Reader.ReadToEnd();
             }
@@ -55,6 +60,11 @@ namespace InnoTecheLearning
             public static void SerializedRead<T>(string FileName, out T Content)
             {
                 using (var File = GetReadStream(FileName))
+                    Content = (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
+            }
+            public static void SerializedReadOrCreate<T>(string FileName, out T Content)
+            {
+                using (var File = GetOrCreateReadStream(FileName))
                     Content = (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
             }
 
@@ -80,7 +90,7 @@ namespace InnoTecheLearning
                 Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(
                     FileName, new Uri(GetSaveLocation(FileName)), 
                     Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(
-                        Create.ImageSource(Create.ImageFile.File_Icon).GetUnderlyingStream().AsRandomAccessStream()
+                        Create.ImageSource(Create.ImageFile.File_Icon).GetStream().AsRandomAccessStream()
                     )
                 ).Do().OpenStreamForReadAsync().Do()
 #else
@@ -92,13 +102,21 @@ namespace InnoTecheLearning
                 Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(
                     FileName, new Uri(GetSaveLocation(FileName)),
                     Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(
-                        Create.ImageSource(Create.ImageFile.File_Icon).GetUnderlyingStream().AsRandomAccessStream()
+                        Create.ImageSource(Create.ImageFile.File_Icon).GetStream().AsRandomAccessStream()
                     )
                 ).Do().OpenStreamForWriteAsync().Do()
 #else
                 new FileStream(GetSaveLocation(FileName), FileMode.OpenOrCreate, FileAccess.Write)
 #endif
                 ;
+
+            public static Stream GetOrCreateReadStream(string FileName)
+            {
+                try { return GetReadStream(FileName); }
+                catch (FileNotFoundException) { return CreateReadStream(FileName); }
+                catch (AggregateException ex) when (ex.InnerException is FileNotFoundException)
+                { return CreateReadStream(FileName); }
+            }
         }
     }
 }
