@@ -152,15 +152,16 @@ namespace InnoTecheLearning
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
-            Storage.SerializedReadOrCreate(Storage.VocabFile, out Favourites);
+            Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, out Favourites, new ObservableCollection<Result>());
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
             Log("Main page initialized.");
         }
         //~Main() { _Player.Dispose(); }
-        protected override bool OnBackButtonPressed()
+        protected override bool OnBackButtonPressed() 
         {
+            if(Showing == Pages.Translate || Showing == Pages.VocabBook) Storage.SerializedWrite(Storage.VocabFile, Favourites);
             if (Showing != Pages.Main)
             {
                 Showing = Pages.Main;
@@ -179,7 +180,7 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     Orientation = StackOrientation.Vertical,
                     Children = {
-                        Title("CSWCSS eLearning App"),
+                        Title(AssemblyTitle),
                         Society,
 
            MainScreenRow(MainScreenItem(ImageSource(ImageFile.Forum),delegate{
@@ -1178,7 +1179,5 @@ namespace InnoTecheLearning
                 };
             }
         }
-
-        ~Main() { Storage.SerializedWrite(Storage.VocabFile, Favourites); }
     }
 }

@@ -19,7 +19,7 @@
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
     <LayoutDir>C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\AppX</LayoutDir>
-    <RegisteredManifestChecksum>880C006AB0FC21DE6CD2A00AAFB86A8B6208D41ABF4C756108992F9F0AA2FCBF</RegisteredManifestChecksum>
+    <RegisteredManifestChecksum>07B398D27AE4412F7C250DD2404FBE8FF657E4987644C94E56DA2501AAC13DC2</RegisteredManifestChecksum>
     <RegisteredPackageMoniker>47f0706c-3646-4de9-8968-b498fa30d6e7_0.10.0.0_x86__jfpdjxaq24k76</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>47f0706c-3646-4de9-8968-b498fa30d6e7_jfpdjxaq24k76!App</RegisteredUserModeAppID>
     <RegisteredPackageID>47f0706c-3646-4de9-8968-b498fa30d6e7</RegisteredPackageID>
@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-05-12T09:45:01.875</Modified>
+      <Modified>2017-05-15T10:21:50.469</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn App.exe">
       <PackagePath>entrypoint\CSWCSS eLearn App.exe</PackagePath>
-      <Modified>2017-05-12T09:45:01.046</Modified>
+      <Modified>2017-05-15T10:21:49.986</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -479,9 +479,9 @@
       <PackagePath>System.Threading.Tasks.Parallel.dll</PackagePath>
       <Modified>2016-06-11T15:14:54.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.ValueTuple\4.3.0\lib\netstandard1.0\System.ValueTuple.dll">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.ValueTuple\4.3.1\lib\netstandard1.0\System.ValueTuple.dll">
       <PackagePath>System.ValueTuple.dll</PackagePath>
-      <Modified>2016-11-04T20:57:30.000</Modified>
+      <Modified>2017-04-19T08:58:52.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Xml.ReaderWriter\4.0.11\lib\netcore50\System.Xml.ReaderWriter.dll">
       <PackagePath>System.Xml.ReaderWriter.dll</PackagePath>
@@ -785,9 +785,9 @@
       <PackagePath>CSWCSS eLearn App.xr.xml</PackagePath>
       <Modified>2017-05-09T13:12:30.334</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\Windows.winmd">
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.15063.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
-      <Modified>2017-04-08T11:31:01.867</Modified>
+      <Modified>2017-04-08T11:31:51.812</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.3.4.231\lib\uap10.0\Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.UAP.xr.xml">
       <PackagePath>Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.UAP.xr.xml</PackagePath>
@@ -800,11 +800,11 @@
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-05-12T09:35:21.618</Modified>
+      <Modified>2017-05-15T10:14:31.166</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\Source\Repos\InnoTech-eLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn App.exe">
       <PackagePath>CSWCSS eLearn App.exe</PackagePath>
-      <Modified>2017-05-12T09:45:01.854</Modified>
+      <Modified>2017-05-15T10:21:50.467</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

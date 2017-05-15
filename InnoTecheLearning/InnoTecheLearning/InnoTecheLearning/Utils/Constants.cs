@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 179";
+        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 180";
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;
@@ -73,7 +73,7 @@ namespace InnoTecheLearning
         public const string AssemblyDescription = "";
         public const string AssemblyConfiguration = "";
         public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";
-        public const string AssemblyProduct = "InnoTecheLearning";
+        public const string AssemblyProduct = "InnoTecheLearning"; //Plz no change, affects Storage I/O
         public const string AssemblyCopyright = "Copyright © Innovative Technology Society of CSWCSS 2017";
         public const string AssemblyTrademark = "";
         public const string AssemblyCulture = "";
