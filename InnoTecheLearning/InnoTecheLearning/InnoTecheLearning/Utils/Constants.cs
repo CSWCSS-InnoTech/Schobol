@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 (Xamarin Update) Alpha 180";
+        public const string VersionFull = "0.10.0 (Xamarin Update) Beta 1";
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;
@@ -69,7 +69,7 @@ namespace InnoTecheLearning
 #endregion
 
 #region AssemblyInfo
-        public const string AssemblyTitle = "CSWCSS eLearn App";
+        public const string AssemblyTitle = "CSWCSS eLearn Utilities";
         public const string AssemblyDescription = "";
         public const string AssemblyConfiguration = "";
         public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";

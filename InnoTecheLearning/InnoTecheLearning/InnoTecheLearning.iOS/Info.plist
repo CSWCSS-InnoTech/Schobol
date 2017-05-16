@@ -22,7 +22,7 @@
 	<key>MinimumOSVersion</key>
 	<string>6.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>CSWCSS eLearning App</string>
+	<string>CSWCSS eLearn Utilities</string>
 	<key>CFBundleIdentifier</key>
 	<string>edu.cswcss.eLearning</string>
 	<key>CFBundleVersion</key>

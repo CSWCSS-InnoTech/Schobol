@@ -42,12 +42,9 @@ namespace InnoTecheLearning
     {
         public enum Pages : sbyte
         {
-            CloudTest = -2,
             Changelog = -1,
             Main,
-            Forum,
             Translate,
-            VocabBook,
             Calculator,
             Calculator_Free,
             Factorizer,
@@ -92,10 +89,6 @@ namespace InnoTecheLearning
             {
                 switch (value)
                 {
-                    case Pages.CloudTest:
-                        Region = "CloudTest";
-                        Content = CloudTest;
-                        break;
                     case Pages.Changelog:
                         Region = "Changelog";
                         Content = ChangelogView(this);
@@ -104,15 +97,9 @@ namespace InnoTecheLearning
                         Region = "Main";
                         Content = MainView;
                         break;
-                    case Pages.Forum:
-                        Region = "Forum";
-                        break;
                     case Pages.Translate:
                         Region = "Translate";
                         Content = Translator;
-                        break;
-                    case Pages.VocabBook:
-                        Region = "VocabBook";
                         break;
                     case Pages.Calculator:
                         Region = "Calculator";
@@ -161,7 +148,7 @@ namespace InnoTecheLearning
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
         {
-            if(Showing == Pages.Translate || Showing == Pages.VocabBook) Storage.SerializedWrite(Storage.VocabFile, Favourites);
+            if(Showing == Pages.Translate) Storage.SerializedWrite(Storage.VocabFile, Favourites);
             if (Showing != Pages.Main)
             {
                 Showing = Pages.Main;
@@ -183,39 +170,26 @@ namespace InnoTecheLearning
                         Title(AssemblyTitle),
                         Society,
 
-           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Forum),delegate{
-               /*Alert(this,"[2016-11-1 18:00:00] 1E03: Hi\n"+
-               "[2016-11-1 18:00:09] 3F43: No one likes you loser\n[2016-11-1 18:00:16] 1E03: 😢😭😢😭😢😭😢😭😢\n"+
-               "[2016-11-1 18:00:22] 2E12: Hey don't bully him!\n[2016-11-1 18:00:28] 3F43: Go kill yourself because you"+
-               " are a F-ing faggot\n[2016-11-1 18:00:34] 2E12: I am going to rape you\n"+
-               "[2016-11-1 18:00:55] 3F43: "+StrDup("😢😭😢😭😢😭😢😭😢",5));*/
-               Showing = Pages.CloudTest;
-                         }, BoldLabel("Forum\n(⁠C⁠l⁠o⁠u⁠d⁠T⁠e⁠s⁠t⁠)") ),
+           MainScreenRow(
                          MainScreenItem(ImageSource(ImageFile.Translate), delegate{
-                             //Alert(this, "I'm a translator.\nInput: eifj[vguowhfuy9q727969y\nOutput: Gud mornin turists, we spek Inglish");
-                         Showing = Pages.Translate; },
-                         BoldLabel("Translator") ),
-                         MainScreenItem(ImageSource(ImageFile.VocabBook),delegate {Alert(this,"Ida = 捱打，伸張靜儀、儆惡懲奸，\n" +
-"      救死扶傷、伸張靜儀、鋤強扶弱、儆惡懲奸、修身齊家、知足常樂"); },BoldLabel("Vocab Book"))),
-
-           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Calculator),delegate {
-                            Showing = Pages.Calculator;// Alert(this, "1+1=2");
+                         Showing = Pages.Translate; }, BoldLabel("Translator")),
+                         MainScreenItem(ImageSource(ImageFile.Calculator),async delegate {
+                                Showing =
+                                    await AlertChoose(this, "Which mode?", "Choose Calculator mode", "Normal", "Free") ?
+                                    Pages.Calculator : Pages.Calculator_Free;
                              },BoldLabel("Calculator")),
-                         MainScreenItem(ImageSource(ImageFile.Calculator_Free),delegate {
-                             Showing = Pages.Calculator_Free;//Alert(this, StrDup("1+",100) + "1\n=101");
-                             },BoldLabel("Calculator\nFree Mode")),
                          MainScreenItem(ImageSource(ImageFile.Factorizer),delegate {
-                             Showing = Pages.Factorizer;//Alert(this,"Factorize 3𝐗²(𝐗−1)²+2𝐗(𝐗−1)³\n = 𝐗(𝐗−1)²(5𝐗−2)");
+                             Showing = Pages.Factorizer;
                              },BoldLabel("Quadratic Factorizer"))),
 
            MainScreenRow(MainScreenItem(ImageSource(ImageFile.Sports), delegate {
-                             Showing = Pages.Sports;//Alert(this,"🏃🏃🏃長天長跑🏃🏃🏃");
+                             Showing = Pages.Sports;
                          },BoldLabel("Sports")),
                          MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
-                             Showing = Pages.MusicTuner;//Alert(this,"🎼♯♩♪♭♫♬🎜🎝♮🎵🎶\n🎹🎻🎷🎺🎸");
+                             Showing = Pages.MusicTuner;
                          },BoldLabel("Music Tuner")),
                          MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
-                             Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))//Alert(this, "🔥🔥🔥🔥🔥🔥🐲🐉");
+                             Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))
                          ),
 
                 Button("Changelog", () => { Showing = Pages.Changelog; }),

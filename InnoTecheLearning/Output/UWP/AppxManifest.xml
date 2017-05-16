@@ -10,7 +10,7 @@
   <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.10.0.0" ProcessorArchitecture="x86" />
   <mp:PhoneIdentity PhoneProductId="47f0706c-3646-4de9-8968-b498fa30d6e7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>CSWCSS eLearning App</DisplayName>
+    <DisplayName>CSWCSS eLearn Utilities</DisplayName>
     <PublisherDisplayName>InnoTech Society of CSWCSS</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -21,8 +21,8 @@
     <Resource Language="EN-US" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="CSWCSS eLearn App.exe" EntryPoint="InnoTecheLearning.UWP.App">
-      <uap:VisualElements DisplayName="CSWCSS eLearning App" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Developed by the Innovative Technology Society of CSWCSS" BackgroundColor="transparent">
+    <Application Id="App" Executable="CSWCSS eLearn Utilities.exe" EntryPoint="InnoTecheLearning.UWP.App">
+      <uap:VisualElements DisplayName="CSWCSS eLearn Utilities" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Developed by the Innovative Technology Society of CSWCSS" BackgroundColor="transparent">
         <uap:LockScreen Notification="badge" BadgeLogo="Assets\BadgeLogo.png" />
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square310x310Logo="Assets\LargeTile.png" Square71x71Logo="Assets\SmallTile.png" ShortName="eLearn App">
           <uap:ShowNameOnTiles>
@@ -34,7 +34,9 @@
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="portrait" />
+          <uap:Rotation Preference="landscape" />
           <uap:Rotation Preference="portraitFlipped" />
+          <uap:Rotation Preference="landscapeFlipped" />
         </uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>

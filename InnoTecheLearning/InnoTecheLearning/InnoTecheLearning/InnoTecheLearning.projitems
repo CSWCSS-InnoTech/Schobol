@@ -198,6 +198,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Network.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Unit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Utils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ValueTask.cs" />
   </ItemGroup>

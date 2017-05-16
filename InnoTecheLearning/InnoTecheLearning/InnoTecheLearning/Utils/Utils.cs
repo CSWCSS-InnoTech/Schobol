@@ -226,6 +226,9 @@ namespace InnoTecheLearning
         {
             await Page.DisplayAlert(Title, Message, Cancel);
         }
+        public async static ValueTask<bool> AlertChoose(Page Page, Text Message = default(Text),
+            string Title = "Alert", string Accept = "OK", string Cancel = "Cancel") =>
+            await Page.DisplayAlert(Message, Title, Accept, Cancel);
 
         /// <summary>
         /// Making formatted text is #Ez.
