@@ -35,6 +35,18 @@ namespace InnoTecheLearning
             }
             return Result;
         }
+        
+        public static T Do<T>(this ValueTask<T> Task, T Default = default(T))
+        {
+            T Result = Default;
+            using (System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false))
+            {
+                using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                    Helper.Run(Task, (ValueTask<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
+                Wait.WaitOne();
+            }
+            return Result;
+        }
 #if NETFX_CORE
         public static void Do(this global::Windows.Foundation.IAsyncAction Task)
         {
@@ -59,7 +71,7 @@ namespace InnoTecheLearning
             return Do(Task.AsTask(), Default);
         }
 #endif
-        
+
         public static void AddRange<T>(this ICollection<T> ic, IEnumerable<T> ie) { foreach (T obj in ie) ic.Add(obj); }
 
         public static byte[] ReadFully(this Stream input, bool reset = false)

@@ -101,6 +101,49 @@ namespace InnoTecheLearning
                     Run(task, (t) => callback(t.Result));
                 }
 
+                /// <summary>
+                /// Execute's an async task with a T return type
+                /// from a synchronous context
+                /// </summary>
+                /// <typeparam name="T">The type of the task</typeparam>
+                /// <param name="task">Task to execute</param>
+                /// <param name="callback">Optional callback</param>
+                public void Run<T>(ValueTask<T> task, Action<ValueTask<T>> callback = null)
+                {
+                    CurrentContext.Post(async _ =>
+                    {
+                        try
+                        {
+                            Increment();
+                            await task;
+
+                            callback?.Invoke(task);
+                        }
+                        catch (Exception e)
+                        {
+                            CurrentContext.InnerException = e;
+                        }
+                        finally
+                        {
+                            Decrement();
+                        }
+                    }, null);
+                }
+
+                /// <summary>
+                /// Execute's an async task with a T return type
+                /// from a synchronous context
+                /// </summary>
+                /// <typeparam name="T">The type of the task</typeparam>
+                /// <param name="task">Task to execute</param>
+                /// <param name="callback">
+                /// The callback function that uses the result of the task
+                /// </param>
+                public void Run<T>(ValueTask<T> task, Action<T> callback)
+                {
+                    Run(task, (t) => callback(t.Result));
+                }
+
                 private void Increment()
                 {
                     Interlocked.Increment(ref TaskCount);

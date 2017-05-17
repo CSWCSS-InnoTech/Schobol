@@ -192,8 +192,8 @@ namespace InnoTecheLearning
                              Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))
                          ),
 
-                Button("Changelog", () => { Showing = Pages.Changelog; }),
-                VersionDisplay
+                        Button("Changelog", () => { Showing = Pages.Changelog; }),
+                        VersionDisplay
                     }
                 };
             }
@@ -1092,7 +1092,7 @@ namespace InnoTecheLearning
                                 Text = "Enter something and press translate,\nand the results will appear here.",
                                 ForegroundColor = Color.Gray,
                                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                                FontFamily = "Courier New, Georgia, Serif"
+                                FontFamily = FontChinese
                             }
                         )
                     }
@@ -1104,7 +1104,7 @@ namespace InnoTecheLearning
                         Text = "Not found!",
                         ForegroundColor = Color.Red,
                         FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                        FontFamily = "Courier New, Georgia, Serif"
+                        FontFamily = FontChinese
                     });
                 });
                 var Grid = new Grid

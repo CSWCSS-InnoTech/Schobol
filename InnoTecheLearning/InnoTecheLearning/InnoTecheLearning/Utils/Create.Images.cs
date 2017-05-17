@@ -81,7 +81,7 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     HorizontalOptions = LayoutOptions.Center,
-                    WidthRequest = 70,
+                    WidthRequest = 71.5,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 };
 

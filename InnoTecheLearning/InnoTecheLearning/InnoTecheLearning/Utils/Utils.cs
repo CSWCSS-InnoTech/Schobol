@@ -210,7 +210,7 @@ namespace InnoTecheLearning
         public static string CurrentNamespace
         { get { return "InnoTecheLearning." + OnProject("iOS", "Droid", "UWP", "Windows", "WinPhone"); } }
 
-        public async static Task<T> AlertAsync<T>(T Return, Page Page, Text Message = default(Text),
+        public async static ValueTask<T> AlertAsync<T>(T Return, Page Page, Text Message = default(Text),
                                                   string Title = "Alert", string Cancel = "OK")
         {
             await Page.DisplayAlert(Title, Message, Cancel);
