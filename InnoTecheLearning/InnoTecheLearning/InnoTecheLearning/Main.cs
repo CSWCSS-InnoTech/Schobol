@@ -1099,6 +1099,11 @@ namespace InnoTecheLearning
                 };
                 var Translate = Button("→", () =>
                 {
+                    if (!InternetAvaliable)
+                    {
+                        Alert(this, "Internet not avaliable. Please check your connection and try again.");
+                        return;
+                    }
                     ViewUpdate(Formatted, OnlineDict.ToChinese(Input.Text).results, new Span
                     {
                         Text = "Not found!",

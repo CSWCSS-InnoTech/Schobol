@@ -223,6 +223,7 @@ namespace InnoTecheLearning
             public uint SmallSteps { get { return numStepsRaw; } }
             public uint BigSteps { get { return numStepsWithFilter; } }
             public DateTime StartTime { get; private set; }
+            public TimeSpan TimeOffset { get; private set; }
 
             private static string TAG = "InnoTecheLearning.Sports";
 
@@ -309,10 +310,11 @@ namespace InnoTecheLearning
                 if (pedometerPaused)
                 {
                     pedometerPaused = false;
-                    StartTime = DateTime.Now;
+                    StartTime = DateTime.Now - TimeOffset;
                     sensorManager.RegisterListener(this,
                         sensorManager.GetSensorList(SensorType.Accelerometer)[0], SensorDelay.Fastest);
                     startTime = CurrentTimeMillis();
+                    TimeOffset = TimeSpan.Zero;
                 }
 
             }
@@ -331,7 +333,8 @@ namespace InnoTecheLearning
                 Distance = 0;
                 prevStopClockTime = 0;
                 startTime = CurrentTimeMillis();
-                StartTime = DateTime.Now;
+                StartTime = default(DateTime);
+                TimeOffset = TimeSpan.Zero;
             }
 
             ///<summary>Resumes counting, synonym of Start.</summary>
@@ -345,12 +348,12 @@ namespace InnoTecheLearning
             {
                 if (!pedometerPaused)
                 {
+                    TimeOffset = DateTime.Now - StartTime;
                     pedometerPaused = true;
-                    StartTime = DateTime.MinValue;
+                    //StartTime = DateTime.MinValue;
                     sensorManager.UnregisterListener(this);
                     Debug(TAG, "Unregistered listener on pause");
-                    prevStopClockTime = (prevStopClockTime
-                                + (CurrentTimeMillis() - startTime));
+                    prevStopClockTime = (prevStopClockTime + (CurrentTimeMillis() - startTime));
                 }
 
             }
@@ -774,8 +777,8 @@ namespace InnoTecheLearning
             }
 #elif WINDOWS_UWP
         IStepCounter { 
-            public void Start()
-            { Do(New()); }
+            public async void Start()
+            { await New(); }
             public void Stop()
             { readings.ReadingChanged -= Readings_ReadingChanged; }
             public void Reset()
@@ -867,6 +870,9 @@ namespace InnoTecheLearning
             {
                 get
                 {
+#if __ANDROID__
+                    if (TimeOffset != TimeSpan.Zero) return TimeOffset;
+#endif
                     return StartTime == default(DateTime) ? TimeSpan.Zero : DateTime.Now - StartTime;
                 }
             }

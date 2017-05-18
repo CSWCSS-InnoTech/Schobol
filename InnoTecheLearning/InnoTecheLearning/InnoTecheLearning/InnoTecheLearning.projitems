@@ -250,6 +250,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\folded-paper_318-31112.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)OnChange.txt" />
+    <None Include="$(MSBuildThisFileDirectory)OnChange.txt" />
   </ItemGroup>
 </Project>
