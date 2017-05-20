@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 #if __IOS__
 using CoreMotion;
 using Foundation;
@@ -29,7 +30,7 @@ namespace InnoTecheLearning
         {
             event StepCountChangedEventHandler StepsChanged;
             uint Steps { get; }
-            void Start();
+            ValueTask<Unit> Start();
             DateTime StartTime { get; }
             TimeSpan TimePassed { get; }
             void Stop();
@@ -86,12 +87,15 @@ namespace InnoTecheLearning
 
             public StepCounter()
             { }
-            public void Start()
+            public ValueTask<Unit> Start()
             {
-                StartTime = DateTime.Now;
-                ForceUpdate();
+                return Unit.Await(() =>
+                {
+                    StartTime = DateTime.Now;
+                    ForceUpdate();
 
-                _stepCounter.StartStepCountingUpdates(_queue, 1, Updater);
+                    _stepCounter.StartStepCountingUpdates(_queue, 1, Updater);
+                });
             }
 
             public void Stop()
@@ -305,18 +309,20 @@ namespace InnoTecheLearning
 
             //  Simple functions
             ///<summary>Start counting steps</summary>
-            public void Start()
+            public ValueTask<Unit> Start()
             {
-                if (pedometerPaused)
+                return Unit.Await(() =>
                 {
-                    pedometerPaused = false;
-                    StartTime = DateTime.Now - TimeOffset;
-                    sensorManager.RegisterListener(this,
-                        sensorManager.GetSensorList(SensorType.Accelerometer)[0], SensorDelay.Fastest);
-                    startTime = CurrentTimeMillis();
-                    TimeOffset = TimeSpan.Zero;
-                }
-
+                    if (pedometerPaused)
+                    {
+                        pedometerPaused = false;
+                        StartTime = DateTime.Now - TimeOffset;
+                        sensorManager.RegisterListener(this,
+                            sensorManager.GetSensorList(SensorType.Accelerometer)[0], SensorDelay.Fastest);
+                        startTime = CurrentTimeMillis();
+                        TimeOffset = TimeSpan.Zero;
+                    }
+                });
             }
 
             ///<summary>Stop counting steps</summary>
@@ -777,8 +783,14 @@ namespace InnoTecheLearning
             }
 #elif WINDOWS_UWP
         IStepCounter { 
-            public async void Start()
-            { await New(); }
+            public async ValueTask<Unit> Start()
+            {
+                readings = await Pedometer.GetDefaultAsync();
+                StartTime = DateTime.Now;
+                readings.ReportInterval = 100;
+                readings.ReadingChanged += Readings_ReadingChanged;
+                return Unit.Default;
+            }
             public void Stop()
             { readings.ReadingChanged -= Readings_ReadingChanged; }
             public void Reset()
@@ -790,13 +802,6 @@ namespace InnoTecheLearning
             public DateTime StartTime { get; private set; }
             Pedometer readings;
             
-            async private System.Threading.Tasks.Task New()
-            {
-                readings = await Pedometer.GetDefaultAsync();
-                StartTime = DateTime.Now;
-                readings.ReportInterval = 100;
-                readings.ReadingChanged += Readings_ReadingChanged;
-            }
             private void Readings_ReadingChanged(Pedometer sender, PedometerReadingChangedEventArgs args)
             {
                 PedometerReading readvalues = args.Reading;

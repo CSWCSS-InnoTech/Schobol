@@ -135,11 +135,15 @@ namespace InnoTecheLearning
         //StreamPlayer _Player;
         public Main()
         {
+            async void AsyncInit()
+            {
+                Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<Result>());
+            }
+            AsyncInit();
             // Accomodate iPhone status bar.
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
             BackgroundColor = Color.White;
             //Alert(this, "Main constructor"); 
-            Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, out Favourites, new ObservableCollection<Result>());
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
@@ -148,7 +152,8 @@ namespace InnoTecheLearning
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
         {
-            if(Showing == Pages.Translate) Storage.SerializedWrite(Storage.VocabFile, Favourites);
+            async void Async() { await Storage.SerializedWrite(Storage.VocabFile, Favourites); }
+            if (Showing == Pages.Translate) Async();
             if (Showing != Pages.Main)
             {
                 Showing = Pages.Main;
@@ -301,7 +306,7 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {ID, E, Button("Test the Cloud",
-                    () => { var Response = Login(ToUShort(ID.Text), E.Text);
+                    async () => { var Response = await Login(ToUShort(ID.Text), E.Text);
                     Try(delegate {
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
                     L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
@@ -756,7 +761,11 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Button("Start Running", () => { Pedometer.Start(); }, Color.Blue, Color.White),
+                        Button("Start Running", async () => {
+                                try { await Pedometer.Start(); }
+                                catch(UnauthorizedAccessException)
+                                { await Alert(this, "Access to the pedometer is denied.", "Sports"); }
+                            }, Color.Blue, Color.White),
                         Button("Stop Running", () => { Pedometer.Stop(); }, Color.Red, Color.White),
                         (Text)"Steps",
                         Sports_Steps,
@@ -1061,20 +1070,20 @@ namespace InnoTecheLearning
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                                         FontFamily = FontChinese//"Courier New, Georgia, Serif"
-                                    },
+                                        },
                                     new Span
                                     {
                                         Text = Result.part_of_speech.PadRight(13),
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                                         FontFamily = FontChinese//"Courier New, Georgia, Serif"
-                                    }, new Span
-                                    {
-                                        Text = Result.senses.Single().translation + "\n",
-                                        ForegroundColor = Color.Black,
-                                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                        FontFamily = FontChinese
-                                    }
+                                        }, new Span
+                                        {
+                                            Text = Result.senses.Single().translation + "\n",
+                                            ForegroundColor = Color.Black,
+                                            FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                                            FontFamily = FontChinese
+                                        }
                                 )
                             )
                         );
@@ -1103,13 +1112,24 @@ namespace InnoTecheLearning
                         await Alert(this, "Cannot connect to the servers. Please check your connection and try again.");
                         return;
                     }
-                    ViewUpdate(Formatted, (await OnlineDict.ToChinese(Input.Text)).results, new Span
+                    Device.BeginInvokeOnMainThread(() =>
                     {
-                        Text = "Not found!",
-                        ForegroundColor = Color.Red,
-                        FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                        FontFamily = FontChinese
+                        Formatted.Children.Clear();
+                        Formatted.Children.Add(FormattedLabel(
+                            new Span { Text = "Querying the servers...", FontFamily = FontChinese,
+                                FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)) }
+                        ));
                     });
+                    var Results = (await OnlineDict.ToChinese(Input.Text)).results;
+                    Device.BeginInvokeOnMainThread(() =>
+                        ViewUpdate(Formatted, Results, new Span
+                        {
+                            Text = "Not found!",
+                            ForegroundColor = Color.Red,
+                            FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
+                            FontFamily = FontChinese
+                        })
+                    );
                 });
                 var Grid = new Grid
                 {

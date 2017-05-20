@@ -15,8 +15,10 @@ namespace InnoTecheLearning
         {
             public static readonly Unit Default = new Unit();
             public static Unit Eval(Action a) { a?.Invoke(); return Default; }
-            public static async ValueTask<Unit> Eval(Task a) { await a; return Default; }
-            public static async ValueTask<Unit> Eval(Func<Task> a) { await a?.Invoke(); return Default; }
+            public static async ValueTask<Unit> Await(Task t) { await t; return Default; }
+            public static async ValueTask<Unit> Await(Func<Task> f) { await f?.Invoke(); return Default; }
+            public static ValueTask<Unit> Await(Action a) => 
+                new ValueTask<Unit>(Task.Run(() => { a?.Invoke(); return Default; }));
 
             public static bool operator ==(Unit a, Unit b) => true;
             public static bool operator !=(Unit a, Unit b) => false;

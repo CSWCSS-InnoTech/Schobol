@@ -218,7 +218,7 @@ namespace InnoTecheLearning
         }
 
         public static ValueTask<Unit> Alert(Page Page, Text Message = default(Text),
-            string Title = "Alert", string Cancel = "OK") => Unit.Eval(Page.DisplayAlert(Title, Message, Cancel));
+            string Title = "Alert", string Cancel = "OK") => Unit.Await(Page.DisplayAlert(Title, Message, Cancel));
         public async static ValueTask<bool> AlertChoose(Page Page, Text Message = default(Text),
             string Title = "Alert", string Accept = "OK", string Cancel = "Cancel") =>
             await Page.DisplayAlert(Message, Title, Accept, Cancel);
@@ -765,7 +765,7 @@ const Log10e = Math.LOG10E;
                     return System.Linq.Enumerable.Aggregate(args, (gcd, arg) => GCD(gcd, arg));
                 }*/
                 value = Math.Abs(value);
-                for (int i = 0; i <= 1e6; i++)
+                for (int i = 0; i <= 1000; i++)
                 {
                     var SubjectToTest = value / Math.Sqrt(i);
                     for (var denom = 1.0; denom <= 500; denom++)
