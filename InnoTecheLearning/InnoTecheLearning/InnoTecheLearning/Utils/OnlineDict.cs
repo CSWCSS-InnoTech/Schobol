@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
+using System.Threading.Tasks;
 using static System.Text.Encoding;
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage
@@ -94,7 +95,7 @@ namespace InnoTecheLearning
                     return (T)new DataContractJsonSerializer(typeof(T)).ReadObject(ms);
             }
 
-            public static T Request<T>(System.Uri uri) where T : OnlineResponse
+            public static async ValueTask<T> Request<T>(System.Uri uri) where T : OnlineResponse
             {
                 using (var Message = new System.Net.Http.HttpRequestMessage
                 {
@@ -105,7 +106,7 @@ namespace InnoTecheLearning
                     Message.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
                     using (var Client = new System.Net.Http.HttpClient())
-                        return Deserialize<T>(Client.SendAsync(Message).Do().Content.ReadAsStringAsync().Do());
+                        return Deserialize<T>(await(await Client.SendAsync(Message)).Content.ReadAsStringAsync());
                 }
             }
 
@@ -130,9 +131,11 @@ namespace InnoTecheLearning
                 return Data;
             }
 
-            public static DictionaryResponse ToChinese(string Word) => ProcessPoS(Request<DictionaryResponse>
+            public static async ValueTask<DictionaryResponse> ToChinese(string Word) => 
+                ProcessPoS(await Request<DictionaryResponse>
             (new System.Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Word.ToLower())));
-            public static DictionaryIDResponse LookupID(string ID) => Request<DictionaryIDResponse>
+            public static ValueTask<DictionaryIDResponse> LookupID(string ID) => 
+                Request<DictionaryIDResponse>
             (new System.Uri("http://api.pearson.com/v2/dictionaries/entries/" + ID));
         }
     }

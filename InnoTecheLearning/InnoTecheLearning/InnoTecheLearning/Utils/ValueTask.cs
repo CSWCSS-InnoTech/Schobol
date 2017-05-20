@@ -12,7 +12,8 @@ namespace System.Runtime.CompilerServices
     /// Indicates the type of the async method builder that should be used by a language compiler to
     /// build the attributed type when used as the return type of an async method.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface | AttributeTargets.Delegate | AttributeTargets.Enum, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface | 
+        AttributeTargets.Delegate | AttributeTargets.Enum, Inherited = false, AllowMultiple = false)]
     public sealed class AsyncMethodBuilderAttribute : Attribute
     {
         /// <summary>Initializes the <see cref="AsyncMethodBuilderAttribute"/>.</summary>
@@ -25,10 +26,7 @@ namespace System.Runtime.CompilerServices
         /// <summary>Gets the <see cref="Type"/> of the associated builder.</summary>
         public Type BuilderType { get; }
     }
-}
 
-namespace System.Runtime.CompilerServices
-{
     /// <summary>Represents a builder for asynchronous methods that returns a <see cref="ValueTask{TResult}"/>.</summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     [StructLayout(LayoutKind.Auto)]
@@ -123,10 +121,7 @@ namespace System.Runtime.CompilerServices
             _methodBuilder.AwaitUnsafeOnCompleted(ref awaiter, ref stateMachine);
         }
     }
-}
 
-namespace System.Runtime.CompilerServices
-{
     /// <summary>Provides an awaitable type that enables configured awaits on a <see cref="ValueTask{TResult}"/>.</summary>
     /// <typeparam name="TResult">The type of the result produced.</typeparam>
     [StructLayout(LayoutKind.Auto)]
@@ -196,10 +191,7 @@ namespace System.Runtime.CompilerServices
             }
         }
     }
-}
 
-namespace System.Runtime.CompilerServices
-{
     /// <summary>Provides an awaiter for a <see cref="ValueTask{TResult}"/>.</summary>
     public struct ValueTaskAwaiter<TResult> : ICriticalNotifyCompletion
     {

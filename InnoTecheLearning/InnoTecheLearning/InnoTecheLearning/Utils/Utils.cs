@@ -210,22 +210,15 @@ namespace InnoTecheLearning
         public static string CurrentNamespace
         { get { return "InnoTecheLearning." + OnProject("iOS", "Droid", "UWP", "Windows", "WinPhone"); } }
 
-        public async static ValueTask<T> AlertAsync<T>(T Return, Page Page, Text Message = default(Text),
+        public async static ValueTask<T> Alert<T>(T Return, Page Page, Text Message = default(Text),
                                                   string Title = "Alert", string Cancel = "OK")
         {
             await Page.DisplayAlert(Title, Message, Cancel);
             return Return;
         }
 
-        public static T Alert<T>(T Return, Page Page, Text Message = default(Text),
-            string Title = "Alert", string Cancel = "OK")
-        { return Do(AlertAsync(Return, Page, Title, Message, Cancel)); }
-
-        public async static void Alert(Page Page, Text Message = default(Text),
-            string Title = "Alert", string Cancel = "OK")
-        {
-            await Page.DisplayAlert(Title, Message, Cancel);
-        }
+        public static ValueTask<Unit> Alert(Page Page, Text Message = default(Text),
+            string Title = "Alert", string Cancel = "OK") => Unit.Eval(Page.DisplayAlert(Title, Message, Cancel));
         public async static ValueTask<bool> AlertChoose(Page Page, Text Message = default(Text),
             string Title = "Alert", string Accept = "OK", string Cancel = "Cancel") =>
             await Page.DisplayAlert(Message, Title, Accept, Cancel);
@@ -1049,104 +1042,120 @@ const Log10e = Math.LOG10E;
             catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { return default(T); }
         }
 
-        public static async ValueTask<int> Test()
-        { await Task.Delay(30);
-            return 30;
-        }
-        ///// <summary>
-        ///// An uninitialized Void object.
-        ///// </summary>
-        //public static object Void
-        //{ get { return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(void)); } }
-        /*
-        public string TransformForCurrentPlatform(string url)
+        public static ValueTask<bool> InternetAvaliable
         {
-            string result = ArgumentValidator.AssertNotNull(url, "url");
-
-            if (Device.OS == TargetPlatform.Android || Device.OS == TargetPlatform.iOS)
+            get
             {
-                const string filePrefix = "file:///";
-
-                if (url.StartsWith(filePrefix))
+                async ValueTask<bool> InternalAsync()
                 {
-                    result = url.Substring(filePrefix.Length);
+                    try
+                    {
+                        await System.Net.Dns.GetHostEntryAsync("www.google.com");
+                        return true;
+                    }
+                    catch (AggregateException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
+                    {
+                        return false;
+                    }
                 }
+                return InternalAsync();
+            }
+        }
+    }
+    ///// <summary>
+    ///// An uninitialized Void object.
+    ///// </summary>
+    //public static object Void
+    //{ get { return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(void)); } }
+    /*
+    public string TransformForCurrentPlatform(string url)
+    {
+        string result = ArgumentValidator.AssertNotNull(url, "url");
 
-                result = result.Replace("/", "_").Replace("\\", "_");
+        if (Device.OS == TargetPlatform.Android || Device.OS == TargetPlatform.iOS)
+        {
+            const string filePrefix = "file:///";
 
-                if (result.StartsWith("_") && result.Length > 1)
-                {
-                    result = result.Substring(1);
-                }
+            if (url.StartsWith(filePrefix))
+            {
+                result = url.Substring(filePrefix.Length);
+            }
+
+            result = result.Replace("/", "_").Replace("\\", "_");
+
+            if (result.StartsWith("_") && result.Length > 1)
+            {
+                result = result.Substring(1);
+            }
+        }
+        else if (Device.OS == TargetPlatform.WinPhone)
+        {
+            if (url.StartsWith("/") && url.Length > 1)
+            {
+                result = result.Substring(1);
+            }
+        }
+
+        return result;
+    }
+    [ContentProperty("Source")]
+    public class ImageResourceExtension : IMarkupExtension
+    {
+        public string Source { get; set; }
+
+        public object ProvideValue(IServiceProvider serviceProvider)
+        {
+            if (Source == null)
+            {
+                return null;
+            }
+
+            ImageSource imageSource = null;
+
+            var transformer = Dependency.Resolve<IImageUrlTransformer, ImageUrlTransformer>(true);
+            string url = transformer.TransformForCurrentPlatform(Source);
+
+            if (Device.OS == TargetPlatform.Android)
+            {
+                imageSource = ImageSource.FromFile(url);
+            }
+            else if (Device.OS == TargetPlatform.iOS)
+            {
+                imageSource = ImageSource.FromFile(url);
             }
             else if (Device.OS == TargetPlatform.WinPhone)
             {
-                if (url.StartsWith("/") && url.Length > 1)
-                {
-                    result = result.Substring(1);
-                }
-            }
-
-            return result;
-        }
-        [ContentProperty("Source")]
-        public class ImageResourceExtension : IMarkupExtension
-        {
-            public string Source { get; set; }
-
-            public object ProvideValue(IServiceProvider serviceProvider)
-            {
-                if (Source == null)
-                {
-                    return null;
-                }
-
-                ImageSource imageSource = null;
-
-                var transformer = Dependency.Resolve<IImageUrlTransformer, ImageUrlTransformer>(true);
-                string url = transformer.TransformForCurrentPlatform(Source);
-
-                if (Device.OS == TargetPlatform.Android)
-                {
-                    imageSource = ImageSource.FromFile(url);
-                }
-                else if (Device.OS == TargetPlatform.iOS)
-                {
-                    imageSource = ImageSource.FromFile(url);
-                }
-                else if (Device.OS == TargetPlatform.WinPhone)
-                {
 #if WINDOWS_PHONE
-        if (url.StartsWith("/") && url.Length > 1)
-        {
-            url = url.Substring(1);
-        }
+    if (url.StartsWith("/") && url.Length > 1)
+    {
+        url = url.Substring(1);
+    }
 
-        var stream = System.Windows.Application.GetResourceStream(new Uri(url, UriKind.Relative));
+    var stream = System.Windows.Application.GetResourceStream(new Uri(url, UriKind.Relative));
 
-        if (stream != null)
+    if (stream != null)
+    {
+        imageSource = ImageSource.FromStream(() => stream.Stream);
+    }
+    else
+    {
+        ILog log;
+        if (Dependency.TryResolve<ILog>(out log))
         {
-            imageSource = ImageSource.FromStream(() => stream.Stream);
+           log.Debug("Unable to located create ImageSource using URL: " + url);
         }
-        else
-        {
-            ILog log;
-            if (Dependency.TryResolve<ILog>(out log))
-            {
-               log.Debug("Unable to located create ImageSource using URL: " + url);
-            }
-        }
+    }
 #endif
-                }
-
-                if (imageSource == null)
-                {
-                    imageSource = ImageSource.FromFile(url);
-                }
-
-                return imageSource;
             }
+
+            if (imageSource == null)
+            {
+                imageSource = ImageSource.FromFile(url);
+            }
+
+            return imageSource;
         }
+    }
 <style type="text/css">
 .tg  {border-collapse:collapse;border-spacing:0;}
 .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
@@ -1155,116 +1164,114 @@ const Log10e = Math.LOG10E;
 .tg .tg-baqh{text-align:center;vertical-align:top}
 </style>
 <table class="tg">
-  <tbody><tr>
-    <th class="tg-s6z2" colspan="19"></th>
-  </tr>
-  <tr>
-    <td class="tg-baqh" rowspan="6"></td>
-    <td class="tg-baqh">π</td>
-    <td class="tg-baqh">e</td>
-    <td class="tg-baqh" rowspan="6"></td>
-    <td class="tg-baqh">Log</td>
-    <td class="tg-baqh">Pow</td>
-    <td class="tg-baqh">Sin</td>
-    <td class="tg-baqh">Asin</td>
-    <td class="tg-baqh" rowspan="6"></td>
-    <td class="tg-baqh">&lt;</td>
-    <td class="tg-baqh">&gt;</td>
-    <td class="tg-baqh">&amp;&amp;</td>
-    <td class="tg-baqh">&gt;&gt;&gt;</td>
-    <td class="tg-baqh" rowspan="6"><br></td>
-    <td class="tg-baqh">␣</td>
-    <td class="tg-baqh">%</td>
-    <td class="tg-baqh">Ans</td>
-    <td class="tg-baqh">⌫</td>
-    <td class="tg-baqh">⎚</td>
-  </tr>
-  <tr>
-    <td class="tg-s6z2">Root2</td>
-    <td class="tg-s6z2">Root0_5</td>
-    <td class="tg-s6z2">Rdm</td>
-    <td class="tg-s6z2">Exp</td>
-    <td class="tg-s6z2">Cos</td>
-    <td class="tg-s6z2">Acos</td>
-    <td class="tg-s6z2">&lt;=</td>
-    <td class="tg-s6z2">&gt;=</td>
-    <td class="tg-s6z2">&lt;&lt;</td>
-    <td class="tg-s6z2">&gt;&gt;</td>
-    <td class="tg-baqh">7</td>
-    <td class="tg-s6z2">8</td>
-    <td class="tg-s6z2">9</td>
-    <td class="tg-s6z2">(</td>
-    <td class="tg-s6z2">)</td>
-  </tr>
-  <tr>
-    <td class="tg-s6z2">Ln2</td>
-    <td class="tg-s6z2">Ln10</td>
-    <td class="tg-s6z2">Max</td>
-    <td class="tg-s6z2">Min</td>
-    <td class="tg-s6z2">Tan</td>
-    <td class="tg-s6z2">Atan</td>
-    <td class="tg-s6z2">==</td>
-    <td class="tg-s6z2">!=</td>
-    <td class="tg-s6z2">++</td>
-    <td class="tg-s6z2">--</td>
-    <td class="tg-baqh">4</td>
-    <td class="tg-s6z2">5</td>
-    <td class="tg-s6z2">6</td>
-    <td class="tg-s6z2">*</td>
-    <td class="tg-s6z2">/</td>
-  </tr>
-  <tr>
-    <td class="tg-s6z2">Log2e</td>
-    <td class="tg-s6z2">Log10e</td>
-    <td class="tg-s6z2">Sqrt</td>
-    <td class="tg-s6z2">Rnd</td>
-    <td class="tg-s6z2">Ceil</td>
-    <td class="tg-s6z2">Floor</td>
-    <td class="tg-s6z2">===</td>
-    <td class="tg-s6z2">!==</td>
-    <td class="tg-s6z2">~</td>
-    <td class="tg-s6z2">&amp;</td>
-    <td class="tg-baqh">1</td>
-    <td class="tg-s6z2">2</td>
-    <td class="tg-s6z2">3</td>
-    <td class="tg-s6z2">+</td>
-    <td class="tg-s6z2">-</td>
-  </tr>
-  <tr>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2" colspan="2">,</td>
-    
-    <td class="tg-s6z2">Abs</td>
-    <td class="tg-s6z2">Fct</td>
-    <td class="tg-s6z2">!</td>
-    <td class="tg-s6z2">||</td>
-    <td class="tg-s6z2">^</td>
-    <td class="tg-s6z2">|</td>
-    <td class="tg-baqh">0</td>
-    <td class="tg-s6z2">.</td>
-    <td class="tg-s6z2">e</td>
-    <td class="tg-s6z2" colspan="2">=</td>
-  </tr>
-  <tr>
-    <td class="tg-s6z2">Const</td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2">Func</td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2">Bin</td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-baqh"></td>
-    <td class="tg-s6z2">Norm</td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-    <td class="tg-s6z2"></td>
-  </tr>
-</tbody></table>
-         */
-    }
-}
+<tbody><tr>
+<th class="tg-s6z2" colspan="19"></th>
+</tr>
+<tr>
+<td class="tg-baqh" rowspan="6"></td>
+<td class="tg-baqh">π</td>
+<td class="tg-baqh">e</td>
+<td class="tg-baqh" rowspan="6"></td>
+<td class="tg-baqh">Log</td>
+<td class="tg-baqh">Pow</td>
+<td class="tg-baqh">Sin</td>
+<td class="tg-baqh">Asin</td>
+<td class="tg-baqh" rowspan="6"></td>
+<td class="tg-baqh">&lt;</td>
+<td class="tg-baqh">&gt;</td>
+<td class="tg-baqh">&amp;&amp;</td>
+<td class="tg-baqh">&gt;&gt;&gt;</td>
+<td class="tg-baqh" rowspan="6"><br></td>
+<td class="tg-baqh">␣</td>
+<td class="tg-baqh">%</td>
+<td class="tg-baqh">Ans</td>
+<td class="tg-baqh">⌫</td>
+<td class="tg-baqh">⎚</td>
+</tr>
+<tr>
+<td class="tg-s6z2">Root2</td>
+<td class="tg-s6z2">Root0_5</td>
+<td class="tg-s6z2">Rdm</td>
+<td class="tg-s6z2">Exp</td>
+<td class="tg-s6z2">Cos</td>
+<td class="tg-s6z2">Acos</td>
+<td class="tg-s6z2">&lt;=</td>
+<td class="tg-s6z2">&gt;=</td>
+<td class="tg-s6z2">&lt;&lt;</td>
+<td class="tg-s6z2">&gt;&gt;</td>
+<td class="tg-baqh">7</td>
+<td class="tg-s6z2">8</td>
+<td class="tg-s6z2">9</td>
+<td class="tg-s6z2">(</td>
+<td class="tg-s6z2">)</td>
+</tr>
+<tr>
+<td class="tg-s6z2">Ln2</td>
+<td class="tg-s6z2">Ln10</td>
+<td class="tg-s6z2">Max</td>
+<td class="tg-s6z2">Min</td>
+<td class="tg-s6z2">Tan</td>
+<td class="tg-s6z2">Atan</td>
+<td class="tg-s6z2">==</td>
+<td class="tg-s6z2">!=</td>
+<td class="tg-s6z2">++</td>
+<td class="tg-s6z2">--</td>
+<td class="tg-baqh">4</td>
+<td class="tg-s6z2">5</td>
+<td class="tg-s6z2">6</td>
+<td class="tg-s6z2">*</td>
+<td class="tg-s6z2">/</td>
+</tr>
+<tr>
+<td class="tg-s6z2">Log2e</td>
+<td class="tg-s6z2">Log10e</td>
+<td class="tg-s6z2">Sqrt</td>
+<td class="tg-s6z2">Rnd</td>
+<td class="tg-s6z2">Ceil</td>
+<td class="tg-s6z2">Floor</td>
+<td class="tg-s6z2">===</td>
+<td class="tg-s6z2">!==</td>
+<td class="tg-s6z2">~</td>
+<td class="tg-s6z2">&amp;</td>
+<td class="tg-baqh">1</td>
+<td class="tg-s6z2">2</td>
+<td class="tg-s6z2">3</td>
+<td class="tg-s6z2">+</td>
+<td class="tg-s6z2">-</td>
+</tr>
+<tr>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2" colspan="2">,</td>
 
+<td class="tg-s6z2">Abs</td>
+<td class="tg-s6z2">Fct</td>
+<td class="tg-s6z2">!</td>
+<td class="tg-s6z2">||</td>
+<td class="tg-s6z2">^</td>
+<td class="tg-s6z2">|</td>
+<td class="tg-baqh">0</td>
+<td class="tg-s6z2">.</td>
+<td class="tg-s6z2">e</td>
+<td class="tg-s6z2" colspan="2">=</td>
+</tr>
+<tr>
+<td class="tg-s6z2">Const</td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2">Func</td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2">Bin</td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+<td class="tg-baqh"></td>
+<td class="tg-s6z2">Norm</td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+<td class="tg-s6z2"></td>
+</tr>
+</tbody></table>
+     */
+}

@@ -8,22 +8,26 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
+        [Obsolete("Why not await the task instead?")]
         public static void Do(this Action Task)
         {
             Task?.Invoke();
         }
 
+        [Obsolete("Why not await the task instead?")]
         public static T Do<T>(this Delegate Task, params object[] Args)
         {
             return (T)Task?.DynamicInvoke(Args);
         }
 
+        [Obsolete("Why not await the task instead?")]
         public static void Do(this Task Task)
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task);
         }
 
+        [Obsolete("Why not await the task instead?")]
         public static T Do<T>(this Task<T> Task, T Default = default(T))
         {
             T Result = Default;
@@ -35,7 +39,8 @@ namespace InnoTecheLearning
             }
             return Result;
         }
-        
+
+        [Obsolete("Why not await the task instead?")]
         public static T Do<T>(this ValueTask<T> Task, T Default = default(T))
         {
             T Result = Default;
@@ -48,22 +53,27 @@ namespace InnoTecheLearning
             return Result;
         }
 #if NETFX_CORE
+        [Obsolete("Why not await the task instead?")]
         public static void Do(this global::Windows.Foundation.IAsyncAction Task)
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task.AsTask());
         }
-
+        
+        [Obsolete("Why not await the task instead?")]
         public static T Do<T>(this global::Windows.Foundation.IAsyncOperation<T> Task, T Default = default(T))
         {
             return Do(Task.AsTask(), Default);
         }
+
+        [Obsolete("Why not await the task instead?")]
         public static void Do<TProgress>(this global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
         {
             using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                 Helper.Run(Task.AsTask());
         }
-
+        
+        [Obsolete("Why not await the task instead?")]
         public static TResult Do<TResult, TProgress>
             (this global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task,
             TResult Default = default(TResult))
@@ -343,14 +353,14 @@ namespace InnoTecheLearning
         public static T DebugWrite<T>(this T Object, string Format = "{0}\n", string Category = null)
         { System.Diagnostics.Debug.Write(string.Format(Format, Object), Category); return Object; }
 
-        public static Stream GetStream(this ImageSource Source)
+        public static async ValueTask<Stream> GetStream(this ImageSource Source)
         {
             switch (Source)
             {
                 case FileImageSource File:
-                    return Storage.GetReadStream(File.File);
+                    return await Storage.GetReadStream(File.File);
                 case StreamImageSource Stream:
-                    return Stream.Stream?.Invoke(System.Threading.CancellationToken.None).Do();
+                    return await Stream.Stream?.Invoke(System.Threading.CancellationToken.None);
                 case UriImageSource Uri:
                     switch (Uri.Uri.Scheme)
                     {
@@ -358,12 +368,12 @@ namespace InnoTecheLearning
                         case "https":
                         case "ftp":
                         case "file":
-                            return System.Net.WebRequest.Create(Uri.Uri).GetResponseAsync().Do().GetResponseStream();
+                            return (await System.Net.WebRequest.Create(Uri.Uri).GetResponseAsync()).GetResponseStream();
 #if WINDOWS_UWP
                         case "ms-appdata":
                         case "ms-appx":
-                            return Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(Uri.Uri)
-                                .Do().OpenStreamForReadAsync().Do();
+                            return await (await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(Uri.Uri)
+                                ).OpenStreamForReadAsync();
 #endif
                     }
                     break;

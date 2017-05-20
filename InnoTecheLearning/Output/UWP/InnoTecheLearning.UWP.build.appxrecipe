@@ -597,9 +597,6 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\OnChange.txt">
-      <PackagePath>OnChange.txt</PackagePath>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.xr.xml">
       <PackagePath>CSWCSS eLearn Utilities.xr.xml</PackagePath>
     </AppxPackagedFile>

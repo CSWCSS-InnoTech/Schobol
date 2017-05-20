@@ -63,14 +63,14 @@ namespace InnoTecheLearning
         [Flags]
         public enum SpeechLanguages : byte
         {
-                                                     Unspecified         = 0b0000000,
-                                                     Default             = 0b0000001,
-                                                     System              = 0b0000010,
-                                                     English_US          = 0b0000100,
-                                                     English_UK          = 0b0001000,
-                                                     Chinese_Simplified  = 0b0010000,
+            Unspecified = 0b0000000,
+            Default = 0b0000001,
+            System = 0b0000010,
+            English_US = 0b0000100,
+            English_UK = 0b0001000,
+            Chinese_Simplified = 0b0010000,
             [Obsolete("Not universally supported.")] Chinese_Traditional = 0b0100000,
-            [Obsolete("Not universally supported.")] Cantonese           = 0b1000000
+            [Obsolete("Not universally supported.")] Cantonese = 0b1000000
         }
         /// <summary>
         /// The platform-specific implementation of <see cref="ITextToSpeech"/>.
@@ -117,7 +117,7 @@ namespace InnoTecheLearning
                 }
             }
 
-#region IOnInitListener implementation
+            #region IOnInitListener implementation
             public void OnInit(OperationResult status)
             {
                 if (status.Equals(OperationResult.Success))
@@ -125,7 +125,7 @@ namespace InnoTecheLearning
                     speaker.Speak(toSpeak, QueueMode.Flush, Droid.MainActivity.Bundle, ID);
                 }
             }
-#endregion
+            #endregion
 
             /*private List<string> AvaliableLanguages
               {  get{ var langAvailable = new List<string> { "Default" };
@@ -347,7 +347,7 @@ namespace InnoTecheLearning
         }
 #elif __ANDROID__
         public class SpeechToText : ISpeechToText
-            {
+        {
             public string Prompt { get; set; }
             public SpeechLanguages Languages { get; set; }
             private const int VOICE = 10;
@@ -613,20 +613,5 @@ namespace InnoTecheLearning
             ~SpeechToText() { _speechRecognizer.Dispose(); }
         }
 #endif
-    public static bool InternetAvaliable
-        {
-            get
-            {
-                try
-                {
-                    System.Net.Dns.GetHostEntryAsync("www.google.com").Do();
-                    return true;
-                }
-                catch (AggregateException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
-                {
-                    return false;
-                }
-            }
-        }
     }
 }

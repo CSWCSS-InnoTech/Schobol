@@ -175,7 +175,7 @@ namespace InnoTecheLearning
                          Showing = Pages.Translate; }, BoldLabel("Translator")),
                          MainScreenItem(ImageSource(ImageFile.Calculator),async delegate {
                                 Showing =
-                                    await AlertChoose(this, "Which mode?", "Choose Calculator mode", "Normal", "Free") ?
+                                    await AlertChoose(this, "Which mode?", "Choose Calculator mode", "Normal", "Freeform") ?
                                     Pages.Calculator : Pages.Calculator_Free;
                              },BoldLabel("Calculator")),
                          MainScreenItem(ImageSource(ImageFile.Factorizer),delegate {
@@ -231,11 +231,11 @@ namespace InnoTecheLearning
                     Orientation = StackOrientation.Vertical,
                     Children = {
                         Title("CSWCSS Music Tuner"),
-                        MainScreenRow(Image(ImageFile.Violin, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Violin and Viola"),
                         Row(true, Violin),
 
-                        MainScreenRow(Image(ImageFile.Cello, delegate {Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(Image(ImageFile.Cello, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                         , (Text)"Cello and Double Bass"),
                         Row(true, Cello),
 
@@ -305,9 +305,9 @@ namespace InnoTecheLearning
                     Try(delegate {
                     L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
                     L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
-                    (IndexOutOfRangeException ex)=> {
-                        Alert(this, "Abnornal return value from Cloud: " + '"' + string.Join(",", Response) + '"'); },
-                        Catch2:(Exception ex) => { Alert(this, ex.ToString()); }
+                    async (IndexOutOfRangeException ex)=> {
+                        await Alert(this, "Abnornal return value from Cloud: " + '"' + string.Join(",", Response) + '"'); },
+                        Catch2:async (Exception ex) => { await Alert(this, ex.ToString()); }
                     ); }),
                     L1, L2, L3, L4, Back(this)}
                     ,
@@ -317,8 +317,7 @@ namespace InnoTecheLearning
         }
         string Calculator_Value = "";
         List<Expressions> Calculator_Expression = new List<Expressions>();
-        delegate void NoInputDelegate();
-        event NoInputDelegate Calculator_Changed;
+        event Action Calculator_Changed;
         AngleMode AngleUnit = 0;
         public StackLayout Calculator
         {
@@ -946,7 +945,7 @@ namespace InnoTecheLearning
                 };
                 var Continue = Button("Continue",
                     (ref Button sender, EventArgs e) => { sender.IsVisible = false; ++Level; Advance(); });
-                Draw.PointerEvent += (sender, e) =>
+                Draw.PointerEvent += async (sender, e) =>
                 {
                     switch (e.Type)
                     {
@@ -978,9 +977,9 @@ namespace InnoTecheLearning
                             if (Answers.Contains(Display.Text))
                             { 
                                 try { CharGrid.Children.Add(new Label()); } catch (InvalidOperationException) { return; }
-                                Alert(this, "Correct! The dragon got hurt!", "Yay!", "I'll go on and continue");
+                                await Alert(this, "Correct! The dragon got hurt!", "Yay!", "I'll go on and continue");
                                 ++Level; Advance(); }
-                            else Alert(this, "You got the answer wrong...\nPlease retry.", "Ooops!", "I'll retry");
+                            else await Alert(this, "You got the answer wrong...\nPlease retry.", "Ooops!", "I'll retry");
                             Stack.Clear();
                             Draw.Clear();
                             break;
@@ -1097,14 +1096,14 @@ namespace InnoTecheLearning
                         )
                     }
                 };
-                var Translate = Button("→", () =>
+                var Translate = Button("→", async () =>
                 {
-                    if (!InternetAvaliable)
+                    if (!await InternetAvaliable)
                     {
-                        Alert(this, "Internet not avaliable. Please check your connection and try again.");
+                        await Alert(this, "Cannot connect to the servers. Please check your connection and try again.");
                         return;
                     }
-                    ViewUpdate(Formatted, OnlineDict.ToChinese(Input.Text).results, new Span
+                    ViewUpdate(Formatted, (await OnlineDict.ToChinese(Input.Text)).results, new Span
                     {
                         Text = "Not found!",
                         ForegroundColor = Color.Red,

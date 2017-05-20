@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace InnoTecheLearning
 {
@@ -29,116 +28,118 @@ namespace InnoTecheLearning
                 return Path.Combine(SaveDirectory, FileName);
             }
 
-            public static void Write(string FileName, object Content)
+            public static async ValueTask<Unit> Write(string FileName, object Content)
             {
-                using (var File = GetWriteStream(FileName))
+                using (var File = await GetWriteStream(FileName))
                 using (var Writer = new StreamWriter(File))
                 { Writer.Write(Content); Writer.Flush(); }
+                return Unit.Default;
             }
 
-            public static void Write(string FileName, System.Collections.IEnumerable Content)
+            public static async ValueTask<Unit> Write(string FileName, System.Collections.IEnumerable Content)
             {
-                using(var File = GetWriteStream(FileName))
+                using(var File = await GetWriteStream(FileName))
                 using (var Writer = new StreamWriter(File))
                 {
                     foreach (var Item in Content) Writer.Write(Item);
                     Writer.Flush();
                 }
+                return Unit.Default;
             }
-            public static string Read(string FileName)
+            public static async ValueTask<string> Read(string FileName)
             {
-                using (var File = GetReadStream(FileName))
+                using (var File = await GetReadStream(FileName))
                 using (var Reader = new StreamReader(File))
                     return Reader.ReadToEnd();
             }
-            public static string ReadOrCreate(string FileName)
+            public static async ValueTask<string> ReadOrCreate(string FileName)
             {
-                using (var File = GetOrCreateReadStream(FileName))
+                using (var File = await GetOrCreateReadStream(FileName))
                 using (var Reader = new StreamReader(File))
                     return Reader.ReadToEnd();
             }
 
-            public static void SerializedWrite(string FileName, object Content)
+            public static async ValueTask<Unit> SerializedWrite(string FileName, object Content)
             {
-                using (var File = GetWriteStream(FileName))
+                using (var File = await GetWriteStream(FileName))
                 {
                     new System.Xml.Serialization.XmlSerializer(Content.GetType()).Serialize(File, Content);
                     File.Flush();
                 }
+                return Unit.Default;
             }
-            public static void SerializedRead<T>(string FileName, out T Content)
+            public static async ValueTask<T> SerializedRead<T>(string FileName)
             {
-                using (var File = GetReadStream(FileName))
-                    Content = (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
+                using (var File = await GetReadStream(FileName))
+                    return (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
             }
-            public static void SerializedReadOrDefault<T>(string FileName, out T Content, T Default = default(T))
-            {
-                try
-                {
-                    using (var File = GetReadStream(FileName))
-                        Content = (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
-                }
-                catch (Exception)
-                {
-                    Content = Default;
-                }
-
-            }
-            public static void SerializedReadOrCreate<T>(string FileName, out T Content)
-            {
-                using (var File = GetOrCreateReadStream(FileName))
-                    Content = (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
-            }
-            public static void SerializedReadOrCreateOrDefault<T>
-                (string FileName, out T Content, T Default = default(T))
+            public static async ValueTask<T> SerializedReadOrDefault<T>(string FileName, T Default = default(T))
             {
                 try
                 {
-                    using (var File = GetOrCreateReadStream(FileName))
-                        Content = (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
+                    using (var File = await GetReadStream(FileName))
+                        return (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
                 }
                 catch (Exception)
                 {
-                    Content = Default;
+                    return Default;
+                }
+            }
+            public static async ValueTask<T> SerializedReadOrCreate<T>(string FileName)
+            {
+                using (var File = await GetOrCreateReadStream(FileName))
+                    return (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
+            }
+            public static async ValueTask<T> SerializedReadOrCreateOrDefault<T>
+                (string FileName, T Default = default(T))
+            {
+                try
+                {
+                    using (var File = await GetOrCreateReadStream(FileName))
+                        return (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
+                }
+                catch (Exception)
+                {
+                    return Default;
                 }
             }
 
-            public static Stream GetReadStream(string FileName) =>
+            public static async ValueTask<Stream> GetReadStream(string FileName) =>
 #if WINDOWS_UWP
-                Windows.Storage.StorageFile.GetFileFromPathAsync(GetSaveLocation(FileName)).Do()
-                    .OpenStreamForReadAsync().Do()
+                await (await Windows.Storage.StorageFile.GetFileFromPathAsync(GetSaveLocation(FileName)))
+                    .OpenStreamForReadAsync()
 #else
                 new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Read)
 #endif
                 ;
-            public static Stream GetWriteStream(string FileName) =>
+            public static async ValueTask<Stream> GetWriteStream(string FileName) =>
 #if WINDOWS_UWP
-                Windows.Storage.StorageFile.GetFileFromPathAsync(GetSaveLocation(FileName)).Do()
-                    .OpenStreamForWriteAsync().Do()
+                await (await Windows.Storage.StorageFile.GetFileFromPathAsync(GetSaveLocation(FileName)))
+                    .OpenStreamForWriteAsync()
 #else
                 new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Write)
 #endif
                 ;
 
-            public static Stream GetOrCreateReadStream(string FileName)
+            public static async ValueTask<Stream> GetOrCreateReadStream(string FileName)
 #if WINDOWS_UWP
             {
-                try { return GetReadStream(FileName); }
-                catch (FileNotFoundException) { return CreateReadStream(FileName); }
+                try { return await GetReadStream(FileName); }
+                catch (FileNotFoundException) { return await CreateReadStream(FileName); }
                 catch (AggregateException ex) when (ex.InnerException is FileNotFoundException)
-                { return CreateReadStream(FileName); }
+                { return await CreateReadStream(FileName); }
             }
 #else
                 => new FileStream(GetSaveLocation(FileName), FileMode.OpenOrCreate, FileAccess.Read);
 #endif
 
 
-            public static Stream CreateReadStream(string FileName)
+            public static async ValueTask<Stream> CreateReadStream(string FileName)
 #if WINDOWS_UWP
             {
-                Windows.Storage.StorageFolder.GetFolderFromPathAsync(SaveDirectory).Do()
-                    .CreateFileAsync(FileName).Do();
-                return GetReadStream(FileName);
+                await (await Windows.Storage.StorageFolder.GetFolderFromPathAsync(SaveDirectory))
+                    .CreateFileAsync(FileName);
+                return await GetReadStream(FileName);
             }
 #else
                 => new FileStream(GetSaveLocation(FileName), FileMode.CreateNew, FileAccess.Read);
