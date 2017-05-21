@@ -152,8 +152,6 @@ namespace InnoTecheLearning
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
         {
-            async void Async() { await Storage.SerializedWrite(Storage.VocabFile, Favourites); }
-            if (Showing == Pages.Translate) Async();
             if (Showing != Pages.Main)
             {
                 Showing = Pages.Main;
@@ -1031,10 +1029,11 @@ namespace InnoTecheLearning
                     }
                 }, TextColor: Color.Yellow);
             Favourites.CollectionChanged +=
-                (object sender, NotifyCollectionChangedEventArgs e) =>
+                async (object sender, NotifyCollectionChangedEventArgs e) =>
                 {
                     if (e.OldItems?.Contains(R) == true) B.Text = "★+";
                     if (e.NewItems?.Contains(R) == true) B.Text = "★-";
+                    await Storage.SerializedWrite(Storage.VocabFile, Favourites);
                 };
             return B;
         }
@@ -1066,7 +1065,7 @@ namespace InnoTecheLearning
                                 FormattedLabel(
                                     new Span
                                     {
-                                        Text = Result.headword.PadRight(27),
+                                        Text = Result.headword.PadRight(33),
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                                         FontFamily = FontChinese//"Courier New, Georgia, Serif"
@@ -1079,7 +1078,7 @@ namespace InnoTecheLearning
                                         FontFamily = FontChinese//"Courier New, Georgia, Serif"
                                         }, new Span
                                         {
-                                            Text = Result.senses.Single().translation + "\n",
+                                            Text = Result.senses.Single().translation + " \n",
                                             ForegroundColor = Color.Black,
                                             FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                                             FontFamily = FontChinese
