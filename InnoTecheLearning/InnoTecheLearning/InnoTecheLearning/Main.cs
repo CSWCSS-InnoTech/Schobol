@@ -1029,11 +1029,12 @@ namespace InnoTecheLearning
                     }
                 }, TextColor: Color.Yellow);
             Favourites.CollectionChanged +=
-                async (object sender, NotifyCollectionChangedEventArgs e) =>
+                (object sender, NotifyCollectionChangedEventArgs e) =>
                 {
-                    if (e.OldItems?.Contains(R) == true) B.Text = "★+";
-                    if (e.NewItems?.Contains(R) == true) B.Text = "★-";
-                    await Storage.SerializedWrite(Storage.VocabFile, Favourites);
+                    if (e.OldItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★+");
+                    if (e.NewItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★-");
+                    IgnoreEx(async () => await Storage.SerializedWrite(Storage.VocabFile, Favourites),
+                        typeof(UnauthorizedAccessException));
                 };
             return B;
         }
