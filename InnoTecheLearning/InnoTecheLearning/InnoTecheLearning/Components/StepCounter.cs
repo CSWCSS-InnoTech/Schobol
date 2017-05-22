@@ -29,7 +29,7 @@ namespace InnoTecheLearning
         public interface IStepCounter
         {
             event StepCountChangedEventHandler StepsChanged;
-            uint Steps { get; }
+            ValueTask<uint> Steps { get; }
             ValueTask<Unit> Start();
             DateTime StartTime { get; }
             TimeSpan TimePassed { get; }
@@ -58,7 +58,7 @@ namespace InnoTecheLearning
         public class StepCounter :
 #if __IOS__
         IStepCounter {
-            public uint Steps
+            public ValueTask<uint> Steps
             {
                 get
                 {
@@ -74,9 +74,11 @@ namespace InnoTecheLearning
                     if (_stepCounter == null)
                         _stepCounter = new CMStepCounter();
 
-                    return (uint)Do(_stepCounter.QueryStepCountAsync(sMidnight, NSDate.Now, _queue));
+                    return new ValueTask<uint>(async () => 
+                        Steps_ = (uint)await _stepCounter.QueryStepCountAsync(sMidnight, NSDate.Now, _queue));
                 }
             }
+            public uint Steps_ { get; private set; }
             public DateTime StartTime { get; private set; }
            // public delegate void DailyStepCountChangedEventHandler(nint stepCount);
 
@@ -85,11 +87,10 @@ namespace InnoTecheLearning
             private CMStepCounter _stepCounter;
             private nint count;
 
-            public StepCounter()
-            { }
+            public StepCounter() { }
             public ValueTask<Unit> Start()
             {
-                return Unit.Await(() =>
+                return Unit.InvokeAsync(() =>
                 {
                     StartTime = DateTime.Now;
                     ForceUpdate();
@@ -223,9 +224,10 @@ namespace InnoTecheLearning
 #elif __ANDROID__
         JavaObject, IStepCounter, ISensorEventListener, IDisposable
         {
-            public uint Steps { get { return SmallSteps; } }
-            public uint SmallSteps { get { return numStepsRaw; } }
-            public uint BigSteps { get { return numStepsWithFilter; } }
+            public ValueTask<uint> Steps { get => new ValueTask<uint>(Steps_); }
+            public uint Steps_ { get => SmallSteps; }
+            public uint SmallSteps { get => numStepsRaw; }
+            public uint BigSteps { get => numStepsWithFilter; }
             public DateTime StartTime { get; private set; }
             public TimeSpan TimeOffset { get; private set; }
 
@@ -311,7 +313,7 @@ namespace InnoTecheLearning
             ///<summary>Start counting steps</summary>
             public ValueTask<Unit> Start()
             {
-                return Unit.Await(() =>
+                return Unit.InvokeAsync(() =>
                 {
                     if (pedometerPaused)
                     {
@@ -394,7 +396,7 @@ namespace InnoTecheLearning
             public void RaiseSimpleStep(uint simpleSteps, float distance)
             {
                 SimpleStep?.Invoke(simpleSteps, distance);
-                StepsChanged?.Invoke(Steps, TimePassed, distance);
+                StepsChanged?.Invoke(Steps_, TimePassed, distance);
             }
             ///<summary>This event is run when a raw step is detected</summary>
             public event StepEventHandler SimpleStep;
@@ -798,14 +800,15 @@ namespace InnoTecheLearning
 
             public uint SmallSteps { get; private set; }
             public uint BigSteps { get; private set; }
-            public uint Steps { get { return SmallSteps + BigSteps; } }
+            public ValueTask<uint> Steps { get => new ValueTask<uint>(Steps_); }
+            public uint Steps_ { get => SmallSteps + BigSteps; }
             public DateTime StartTime { get; private set; }
             Pedometer readings;
             
             private void Readings_ReadingChanged(Pedometer sender, PedometerReadingChangedEventArgs args)
             {
                 PedometerReading readvalues = args.Reading;
-                StepsChanged?.Invoke(Steps, TimePassed, Distance);
+                StepsChanged?.Invoke(Steps_, TimePassed, Distance);
                 if (readvalues.StepKind == PedometerStepKind.Walking)
                 {
                     SmallSteps = (uint)readvalues.CumulativeSteps;
@@ -898,7 +901,7 @@ namespace InnoTecheLearning
 #if __ANDROID__
                 get; private set;
 #else
-                get { return StrideLength * Steps; }
+                get { return StrideLength * Steps_; }
 #endif
 
             }

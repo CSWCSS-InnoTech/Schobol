@@ -1010,7 +1010,7 @@ namespace InnoTecheLearning
                 };
             }
         }
-        SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
+        //SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
         ObservableCollection<Result> Favourites = new ObservableCollection<Result>();
         Button TranslatorButton(Result R)
         {
@@ -1043,19 +1043,19 @@ namespace InnoTecheLearning
             get
             {
                 var Input = Entry("", "Enter words...");
-                var Recognize = Button("🎤", () =>
+                /*var Recognize = Button("🎤", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
                   //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
                     TranslatorRecognizer.TextChanged +=
                         (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
                     TranslatorRecognizer.Start();
-                    /*var detailsIntent = new Android.Content.Intent(Android.Speech.RecognizerIntent.ActionGetLanguageDetails);
+                    var detailsIntent = new Android.Content.Intent(Android.Speech.RecognizerIntent.ActionGetLanguageDetails);
                     LanguageDetailsChecker checker = new LanguageDetailsChecker();
                     Droid.MainActivity.Current.SendOrderedBroadcast(detailsIntent, null, checker, null,
                             Android.App.Result.Ok, null, null);
                     var a = checker.supportedLanguages;
-                    ;*/
-                });
+                    ;
+                });*/
                 void ViewUpdate(StackLayout Layout, IEnumerable<Result> Results, params Span[] NoResults)
                 {
                     Layout.Children.Clear();
@@ -1142,7 +1142,7 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Row(false, Recognize, Input, Translate),
+                        Row(false, /*Recognize,*/ Input, Translate),
                         new ScrollView { Orientation = ScrollOrientation.Both, Content = Formatted }
                     }
                 }, 0, 0);

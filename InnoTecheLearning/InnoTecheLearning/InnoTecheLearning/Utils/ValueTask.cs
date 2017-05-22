@@ -295,6 +295,26 @@ namespace System.Threading.Tasks
             _result = default(TResult);
         }
 
+        /// <summary>
+        /// Initialize the <see cref="ValueTask{TResult}"/> with an async <see cref="Func{TResult}"/>.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        public ValueTask(Func<TResult> func)
+        {
+            _task = Task.Run(func ?? throw new ArgumentNullException(nameof(func)));
+            _result = default(TResult);
+        }
+
+        /// <summary>
+        /// Initialize the <see cref="ValueTask{TResult}"/> with an async <see cref="Func{Task{TResult}}"/>.
+        /// </summary>
+        /// <param name="taskfunc">The function.</param>
+        public ValueTask(Func<Task<TResult>> taskfunc)
+        {
+            _task = Task.Run(taskfunc ?? throw new ArgumentNullException(nameof(taskfunc)));
+            _result = default(TResult);
+        }
+
         /// <summary>Returns the hash code for this instance.</summary>
         public override int GetHashCode()
         {

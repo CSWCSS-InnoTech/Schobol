@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 (Xamarin Update) Beta 1";
+        public const string VersionFull = "0.10.0 (Xamarin Update) Beta 2"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;
@@ -33,15 +33,13 @@ namespace InnoTecheLearning
         }
         public static string VersionName
         { get => VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1); }
-        public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
+        public static VersionStage VersionState { get => (VersionStage)Version.MajorRevision; }
 
         public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
-        public static string ToShort(this Version Version)
-        {
-            return Version.ToString(3) +
-                   (Version.GetVersionState() > VersionStage.Undefined && Version.GetVersionState() < VersionStage.Release ?
-                   (char)((int)Version.GetVersionState() + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }
+        public static string ToShort(this Version Version) =>
+            Version.ToString(3) +
+            (Version.GetVersionState() > VersionStage.Undefined && Version.GetVersionState() < VersionStage.Release ?
+            (char)((int)Version.GetVersionState() + 'a' - 1) + Version.MinorRevision.ToString() : "");
         public enum VersionStage : byte
         {
             /// <summary>

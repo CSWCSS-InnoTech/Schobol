@@ -16184,10 +16184,6 @@ var beeroclock = new TimePicker () { Time = new TimeSpan (17,0,0) };
             <summary>Occurs when the Children of a VisualElement have been re-ordered.</summary>
             <remarks />
         </member>
-        <member name="M:Xamarin.Forms.VisualElement.Finalize">
-            <summary>To be added.</summary>
-            <remarks>To be added.</remarks>
-        </member>
         <member name="M:Xamarin.Forms.VisualElement.Focus">
             <summary>Attemps to set focus to this element.</summary>
             <returns>

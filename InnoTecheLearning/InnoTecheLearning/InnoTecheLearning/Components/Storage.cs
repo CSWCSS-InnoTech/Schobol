@@ -109,7 +109,7 @@ namespace InnoTecheLearning
                 await (await Windows.Storage.StorageFile.GetFileFromPathAsync(GetSaveLocation(FileName)))
                     .OpenStreamForReadAsync()
 #else
-                new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Read)
+                await new ValueTask<Stream>(() => new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Read))
 #endif
                 ;
             public static async ValueTask<Stream> GetWriteStream(string FileName) =>
@@ -117,7 +117,7 @@ namespace InnoTecheLearning
                 await (await Windows.Storage.StorageFile.GetFileFromPathAsync(GetSaveLocation(FileName)))
                     .OpenStreamForWriteAsync()
 #else
-                new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Write)
+                await new ValueTask<Stream>(() => new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Write))
 #endif
                 ;
 
@@ -130,7 +130,7 @@ namespace InnoTecheLearning
                 { return await CreateReadStream(FileName); }
             }
 #else
-                => new FileStream(GetSaveLocation(FileName), FileMode.OpenOrCreate, FileAccess.Read);
+                => await new ValueTask<Stream>(() => new FileStream(GetSaveLocation(FileName), FileMode.OpenOrCreate, FileAccess.Read));
 #endif
 
 
@@ -142,7 +142,7 @@ namespace InnoTecheLearning
                 return await GetReadStream(FileName);
             }
 #else
-                => new FileStream(GetSaveLocation(FileName), FileMode.CreateNew, FileAccess.Read);
+                => await new ValueTask<Stream>(() => new FileStream(GetSaveLocation(FileName), FileMode.CreateNew, FileAccess.Read));
 #endif
                 
             /*

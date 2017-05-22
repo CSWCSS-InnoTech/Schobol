@@ -80,13 +80,13 @@ namespace InnoTecheLearning
             public string Region { get; set; }
             public async void Init(string Path)
             {
- #if __IOS__|| __ANDROID__
-                if (!File.Exists(Path)) File.Create(Path).Dispose();
+#if __IOS__ || __ANDROID__
+                await Unit.InvokeAsync(() => { if (!File.Exists(Path)) File.Create(Path).Dispose(); });
 #elif NETFX_CORE
                 Path = Path.Replace('/', '\\');
                 try
                 {
-                global::Windows.Storage.StorageFile File = await global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path);
+                    global::Windows.Storage.StorageFile File = await global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path);
                 }
                 catch (Exception)
                 {
@@ -108,7 +108,7 @@ namespace InnoTecheLearning
             {
 #if __IOS__|| __ANDROID__
                 using (StreamWriter Writer = new StreamWriter(Path, true, Encoding.Unicode))
-                { Writer.WriteLine(Format(DateTime.Now, Importance, Region, Message)); Writer.Flush(); }
+                { await Writer.WriteLineAsync(Format(DateTime.Now, Importance, Region, Message)); Writer.Flush(); }
 #elif NETFX_CORE
                 global::Windows.Storage.StorageFile File = await global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path);
                 await global::Windows.Storage.FileIO.AppendTextAsync(File, Format(DateTime.Now, Importance, Region, Message),
@@ -125,7 +125,7 @@ namespace InnoTecheLearning
                 using (Stream Stream = await File.OpenStreamForReadAsync())
                 using (StreamReader Reader = new StreamReader(Stream, Encoding.Unicode))
 #endif
-                return Reader.ReadToEnd(); 
+                return await Reader.ReadToEndAsync(); 
             }
             public string Format(DateTime Time, LogImportance Importance, string Region, string Message)
             { return '[' + Time.ToString(DateTimeFormat) + ']' + Symbol(Importance) + Region + '|' + Message; }

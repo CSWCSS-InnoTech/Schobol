@@ -42,8 +42,8 @@ namespace InnoTecheLearning
         /// </summary>
         public interface ISpeechToText
         {
-            void Start();
-            void Stop();
+            ValueTask<Unit> Start();
+            ValueTask<Unit> Stop();
             event EventHandler<VoiceRecognitionEventArgs> TextChanged;
             bool IsRecognizing { get; }
             string Text { get; }
@@ -194,14 +194,8 @@ namespace InnoTecheLearning
                     SpeechLanguages.Unspecified ? new SFSpeechRecognizer() : new SFSpeechRecognizer(Languages.ToLocale().First());
                 LiveSpeechRequest = new SFSpeechAudioBufferRecognitionRequest();
             }
-            public void Start()
-            {
-                AskPermission();
-            }
-            public void Stop()
-            {
-                CancelRecording();
-            }
+            public ValueTask<Unit> Start() => Unit.InvokeAsync(AskPermission);
+            public ValueTask<Unit> Stop() => Unit.InvokeAsync(CancelRecording);
             void AskPermission()
             {
                 // Request user authorization
@@ -370,9 +364,9 @@ namespace InnoTecheLearning
                 });
                 alert.Show().Show();
             }
-            Android.Content.Intent voiceIntent;
-            public void Start() => Start_();
-            void Start_()
+            //Android.Content.Intent voiceIntent;
+            public ValueTask<Unit> Start() => Start_();
+            async ValueTask<Unit> Start_()
             {
                 /**
                  * Asking the permission for installing Google Voice Search. 
@@ -421,8 +415,8 @@ namespace InnoTecheLearning
                         Alert("You don't seem to have a microphone to record with");
                     else if (Forms.Context.PackageManager.QueryIntentActivities(
                         new Android.Content.Intent(RecognizerIntent.ActionRecognizeSpeech), 0).Count == 0)
-                        Alert("You don't seem to have a recognition service");
-                    else if (!InternetAvaliable) Alert("You don't seem to have an Internet connection to analyze your speech");
+                        InstallGoogleVoiceSearch(Forms.Context);
+                    else if (!await InternetAvaliable) Alert("You don't seem to have an Internet connection to analyze your speech");
                     else
                     {
                         // create the intent and start the activity
@@ -462,9 +456,10 @@ namespace InnoTecheLearning
                 {
                     Console.WriteLine(ex.Message);
                 }
+                return Unit.Default;
             }
             private Action StopAction = delegate { };
-            public void Stop() => StopAction();
+            public ValueTask<Unit> Stop() => Unit.InvokeAsync(StopAction);
             private void HandleActivityResult(object sender, Android.Preferences.PreferenceManager.ActivityResultEventArgs e)
             {
                 if (e.RequestCode == VOICE)
@@ -539,9 +534,9 @@ namespace InnoTecheLearning
             public string Text { get; private set; }
             SpeechRecognizer _speechRecognizer;
             //Windows.UI.Core.CoreDispatcher _coreDispatcher;
-            public async void Start()
+            public async ValueTask<Unit> Start()
             {
-                async Task OpenSettings(string Title, string Content, string Uri)
+                async ValueTask<Unit> OpenSettings(string Title, string Content, string Uri)
                 {
                     ContentDialog noWifiDialog = new ContentDialog()
                     {
@@ -563,6 +558,7 @@ namespace InnoTecheLearning
                             PrimaryButtonText = "Shut your mouth up!"
                         }.ShowAsync();
                     }
+                    return Unit.Default;
                 }
                 try
                 {
@@ -573,7 +569,7 @@ namespace InnoTecheLearning
                     /*var constraintList = new SpeechRecognitionListConstraint(new List<string>() { "Next", "Back" });
                     _speechRecognizer.Constraints.Add(constraintList);*/
                     var result = await _speechRecognizer.CompileConstraintsAsync();
-                    if (result.Status != SpeechRecognitionResultStatus.Success) return;
+                    if (result.Status != SpeechRecognitionResultStatus.Success) return Unit.Default;
                     _speechRecognizer.UIOptions.AudiblePrompt = Prompt ?? "Say something...";
                     _speechRecognizer.UIOptions.ExampleText = "For example: Lego Mania says \"Cheeseburger\"";
                     _speechRecognizer.UIOptions.IsReadBackEnabled = true;
@@ -599,8 +595,9 @@ namespace InnoTecheLearning
                            " Select the language again > 'Options' > 'Download' under 'Speech'...",
                            "ms-settings:regionlanguage");
                 }
+                return Unit.Default;
             }
-            public void Stop() => _speechRecognizer.StopRecognitionAsync().Do();
+            public ValueTask<Unit> Stop() => Unit.Await(_speechRecognizer.StopRecognitionAsync());
 
             private void Completed(SpeechRecognizer sender,
                 SpeechRecognizerStateChangedEventArgs args) => 
