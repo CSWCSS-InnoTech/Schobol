@@ -236,7 +236,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
-      <Version>2.3.4.231</Version>
+      <Version>2.3.4.247</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="..\InnoTecheLearning\InnoTecheLearning.projitems" Label="Shared" />

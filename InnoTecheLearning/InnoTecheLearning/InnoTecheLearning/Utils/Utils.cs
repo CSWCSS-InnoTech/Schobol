@@ -718,9 +718,10 @@ const Log10e = Math.LOG10E;
                 return $"{degree}° {minute}′ {second}″";
             })).SetValue("IntSurd", new Func<double, string>((double value) =>
             {
+                if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
                 var Negative = value < 0;
                 // A = AVariable, B = Builder, C = Char
-                if (value > 5000) throw new ArgumentOutOfRangeException(nameof(value), value, "Value is too large (>5000).");
+                if (value > 5000) throw new ArgumentOutOfRangeException(nameof(value), value, nameof(value) + " is too large (>5000).");
                 var A = value = Math.Round(value * value);
                 do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0);
                 //if (A == 0) throw new ArithmeticException("Cannot find appropiate surd.");
@@ -741,6 +742,7 @@ const Log10e = Math.LOG10E;
                 return B.ToString();
             })).SetValue("FracSurd", new Func<double, string>((double value) =>
             {
+                if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
                 var Negative = value < 0;
                 /*
                 void Simplify(int[] numbers)

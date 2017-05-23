@@ -1109,7 +1109,8 @@ namespace InnoTecheLearning
                 {
                     if (!await InternetAvaliable)
                     {
-                        await Alert(this, "Cannot connect to the servers. Please check your connection and try again.");
+                        Device.BeginInvokeOnMainThread(async () =>
+                            await Alert(this, "Cannot connect to the servers. Please check your connection and try again."));
                         return;
                     }
                     Device.BeginInvokeOnMainThread(() =>

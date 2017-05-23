@@ -85,7 +85,6 @@ namespace InnoTecheLearning
             private NSOperationQueue _queue;
             private DateTime _resetTime;
             private CMStepCounter _stepCounter;
-            private nint count;
 
             public StepCounter() { }
             public ValueTask<Unit> Start()
@@ -103,7 +102,7 @@ namespace InnoTecheLearning
             { _stepCounter.StopStepCountingUpdates(); }
 
             public void Reset()
-            { count = 0; StartTime = DateTime.MinValue; }
+            { Steps_ = 0; StartTime = DateTime.MinValue; }
 
             public void ForceUpdate()
             {
