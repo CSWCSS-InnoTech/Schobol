@@ -538,13 +538,15 @@ namespace InnoTecheLearning
                 return Return;
             }
             public static Button[] RadioButtons(Color Base, Color Selected,
-                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, params string[] Names)
+                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, bool AllowDeselect = false, params string[] Names)
             {
                 var Modificators = new Button[Names.Length];
                 for (int Index = 0; Index < Names.Length; Index++)
                 {
-                    Modificators[Index] = Button(Names[Index], Init(Index), Index == DefaultIndex ? Selected : Base);
-                    Modificators[Index].Clicked += (sender, e) =>
+                    ref var B = ref Modificators[Index];
+                    B = Button(Names[Index], Init(Index), Index == DefaultIndex ? Selected : Base);
+                    B.HorizontalOptions = LayoutOptions.FillAndExpand;
+                    B.Clicked += (sender, e) =>
                     {
                         var Sender = sender as Button;
                         if (Sender.BackgroundColor == Base)
@@ -553,16 +555,15 @@ namespace InnoTecheLearning
                                 Modify.BackgroundColor = Base;
                             Sender.BackgroundColor = Selected;
                         }
-                        else Sender.BackgroundColor = Base;
+                        else if (AllowDeselect) Sender.BackgroundColor = Base;
                     };
                 }
                 return Modificators;
             }
             public static ScrollView RadioButtonsView(Color Base, Color Selected,
-                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, params string[] Names)
-            {
-                return Scroll(StackOrientation.Horizontal, RadioButtons(Base, Selected, Init, DefaultIndex, Names));
-            }
+                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, bool AllowDeselect = false, params string[] Names) =>
+                Scroll(StackOrientation.Horizontal, RadioButtons(Base, Selected, Init, DefaultIndex, AllowDeselect, Names));
+
             public static void AppendScrollStack<T>(ScrollView Base, params T[] Items) where T : View =>
                 (Base.Content as StackLayout).Children.AddRange(Items);
             public static void AppendScrollStack<T>(ScrollView Base, IEnumerable<T> Items) where T : View =>

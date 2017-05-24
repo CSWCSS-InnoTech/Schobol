@@ -382,6 +382,11 @@ namespace InnoTecheLearning
                 "Source is either an UriImageSource with unknown scheme or an unknown class derivating from ImageSource."
                 , nameof(Source));
         }
+
+        public delegate T WithDelegate<T>(ref T Instance);
+        public delegate void WithDelegateVoid<T>(ref T Instance);
+        public static T With<T>(this T Instance, WithDelegate<T> Function) => Function(ref Instance);
+        public static T With<T>(this T Instance, WithDelegateVoid<T> Function) { Function(ref Instance); return Instance; }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

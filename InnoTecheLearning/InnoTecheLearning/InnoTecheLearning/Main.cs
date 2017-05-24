@@ -541,7 +541,7 @@ namespace InnoTecheLearning
                     Mode.Text = AngleUnit.ToString();
                 };
                 var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0,
+                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0, false,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
                 Return.Children[1] = Row(false, Select[0], 
                     Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode })), Back(this));
@@ -557,7 +557,7 @@ namespace InnoTecheLearning
                             catch (Exception ex) { Calculator_Value = ('ⓧ' + ex.Message).Split('\r', '\n', '\f')[0]; }
                             Out.Text = "";
                         }
-                    }, 0,
+                    }, 0, false,
                     "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"), 
                     OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
                 Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
@@ -680,7 +680,8 @@ namespace InnoTecheLearning
                     {new ScrollView { Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
                     Row(false, Button("Evaluate", () => { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
-                        Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); }),
+                        Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); })
+                            .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand),
                         Back(this)),
                     Entry
                     }
@@ -1117,7 +1118,7 @@ namespace InnoTecheLearning
                     {
                         Formatted.Children.Clear();
                         Formatted.Children.Add(FormattedLabel(
-                            new Span { Text = "Querying the servers...", FontFamily = FontChinese,
+                            new Span { Text = "Loading...", FontFamily = FontChinese,
                                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)) }
                         ));
                     });
@@ -1154,13 +1155,13 @@ namespace InnoTecheLearning
                     Text = "There's nothing here...\n",
                     ForegroundColor = Color.Gray,
                     FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                    FontFamily = "Courier New, Georgia, Serif"
+                    FontFamily = FontChinese //"Courier New, Georgia, Serif"
                 }, new Span
                 {
                     Text = "Press the button on the left of one of the\ntranslated results to add it into the Favourites!",
                     ForegroundColor = Color.Gray,
                     FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
-                    FontFamily = "Courier New, Georgia, Serif"
+                    FontFamily = FontChinese
                 });
                 Favourites.CollectionChanged += (_1, _2) => FavouritesUpdate();
                 FavouritesUpdate();
