@@ -154,6 +154,7 @@ namespace InnoTecheLearning
         {
             if (Showing != Pages.Main)
             {
+                if (Showing == Pages.MusicTuner) MusicSound.Stop();
                 Showing = Pages.Main;
                 return true;
             }
@@ -206,12 +207,14 @@ namespace InnoTecheLearning
         {
             get
             {
-                void MusicTunerSwitch(Button[] Viola, int i)
+                void MusicTunerSwitch(Button[] Viola, int i, Button[] OtherRow)
                 {
                     Viola[i].Clicked += delegate
                     {
                         for (int j = 0; j < 4; j++)
                             Viola[j].BackgroundColor = Color.Silver;
+                        for (int j = 0; j < 4; j++)
+                            OtherRow[j].BackgroundColor = Color.Silver;
                         Viola[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
                     };
                 }
@@ -220,13 +223,13 @@ namespace InnoTecheLearning
                     return Button(Text, () =>
                     { /*_Player.Pause();*/
                         MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Volum.Value);
-                    });
+                    }).With((ref Button x) => x.HorizontalOptions = x.VerticalOptions =  LayoutOptions.FillAndExpand);
                 }
                 Label Volume = (Text)"100";
                 Slider Vol =
                     Slider((object sender, ValueChangedEventArgs e) =>
                     {
-                        Volume.Text = ((int)e.NewValue).ToString().PadLeft(3);
+                        Volume.Text = ((int)e.NewValue).ToString().PadLeft(4);
                         if (MusicSound == null || MusicSound._disposedValue) return;
                         MusicSound.Volume = (float)e.NewValue / 100;
                     }, BackColor: Color.Gray);
@@ -234,34 +237,63 @@ namespace InnoTecheLearning
                         MusicTunerPlay("D", Sounds.Violin_D, Vol),
                         MusicTunerPlay("A", Sounds.Violin_A, Vol),
                         MusicTunerPlay("E", Sounds.Violin_E, Vol)};
-                for (int i = 0; i < 4; i++)
-                    MusicTunerSwitch(Violin, i);
-
                 Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C, Vol),
                         MusicTunerPlay("'G", Sounds.Cello_G, Vol),
                         MusicTunerPlay("D", Sounds.Cello_D, Vol),
                         MusicTunerPlay("A", Sounds.Cello_A, Vol)};
+
                 for (int i = 0; i < 4; i++)
-                    MusicTunerSwitch(Cello, i);
+                    MusicTunerSwitch(Violin, i, Cello);
+                for (int i = 0; i < 4; i++)
+                    MusicTunerSwitch(Cello, i, Violin);
                 return new StackLayout
                 {
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
                     Orientation = StackOrientation.Vertical,
                     Children = {
                         Title("CSWCSS Music Tuner"),
+
                         MainScreenRow(Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
-                        , (Text)"Violin and Viola"),
-                        Row(true, Violin),
+                            .With((ref Image x) =>
+                            {
+                                x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
+                                x.Aspect = Aspect.AspectFit;
+                            })
+                        , ((Label)(Text)"Violin and Viola")
+                            .With((ref Label x) => {
+                                x.VerticalOptions = LayoutOptions.Center;
+                                x.HorizontalOptions = LayoutOptions.FillAndExpand;
+                                x.FontAttributes = FontAttributes.Bold;
+                            }))
+                        .With((ref StackLayout x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
+
+                        Row(true, Violin)
+                            .With((ref StackLayout x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
 
                         MainScreenRow(Image(ImageFile.Cello, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
-                        , (Text)"Cello and Double Bass"),
-                        Row(true, Cello),
+                            .With((ref Image x) =>
+                            {
+                                x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
+                                x.Aspect = Aspect.AspectFit;
+                            })
+                        , ((Label)(Text)"Cello and Double Bass")
+                            .With((ref Label x) => {
+                                x.VerticalOptions = LayoutOptions.Center;
+                                x.HorizontalOptions = LayoutOptions.FillAndExpand;
+                                x.FontAttributes = FontAttributes.Bold;
+                            }))
+                        .With((ref StackLayout x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
+
+                        Row(true, Cello)
+                            .With((ref StackLayout x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
 
                         Button("Stop", () => {
                         for (int j = 0; j < 4; j++)
                             { Violin[j].BackgroundColor = Color.Silver; Cello[j].BackgroundColor = Color.Silver; }
-                        MusicSound?.Dispose(); /*_Player.Play();*/ }),
+                        MusicSound?.Dispose(); /*_Player.Play();*/ })
+                            .With((ref Button x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
+
                         Row(false, Volume, Vol),
                         Back(this)
                     }
@@ -536,7 +568,8 @@ namespace InnoTecheLearning
                     Append(Vars.Children, Expressions.Decrement, ++Left, Top);
                 }
 
-                StackLayout Return = new StackLayout { Children = { In, new StackLayout(), Norm, new StackLayout(), Out } };
+                StackLayout Return = new StackLayout
+                { Children = { Title("CSWCSS Calculator"), In, new StackLayout(), Norm, new StackLayout(), Out } };
                 Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
@@ -546,9 +579,9 @@ namespace InnoTecheLearning
                     Mode.Text = AngleUnit.ToString();
                 };
                 var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0, false,
+                    i => delegate { if (Return.Children[3] != Menus[i]) Return.Children[3] = Menus[i]; }, 0, false,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
-                Return.Children[1] = Row(false, Select[0], 
+                Return.Children[2] = Row(false, Select[0], 
                     Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode })), Back(this));
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate
@@ -564,7 +597,7 @@ namespace InnoTecheLearning
                     }, 0, false,
                     "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"), 
                     OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
-                Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
+                Return.Children[4] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*
@@ -667,6 +700,7 @@ namespace InnoTecheLearning
                     TextColor = Color.Black,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
+                    Text = "1 + 1"
                     //BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0) //Light Grey
                 };
                 Entry Entry = new Entry
@@ -681,13 +715,16 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children =
-                    {new ScrollView { Content = Editor,
+                    {
+                        Title("CSWCSS Calculator"),
+                        new ScrollView { Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
-                    Row(false, Button("Evaluate", () => { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
-                        Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); })
+
+                        Row(false, Button("Evaluate", () => { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
+                            Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); })
                             .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand),
                         Back(this)),
-                    Entry
+                        Entry
                     }
                 };
             }
@@ -716,8 +753,9 @@ namespace InnoTecheLearning
                 Entry F = Entry(Factorizer_Root1, "Factorized Result", delegate { return Factorizer_Result; });
                 return new StackLayout
                 {
-                    VerticalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
+                        Title("CSWCSS Factorizer"),
                         Row(false, S1, C1, (Text)(X + "²")),
                         Row(false, S2, C2, (Text)(X + Y)),
                         Row(false, S3, C3, (Text)(Y + "²")),
@@ -1176,7 +1214,7 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = { Grid, Back(this) }
+                    Children = { Title("CSWCSS Translator"), Grid, Back(this) }
                 };
             }
         }
