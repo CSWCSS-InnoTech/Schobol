@@ -676,6 +676,14 @@ const Log10e = Math.LOG10E;
 """";")
 #if true
             .SetValue("Fraction", new Func<double, string>((value) => {
+                for (var denom = 1.0; denom <= 1e6; denom++)
+                {
+                    var numer = Math.Round(value * denom);
+                    if (Math.Abs(value - numer / denom) == 0)
+                        return $"{numer} / {denom}";
+                }
+                throw new ArithmeticException("Cannot find appropriate fraction.");
+                /*
                 var best_numer = 1.0;
                 var best_denom = 1.0;
                 var best_err = Math.Abs(value - best_numer / best_denom);
@@ -691,9 +699,17 @@ const Log10e = Math.LOG10E;
                         //Console.WriteLine(best_numer + " / " + best_denom + " = " + (best_numer / best_denom) + " error " + best_err);
                     }
                 }
-                return best_numer + " / " + best_denom;
+                return best_numer + " / " + best_denom;*/
             })).SetValue("Mixed", new Func<double, string>((double value) =>
             {
+                for (var denom = 1.0; denom <= 1e6; denom++)
+                {
+                    var numer = Math.Round(value * denom);
+                    if (Math.Abs(value - numer / denom) == 0)
+                        return $"{Math.Round(numer / denom)} {numer % denom} / {denom}";
+                }
+                throw new ArithmeticException("Cannot find appropriate fraction.");
+                /*
                 var best_numer = 1.0;
                 var best_denom = 1.0;
                 var best_err = Math.Abs(value - best_numer / best_denom);
@@ -709,7 +725,7 @@ const Log10e = Math.LOG10E;
                         //Console.WriteLine(best_numer + " / " + best_denom + " = " + (best_numer / best_denom) + " error " + best_err);
                     }
                 }
-                return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;
+                return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;*/
             })).SetValue("AngleMeasure", new Func<double, string>((double value) =>
             {
                 var degree = Math.Floor(value);
@@ -719,17 +735,21 @@ const Log10e = Math.LOG10E;
             })).SetValue("IntSurd", new Func<double, string>((double value) =>
             {
                 if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
+                if (value.IsInteger()) return value.ToString() + OnPlatform("√1̅", "√1̅", "√̅1");
                 var Negative = value < 0;
                 // A = AVariable, B = Builder, C = Char
-                if (value > 5000) throw new ArgumentOutOfRangeException(nameof(value), value, nameof(value) + " is too large (>5000).");
-                var A = value = Math.Round(value * value);
-                do { A--; } while (value / (A * A) - Math.Truncate(value / (A * A)) != 0);
-                //if (A == 0) throw new ArithmeticException("Cannot find appropiate surd.");
-                if (A < 0) A = 1;
+                if (value > 5000 || value < -5000)
+                    throw new ArgumentOutOfRangeException(nameof(value), value, 
+                        nameof(value) + "'s absolute value is too large (>5000).");
+                double A = Math.Round(value * value), squa = A;
+                do { A--; } while (squa / (A * A) - Math.Truncate(squa / (A * A)) != 0);
+                if (A == -1 || !HasMinimalDifference(A * Math.Sqrt(squa / (A * A)), value, 2))
+                    throw new ArithmeticException("Cannot find appropriate surd.");
+                //if (A < 0) A = 1;
                 var B = new System.Text.StringBuilder();
                 if (Negative) B.Append("-");
                 B.Append(A).Append("√");
-                foreach(var C in (value / (A * A)).ToString())
+                foreach(var C in (squa / (A * A)).ToString())
                 {
 #if WINDOWS_UWP
                     B.Append("̅");
@@ -743,6 +763,7 @@ const Log10e = Math.LOG10E;
             })).SetValue("FracSurd", new Func<double, string>((double value) =>
             {
                 if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
+                if (value.IsInteger()) return value.ToString() + OnPlatform(" / 1 √1̅", " / 1 √1̅", " / 1 √̅1");
                 var Negative = value < 0;
                 /*
                 void Simplify(int[] numbers)
@@ -773,7 +794,7 @@ const Log10e = Math.LOG10E;
                     for (var denom = 1.0; denom <= 500; denom++)
                     {
                         var numer = Math.Round(SubjectToTest * denom);
-                        if (SubjectToTest - numer / denom == 0)
+                        if (HasMinimalDifference(SubjectToTest, numer / denom, 2))
                         {
                             int Square = 1, a = i;
                             for (int b = 2; a > 1; b++)
@@ -808,7 +829,7 @@ const Log10e = Math.LOG10E;
                         }
                     }
                 }
-                throw new ArithmeticException("Cannot find appropiate fraction and surd.");
+                throw new ArithmeticException("Cannot find appropriate fraction and surd.");
             }))
 #endif
             .Execute(Expression);
@@ -1062,6 +1083,27 @@ const Log10e = Math.LOG10E;
                 }
                 return InternalAsync();
             }
+        }
+        public static bool HasMinimalDifference(double value1, double value2, int units)
+        {
+            long lValue1 = BitConverter.DoubleToInt64Bits(value1);
+            long lValue2 = BitConverter.DoubleToInt64Bits(value2);
+
+            // If the signs are different, return false except for +0 and -0.
+            if ((lValue1 >> 63) != (lValue2 >> 63))
+            {
+                if (value1 == value2)
+                    return true;
+
+                return false;
+            }
+
+            long diff = Math.Abs(lValue1 - lValue2);
+
+            if (diff <= units)
+                return true;
+
+            return false;
         }
     }
     ///// <summary>

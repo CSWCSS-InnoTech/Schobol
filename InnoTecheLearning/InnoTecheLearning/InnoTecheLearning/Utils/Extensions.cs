@@ -385,8 +385,15 @@ namespace InnoTecheLearning
 
         public delegate T WithDelegate<T>(ref T Instance);
         public delegate void WithDelegateVoid<T>(ref T Instance);
-        public static T With<T>(this T Instance, WithDelegate<T> Function) => Function(ref Instance);
-        public static T With<T>(this T Instance, WithDelegateVoid<T> Function) { Function(ref Instance); return Instance; }
+        public delegate TIgnore WithDelegateIgnore<T, TIgnore>(ref T Instance);
+        public static T With<T>(this T Instance, WithDelegate<T> Chain) => Chain(ref Instance);
+        public static T With<T>(this T Instance, WithDelegateVoid<T> Action) { Action(ref Instance); return Instance; }
+        public static T With<T, TIgnore>(this T Instance, WithDelegateIgnore<T, TIgnore> Function)
+        { Function(ref Instance); return Instance; }
+
+        public static bool IsInteger(this float d) => d == Math.Truncate(d);
+        public static bool IsInteger(this double d) => d == Math.Truncate(d);
+        public static bool IsInteger(this decimal d) => d == Math.Truncate(d);
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

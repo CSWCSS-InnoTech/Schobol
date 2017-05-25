@@ -206,6 +206,22 @@ namespace InnoTecheLearning
         {
             get
             {
+                void MusicTunerSwitch(Button[] Viola, int i)
+                {
+                    Viola[i].Clicked += delegate
+                    {
+                        for (int j = 0; j < 4; j++)
+                            Viola[j].BackgroundColor = Color.Silver;
+                        Viola[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
+                    };
+                }
+                Button MusicTunerPlay(Text Text, Sounds Sound, Slider Volum)
+                {
+                    return Button(Text, () =>
+                    { /*_Player.Pause();*/
+                        MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Volum.Value);
+                    });
+                }
                 Label Volume = (Text)"100";
                 Slider Vol =
                     Slider((object sender, ValueChangedEventArgs e) =>
@@ -251,22 +267,6 @@ namespace InnoTecheLearning
                     }
                 };
             }
-        }
-        public void MusicTunerSwitch(Button[] Violin, int i)
-        {
-            Violin[i].Clicked += delegate
-            {
-                for (int j = 0; j < 4; j++)
-                    Violin[j].BackgroundColor = Color.Silver;
-                Violin[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
-            };
-        }
-        public Button MusicTunerPlay(Text Text, Sounds Sound, Slider Vol)
-        {
-            return Button(Text, () =>
-            { /*_Player.Pause();*/
-                MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Vol.Value);
-            });
         }
         public StackLayout CloudTest
         {
@@ -326,6 +326,10 @@ namespace InnoTecheLearning
         {
             get
             {
+                void Calculator_TextChanged(object sender, TextChangedEventArgs e)
+                {
+                    if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
+                }
                 Entry In = new Entry
                 {
                     TextColor = Color.Black,
@@ -390,7 +394,8 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", () =>
                 {
-                    Calculator_Value = JSEvaluate(In.Text, this, AngleUnit, Calculator_Modifier);
+                    Calculator_Value = string.IsNullOrWhiteSpace(In.Text) ? string.Empty : 
+                        Calculator_Value = JSEvaluate(In.Text, this, AngleUnit, Calculator_Modifier);
                     Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
@@ -551,10 +556,9 @@ namespace InnoTecheLearning
                         if (Calculator_Modifier != (Modifier)i)
                         {
                             Calculator_Modifier = (Modifier)i;
-                            try { Calculator_Value = JSEngine.Invoke("Display", JSEngine.GetCompletionValue(), i).ToString(); }
-                            catch (System.Reflection.TargetInvocationException ex)
-                            { Calculator_Value = ('ⓧ' + ex.InnerException.Message).Split('\r', '\n', '\f')[0]; }
-                            catch (Exception ex) { Calculator_Value = ('ⓧ' + ex.Message).Split('\r', '\n', '\f')[0]; }
+                            var Result = JSEngine.GetCompletionValue();
+                            try { Calculator_Value = JSEngine.Invoke("Display", Result, i).ToString(); }
+                            catch { Calculator_Value = Result.ToString(); }
                             Out.Text = "";
                         }
                     }, 0, false,
@@ -649,15 +653,15 @@ namespace InnoTecheLearning
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
         }
         #endregion
-        private void Calculator_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
-        }
         string Calculator_Free_Value = "";
         public StackLayout Calculator_Free
         {
             get
             {
+                void Calculator_Free_TextChanged(object sender, TextChangedEventArgs e)
+                {
+                    if (((Entry)sender).Text != Calculator_Free_Value) { ((Entry)sender).Text = Calculator_Free_Value; }
+                }
                 Editor Editor = new Editor
                 {
                     TextColor = Color.Black,
@@ -687,11 +691,6 @@ namespace InnoTecheLearning
                     }
                 };
             }
-        }
-
-        private void Calculator_Free_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (((Entry)sender).Text != Calculator_Free_Value) { ((Entry)sender).Text = Calculator_Free_Value; }
         }
 
         string Factorizer_Root1 = "";
@@ -766,13 +765,13 @@ namespace InnoTecheLearning
                                 { await Alert(this, "Access to the pedometer is denied.", "Sports"); }
                             }, Color.Blue, Color.White),
                         Button("Stop Running", () => { Pedometer.Stop(); }, Color.Red, Color.White),
-                        (Text)"Steps",
+                        ((Label)(Text)"Steps").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
                         Sports_Steps,
-                        (Text)"Elapsed Time",
+                        ((Label)(Text)"Elapsed Time").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
                         Sports_Time,
-                        (Text)"Estimated Distance",
+                        ((Label)(Text)"Estimated Distance").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
                         Sports_Distance,
-                        (Text)"Time Now",
+                        ((Label)(Text)"Time Now").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
                         Sports_Now,
                         Button("Reset", () => { Pedometer.Reset(); }, Color.Yellow),
                         Back(this)
@@ -1013,36 +1012,36 @@ namespace InnoTecheLearning
         }
         //SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
         ObservableCollection<Result> Favourites = new ObservableCollection<Result>();
-        Button TranslatorButton(Result R)
-        {
-            var B = Button(Favourites.Contains(R) ? "★-" : "★+",
-                (ref Button sender, EventArgs e) =>
-                {
-                    if (Favourites.Contains(R))
-                    {
-                        Favourites.Remove(R);
-                        sender.Text = "★+";
-                    }
-                    else
-                    {
-                        Favourites.Add(R);
-                        sender.Text = "★-";
-                    }
-                }, TextColor: Color.Yellow);
-            Favourites.CollectionChanged +=
-                (object sender, NotifyCollectionChangedEventArgs e) =>
-                {
-                    if (e.OldItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★+");
-                    if (e.NewItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★-");
-                    IgnoreEx(async () => await Storage.SerializedWrite(Storage.VocabFile, Favourites),
-                        typeof(UnauthorizedAccessException));
-                };
-            return B;
-        }
         public StackLayout Translator
         {
             get
             {
+                Button TranslatorButton(Result R)
+                {
+                    var B = Button(Favourites.Contains(R) ? "★-" : "★+",
+                        (ref Button sender, EventArgs e) =>
+                        {
+                            if (Favourites.Contains(R))
+                            {
+                                Favourites.Remove(R);
+                                sender.Text = "★+";
+                            }
+                            else
+                            {
+                                Favourites.Add(R);
+                                sender.Text = "★-";
+                            }
+                        }, TextColor: Color.Yellow);
+                    Favourites.CollectionChanged +=
+                        (object sender, NotifyCollectionChangedEventArgs e) =>
+                        {
+                            if (e.OldItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★+");
+                            if (e.NewItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★-");
+                            IgnoreEx(async () => await Storage.SerializedWrite(Storage.VocabFile, Favourites),
+                                typeof(UnauthorizedAccessException));
+                        };
+                    return B;
+                }
                 var Input = Entry("", "Enter words...");
                 /*var Recognize = Button("🎤", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
