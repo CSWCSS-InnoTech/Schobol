@@ -745,6 +745,8 @@ namespace InnoTecheLearning
         {
             get
             {
+                Label Label(string Text) => ((Label)(Text)Text).With((ref Label x) =>
+                    { x.FontAttributes = FontAttributes.Bold; x.HorizontalOptions = LayoutOptions.Center; });
                 Device.StartTimer(TimeSpan.FromSeconds(1),
                     () =>
                     {
@@ -765,13 +767,13 @@ namespace InnoTecheLearning
                                 { await Alert(this, "Access to the pedometer is denied.", "Sports"); }
                             }, Color.Blue, Color.White),
                         Button("Stop Running", () => { Pedometer.Stop(); }, Color.Red, Color.White),
-                        ((Label)(Text)"Steps").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
+                        Label("Steps"),
                         Sports_Steps,
-                        ((Label)(Text)"Elapsed Time").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
+                        Label("Elapsed Time"),
                         Sports_Time,
-                        ((Label)(Text)"Estimated Distance").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
+                        Label("Estimated Distance"),
                         Sports_Distance,
-                        ((Label)(Text)"Time Now").With((ref Label x) => x.FontAttributes = FontAttributes.Bold),
+                        Label("Time Now"),
                         Sports_Now,
                         Button("Reset", () => { Pedometer.Reset(); }, Color.Yellow),
                         Back(this)

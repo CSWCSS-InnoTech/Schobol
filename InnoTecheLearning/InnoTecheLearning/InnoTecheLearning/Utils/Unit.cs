@@ -14,7 +14,7 @@ namespace InnoTecheLearning
         public struct Unit : IEquatable<Unit>
         {
             public static readonly Unit Default = new Unit();
-            public static readonly ValueTask<Unit> CompletedTask = new ValueTask<Unit>(Default);
+            public static ValueTask<Unit> CompletedTask { get => new ValueTask<Unit>(Default); }
 
             public static Unit Invoke(Action a) { a?.Invoke(); return Default; }
             public static Unit Invoke<T>(Func<T> a) { a?.Invoke(); return Default; }
