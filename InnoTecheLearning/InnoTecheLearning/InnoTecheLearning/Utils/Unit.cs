@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace InnoTecheLearning
@@ -14,13 +15,16 @@ namespace InnoTecheLearning
         public struct Unit : IEquatable<Unit>
         {
             public static readonly Unit Default = new Unit();
-            public static ValueTask<Unit> CompletedTask { get => new ValueTask<Unit>(Default); }
+            public static ValueTask<Unit> CompletedTask { get => new ValueTask<Unit>(Default);
 
             public static Unit Invoke(Action a) { a?.Invoke(); return Default; }
             public static Unit Invoke<T>(Func<T> a) { a?.Invoke(); return Default; }
             public static ValueTask<Unit> InvokeAsync(Action a) => 
                 new ValueTask<Unit>(Task.Run(() => { a?.Invoke(); return Default; }));
             public static ValueTask<Unit> InvokeAsync<T>(Func<T> a) => Await(Task.Run(a));
+            public static ValueTask<Unit> InvokeAsync(Action a, CancellationToken c) =>
+                new ValueTask<Unit>(Task.Run(() => { a?.Invoke(); return Default; }, c));
+            public static ValueTask<Unit> InvokeAsync<T>(Func<T> a, CancellationToken c) => Await(Task.Run(a, c));
 
             public static async ValueTask<Unit> Await(Task t) { await t; return Default; }
             public static async ValueTask<Unit> Await(Func<Task> f) { await f?.Invoke(); return Default; }

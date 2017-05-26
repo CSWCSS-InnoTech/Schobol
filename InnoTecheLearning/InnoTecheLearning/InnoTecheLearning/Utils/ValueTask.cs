@@ -380,6 +380,11 @@ namespace System.Threading.Tasks
         /// <summary>Gets the result.</summary>
         public TResult Result { get { return _task == null ? _result : _task.GetAwaiter().GetResult(); } }
 
+        /// <summary>Gets the id of this task, or -1 if task not running.</summary>
+        public int Id { get => _task?.Id ?? -1; }
+
+
+
         /// <summary>Gets an awaiter for this value.</summary>
         public ValueTaskAwaiter<TResult> GetAwaiter()
         {

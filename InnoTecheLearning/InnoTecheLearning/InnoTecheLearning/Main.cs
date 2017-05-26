@@ -650,41 +650,29 @@ namespace InnoTecheLearning
         Modifier Calculator_Modifier;
         #region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
-            Color BackColor = default(Color), Color TextColor = default(Color))
-        {
+            Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor));
-        }
         public void Append(Grid.IGridList<View> List, Expressions Expression,
-            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color))
-        {
+            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor), Left, Top);
-        }
         public void Append(Grid.IGridList<View> List, Expressions Expression,
-            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color))
-        {
+            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor), Left, Right, Top, Bottom);
-        }
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            Color BackColor = default(Color), Color TextColor = default(Color))
-        {
+            Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor));
-        }
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color))
-        {
+            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Top);
-        }
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color))
-        {
+            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
-        }
         #endregion
         string Calculator_Free_Value = "";
         public StackLayout Calculator_Free
