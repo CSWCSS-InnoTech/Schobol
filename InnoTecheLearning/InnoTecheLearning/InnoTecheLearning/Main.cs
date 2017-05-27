@@ -1,4 +1,6 @@
-﻿/*System.Runtime.Serialization.FormatterServices.GetUninitializedObject((Type)
+﻿//System.Runtime.Serialization.FormatterServices.GetUninitializedObject(((object)typeof(object)).GetType())
+//System.Runtime.Serialization.FormatterServices.GetUninitializedObject(Type.GetType("System.RuntimeType"))
+/*System.Runtime.Serialization.FormatterServices.GetUninitializedObject((Type)
     System.Runtime.Serialization.FormatterServices.GetUninitializedObject(Type.GetType("System.RuntimeType")))*/
 //Hosting process exited with exit code -1073741819.
 using System;
@@ -218,11 +220,11 @@ namespace InnoTecheLearning
                         Viola[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
                     };
                 }
-                Button MusicTunerPlay(Text Text, Sounds Sound, Slider Volum)
+                Button MusicTunerPlay(Text Text, int Frequency, Slider Volum)
                 {
                     return Button(Text, () =>
                     { /*_Player.Pause();*/
-                        MusicSound?.Dispose(); MusicSound = Play(Sound, true, (float)Volum.Value);
+                        MusicSound?.Dispose(); MusicSound = Play(Frequency, 1, true, (float)Volum.Value);
                     }).With((ref Button x) => x.HorizontalOptions = x.VerticalOptions =  LayoutOptions.FillAndExpand);
                 }
                 Label Volume = (Text)"100";
@@ -230,17 +232,17 @@ namespace InnoTecheLearning
                     Slider((object sender, ValueChangedEventArgs e) =>
                     {
                         Volume.Text = ((int)e.NewValue).ToString().PadLeft(4);
-                        if (MusicSound == null || MusicSound._disposedValue) return;
+                        if (MusicSound == null || MusicSound.Disposed) return;
                         MusicSound.Volume = (float)e.NewValue / 100;
                     }, BackColor: Color.Gray);
-                Button[] Violin = { MusicTunerPlay("G", Sounds.Violin_G, Vol),
-                        MusicTunerPlay("D", Sounds.Violin_D, Vol),
-                        MusicTunerPlay("A", Sounds.Violin_A, Vol),
-                        MusicTunerPlay("E", Sounds.Violin_E, Vol)};
-                Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C, Vol),
-                        MusicTunerPlay("'G", Sounds.Cello_G, Vol),
-                        MusicTunerPlay("D", Sounds.Cello_D, Vol),
-                        MusicTunerPlay("A", Sounds.Cello_A, Vol)};
+                Button[] Violin = { MusicTunerPlay("G", 196, Vol),
+                        MusicTunerPlay("D", 294, Vol),
+                        MusicTunerPlay("A", 440, Vol),
+                        MusicTunerPlay("E", 659, Vol)};
+                Button[] Cello = { MusicTunerPlay("'C", 65, Vol),
+                        MusicTunerPlay("'G", 98, Vol),
+                        MusicTunerPlay("D", 147, Vol),
+                        MusicTunerPlay("A", 220, Vol)};
 
                 for (int i = 0; i < 4; i++)
                     MusicTunerSwitch(Violin, i, Cello);

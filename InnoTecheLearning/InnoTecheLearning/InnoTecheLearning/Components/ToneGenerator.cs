@@ -4,21 +4,29 @@ using NotSupportedException = System.NotSupportedException;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using System;
 //using Logg = Android.Util.Log;
 
 namespace InnoTecheLearning
 {
     partial class Utils
     {
+
+        
         public class ToneGenerator
         {
-            public const int sampleRate = 8000;
+            public const int SampleRate = 8000;
             double[] sample = null;
             byte[] generatedSnd = null;
             int m_ifreq = 400;
             ValueTask<Unit> m_PlayThread = Unit.CompletedTask;
             bool m_bStop = false;
+#if __IOS__
+#elif __ANDROID__
+#else
+            #endif
             StreamPlayer m_audioTrack = null;
+
             int m_play_length = 1000;//in seconds
             CancellationTokenSource cancellation = new CancellationTokenSource();
 
@@ -76,7 +84,7 @@ namespace InnoTecheLearning
                     {
                         int iToneStep = 0;
 
-                        m_audioTrack = StreamPlayer.Create(new System.IO)
+                        m_audioTrack = StreamPlayer.Create(new ProducerConsumerStream())
 
                         while (!m_bStop && m_play_length-- > 0)
                         {
@@ -86,32 +94,32 @@ namespace InnoTecheLearning
                             if (iToneStep == 1) m_audioTrack.Play();
                         }
                     }
-                    catch (System.OutOfMemoryException e)
+                    catch (System.OutOfMemoryException)
                     {
                         //Logg.Error("Tone", e.ToString());
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         //Logg.Error("Tone", e.ToString());
                     }
 
-                });
+                }, cancellation.Token);
                 m_PlayThread.Start();
             }
 
             //Generate tone data for 1 seconds
             void GenTone(int iStep)
             {
-                sample = new double[sampleRate];
+                sample = new double[SampleRate];
 
-                for (int i = 0; i < sampleRate; ++i)
+                for (int i = 0; i < SampleRate; ++i)
                 {
-                    sample[i] = Math.Sin(2 * Math.PI * (i + iStep * sampleRate) / (sampleRate / m_ifreq));
+                    sample[i] = Math.Sin(2 * Math.PI * (i + iStep * SampleRate) / (SampleRate / m_ifreq));
                 }
 
                 // convert to 16 bit pcm sound array
                 // assumes the sample buffer is normalised.
-                generatedSnd = new byte[2 * sampleRate];
+                generatedSnd = new byte[2 * SampleRate];
                 int idx = 0;
                 foreach (double dVal in sample)
                 {
@@ -125,23 +133,27 @@ namespace InnoTecheLearning
 
         }
 
+        /*using System.Threading;
+        struct Unit { public static Unit Default => new Unit(); }*/
         // This class is safe for 1 producer and 1 consumer.
         public class ProducerConsumerStream : Stream
         {
+            private object SyncObject;
             private byte[] CircleBuff;
             private int Head;
             private int Tail;
 
-            public bool IsAddingCompleted { get; private set; }
-            public bool IsCompleted { get; private set; }
+            public bool IsReadingCompleted { get; private set; }
+            public bool IsWritingCompleted { get; private set; }
 
             // For debugging
             private long TotalBytesRead = 0;
             private long TotalBytesWritten = 0;
 
-            public ProducerConsumerStream(int size)
+            public ProducerConsumerStream(int size = byte.MaxValue)
             {
-                CircleBuff = new byte[size];
+                CircleBuff = new byte[size + 1 < 1 ? byte.MaxValue : size];
+                SyncObject = new object();
                 Head = 1;
                 Tail = 0;
             }
@@ -179,11 +191,8 @@ namespace InnoTecheLearning
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                if (disposed)
-                {
-                    throw new System.ObjectDisposedException("The stream has been disposed.");
-                }
-                if (IsCompleted)
+                CheckDisposed();
+                if (IsReadingCompleted)
                 {
                     throw new EndOfStreamException("The stream is empty and has been marked complete for adding.");
                 }
@@ -192,17 +201,17 @@ namespace InnoTecheLearning
                     return 0;
                 }
 
-                lock (CircleBuff)
+                lock (SyncObject)
                 {
                     //DebugOut("Read: requested {0:N0} bytes. Available = {1:N0}.", count, ReadBytesAvailable);
                     while (ReadBytesAvailable == 0)
                     {
-                        if (IsAddingCompleted)
+                        if (IsWritingCompleted)
                         {
-                            IsCompleted = true;
+                            IsReadingCompleted = true;
                             return 0;
                         }
-                        Monitor.Wait(CircleBuff);
+                        Monitor.Wait(SyncObject);
                     }
 
                     // If Head < Tail, then there are bytes available at the end of the buffer
@@ -249,41 +258,41 @@ namespace InnoTecheLearning
                     //DebugOut("Read: returning {0:N0} bytes. TotalRead={1:N0}", bytesRead, TotalBytesRead);
                     //DebugOut("Read: Head={0}, Tail={1}, Avail={2}", Head, Tail, ReadBytesAvailable);
 
-                    Monitor.Pulse(CircleBuff);
+                    Monitor.Pulse(SyncObject);
                     return bytesRead;
                 }
             }
-
-            public override void Write(byte[] buffer, int offset, int count)
+            
+            public void WriteBytes(params byte[] values) => Write(values, 0, values.Length);
+            public override void Write(byte[] buffer, int offset = 0, int count = 1)
             {
-                if (disposed)
-                {
-                    throw new System.ObjectDisposedException("The stream has been disposed.");
-                }
-                if (IsAddingCompleted)
+                CheckDisposed();
+                if (IsWritingCompleted)
                 {
                     throw new System.InvalidOperationException("The stream has been marked as complete for adding.");
                 }
-                lock (CircleBuff)
+                try
                 {
-                    //DebugOut("Write: requested {0:N0} bytes. Available = {1:N0}", count, WriteBytesAvailable);
-                    int bytesWritten = 0;
-                    while (bytesWritten < count)
+                    lock (SyncObject)
                     {
-                        while (WriteBytesAvailable == 0)
+                        //DebugOut("Write: requested {0:N0} bytes. Available = {1:N0}", count, WriteBytesAvailable);
+                        int bytesWritten = 0;
+                        while (bytesWritten < count)
                         {
-                            Monitor.Wait(CircleBuff);
+                            if (WriteBytesAvailable == 0) throw new System.OutOfMemoryException("Internal buffer is full.");
+                            //while (WriteBytesAvailable == 0) Monitor.Wait(CircleBuff); 
+                            //DebugOut("Write: Head={0}, Tail={1}, Avail={2}", Head, Tail, WriteBytesAvailable);
+                            int bytesToCopy = Math.Min((count - bytesWritten), WriteBytesAvailable);
+                            CopyBytes(buffer, offset + bytesWritten, bytesToCopy);
+                            TotalBytesWritten += bytesToCopy;
+                            //DebugOut("Write: {0} bytes written. TotalWritten={1:N0}", bytesToCopy, TotalBytesWritten);
+                            //DebugOut("Write: Head={0}, Tail={1}, Avail={2}", Head, Tail, WriteBytesAvailable);
+                            bytesWritten += bytesToCopy;
                         }
-                        //DebugOut("Write: Head={0}, Tail={1}, Avail={2}", Head, Tail, WriteBytesAvailable);
-                        int bytesToCopy = Math.Min((count - bytesWritten), WriteBytesAvailable);
-                        CopyBytes(buffer, offset + bytesWritten, bytesToCopy);
-                        TotalBytesWritten += bytesToCopy;
-                        //DebugOut("Write: {0} bytes written. TotalWritten={1:N0}", bytesToCopy, TotalBytesWritten);
-                        //DebugOut("Write: Head={0}, Tail={1}, Avail={2}", Head, Tail, WriteBytesAvailable);
-                        bytesWritten += bytesToCopy;
-                        Monitor.Pulse(CircleBuff);
                     }
                 }
+                finally
+                { Monitor.Pulse(SyncObject); }
             }
 
 
@@ -315,52 +324,36 @@ namespace InnoTecheLearning
 
             public void CompleteAdding()
             {
-                if (disposed)
-                {
-                    throw new System.ObjectDisposedException("The stream has been disposed.");
-                }
-                lock (CircleBuff)
+                CheckDisposed();
+                lock (SyncObject)
                 {
                     //DebugOut("CompleteAdding: {0:N0} bytes written.", TotalBytesWritten);
-                    IsAddingCompleted = true;
-                    Monitor.Pulse(CircleBuff);
+                    IsWritingCompleted = true;
+                    Monitor.Pulse(SyncObject);
                 }
             }
 
-            public override bool CanRead { get { return true; } }
+            public override bool CanRead => true;
 
-            public override bool CanSeek { get { return false; } }
+            public override bool CanSeek => false;
 
-            public override bool CanWrite { get { return true; } }
+            public override bool CanWrite => true;
 
             public override void Flush() { /* does nothing */ }
 
-            public override long Length { get
-                {
-                    throw new NotSupportedException("Getting length is not supported.");
-                } }
+            public override long Length => throw new NotSupportedException("Getting length is not supported.");
 
             public override long Position
             {
-                get
-                {
-                    throw new NotSupportedException("Positioning is not supported.");
-                }
-                set
-                {
-                    throw new NotSupportedException("Positioning is not supported.");
-                }
+                get => throw new NotSupportedException("Positioning is not supported.");
+                set => throw new NotSupportedException("Positioning is not supported.");
             }
 
-            public override long Seek(long offset, SeekOrigin origin)
-            {
+            public override long Seek(long offset, SeekOrigin origin) =>
                 throw new NotSupportedException("Seeking is not supported.");
-            }
 
-            public override void SetLength(long value)
-            {
+            public override void SetLength(long value) =>
                 throw new NotSupportedException("Setting length is not supported.");
-            }
 
             private bool disposed = false;
 
@@ -372,7 +365,11 @@ namespace InnoTecheLearning
                     disposed = true;
                 }
             }
-        }
 
+            private Unit CheckDisposed() =>
+                disposed ? throw new System.ObjectDisposedException(GetType().Name, "The stream has been disposed.") : Unit.Default;
+
+        }
+        
     }
 }
