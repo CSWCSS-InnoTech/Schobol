@@ -3,7 +3,7 @@ The eLearn Utilities App, developed in [Xamarin Forms](https://www.xamarin.com/f
 
 The eLearn Utilities App is an app empowering students to learn more efficiently through digitalised learning.
 
-Note: This app is currently in Beta state and is in heavy development. Some features may not work.
+## Note: This app is currently in Beta state and is in heavy development. Some features may not work.
 
 #### LINGUAL
 - Learn and save new vocabularies with our integrated Pearson dictionary, and vocabulary book that you can read on the go.
