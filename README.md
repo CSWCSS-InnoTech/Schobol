@@ -1,5 +1,19 @@
-# InnoTech-eLearning
-The eLearn App, developed in Xamarin, is an on-going project of the Innovative Technology Society of Cheung Sha Wan Catholic Secondary School of Hong Kong.
+# CSWCSS eLearn Utilities App
+The eLearn Utilities App, developed in Xamarin, is an on-going project of the Innovative Technology Society of Cheung Sha Wan Catholic Secondary School of Hong Kong.
+
+The eLearn Utilities App is an app empowering students to learn more efficiently through digitalised learning.
+
+Note: This app is currently in Beta state and is in heavy development. Some features may not work.
+
+LINGUAL - Learn and save new vocabularies with our integrated Pearson dictionary, and vocabulary book that you can read on the go.
+
+LOGIC - Features 3 modes Keypad Mode and Freeform Mode for scientific calculation, as well as Factor Mode for factorizing quadratic equations.
+
+HEALTH - Keep track of your performance while exercising.
+
+TUNES - Tune your musical instruments.
+
+TRAIN - Train your mathematical skills through interactive games.
 
 ### Lead Developer: Hadrian Tang Wai To
 
@@ -16,7 +30,7 @@ Jordan Fung is a 14-year-old entrepreneur, inspirer, and self-taught programmer 
 Alvin Hung Wai Chun, Joseph Li Hoi Ming, Yves Lo Yin Chung
 
 ### Coordinators
-Austin Chan Chi Heng, Andrew Lee Ho Wang, Justin Wong Kong Ki
+Austin Chan Chi Heng, Andrew Lee Ho Wang, Justin Wong Kong Ki [Facebook page of Qige0902](https://www.facebook.com/qige0902/)
 
 ### About the differrent branches
 
