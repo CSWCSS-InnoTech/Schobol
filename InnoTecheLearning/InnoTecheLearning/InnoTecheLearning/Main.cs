@@ -178,24 +178,24 @@ namespace InnoTecheLearning
 
            MainScreenRow(
                          MainScreenItem(ImageSource(ImageFile.Translate), delegate{
-                         Showing = Pages.Translate; }, BoldLabel("Translator")),
+                         Showing = Pages.Translate; }, BoldLabel("Lingual")),
                          MainScreenItem(ImageSource(ImageFile.Calculator),async delegate {
                                 Showing =
                                     await AlertChoose(this, "Which mode?", "Choose Calculator mode", "Normal", "Freeform") ?
                                     Pages.Calculator : Pages.Calculator_Free;
-                             },BoldLabel("Calculator")),
+                             },BoldLabel("Logic")),
                          MainScreenItem(ImageSource(ImageFile.Factorizer),delegate {
                              Showing = Pages.Factorizer;
-                             },BoldLabel("Quadratic Factorizer"))),
+                             },BoldLabel("Factorizer"))),
 
            MainScreenRow(MainScreenItem(ImageSource(ImageFile.Sports), delegate {
                              Showing = Pages.Sports;
-                         },BoldLabel("Sports")),
+                         },BoldLabel("Health")),
                          MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
                              Showing = Pages.MusicTuner;
-                         },BoldLabel("Music Tuner")),
+                         },BoldLabel("Tunes")),
                          MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
-                             Showing = Pages.MathSolver; },BoldLabel("Maths Solver Minigame"))
+                             Showing = Pages.MathSolver; },BoldLabel("Excel"))
                          ),
 
                         Button("Changelog", () => { Showing = Pages.Changelog; }),
