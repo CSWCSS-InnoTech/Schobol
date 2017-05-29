@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-05-27T13:40:55.677</Modified>
+      <Modified>2017-05-29T14:27:19.692</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-05-27T13:40:54.960</Modified>
+      <Modified>2017-05-29T14:27:19.013</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -783,7 +783,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.xr.xml">
       <PackagePath>CSWCSS eLearn Utilities.xr.xml</PackagePath>
-      <Modified>2017-05-16T14:04:34.468</Modified>
+      <Modified>2017-05-29T14:25:01.379</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\UnionMetadata\10.0.15063.0\Windows.winmd">
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
@@ -800,11 +800,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-05-27T13:03:43.346</Modified>
+      <Modified>2017-05-29T14:25:04.626</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-05-27T13:40:55.675</Modified>
+      <Modified>2017-05-29T14:27:19.687</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

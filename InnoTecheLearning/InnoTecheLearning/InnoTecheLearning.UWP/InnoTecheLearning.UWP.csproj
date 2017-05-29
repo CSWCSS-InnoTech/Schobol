@@ -142,6 +142,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ThreeButtonDialog.xaml.cs">
+      <DependentUpon>ThreeButtonDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DrawView.xaml.cs">
       <DependentUpon>DrawView.xaml</DependentUpon>
     </Compile>
@@ -216,6 +219,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="ThreeButtonDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DrawView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

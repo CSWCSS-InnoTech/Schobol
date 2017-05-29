@@ -85,6 +85,7 @@ namespace InnoTecheLearning
                 Create(new PcmWavStream(Sound, Loop, Volume));
             public static StreamPlayer Play(Sounds Sound, bool Loop = false, float Volume = 1) =>
                 Play(new PcmWavStream(Sound, Loop, Volume));
+            /*
             public static StreamPlayer Create(int Frequency, TimeSpan Duration, bool Loop = false, float Volume = 1) =>
                 Create(new ToneStream(Frequency, Duration, Loop, Volume));
             public static StreamPlayer Play(int Frequency, TimeSpan Duration, bool Loop = false, float Volume = 1) =>
@@ -93,6 +94,7 @@ namespace InnoTecheLearning
                 Create(new ToneStream(Frequency, Seconds, Loop, Volume));
             public static StreamPlayer Play(int Frequency, int Seconds = 1, bool Loop = false, float Volume = 1) =>
                 Play(new ToneStream(Frequency, Seconds, Loop, Volume));
+                */
             public static StreamPlayer Play(MusicStream Stream)
             {
                 var Return = Create(Stream);
@@ -568,11 +570,11 @@ namespace InnoTecheLearning
                 _player.SetSource(Content.AsRandomAccessStream(), GetMime(Content.ReadFully()));
             }*/
             public void Play()
-            { _player.Play(); }
+            { _player?.Play(); }
             public void Pause()
-            { _player.Pause(); }
+            { _player?.Pause(); }
             public void Stop()
-            { _player.Stop(); }
+            { _player?.Stop(); }
             public float Volume { get { return (float)_player.Volume; } set { _player.Volume = value; } }
             public event EventHandler Complete
             {

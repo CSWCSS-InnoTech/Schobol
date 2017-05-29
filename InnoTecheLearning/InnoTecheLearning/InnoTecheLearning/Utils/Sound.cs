@@ -1294,7 +1294,7 @@ namespace InnoTecheLearning
                 set => throw new NotSupportedException("Setting duration is not supported.");
             }
         }
-
+        /*
         public class ToneStream : MusicStream
         {
             public ToneStream(int Frequency = 1900, int Seconds = 1, bool Loop = false, float Volume = 1)
@@ -1382,6 +1382,7 @@ namespace InnoTecheLearning
             public override void SetLength(long value) => Content.SetLength(value);
 
             public override void Write(byte[] buffer, int offset, int count) => Content.Write(buffer, offset, count);
-        }
+            
+        }*/
     }
 }

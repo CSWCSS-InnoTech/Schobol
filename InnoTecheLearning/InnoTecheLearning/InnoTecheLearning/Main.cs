@@ -179,24 +179,22 @@ namespace InnoTecheLearning
            MainScreenRow(
                          MainScreenItem(ImageSource(ImageFile.Translate), delegate{
                          Showing = Pages.Translate; }, BoldLabel("Lingual")),
-                         MainScreenItem(ImageSource(ImageFile.Calculator),async delegate {
-                                Showing =
-                                    await AlertChoose(this, "Which mode?", "Choose Calculator mode", "Normal", "Freeform") ?
-                                    Pages.Calculator : Pages.Calculator_Free;
-                             },BoldLabel("Logic")),
-                         MainScreenItem(ImageSource(ImageFile.Factorizer),delegate {
-                             Showing = Pages.Factorizer;
-                             },BoldLabel("Factorizer"))),
+                         MainScreenItem(ImageSource(ImageFile.Calculator), delegate {
+                                ThreeButtonDialog.Show("Choose Calculator mode", "Which Calculator mode?",
+                                    "Keypad", () => Showing = Pages.Calculator,
+                                    "Freeform", () => Showing = Pages.Calculator_Free,
+                                    "Factor", () => Showing = Pages.Factorizer);
+                             },BoldLabel("Logic"))),
 
            MainScreenRow(MainScreenItem(ImageSource(ImageFile.Sports), delegate {
                              Showing = Pages.Sports;
                          },BoldLabel("Health")),
                          MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
                              Showing = Pages.MusicTuner;
-                         },BoldLabel("Tunes")),
-                         MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
-                             Showing = Pages.MathSolver; },BoldLabel("Excel"))
+                         },BoldLabel("Tunes"))
                          ),
+                         MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
+                             Showing = Pages.MathSolver; },BoldLabel("Excel")),
 
                         Button("Changelog", () => { Showing = Pages.Changelog; }),
                         VersionDisplay
@@ -219,13 +217,20 @@ namespace InnoTecheLearning
                             OtherRow[j].BackgroundColor = Color.Silver;
                         Viola[i].BackgroundColor = Color.FromHex("#FF7F50"); //Coral (orange)
                     };
-                }
+                }/*
                 Button MusicTunerPlay(Text Text, int Frequency, Slider Volum)
                 {
                     return Button(Text, () =>
-                    { /*_Player.Pause();*/
-                        MusicSound?.Dispose(); MusicSound = Play(Frequency, 1, true, (float)Volum.Value);
+                    { //_Player.Pause();
+                        MusicSound?.Dispose(); MusicSound = ToneGenerator.PlayTone(Frequency, 2, (float)Volum.Value);
                     }).With((ref Button x) => x.HorizontalOptions = x.VerticalOptions =  LayoutOptions.FillAndExpand);
+                }*/
+                Button MusicTunerPlay(Text Text, Sounds Sound, Slider Volum)
+                {
+                    return Button(Text, () =>
+                    { //_Player.Pause();
+                        MusicSound?.Dispose(); MusicSound = StreamPlayer.Play(Sound, true, (float)Volum.Value);
+                    }).With((ref Button x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand);
                 }
                 Label Volume = (Text)"100";
                 Slider Vol =
@@ -235,14 +240,14 @@ namespace InnoTecheLearning
                         if (MusicSound == null || MusicSound.Disposed) return;
                         MusicSound.Volume = (float)e.NewValue / 100;
                     }, BackColor: Color.Gray);
-                Button[] Violin = { MusicTunerPlay("G", 196, Vol),
-                        MusicTunerPlay("D", 294, Vol),
-                        MusicTunerPlay("A", 440, Vol),
-                        MusicTunerPlay("E", 659, Vol)};
-                Button[] Cello = { MusicTunerPlay("'C", 65, Vol),
-                        MusicTunerPlay("'G", 98, Vol),
-                        MusicTunerPlay("D", 147, Vol),
-                        MusicTunerPlay("A", 220, Vol)};
+                Button[] Violin = { MusicTunerPlay("G", Sounds.Violin_G, Vol), // 196
+                        MusicTunerPlay("D", Sounds.Violin_D, Vol), // 294
+                        MusicTunerPlay("A", Sounds.Violin_A, Vol), // 440
+                        MusicTunerPlay("E", Sounds.Violin_E, Vol)}; // 659
+                Button[] Cello = { MusicTunerPlay("'C", Sounds.Cello_C, Vol),// 65
+                        MusicTunerPlay("'G", Sounds.Cello_G, Vol),// 98
+                        MusicTunerPlay("D", Sounds.Cello_D, Vol),// 147
+                        MusicTunerPlay("A", Sounds.Cello_A, Vol)};// 220
 
                 for (int i = 0; i < 4; i++)
                     MusicTunerSwitch(Violin, i, Cello);

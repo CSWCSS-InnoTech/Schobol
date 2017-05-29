@@ -1,67 +1,99 @@
-﻿using Exception = System.Exception;
-using Math = System.Math;
-using NotSupportedException = System.NotSupportedException;
-using System.Threading;
-using System.Threading.Tasks;
-using System.IO;
-using System;
-//using Logg = Android.Util.Log;
-
-namespace InnoTecheLearning
+﻿namespace InnoTecheLearning
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
     partial class Utils
     {
-
-        
-        public class ToneGenerator
+        public class ToneGenerator : IDisposable
         {
+            public const int Infinite = -1;
             public const int SampleRate = 8000;
             double[] sample = null;
             byte[] generatedSnd = null;
             int m_ifreq = 400;
             ValueTask<Unit> m_PlayThread = Unit.CompletedTask;
-            bool m_bStop = false;
-#if __IOS__
-#elif __ANDROID__
-#else
-            #endif
-            StreamPlayer m_audioTrack = null;
-
             int m_play_length = 1000;//in seconds
-            CancellationTokenSource cancellation = new CancellationTokenSource();
+            CancellationTokenSource cancellation;
+            double m_volume = 1.0;
+#if __IOS__
+            Foundation.NSMutableData m_memory = new Foundation.NSMutableData(2 * SampleRate);
+#elif WINDOWS_UWP
+            System.IO.MemoryStream m_memory = null;
+#endif
+#if __ANDROID__
+            Android.Media.AudioTrack
+#elif __IOS__
+            AVFoundation.AVAudioPlayer
+#elif WINDOWS_UWP
+            Windows.Media.Playback.MediaPlayer
+#endif
+            m_audioTrack = null;
 
             /// <summary>
-            /// Plays a tone until stop, provided frequency.
+            /// Creates a tone generator, provided frequency.
             /// </summary>
-            /// <param name="freq">Frequency in Hertz.</param>
+            /// <param name="Frequency">Frequency in Hertz.</param>
+            /// <param name="PlayLength">Play length in seconds.</param>
             /// <returns></returns>
-            public ToneGenerator(int freq = 400) => m_ifreq = freq;
-            /// <summary>
-            /// Plays a tone, provided frequency and length.
-            /// </summary>
-            /// <param name="freq">Frequency in Hertz.</param>
-            /// <param name="play_length">Play length in seconds.</param>
-            /// <returns></returns>
-            public ToneGenerator(int freq = 400, int play_length = 1000) : this(freq) => m_play_length = play_length;
-            /// <summary>
-            /// Plays a tone, provided frequency and length.
-            /// </summary>
-            /// <param name="freq">Frequency in Hertz.</param>
-            /// <param name="play_length">Play length.</param>
-            /// <returns></returns>
-            public ToneGenerator(int freq, System.TimeSpan play_length) : this(freq) =>
-                m_play_length = (int)play_length.TotalSeconds;
-
-            void Stop()
+            public ToneGenerator(int Frequency = 400, int PlayLength = 1000, double Volume = 1.0)
             {
-                m_bStop = true;
-                if (m_PlayThread != null)
+                m_ifreq = Frequency;
+                m_play_length = PlayLength;
+                this.Volume = Volume;
+                if(PlayLength == Infinite) cancellation = new CancellationTokenSource();
+                else cancellation = new CancellationTokenSource(PlayLength * 1000);
+            }
+
+            /// <summary>
+            /// Plays a tone, provided frequency.
+            /// </summary>
+            /// <param name="Frequency">Frequency in Hertz.</param>
+            /// <param name="PlayLength">Play length in seconds.</param>
+            /// <returns></returns>
+            static public ToneGenerator PlayTone(int Frequency = 400, int PlayLength = 1000, double Volume = 1.0)
+            {
+                ToneGenerator player = new ToneGenerator(Frequency, PlayLength, Volume);
+                player.Play();
+                return player;
+            }
+
+            public double Volume {
+                get
+                {
+                    if (m_audioTrack == null) return m_volume;
+#if __IOS__
+                    return m_volume = (double)m_audioTrack?.Volume
+#elif __ANDROID__
+                    return m_volume
+#elif WINDOWS_UWP
+                    return m_volume = m_audioTrack.Volume
+#endif
+                        ;
+                }
+                set
+                {
+#if __IOS__
+                    m_volume = value;
+                    if (m_audioTrack != null) m_audioTrack.Volume = (float)m_volume;
+#elif __ANDROID__
+                    m_volume = value;
+                    if (m_audioTrack != null) m_audioTrack.SetVolume((float)(m_volume = value));
+#elif WINDOWS_UWP
+                    m_volume = value;
+                    if (m_audioTrack != null) m_audioTrack.Volume = m_volume;
+#endif
+                }
+            }
+
+            public async void Stop()
+            {
+                if (m_PlayThread != Unit.CompletedTask)
                 {
                     try
                     {
-                        m_PlayThread.Interrupt();
-                        m_PlayThread.Join();
-                        m_PlayThread = Unit.CompletedTask;
+                        cancellation.Cancel();
+                        await m_PlayThread;
                     }
                     catch (Exception)
                     {
@@ -70,41 +102,85 @@ namespace InnoTecheLearning
                 }
                 if (m_audioTrack != null)
                 {
+#if !WINDOWS_UWP
                     m_audioTrack.Stop();
-                    m_audioTrack.Release();
+                    m_audioTrack.Dispose();
+#else
+                    m_audioTrack.Pause();
+#endif
                     m_audioTrack = null;
                 }
             }
 
-            void Play()
+            public void Play()
             {
-                m_bStop = false;
-                m_PlayThread = Unit.InvokeAsync(() => {
-                    try
+                m_PlayThread = Unit.InvokeAsync(
+                    () =>
                     {
-                        int iToneStep = 0;
-
-                        m_audioTrack = StreamPlayer.Create(new ProducerConsumerStream())
-
-                        while (!m_bStop && m_play_length-- > 0)
+                        try
                         {
-                            GenTone(iToneStep++);
+                            int iToneStep = 0;
 
-                            m_audioTrack.Write(generatedSnd, 0, generatedSnd.Length);
-                            if (iToneStep == 1) m_audioTrack.Play();
+                            m_audioTrack =
+#if __ANDROID__
+                                new Android.Media.AudioTrack
+                                (
+                                    Android.Media.Stream.Music,
+                                    SampleRate,
+                                    Android.Media.ChannelOut.Mono,
+                                    Android.Media.Encoding.Pcm16bit,
+                                    2 * SampleRate,
+                                    Android.Media.AudioTrackMode.Stream
+                                )
+#elif __IOS__
+                            AVFoundation.AVAudioPlayer.FromData(m_memory)
+#elif WINDOWS_UWP
+                            new Windows.Media.Playback.MediaPlayer
+                            {
+                                Source = Windows.Media.Core.MediaSource.CreateFromStream(
+                                    System.IO.WindowsRuntimeStreamExtensions.AsRandomAccessStream(m_memory), 
+                                    "audio/wav")
+                            }
+#endif
+                            ;
+#if __ANDROID__
+                            m_audioTrack.SetVolume((float)m_volume);
+#elif __IOS__
+                            m_audioTrack.Volume = (float)m_volume;
+#elif WINDOWS_UWP
+                            m_audioTrack.Volume = m_volume;
+#endif
+
+
+                            while (!cancellation.IsCancellationRequested && m_play_length-- > 0)
+                            {
+                                GenTone(iToneStep++);
+
+#if __ANDROID__
+                                m_audioTrack.Write(generatedSnd, 0, generatedSnd.Length);
+#elif __IOS__
+                                m_memory.AppendBytes(generatedSnd);
+#elif WINDOWS_UWP
+                                m_memory.Write(generatedSnd, 0, generatedSnd.Length);
+#endif
+
+                                if (iToneStep == 1)
+                                {
+                                    m_audioTrack.Play();
+                                }
+                            }
                         }
-                    }
-                    catch (System.OutOfMemoryException)
-                    {
-                        //Logg.Error("Tone", e.ToString());
-                    }
-                    catch (Exception)
-                    {
-                        //Logg.Error("Tone", e.ToString());
-                    }
+                        catch (OutOfMemoryException e)
+                        {
+                            Log(e, LogImportance.E);
+                        }
+                        catch (Exception e)
+                        {
+                            Log(e, LogImportance.W);
+                        }
 
-                }, cancellation.Token);
-                m_PlayThread.Start();
+                    }, cancellation.Token
+                );
             }
 
             //Generate tone data for 1 seconds
@@ -131,245 +207,58 @@ namespace InnoTecheLearning
                 }
             }
 
-        }
+            #region IDisposable Support
+            private bool disposedValue = false; // To detect redundant calls
+            public bool Disposed => disposedValue;
 
-        /*using System.Threading;
-        struct Unit { public static Unit Default => new Unit(); }*/
-        // This class is safe for 1 producer and 1 consumer.
-        public class ProducerConsumerStream : Stream
-        {
-            private object SyncObject;
-            private byte[] CircleBuff;
-            private int Head;
-            private int Tail;
-
-            public bool IsReadingCompleted { get; private set; }
-            public bool IsWritingCompleted { get; private set; }
-
-            // For debugging
-            private long TotalBytesRead = 0;
-            private long TotalBytesWritten = 0;
-
-            public ProducerConsumerStream(int size = byte.MaxValue)
+            protected virtual void Dispose(bool disposing)
             {
-                CircleBuff = new byte[size + 1 < 1 ? byte.MaxValue : size];
-                SyncObject = new object();
-                Head = 1;
-                Tail = 0;
-            }
-
-            /*
-            [System.Diagnostics.Conditional("JIM_DEBUG")]
-            private void DebugOut(string msg)
-            {
-                System.Console.WriteLine(msg);
-            }
-
-            [System.Diagnostics.Conditional("JIM_DEBUG")]
-            private void DebugOut(string fmt, params object[] parms)
-            {
-                DebugOut(string.Format(fmt, parms));
-            }
-            */
-            private int ReadBytesAvailable
-            {
-                get
+                if (!disposedValue)
                 {
-                    if (Head > Tail)
-                        return Head - Tail - 1;
-                    else
-                        return CircleBuff.Length - Tail + Head - 1;
-                }
-            }
-
-            private int WriteBytesAvailable { get { return CircleBuff.Length - ReadBytesAvailable - 1; } }
-
-            private void IncrementTail()
-            {
-                Tail = (Tail + 1) % CircleBuff.Length;
-            }
-
-            public override int Read(byte[] buffer, int offset, int count)
-            {
-                CheckDisposed();
-                if (IsReadingCompleted)
-                {
-                    throw new EndOfStreamException("The stream is empty and has been marked complete for adding.");
-                }
-                if (count == 0)
-                {
-                    return 0;
-                }
-
-                lock (SyncObject)
-                {
-                    //DebugOut("Read: requested {0:N0} bytes. Available = {1:N0}.", count, ReadBytesAvailable);
-                    while (ReadBytesAvailable == 0)
+                    if (disposing)
                     {
-                        if (IsWritingCompleted)
-                        {
-                            IsReadingCompleted = true;
-                            return 0;
-                        }
-                        Monitor.Wait(SyncObject);
+                        // TODO: dispose managed state (managed objects).
                     }
 
-                    // If Head < Tail, then there are bytes available at the end of the buffer
-                    // and also at the front of the buffer.
-                    // If reading from Tail to the end doesn't fulfill the request,
-                    // and there are still bytes available,
-                    // then read from the start of the buffer.
-                    //DebugOut("Read: Head={0}, Tail={1}, Avail={2}", Head, Tail, ReadBytesAvailable);
-
-                    IncrementTail();
-                    int bytesToRead;
-                    if (Tail > Head)
-                    {
-                        // When Tail > Head, we know that there are at least
-                        // (CircleBuff.Length - Tail) bytes available in the buffer.
-                        bytesToRead = CircleBuff.Length - Tail;
-                    }
-                    else
-                    {
-                        bytesToRead = Head - Tail;
-                    }
-
-                    // Don't read more than count bytes!
-                    bytesToRead = Math.Min(bytesToRead, count);
-
-                    System.Buffer.BlockCopy(CircleBuff, Tail, buffer, offset, bytesToRead);
-                    Tail += (bytesToRead - 1);
-                    int bytesRead = bytesToRead;
-
-                    // At this point, either we've exhausted the buffer,
-                    // or Tail is at the end of the buffer and has to wrap around.
-                    if (bytesRead < count && ReadBytesAvailable > 0)
-                    {
-                        // We haven't fulfilled the read.
-                        IncrementTail();
-                        // Tail is always equal to 0 here.
-                        bytesToRead = Math.Min((count - bytesRead), (Head - Tail));
-                        System.Buffer.BlockCopy(CircleBuff, Tail, buffer, offset + bytesRead, bytesToRead);
-                        bytesRead += bytesToRead;
-                        Tail += (bytesToRead - 1);
-                    }
-
-                    TotalBytesRead += bytesRead;
-                    //DebugOut("Read: returning {0:N0} bytes. TotalRead={1:N0}", bytesRead, TotalBytesRead);
-                    //DebugOut("Read: Head={0}, Tail={1}, Avail={2}", Head, Tail, ReadBytesAvailable);
-
-                    Monitor.Pulse(SyncObject);
-                    return bytesRead;
+                    // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    // TODO: set large fields to null.
+#if __IOS__
+                    m_audioTrack?.Stop();
+                    m_audioTrack?.Dispose();
+                    m_memory?.Dispose();
+                    m_memory = null;
+#elif __ANDROID__
+                    m_audioTrack?.Stop();
+                    m_audioTrack?.Flush();
+                    m_audioTrack?.Release();
+                    m_audioTrack?.Dispose();
+#elif NETFX_CORE
+                    m_audioTrack?.Pause();
+                    m_memory?.Flush();
+                    m_memory?.Dispose();
+                    m_memory = null;
+#endif
+                    m_audioTrack = null;
+                    disposedValue = true;
                 }
             }
-            
-            public void WriteBytes(params byte[] values) => Write(values, 0, values.Length);
-            public override void Write(byte[] buffer, int offset = 0, int count = 1)
+
+            // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+            ~ToneGenerator() {
+                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+                Dispose(false);
+            }
+
+            // This code added to correctly implement the disposable pattern.
+            public void Dispose()
             {
-                CheckDisposed();
-                if (IsWritingCompleted)
-                {
-                    throw new System.InvalidOperationException("The stream has been marked as complete for adding.");
-                }
-                try
-                {
-                    lock (SyncObject)
-                    {
-                        //DebugOut("Write: requested {0:N0} bytes. Available = {1:N0}", count, WriteBytesAvailable);
-                        int bytesWritten = 0;
-                        while (bytesWritten < count)
-                        {
-                            if (WriteBytesAvailable == 0) throw new System.OutOfMemoryException("Internal buffer is full.");
-                            //while (WriteBytesAvailable == 0) Monitor.Wait(CircleBuff); 
-                            //DebugOut("Write: Head={0}, Tail={1}, Avail={2}", Head, Tail, WriteBytesAvailable);
-                            int bytesToCopy = Math.Min((count - bytesWritten), WriteBytesAvailable);
-                            CopyBytes(buffer, offset + bytesWritten, bytesToCopy);
-                            TotalBytesWritten += bytesToCopy;
-                            //DebugOut("Write: {0} bytes written. TotalWritten={1:N0}", bytesToCopy, TotalBytesWritten);
-                            //DebugOut("Write: Head={0}, Tail={1}, Avail={2}", Head, Tail, WriteBytesAvailable);
-                            bytesWritten += bytesToCopy;
-                        }
-                    }
-                }
-                finally
-                { Monitor.Pulse(SyncObject); }
+                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+                Dispose(true);
+                // TODO: uncomment the following line if the finalizer is overridden above.
+                GC.SuppressFinalize(this);
             }
-
-
-            private void CopyBytes(byte[] buffer, int srcOffset, int count)
-            {
-                // Insert at head
-                // The copy might require two separate operations.
-
-                // copy as much as can fit between Head and end of the circular buffer
-                int offset = srcOffset;
-                int bytesCopied = 0;
-                int bytesToCopy = Math.Min(CircleBuff.Length - Head, count);
-                if (bytesToCopy > 0)
-                {
-                    System.Buffer.BlockCopy(buffer, offset, CircleBuff, Head, bytesToCopy);
-                    bytesCopied = bytesToCopy;
-                    Head = (Head + bytesToCopy) % CircleBuff.Length;
-                    offset += bytesCopied;
-                }
-
-                // Copy the remainder, which will go from the beginning of the buffer.
-                if (bytesCopied < count)
-                {
-                    bytesToCopy = count - bytesCopied;
-                    System.Buffer.BlockCopy(buffer, offset, CircleBuff, Head, bytesToCopy);
-                    Head = (Head + bytesToCopy) % CircleBuff.Length;
-                }
-            }
-
-            public void CompleteAdding()
-            {
-                CheckDisposed();
-                lock (SyncObject)
-                {
-                    //DebugOut("CompleteAdding: {0:N0} bytes written.", TotalBytesWritten);
-                    IsWritingCompleted = true;
-                    Monitor.Pulse(SyncObject);
-                }
-            }
-
-            public override bool CanRead => true;
-
-            public override bool CanSeek => false;
-
-            public override bool CanWrite => true;
-
-            public override void Flush() { /* does nothing */ }
-
-            public override long Length => throw new NotSupportedException("Getting length is not supported.");
-
-            public override long Position
-            {
-                get => throw new NotSupportedException("Positioning is not supported.");
-                set => throw new NotSupportedException("Positioning is not supported.");
-            }
-
-            public override long Seek(long offset, SeekOrigin origin) =>
-                throw new NotSupportedException("Seeking is not supported.");
-
-            public override void SetLength(long value) =>
-                throw new NotSupportedException("Setting length is not supported.");
-
-            private bool disposed = false;
-
-            protected override void Dispose(bool disposing)
-            {
-                if (!disposed)
-                {
-                    base.Dispose(disposing);
-                    disposed = true;
-                }
-            }
-
-            private Unit CheckDisposed() =>
-                disposed ? throw new System.ObjectDisposedException(GetType().Name, "The stream has been disposed.") : Unit.Default;
+            #endregion
 
         }
-        
     }
 }

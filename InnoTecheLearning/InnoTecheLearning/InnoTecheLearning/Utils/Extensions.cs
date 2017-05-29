@@ -239,7 +239,7 @@ namespace InnoTecheLearning
             System.Linq.Enumerable.Count(IE) == 0 ? default(T) :
             System.Linq.Enumerable.ElementAt(IE, Text.Rnd.Next(System.Linq.Enumerable.Count(IE)));
 
-        public static void Ignore(this object Instance) { }
+        public static void Ignore(this object Instance) => Instance.ToString();
         
 #if __IOS__
         public static IEnumerable<Foundation.NSLocale> ToLocale(this SpeechLanguages Langs)
