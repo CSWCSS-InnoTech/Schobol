@@ -5,15 +5,20 @@ The eLearn Utilities App is an app empowering students to learn more efficiently
 
 Note: This app is currently in Beta state and is in heavy development. Some features may not work.
 
-LINGUAL - Learn and save new vocabularies with our integrated Pearson dictionary, and vocabulary book that you can read on the go.
+#### LINGUAL
+- Learn and save new vocabularies with our integrated Pearson dictionary, and vocabulary book that you can read on the go.
 
-LOGIC - Features 3 modes Keypad Mode and Freeform Mode for scientific calculation, as well as Factor Mode for factorizing quadratic equations.
+#### LOGIC
+- Features 3 modes Keypad Mode and Freeform Mode for scientific calculation, as well as Factor Mode for factorizing quadratic equations.
 
-HEALTH - Keep track of your performance while exercising.
+#### HEALTH
+- Keep track of your performance while exercising.
 
-TUNES - Tune your musical instruments.
+#### TUNES
+- Tune your musical instruments.
 
-TRAIN - Train your mathematical skills through interactive games.
+#### TRAIN
+- Train your mathematical skills through interactive games.
 
 ### Lead Developer: Hadrian Tang Wai To
 
@@ -27,10 +32,16 @@ Jordan Fung is a 14-year-old entrepreneur, inspirer, and self-taught programmer 
 [Website of Lego Mania](http://designheaven8.wixsite.com/lego-mania-official)
 
 ### Secretaries
-Alvin Hung Wai Chun, Joseph Li Hoi Ming, Yves Lo Yin Chung
+Lead Secretary: Joseph Li Hoi Ming
+Financial Secretary: Alvin Hung Wai Chun
+Internal Secretary: Yves Lo Yin Chung
+External Secretary: Zachariah Chang Shu Wei
 
-### Coordinators
-Austin Chan Chi Heng, Andrew Lee Ho Wang, Justin Wong Kong Ki [Facebook page of Qige0902](https://www.facebook.com/qige0902/)
+### Coordinators: Austin Chan Chi Heng, Andrew Lee Ho Wang
+
+### Designer: Justin Wong Kong Ki
+
+[Facebook page of Qige0902](https://www.facebook.com/qige0902/)
 
 ### About the differrent branches
 
