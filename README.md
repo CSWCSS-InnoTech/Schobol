@@ -33,8 +33,11 @@ Jordan Fung is a 14-year-old entrepreneur, inspirer, and self-taught programmer 
 
 ### Secretaries
 Lead Secretary: Joseph Li Hoi Ming
+
 Financial Secretary: Alvin Hung Wai Chun
+
 Internal Secretary: Yves Lo Yin Chung
+
 External Secretary: Zachariah Chang Shu Wei
 
 ### Coordinators: Austin Chan Chi Heng, Andrew Lee Ho Wang
