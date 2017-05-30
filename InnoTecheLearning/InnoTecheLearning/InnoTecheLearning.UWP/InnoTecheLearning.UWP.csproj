@@ -135,6 +135,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\E-learning-app-icon.png" />
     <Content Include="Assets\Fonts\KAIU.TTF" />
     <None Include="Innovative Technology Society of CSWCSS.pfx" />
   </ItemGroup>

@@ -385,8 +385,8 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.3.4.247\lib\uap10.0\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\Fonts\KAIU.TTF">
-      <PackagePath>Assets\Fonts\KAIU.TTF</PackagePath>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\E-learning-app-icon.png">
+      <PackagePath>Assets\E-learning-app-icon.png</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\BadgeLogo.scale-100.png">
       <PackagePath>Assets\BadgeLogo.scale-100.png</PackagePath>
@@ -593,6 +593,9 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\Wide310x150Logo.scale-200.png">
       <PackagePath>Assets\Wide310x150Logo.scale-200.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\Fonts\KAIU.TTF">
+      <PackagePath>Assets\Fonts\KAIU.TTF</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Properties\Default.rd.xml">
       <PackagePath>Properties\Default.rd.xml</PackagePath>

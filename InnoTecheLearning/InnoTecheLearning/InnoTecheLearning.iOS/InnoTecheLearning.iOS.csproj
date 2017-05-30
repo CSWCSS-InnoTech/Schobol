@@ -107,6 +107,9 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <DefineConstants>__UNIFIED__;__MOBILE__;__IOS__</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>InnoTecheLearning.iOS.Application</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />

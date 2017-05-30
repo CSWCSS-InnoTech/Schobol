@@ -150,6 +150,9 @@ namespace InnoTecheLearning
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
             Log("Main page initialized.");
+#if __ANDROID__
+            Droid.SplashActivity.Ready();
+#endif
         }
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
@@ -655,7 +658,7 @@ namespace InnoTecheLearning
 */
         }
         Modifier Calculator_Modifier;
-        #region Append
+#region Append
         public void Append(Grid.IGridList<View> List, Expressions Expression,
             Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
@@ -680,7 +683,7 @@ namespace InnoTecheLearning
             int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
             { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
-        #endregion
+#endregion
         string Calculator_Free_Value = "";
         public StackLayout Calculator_Free
         {
