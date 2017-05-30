@@ -156,7 +156,7 @@ namespace InnoTecheLearning
         {
             if (Showing != Pages.Main)
             {
-                if (Showing == Pages.MusicTuner) MusicSound.Stop();
+                if (Showing == Pages.MusicTuner) MusicSound?.Stop();
                 Showing = Pages.Main;
                 return true;
             }
@@ -169,8 +169,7 @@ namespace InnoTecheLearning
             get
             {
                 return new StackLayout
-                {
-                    VerticalOptions = LayoutOptions.StartAndExpand,
+                { 
                     Orientation = StackOrientation.Vertical,
                     Children = {
                         Title(AssemblyTitle),
@@ -193,8 +192,9 @@ namespace InnoTecheLearning
                              Showing = Pages.MusicTuner;
                          },BoldLabel("Tunes"))
                          ),
-                         MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
-                             Showing = Pages.MathSolver; },BoldLabel("Excel")),
+
+            MainScreenRow(MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
+                             Showing = Pages.MathSolver; },BoldLabel("Excel"))),
 
                         Button("Changelog", () => { Showing = Pages.Changelog; }),
                         VersionDisplay
@@ -259,7 +259,7 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Orientation = StackOrientation.Vertical,
                     Children = {
-                        Title("CSWCSS Music Tuner"),
+                        Title("eLearn Tunes"),
 
                         MainScreenRow(Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                             .With((ref Image x) =>
@@ -576,7 +576,7 @@ namespace InnoTecheLearning
                 }
 
                 StackLayout Return = new StackLayout
-                { Children = { Title("CSWCSS Calculator"), In, new StackLayout(), Norm, new StackLayout(), Out } };
+                { Children = { Title("eLearn Logic"), In, new StackLayout(), Norm, new StackLayout(), Out } };
                 Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
@@ -711,7 +711,7 @@ namespace InnoTecheLearning
                 {
                     Children =
                     {
-                        Title("CSWCSS Calculator"),
+                        Title("eLearn Logic"),
                         new ScrollView { Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
 
@@ -750,7 +750,7 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Title("CSWCSS Factorizer"),
+                        Title("eLearn Logic"),
                         Row(false, S1, C1, (Text)(X + "²")),
                         Row(false, S2, C2, (Text)(X + Y)),
                         Row(false, S3, C3, (Text)(Y + "²")),
@@ -794,6 +794,7 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
+                        Title("eLearn Health"),
                         Button("Start Running", async () => {
                                 try { await Pedometer.Start(); }
                                 catch(UnauthorizedAccessException)
@@ -1037,7 +1038,7 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Title("CSWCSS Maths Solver"),
+                        Title("eLearn Excel"),
                         Instruction,
                         Question,
                         Display, CharGrid, Dragon,
@@ -1209,7 +1210,7 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = { Title("CSWCSS Translator"), Grid, Back(this) }
+                    Children = { Title("eLearn Lingual"), Grid, Back(this) }
                 };
             }
         }

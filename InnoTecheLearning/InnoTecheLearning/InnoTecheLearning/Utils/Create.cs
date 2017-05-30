@@ -154,33 +154,23 @@ namespace InnoTecheLearning
                 return Button;
             }
 
-            public static StackLayout MainScreenRow(params View[] MainScreenItems)
-            {
-                StackLayout MenuScreenRow = new StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    Spacing = 50,
-                    Children = { }
-                };
-                foreach (View MenuScreenItem in MainScreenItems)
-                    MenuScreenRow.Children.Add(MenuScreenItem);
-                return MenuScreenRow;
-            }
+            public static StackLayout MainScreenRow(params View[] MainScreenItems) =>
+                MainScreenRow<View>(MainScreenItems);
 
             public static StackLayout MainScreenRow<T>(params T[] MainScreenItems) where T : View
             {
                 StackLayout MenuScreenRow = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-					Spacing = 50,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+					//Spacing = 50,
                     Children = { }
                 };
                 foreach (T MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
+                Device.StartTimer(TimeSpan.FromMilliseconds(10),
+                    () => { MenuScreenRow.Spacing = MainScreenItems[0].Width; return false; });
                 return MenuScreenRow;
             }
             

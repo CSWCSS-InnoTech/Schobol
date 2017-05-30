@@ -394,6 +394,13 @@ namespace InnoTecheLearning
         public static bool IsInteger(this float d) => d == Math.Truncate(d);
         public static bool IsInteger(this double d) => d == Math.Truncate(d);
         public static bool IsInteger(this decimal d) => d == Math.Truncate(d);
+
+        public static Page GetParentPage(this Element e)
+        {
+            while(e != null && !(e is Page))
+                e = e.Parent;
+            return e as Page;
+        }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

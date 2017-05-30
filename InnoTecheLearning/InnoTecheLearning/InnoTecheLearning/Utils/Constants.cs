@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 (Xamarin Update) Beta 4"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.10.0 (Xamarin Update) Beta 5"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;

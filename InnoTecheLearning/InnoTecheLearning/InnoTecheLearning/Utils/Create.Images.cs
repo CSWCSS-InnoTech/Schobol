@@ -75,8 +75,39 @@ namespace InnoTecheLearning
                 Image.GestureRecognizers.Add(Tap);
                 return Image;
             }
-            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display) =>
-                new StackLayout
+
+            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display)
+            {
+                if(Device.Idiom == TargetIdiom.Desktop) return new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    //WidthRequest = 71.5,
+                    Children = {
+                        Image(Source: Source, OnTap: OnTap)
+                            .With((ref Image x) => {
+                                x.HorizontalOptions = LayoutOptions.FillAndExpand;
+                                x.VerticalOptions = LayoutOptions.FillAndExpand;
+                                x.Aspect = Aspect.AspectFit;
+                                var a = x;
+                                Device.StartTimer(TimeSpan.FromMilliseconds(10),
+                                    () => { a.WidthRequest = ((a.Parent as StackLayout)?.Height - a.Height)
+                                        ?? a.WidthRequest; return false; });
+                                }
+                            ), Display
+                            .With((ref Label x) => {
+                                x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
+                                x.HorizontalTextAlignment = TextAlignment.Center;
+                                var a = x;
+                                Device.StartTimer(TimeSpan.FromMilliseconds(10),
+                                    () => { a.WidthRequest = ((a.Parent as StackLayout)?.Height - a.Height)
+                                        ?? a.WidthRequest; return false; });
+                                }
+                            )
+                    }
+                };
+                else return new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
@@ -84,7 +115,7 @@ namespace InnoTecheLearning
                     WidthRequest = 71.5,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 };
-
+            }
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
             public static Button ButtonB(FileImageSource Image, EventHandler OnClick)
             { return ButtonB(Image, OnClick, new Size(50, 50)); }
