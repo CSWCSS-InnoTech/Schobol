@@ -10,15 +10,17 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 (Xamarin Update) Beta 5"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.10.0 Beta 6"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;
 
 #region VersionFunctions
         public static string VersionShort
-        { get => (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 3))
-                .Replace("Alpha ", "a").Replace("Beta ", "b").Replace("Release Candidate ", "c"); }
+        { get => (VersionFull.Contains("(") ? 
+                     (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 2)) :
+                     VersionFull)
+                 .Replace(" Alpha ", "a").Replace(" Beta ", "b").Replace(" Release Candidate ", "c"); }
         public static Version Version
         {
             get
@@ -32,7 +34,9 @@ namespace InnoTecheLearning
             }
         }
         public static string VersionName
-        { get => VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1); }
+        { get => VersionFull.Contains("(") ? 
+                 VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1) :
+                 string.Empty; }
         public static VersionStage VersionState { get => (VersionStage)Version.MajorRevision; }
 
         public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }

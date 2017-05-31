@@ -9,16 +9,24 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 !Security to invite users to upgrade in case of vulnerabilities.
 ~Comment for notes.
 
-v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0b1.apk}
-+Proper negative factorizer calculations
-*VocabBook integrated into Translator's Favourites
-*Calculator (Normal) replaces MathConverter
-*Calculator (Freeform) replaces MathConverter_Duo
+v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0b6.apk,
+                                       https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0b6.appxbundle}
++Windows 10 support
++Proper negative factorizer calculations in Logic (Factor)
+*Lingual replaces Translator
+*VocabBook integrated into Lingual's Favourites
+*Logic (Keypad) replaces MathConverter
+*Logic (Freeform) replaces MathConverter_Duo
+*Quadratic Factorizer merged into Logic (Factor)
+*Sports renamed to Health
+*MusicTuner renamed to Tunes
+*MathSolver renamed to Excel
 *Lots of UI changes (eg Button looks)
--Forum (@Issac)
+-Forum (@Issac Chan)
 -0.9.0 Haloween theme
 ~Contains most features from 0.8.0 (Smallest Update Ever)
 ~Now uses Xamarin Forms instead of App Inventor 2
+~The name Xamarin Update is omitted in app version due to possible trademark conflicts
 
 Changelog format update [2016-11-15 Tue 17:30]:
 Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>

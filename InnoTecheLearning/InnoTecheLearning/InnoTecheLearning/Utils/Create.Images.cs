@@ -78,6 +78,7 @@ namespace InnoTecheLearning
 
             public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display)
             {
+                /*
                 if(Device.Idiom == TargetIdiom.Desktop) return new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
@@ -106,13 +107,14 @@ namespace InnoTecheLearning
                                 }
                             )
                     }
-                };
-                else return new StackLayout
+                }; else */
+                return new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     HorizontalOptions = LayoutOptions.Center,
                     WidthRequest = 71.5,
+                    Scale = 2,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 };
             }

@@ -169,8 +169,10 @@ namespace InnoTecheLearning
                 };
                 foreach (T MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
-                Device.StartTimer(TimeSpan.FromMilliseconds(10),
-                    () => { MenuScreenRow.Spacing = MainScreenItems[0].Width; return false; });
+                if(Main.Instance == null || Main.Instance.Showing == Main.Pages.Main)
+                    Device.StartTimer(Device.Idiom != TargetIdiom.Desktop && Main.FirstTime ? Seconds(1) : Milliseconds(1),
+                    () => { MenuScreenRow.Spacing = MainScreenItems[0].Width;
+                    MenuScreenRow.TranslateTo(0, MainScreenItems[0].Height / 2, 1000, Easing.BounceOut); return false; });
                 return MenuScreenRow;
             }
             

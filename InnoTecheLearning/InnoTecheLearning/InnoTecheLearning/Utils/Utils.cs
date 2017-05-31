@@ -1105,6 +1105,10 @@ const Log10e = Math.LOG10E;
 
             return false;
         }
+        public static Func<bool> False(Action A) => () => { A?.Invoke(); return false; };
+        public static Func<bool> True(Action A) => () => { A?.Invoke(); return true; };
+        public static TimeSpan Seconds(double s) => TimeSpan.FromSeconds(s);
+        public static TimeSpan Milliseconds(double s) => TimeSpan.FromMilliseconds(s);
     }
     ///// <summary>
     ///// An uninitialized Void object.

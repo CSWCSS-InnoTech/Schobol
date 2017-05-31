@@ -83,12 +83,14 @@ namespace InnoTecheLearning
 #endif
             }
         }
-        Pages _Showing;
-        Pages Showing
+        public static bool FirstTime = true;
+        Pages _Showing = Pages.Main;
+        public Pages Showing
         {
             get { return _Showing; }
-            set
+            private set
             {
+                _Showing = value;
                 switch (value)
                 {
                     case Pages.Changelog:
@@ -131,12 +133,13 @@ namespace InnoTecheLearning
                         Region = "App";
                         break;
                 }
-                _Showing = value;
             }
         }
         //StreamPlayer _Player;
+        public static Main Instance { get; private set; }
         public Main()
         {
+            if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");
             async void AsyncInit()
             {
                 Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<Result>());
@@ -149,10 +152,9 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
+            Instance = this;
             Log("Main page initialized.");
-#if __ANDROID__
-            Droid.SplashActivity.Ready();
-#endif
+            FirstTime = false;
         }
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
@@ -178,26 +180,25 @@ namespace InnoTecheLearning
                         Title(AssemblyTitle),
                         Society,
 
-           MainScreenRow(
-                         MainScreenItem(ImageSource(ImageFile.Translate), delegate{
-                         Showing = Pages.Translate; }, BoldLabel("Lingual")),
+           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Translate), delegate{
+                         Showing = Pages.Translate; }, BoldLabel("LINGUAL")),
                          MainScreenItem(ImageSource(ImageFile.Calculator), delegate {
-                                ThreeButtonDialog.Show("Choose Calculator mode", "Which Calculator mode?",
+                                ThreeButtonDialog.Show("Choose Logic mode", "Which Logic mode?",
                                     "Keypad", () => Showing = Pages.Calculator,
                                     "Freeform", () => Showing = Pages.Calculator_Free,
                                     "Factor", () => Showing = Pages.Factorizer);
-                             },BoldLabel("Logic"))),
+                             },BoldLabel("LOGIC"))),
 
            MainScreenRow(MainScreenItem(ImageSource(ImageFile.Sports), delegate {
                              Showing = Pages.Sports;
-                         },BoldLabel("Health")),
+                         },BoldLabel("HEALTH")),
                          MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
                              Showing = Pages.MusicTuner;
-                         },BoldLabel("Tunes"))
+                         },BoldLabel("TUNES"))
                          ),
 
             MainScreenRow(MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
-                             Showing = Pages.MathSolver; },BoldLabel("Excel"))),
+                             Showing = Pages.MathSolver; },BoldLabel("EXCEL"))),
 
                         Button("Changelog", () => { Showing = Pages.Changelog; }),
                         VersionDisplay

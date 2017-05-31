@@ -16,15 +16,13 @@ namespace InnoTecheLearning.Droid
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
-        public static Bundle Bundle { get; private set; }
+        public static Bundle Bundle { get; internal set; }
         public static MainActivity Current { get; private set; }
 
         protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-			global::Xamarin.Forms.Forms.Init (this, bundle);
-            Bundle = bundle;
-			LoadApplication (new App());
+            LoadApplication(new App());
             Current = this;
 		}
         public event EventHandler<PreferenceManager.ActivityResultEventArgs> ActivityResult = delegate { };
@@ -36,26 +34,26 @@ namespace InnoTecheLearning.Droid
         }
     }
 
-    [Activity(Label = "CSWCSS eLearning App", Theme = "Splash", MainLauncher = true, NoHistory = true,
+    [Activity(Label = "CSWCSS eLearning App", Theme = "@style/Splash", MainLauncher = true, NoHistory = true,
         ScreenOrientation = ScreenOrientation.SensorPortrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class SplashActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
-        static System.Threading.ManualResetEvent _Ready = new System.Threading.ManualResetEvent(false);
-        public static void Ready() => _Ready.Set();
+        //static System.Threading.ManualResetEvent _Ready = new System.Threading.ManualResetEvent(false);
+        //public static void Ready() => _Ready.Set();
         //static readonly string TAG = "X:" + typeof(SplashActivity).Name;
-
-        public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
-        {
-            base.OnCreate(savedInstanceState, persistentState);
-        }
+        
+        protected override void OnCreate(Bundle bundle) { base.OnCreate(bundle); MainActivity.Bundle = bundle; }
 
         // Launches the startup task
-        protected override async void OnResume()
+        protected override void OnResume()
         {
             base.OnResume();
-            StartActivity(new Intent(Application.Context, typeof(MainActivity)));
-            await Utils.Unit.InvokeAsync(_Ready.WaitOne);
+            Utils.Unit.InvokeAsync(() =>
+            {
+                global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
+                StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+            });
         }
     }
 }
