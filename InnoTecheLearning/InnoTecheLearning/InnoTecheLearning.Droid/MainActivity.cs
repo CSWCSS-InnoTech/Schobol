@@ -51,8 +51,8 @@ namespace InnoTecheLearning.Droid
             base.OnResume();
             Utils.Unit.InvokeAsync(() =>
             {
-                global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
-                StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                try { global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle); } catch { }
+                StartActivity(new Intent(BaseContext, typeof(MainActivity)));
             });
         }
     }
