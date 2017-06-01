@@ -491,14 +491,17 @@ namespace InnoTecheLearning
                 Append(Func.Children, Expressions.Comma, 1, 2);
                 Append(Func.Children, Expressions.Imul, "Imul", 2, 2);
                 Append(Func.Children, Expressions.Random, "Random", 3, 2);
+                Append(Func.Children, Expressions.GCD, "GCD", 4, 2);
                 Append(Func.Children, Expressions.Lb, "Lb", 0, 3);
                 Append(Func.Children, Expressions.Ln, "Ln", 1, 3);
                 Append(Func.Children, Expressions.Log, "Log", 2, 3);
                 Append(Func.Children, Expressions.Pow, "Pow", 3, 3);
+                Append(Func.Children, Expressions.HCF, "HCF", 4, 3);
                 Append(Func.Children, Expressions.Max, "Max", 0, 4);
                 Append(Func.Children, Expressions.Min, "Min", 1, 4);
                 Append(Func.Children, Expressions.Factorial, "Factor", 2, 4);
                 Append(Func.Children, Expressions.Sign, "Sign", 3, 4);
+                Append(Func.Children, Expressions.LCM, "LCM", 4, 4);
 
                 Trig = new Grid
                 {
@@ -1109,20 +1112,20 @@ namespace InnoTecheLearning
                                         Text = Result.headword.PadRight(33),
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                        FontFamily = FontChinese//"Courier New, Georgia, Serif"
+                                        FontFamily = FontDictionary//"Courier New, Georgia, Serif"
                                         },
                                     new Span
                                     {
                                         Text = Result.part_of_speech.PadRight(13),
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                                        FontFamily = FontChinese//"Courier New, Georgia, Serif"
+                                        FontFamily = FontDictionary//"Courier New, Georgia, Serif"
                                         }, new Span
                                         {
                                             Text = Result.senses.Single().translation + " \n",
                                             ForegroundColor = Color.Black,
                                             FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                            FontFamily = FontChinese
+                                            FontFamily = FontDictionary
                                         }
                                 )
                             )
@@ -1140,7 +1143,7 @@ namespace InnoTecheLearning
                                 Text = "Enter something and press translate,\nand the results will appear here.",
                                 ForegroundColor = Color.Gray,
                                 FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                                FontFamily = FontChinese
+                                FontFamily = FontDictionary
                             }
                         )
                     }
@@ -1157,7 +1160,7 @@ namespace InnoTecheLearning
                     {
                         Formatted.Children.Clear();
                         Formatted.Children.Add(FormattedLabel(
-                            new Span { Text = "Loading...", FontFamily = FontChinese,
+                            new Span { Text = "Loading...", FontFamily = FontDictionary, ForegroundColor = Color.Black,
                                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)) }
                         ));
                     });
@@ -1168,7 +1171,7 @@ namespace InnoTecheLearning
                             Text = "Not found!",
                             ForegroundColor = Color.Red,
                             FontSize = Device.GetNamedSize(NamedSize.Large, typeof(Label)),
-                            FontFamily = FontChinese
+                            FontFamily = FontDictionary
                         })
                     );
                 });
@@ -1194,13 +1197,13 @@ namespace InnoTecheLearning
                     Text = "There's nothing here...\n",
                     ForegroundColor = Color.Gray,
                     FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                    FontFamily = FontChinese //"Courier New, Georgia, Serif"
+                    FontFamily = FontDictionary //"Courier New, Georgia, Serif"
                 }, new Span
                 {
                     Text = "Press the button on the left of one of the\ntranslated results to add it into the Favourites!",
                     ForegroundColor = Color.Gray,
                     FontSize = Device.GetNamedSize(NamedSize.Micro, typeof(Label)),
-                    FontFamily = FontChinese
+                    FontFamily = FontDictionary
                 });
                 Favourites.CollectionChanged += (_1, _2) => FavouritesUpdate();
                 FavouritesUpdate();

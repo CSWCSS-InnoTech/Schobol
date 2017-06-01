@@ -15,7 +15,7 @@
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
             Acosh, Acot, Acoth, Acsc, Acsch, Asec, Asech, Asinh, Atanh, Cbrt, Cosh, Cot, Coth, //Additional Math Functions
             Csc, Csch, Clz32, Imul, Lb, Ln, Sec, Sech, Sign, Sinh, Tanh, Trunc, Deg, Rad, Grad, Turn, //Additional Math Functions
-            nPr, nCr, //Additional Math Functions
+            nPr, nCr, GCD, HCF, LCM, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
             Assign, AssignAdd, AssignSubtraction, AssignMultiplication, AssignDivision, AssignModulus, //Assignment
@@ -36,7 +36,7 @@
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
             Acosh, Acot, Acoth, Acsc, Acsch, Asec, Asech, Asinh, Atanh, Cbrt, Cosh, Cot, Coth, //Additional Math Functions
             Csc, Csch, Clz32, Imul, Lb, Ln, Sec, Sech, Sign, Sinh, Tanh, Trunc, Deg, Rad, Grad, Turn, //Additional Math Functions
-            nPr, nCr, //Additional Math Functions
+            nPr, nCr, GCD, HCF, LCM, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
             Assign, AssignAdd, AssignSubtraction, AssignMultiplication, AssignDivision, AssignModulus, //Assignment
@@ -304,6 +304,12 @@
                     return "nPr(";
                 case MoreExpressions.nCr:
                     return "nCr(";
+                case MoreExpressions.GCD:
+                    return "GCD(";
+                case MoreExpressions.HCF:
+                    return "HCF(";
+                case MoreExpressions.LCM:
+                    return "LCM(";
                 case MoreExpressions.π:
                     return "π";
                 case MoreExpressions.e:

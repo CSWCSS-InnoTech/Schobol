@@ -642,7 +642,20 @@ function Factorial(aNumber){
 }
 
 function nPr(n, r) { if(r > n) return 0; return Factorial(n) / Factorial(n - r);}
-function nCr(n, r) { if(r > n) return 0; return Factorial(n) / (Factorial(n - r) * Factorial(r));}
+function nCr(n, r) { if(r > n) return 0; return Factorial(n) / (Factorial(n - r) * Factorial(r)); }
+
+function GCD(a, b)
+{
+    while (b != 0)
+    {
+        var temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+function HCF(a, b) { return GCD(a, b); }
+function LCM(a, b) { return (a / GCD(a, b)) * b; }
 
 function Display(Text, Modifier) {
     switch(Modifier) {
@@ -763,72 +776,71 @@ const Log10e = Math.LOG10E;
             })).SetValue("FracSurd", new Func<double, string>((double value) =>
             {
                 if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
-                if (value.IsInteger()) return value.ToString() + OnPlatform(" / 1 √1̅", " / 1 √1̅", " / 1 √̅1");
-                var Negative = value < 0;
-                /*
-                void Simplify(int[] numbers)
-                {
-                    int gcd = GCD(numbers);
-                    for (int i = 0; i < numbers.Length; i++)
-                        numbers[i] /= gcd;
-                }*/
-                double GCD(double a, double b)
-                {
-                    while (b > 0)
+                bool Negative = value < 0;
+                if (Negative) value = -value;
+                for (int Surd = 1; Surd <= 1000; Surd++)
+                    for (int Denom = 1; Denom <= 500; Denom++)
                     {
-                        var rem = a % b;
-                        a = b;
-                        b = rem;
-                    }
-                    return a;
-                }
-                /*int GCD(int[] args)
-                {
-                    // using LINQ:
-                    return System.Linq.Enumerable.Aggregate(args, (gcd, arg) => GCD(gcd, arg));
-                }*/
-                value = Math.Abs(value);
-                for (int i = 0; i <= 1000; i++)
-                {
-                    var SubjectToTest = value / Math.Sqrt(i);
-                    for (var denom = 1.0; denom <= 500; denom++)
-                    {
-                        var numer = Math.Round(SubjectToTest * denom);
-                        if (HasMinimalDifference(SubjectToTest, numer / denom, 2))
+                        var Numer = value / Math.Sqrt(Surd) * Denom;
+                        if (Numer.IsInteger(2))
                         {
-                            int Square = 1, a = i;
-                            for (int b = 2; a > 1; b++)
-                                if (a % b == 0)
+                            int GCF(int a, int b)
+                            {
+                                while (b != 0)
                                 {
-                                    int x = 0;
-                                    while (a % b == 0)
-                                    {
-                                        a /= b;
-                                        x++;
-                                    }
-                                    //Console.WriteLine("{0} is a prime factor {1} times!", b, x);
-                                    for (int j = 2; j <= x; j += 2) Square *= b;
+                                    int temp = b;
+                                    b = a % b;
+                                    a = temp;
                                 }
-                            var LCM = GCD(numer, denom);
-                            numer /= LCM;
-                            denom /= LCM;
+                                return a;
+                            }
+                            /*
+                            int LCM(int a, int b)
+                            {
+                                return (a / GCF(a, b)) * b;
+                            }
+                            */
+                            (int Squared, int Remaining) SimplifySurd(int a)
+                            {
+                                int Number = a, b = 0, Squared = 1;
+                                for (b = 2; a > 1; b++)
+                                    if (a % b == 0)
+                                    {
+                                        int x = 0;
+                                        while (a % b == 0)
+                                        {
+                                            a /= b;
+                                            x++;
+                                        }
+                                        //Console.WriteLine("{0} is a prime factor {1} times!", b, x);
+                                        for (int c = 2; c <= x; c += 2) Squared *= b;
+                                    }
+                                return (Squared, Number / (Squared * Squared));
+                            }
+                            
+                            var Simplified = SimplifySurd(Surd);
+                            Numer *= Simplified.Squared;
+                            Surd = Simplified.Remaining;
+                            var Common = GCF((int)Numer, Denom);
+                            Numer /= Common;
+                            Denom /= Common;
+
                             var Builder = new System.Text.StringBuilder();
                             if (Negative) Builder.Append("-");
-                            Builder.Append(numer.ToString()).Append(" / ").Append(denom).Append(" √");
-                            foreach (var Char in (i / Square).ToString())
+                            Builder.Append(Numer).Append(" / ").Append(Denom).Append(" √");
+                            foreach (var C in (Surd).ToString())
                             {
 #if WINDOWS_UWP
                                 Builder.Append("̅");
-                                Builder.Append(Char);
+                                Builder.Append(C);
 #else
-                                Builder.Append(Char);
+                                Builder.Append(C);
                                 Builder.Append("̅");
 #endif
                             }
                             return Builder.ToString();
                         }
                     }
-                }
                 throw new ArithmeticException("Cannot find appropriate fraction and surd.");
             }))
 #endif
@@ -1084,26 +1096,37 @@ const Log10e = Math.LOG10E;
                 return InternalAsync();
             }
         }
+        public static int FloatToInt32Bits(float value)
+        {
+            int result = BitConverter.ToInt32(BitConverter.GetBytes(value), 0);
+            if (((result & 0x7F800000) == 0x7F800000) && (result & 0x80000000) != 0)
+                result = 0x7fc00000;
+            return result;
+        }
+        public static float Int32BitsToFloat(int value) => BitConverter.ToSingle(BitConverter.GetBytes(value), 0);
+        public static bool HasMinimalDifference(float value1, float value2, int units)
+        {
+            int iValue1 = FloatToInt32Bits(value1);
+            int iValue2 = FloatToInt32Bits(value2);
+
+            // If the signs are different, return false except for +0 and -0.
+            if ((iValue1 >> 31) != (iValue2 >> 31)) return value1 == value2;
+
+            int diff = Math.Abs(iValue1 - iValue2);
+
+            return diff <= units;
+        }
         public static bool HasMinimalDifference(double value1, double value2, int units)
         {
             long lValue1 = BitConverter.DoubleToInt64Bits(value1);
             long lValue2 = BitConverter.DoubleToInt64Bits(value2);
 
             // If the signs are different, return false except for +0 and -0.
-            if ((lValue1 >> 63) != (lValue2 >> 63))
-            {
-                if (value1 == value2)
-                    return true;
-
-                return false;
-            }
+            if ((lValue1 >> 63) != (lValue2 >> 63)) return value1 == value2;
 
             long diff = Math.Abs(lValue1 - lValue2);
 
-            if (diff <= units)
-                return true;
-
-            return false;
+            return diff <= units;
         }
         public static Func<bool> False(Action A) => () => { A?.Invoke(); return false; };
         public static Func<bool> True(Action A) => () => { A?.Invoke(); return true; };

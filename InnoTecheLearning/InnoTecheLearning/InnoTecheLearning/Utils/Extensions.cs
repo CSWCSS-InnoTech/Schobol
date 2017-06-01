@@ -393,6 +393,10 @@ namespace InnoTecheLearning
 
         public static bool IsInteger(this float d) => d == Math.Truncate(d);
         public static bool IsInteger(this double d) => d == Math.Truncate(d);
+        public static bool IsInteger(this float d, int maxDifference) =>
+            HasMinimalDifference(d, Math.Round(d), maxDifference);
+        public static bool IsInteger(this double d, int maxDifference) =>
+            HasMinimalDifference(d, Math.Round(d), maxDifference);
         public static bool IsInteger(this decimal d) => d == Math.Truncate(d);
 
         public static Page GetParentPage(this Element e)
