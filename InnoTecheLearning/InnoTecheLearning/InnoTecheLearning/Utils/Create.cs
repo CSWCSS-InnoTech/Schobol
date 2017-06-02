@@ -346,14 +346,22 @@ namespace InnoTecheLearning
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
             }*/
-            public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
+            public static StackLayout ChangelogView(Main Instance, Color BackColor = default(Color))
             {
                 ScrollView Changelog = Create.Changelog;
                 if (BackColor == default(Color))
                     BackColor = Color.White;
                 return new StackLayout
                 {
-                    Children = { Changelog/*, Row(false, UpdateAlpha(Page), Back(Page))*/ },
+                    Children =
+                    {
+                        Changelog,
+                        Row(false, 
+                        Button("View crash logs", () => Instance.Showing = Main.Pages.Crashlog)
+                            .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
+                        )
+                        /*, Row(false, UpdateAlpha(Page), Back(Page))*/
+                    },
                     BackgroundColor = BackColor,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill

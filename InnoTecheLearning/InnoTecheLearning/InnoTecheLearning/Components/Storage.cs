@@ -13,8 +13,10 @@ namespace InnoTecheLearning
 #if !WINDOWS_UWP
                 if (!Directory.Exists(SaveDirectory)) Directory.CreateDirectory(SaveDirectory);
 #endif
+                if (!Directory.Exists(CrashDir)) Directory.CreateDirectory(GetSaveLocation(CrashDir));
             }
             public const string VocabFile = "Vocabs.xml";
+            public const string CrashDir = "Crashes";
             public static readonly string SaveDirectory =
 #if WINDOWS_UWP
                 Windows.Storage.ApplicationData.Current.LocalFolder.Path
@@ -23,6 +25,7 @@ namespace InnoTecheLearning
 #endif
                 ;
 
+            public static string Combine(params string[] Paths) => Path.Combine(Paths);
             public static string GetSaveLocation(string FileName)
             {
                 return Path.Combine(SaveDirectory, FileName);
@@ -32,6 +35,8 @@ namespace InnoTecheLearning
                 return Path.Combine(System.Linq.Enumerable.ToArray(FileFolders.Prepend(SaveDirectory)));
             }
 
+            public static void CreateSync(string FileName) => File.Create(GetSaveLocation(FileName)).Dispose();
+            public static void WriteSync(string FileName, object o) => File.WriteAllText(GetSaveLocation(FileName), o.ToString());
             public static async ValueTask<Unit> Write(string FileName, object Content)
             {
                 using (var File = await GetWriteStream(FileName))
@@ -175,11 +180,31 @@ namespace InnoTecheLearning
 #endif
                 ;
 */
-
+            public static bool Empty(string Directory) => new DirectoryInfo(GetSaveLocation(Directory)).GetFiles().Length == 0;
+            public static bool Any(string Directory) => new DirectoryInfo(GetSaveLocation(Directory)).GetFiles().Length != 0;
+            public static bool HasBefore(string Directory, string FileName) => Before(Directory, FileName) != null;
+            public static bool HasAfter(string Directory, string FileName) => After(Directory, FileName) != null;
             public static string Before(string Directory, string FileName)
             {
+                var Files = System.Linq.Enumerable.ToList(new DirectoryInfo(GetSaveLocation(Directory)).GetFiles());
+                var Index = Files.FindIndex(f => f.Name == FileName);
+                return Index == -1 || Index == 0 ? null : Files[Index - 1].Name;
+            }
+            public static string After(string Directory, string FileName)
+            {
+                var Files = System.Linq.Enumerable.ToList(new DirectoryInfo(GetSaveLocation(Directory)).GetFiles());
+                var Index = Files.FindIndex(f => f.Name == FileName);
+                return Index == -1 || Index == Files.Count - 1 ? null : Files[Index + 1].Name;
+            }
+            public static string First(string Directory)
+            {
                 var Files = new DirectoryInfo(GetSaveLocation(Directory)).GetFiles();
-                
+                return Files[0].Name;
+            }
+            public static string Last(string Directory)
+            {
+                var Files = new DirectoryInfo(GetSaveLocation(Directory)).GetFiles();
+                return Files[Files.Length - 1].Name;
             }
         }
     }

@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\ThreeButtonDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\ToneGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TouchImage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jint\DeclarationBindingType.cs" />

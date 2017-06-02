@@ -11,7 +11,7 @@ using Android.Content;
 
 namespace InnoTecheLearning.Droid
 {
-	[Activity (Label = "CSWCSS eLearning App", Icon = "@drawable/icon", MainLauncher = false, 
+	[Activity (Label = "CSWCSS eLearning App", Icon = "@drawable/elearn", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
@@ -51,7 +51,7 @@ namespace InnoTecheLearning.Droid
             base.OnResume();
             Utils.Unit.InvokeAsync(() =>
             {
-                try { global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle); } catch { }
+                global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
                 StartActivity(new Intent(BaseContext, typeof(MainActivity)));
             });
         }

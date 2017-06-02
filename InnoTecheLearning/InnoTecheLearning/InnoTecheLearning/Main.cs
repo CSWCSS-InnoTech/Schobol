@@ -45,6 +45,7 @@ namespace InnoTecheLearning
         public enum Pages : sbyte
         {
             Uninitialised = sbyte.MinValue,
+            Crashlog = -2,
             Changelog = -1,
             Main,
             Translate,
@@ -87,16 +88,21 @@ namespace InnoTecheLearning
         }
         */
         public static bool FirstTime = true;
-        public ValueTask<Unit> Push(View v) => Unit.Await(PushAsync(new ContentPage { Content = v }));
+        public ValueTask<Unit> Push(View v) => Unit.Await(PushAsync(new ContentPage { Content = v,
+            BackgroundColor = Color.White}));
         public ValueTask<Page> Pop() => new ValueTask<Page>(PopAsync());
         Pages _Showing = Pages.Uninitialised;
         public Pages Showing
         {
             get { return _Showing; }
-            private set
+            set
             {
                 switch (value)
                 {
+                    case Pages.Crashlog:
+                        Region = "Crashlog";
+                        Push(CrashLog);
+                        break;
                     case Pages.Changelog:
                         Region = "Changelog";
                         Push(ChangelogView(this));
@@ -145,6 +151,8 @@ namespace InnoTecheLearning
         //StreamPlayer _Player;
         public Main()
         {
+            Exceptions.RegisterHandlers();
+            //throw new Exception("OH NO sadasd");
             //if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");
             async void AsyncInit()
             {
@@ -1238,14 +1246,44 @@ namespace InnoTecheLearning
         }
         
         string CrashLogCurrent;
-        public static StackLayout CrashLog
+        public StackLayout CrashLog
         {
             get
             {
+                if (Storage.Empty(Storage.CrashDir))
+                    return new StackLayout { Children = { (Text)"Fortunately, the app has not crashed yet..." } };
+
+                CrashLogCurrent = Storage.First(Storage.CrashDir);
+
+                Label File = (Text)CrashLogCurrent;
+                File.HorizontalOptions = LayoutOptions.FillAndExpand;
+
+                Label Disp = (Text)"";
+                Disp.HorizontalOptions = Disp.VerticalOptions = LayoutOptions.FillAndExpand;
+                new Action(async () => Disp.Text = await Storage.Read(Storage.Combine(Storage.CrashDir, CrashLogCurrent)))();
+
+                Button Prev = null;
+                Button Next = null;
+                Prev = Button("▲", () => {
+                    File.Text = CrashLogCurrent = Storage.Before(Storage.CrashDir, CrashLogCurrent);
+                    new Action(async () => Disp.Text = await Storage.Read(Storage.Combine(Storage.CrashDir, CrashLogCurrent)))();
+                    if (!Storage.HasBefore(Storage.CrashDir, CrashLogCurrent)) Prev.IsEnabled = false;
+                    Next.IsEnabled = true;
+                });
+                Next = Button("▼", () => {
+                    File.Text = CrashLogCurrent = Storage.After(Storage.CrashDir, CrashLogCurrent);
+                    new Action(async () => Disp.Text = await Storage.Read(Storage.Combine(Storage.CrashDir, CrashLogCurrent)))();
+                    if (!Storage.HasAfter(Storage.CrashDir, CrashLogCurrent)) Next.IsEnabled = false;
+                    Prev.IsEnabled = true;
+                });
+                if (!Storage.HasBefore(Storage.CrashDir, CrashLogCurrent)) Prev.IsEnabled = false;
+                if (!Storage.HasAfter(Storage.CrashDir, CrashLogCurrent)) Next.IsEnabled = false;
 
                 return new StackLayout
                 {
-                    ClassId = "▲▼"
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    Children = { Row(false, Prev, File, Next), Disp }
                 };
             }
         }
