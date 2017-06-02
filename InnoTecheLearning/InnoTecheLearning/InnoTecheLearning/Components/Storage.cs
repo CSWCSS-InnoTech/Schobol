@@ -27,6 +27,10 @@ namespace InnoTecheLearning
             {
                 return Path.Combine(SaveDirectory, FileName);
             }
+            public static string GetSaveLocation(params string[] FileFolders)
+            {
+                return Path.Combine(System.Linq.Enumerable.ToArray(FileFolders.Prepend(SaveDirectory)));
+            }
 
             public static async ValueTask<Unit> Write(string FileName, object Content)
             {
@@ -144,7 +148,7 @@ namespace InnoTecheLearning
 #else
                 => await new ValueTask<Stream>(() => new FileStream(GetSaveLocation(FileName), FileMode.CreateNew, FileAccess.Read));
 #endif
-                
+
             /*
             public static Stream CreateReadStream(string FileName) =>
 #if WINDOWS_UWP
@@ -171,6 +175,12 @@ namespace InnoTecheLearning
 #endif
                 ;
 */
+
+            public static string Before(string Directory, string FileName)
+            {
+                var Files = new DirectoryInfo(GetSaveLocation(Directory)).GetFiles();
+                
+            }
         }
     }
 }

@@ -183,7 +183,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Jint\Runtime\TypeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Jint\StrictModeScope.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ApplicationException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />

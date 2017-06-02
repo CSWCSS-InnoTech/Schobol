@@ -40,10 +40,11 @@ namespace InnoTecheLearning
         public void Stop() => player.Stop();
     }
 #endif
-    public class Main : ContentPage
+    public class Main : NavigationPage
     {
         public enum Pages : sbyte
         {
+            Uninitialised = sbyte.MinValue,
             Changelog = -1,
             Main,
             Translate,
@@ -54,9 +55,10 @@ namespace InnoTecheLearning
             MusicTuner,
             MathSolver
         }
-        public new View Content
+        /*
+        public View Content
         {
-            get { return base.Content; }
+            get { return (base.CurrentPage as ContentPage).Content; }
             set
             {
 #if false
@@ -79,67 +81,71 @@ namespace InnoTecheLearning
                     Constraint.RelativeToParent((parent) => { return parent.Height; }));
                 base.Content = Layout;
 #else
-                base.Content = value;
+                base.PushAsync(new ContentPage { Content = value });
 #endif
             }
         }
+        */
         public static bool FirstTime = true;
-        Pages _Showing = Pages.Main;
+        public ValueTask<Unit> Push(View v) => Unit.Await(PushAsync(new ContentPage { Content = v }));
+        public ValueTask<Page> Pop() => new ValueTask<Page>(PopAsync());
+        Pages _Showing = Pages.Uninitialised;
         public Pages Showing
         {
             get { return _Showing; }
             private set
             {
-                _Showing = value;
                 switch (value)
                 {
                     case Pages.Changelog:
                         Region = "Changelog";
-                        Content = ChangelogView(this);
+                        Push(ChangelogView(this));
                         break;
                     case Pages.Main:
                         Region = "Main";
-                        Content = MainView;
+                        if (_Showing == Pages.Uninitialised)
+                            Push(MainView);
+                        else Pop();
                         break;
                     case Pages.Translate:
                         Region = "Translate";
-                        Content = Translator;
+                        Push(Translator);
                         break;
                     case Pages.Calculator:
                         Region = "Calculator";
-                        Content = Calculator;
+                        Push(Calculator);
                         break;
                     case Pages.Calculator_Free:
                         Region = "Calculator_Free";
-                        Content = Calculator_Free;
+                        Push(Calculator_Free);
                         break;
                     case Pages.Factorizer:
                         Region = "Factorizer";
-                        Content = Factorizer;
+                        Push(Factorizer);
                         break;
                     case Pages.Sports:
                         Region = "Sports";
-                        Content = Sports;
+                        Push(Sports);
                         break;
                     case Pages.MusicTuner:
                         Region = "MusicTuner";
-                        Content = MusicTuner;
+                        Push(MusicTuner);
                         break;
                     case Pages.MathSolver:
                         Region = "MathSolver";
-                        Content = MathSolver;
+                        Push(MathSolver);
                         break;
                     default:
-                        Region = "App";
-                        break;
+                        throw new ArgumentException($"{value} is not a supported member of {nameof(Pages)}.", nameof(value));
+                        //Region = "App";
                 }
+                _Showing = value;
             }
         }
         //StreamPlayer _Player;
-        public static Main Instance { get; private set; }
         public Main()
         {
-            if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");
+            //if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");
             async void AsyncInit()
             {
                 Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<Result>());
@@ -152,7 +158,6 @@ namespace InnoTecheLearning
             Showing = Pages.Main;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
-            Instance = this;
             Log("Main page initialized.");
             FirstTime = false;
         }
@@ -180,7 +185,7 @@ namespace InnoTecheLearning
                         Title(AssemblyTitle),
                         Society,
 
-           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Translate), delegate{
+           MainScreenRow(true, MainScreenItem(ImageSource(ImageFile.Translate), delegate{
                          Showing = Pages.Translate; }, BoldLabel("LINGUAL")),
                          MainScreenItem(ImageSource(ImageFile.Calculator), delegate {
                                 ThreeButtonDialog.Show("Choose Logic mode", "Which Logic mode?",
@@ -189,7 +194,7 @@ namespace InnoTecheLearning
                                     "Factor", () => Showing = Pages.Factorizer);
                              },BoldLabel("LOGIC"))),
 
-           MainScreenRow(MainScreenItem(ImageSource(ImageFile.Sports), delegate {
+           MainScreenRow(true, MainScreenItem(ImageSource(ImageFile.Sports), delegate {
                              Showing = Pages.Sports;
                          },BoldLabel("HEALTH")),
                          MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
@@ -197,7 +202,7 @@ namespace InnoTecheLearning
                          },BoldLabel("TUNES"))
                          ),
 
-            MainScreenRow(MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
+            MainScreenRow(true, MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
                              Showing = Pages.MathSolver; },BoldLabel("EXCEL"))),
 
                         Button("Changelog", () => { Showing = Pages.Changelog; }),
@@ -265,7 +270,7 @@ namespace InnoTecheLearning
                     Children = {
                         Title("eLearn Tunes"),
 
-                        MainScreenRow(Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(false, Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                             .With((ref Image x) =>
                             {
                                 x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -282,7 +287,7 @@ namespace InnoTecheLearning
                         Row(true, Violin)
                             .With((ref StackLayout x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
 
-                        MainScreenRow(Image(ImageFile.Cello, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(false, Image(ImageFile.Cello, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                             .With((ref Image x) =>
                             {
                                 x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -306,11 +311,12 @@ namespace InnoTecheLearning
                             .With((ref Button x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
 
                         Row(false, Volume, Vol),
-                        Back(this)
+                        //Back(this)
                     }
                 };
             }
         }
+        /*
         public StackLayout CloudTest
         {
             get
@@ -347,20 +353,22 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     Children = {ID, E, Button("Test the Cloud",
-                    async () => { var Response = await Login(ToUShort(ID.Text), E.Text);
-                    Try(delegate {
-                    L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
-                    L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
-                    async (IndexOutOfRangeException ex)=> {
-                        await Alert(this, "Abnornal return value from Cloud: " + '"' + string.Join(",", Response) + '"'); },
-                        Catch2:async (Exception ex) => { await Alert(this, ex.ToString()); }
-                    ); }),
-                    L1, L2, L3, L4, Back(this)}
+                    async () => {
+                        var Response = await Login(ToUShort(ID.Text), E.Text);
+                        Try(delegate {
+                        L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
+                        L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
+                        async (IndexOutOfRangeException ex)=> {
+                            await Alert(this, "Abnornal return value from Cloud: " + '"' + string.Join(",", Response) + '"'); },
+                            Catch2:async (Exception ex) => { await Alert(this, ex.ToString()); }
+                        ); }),
+                        L1, L2, L3, L4, //Back(this)
+                    }
                     ,
                     VerticalOptions = LayoutOptions.Center
                 };
             }
-        }
+        }*/
         string Calculator_Value = "";
         List<Expressions> Calculator_Expression = new List<Expressions>();
         event Action Calculator_Changed;
@@ -596,7 +604,8 @@ namespace InnoTecheLearning
                     i => delegate { if (Return.Children[3] != Menus[i]) Return.Children[3] = Menus[i]; }, 0, false,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
                 Return.Children[2] = Row(false, Select[0], 
-                    Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode })), Back(this));
+                        Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode }))//, Back(this)
+                    );
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate
                     {
@@ -724,8 +733,9 @@ namespace InnoTecheLearning
 
                         Row(false, Button("Evaluate", () => { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
                             Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); })
-                            .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand),
-                        Back(this)),
+                            .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
+                            //,Back(this)
+                        ),
                         Entry
                     }
                 };
@@ -766,7 +776,7 @@ namespace InnoTecheLearning
                             TryParseDouble(S3.Text + C3.Text, 0d), out System.Numerics.Complex X1, out System.Numerics.Complex X2, X, Y);
                             Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
                             R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F,
-                        Back(this)
+                        //Back(this)
                     }
                 };
             }
@@ -817,7 +827,7 @@ namespace InnoTecheLearning
                         Label("Time Now"),
                         Sports_Now,
                         Button("Reset", () => { Pedometer.Reset(); }, Color.Yellow),
-                        Back(this)
+                        //Back(this)
                     }
                 };
             }
@@ -1044,12 +1054,15 @@ namespace InnoTecheLearning
                 {
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = {
+                    Children =
+                    {
                         Title("eLearn Excel"),
                         Instruction,
                         Question,
                         Display, CharGrid, Dragon,
-                        Row(false, Row(false, Hearts), Continue, Back(this)) }
+                        Row(false, Row(false, Hearts), Continue//, Back(this)
+                            )
+                    }
                 };
             }
         }
@@ -1217,7 +1230,22 @@ namespace InnoTecheLearning
                 return new StackLayout
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = { Title("eLearn Lingual"), Grid, Back(this) }
+                    Children = {
+                        Title("eLearn Lingual"), Grid, //Back(this)
+                    }
+                };
+            }
+        }
+        
+        string CrashLogCurrent;
+        public static StackLayout CrashLog
+        {
+            get
+            {
+
+                return new StackLayout
+                {
+                    ClassId = "▲▼"
                 };
             }
         }

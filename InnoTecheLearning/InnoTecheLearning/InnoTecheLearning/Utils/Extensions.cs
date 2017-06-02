@@ -405,6 +405,49 @@ namespace InnoTecheLearning
                 e = e.Parent;
             return e as Page;
         }
+
+        public static IEnumerable<T> Prepend<T>(this IEnumerable<T> ie, T Item) => new PrependIterator<T>(ie, Item);
+        class PrependIterator<T> : IEnumerable<T>, IEnumerator<T>
+        {
+            public PrependIterator(IEnumerable<T> ie, T Item)
+            {
+                UnderIterator = 
+                    (Under = ie ?? throw new ArgumentNullException(nameof(ie)))
+                    .GetEnumerator() ?? throw new NullReferenceException($"{nameof(ie)}.GetEnumerator() returned null.");
+                Prepend = Item;
+            }
+            IEnumerable<T> Under;
+            IEnumerator<T> UnderIterator;
+            T Prepend;
+            bool Prepended = false;
+
+            object System.Collections.IEnumerator.Current => Current;
+            public T Current { get; private set; }
+
+            public void Dispose() => UnderIterator.Dispose();
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+            public IEnumerator<T> GetEnumerator() => this;
+
+            public bool MoveNext()
+            {
+                if (Prepended)
+                {
+                    bool Return = UnderIterator.MoveNext();
+                    if (Return) Current = UnderIterator.Current;
+                    return Return;
+                }
+                else
+                {
+                    Current = Prepend;
+                    Prepended = true;
+                    return true;
+                }
+            }
+
+            public void Reset() => UnderIterator = Under.GetEnumerator();
+
+        }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

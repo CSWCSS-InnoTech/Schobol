@@ -154,10 +154,10 @@ namespace InnoTecheLearning
                 return Button;
             }
 
-            public static StackLayout MainScreenRow(params View[] MainScreenItems) =>
-                MainScreenRow<View>(MainScreenItems);
+            public static StackLayout MainScreenRow(bool Animate, params View[] MainScreenItems) =>
+                MainScreenRow<View>(Animate, MainScreenItems);
 
-            public static StackLayout MainScreenRow<T>(params T[] MainScreenItems) where T : View
+            public static StackLayout MainScreenRow<T>(bool Animate, params T[] MainScreenItems) where T : View
             {
                 StackLayout MenuScreenRow = new StackLayout
                 {
@@ -169,7 +169,7 @@ namespace InnoTecheLearning
                 };
                 foreach (T MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
-                if(Main.Instance == null || Main.Instance.Showing == Main.Pages.Main)
+                if(Animate)
                     Device.StartTimer(Device.Idiom != TargetIdiom.Desktop && Main.FirstTime ? Seconds(1) : Milliseconds(1),
                     () => { MenuScreenRow.Spacing = MainScreenItems[0].Width;
                     MenuScreenRow.TranslateTo(0, MainScreenItems[0].Height / 2, 1000, Easing.BounceOut); return false; });
@@ -291,6 +291,7 @@ namespace InnoTecheLearning
                     };
                 }
             }
+            [Obsolete("Users will press the native back button instead on NavigationPage.")]
             public static Button Back(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -352,7 +353,7 @@ namespace InnoTecheLearning
                     BackColor = Color.White;
                 return new StackLayout
                 {
-                    Children = { Changelog, Row(false, /*UpdateAlpha(Page),*/ Back(Page)) },
+                    Children = { Changelog/*, Row(false, UpdateAlpha(Page), Back(Page))*/ },
                     BackgroundColor = BackColor,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill

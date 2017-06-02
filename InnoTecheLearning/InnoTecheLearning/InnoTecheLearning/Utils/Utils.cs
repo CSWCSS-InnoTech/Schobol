@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -1132,6 +1133,7 @@ const Log10e = Math.LOG10E;
         public static Func<bool> True(Action A) => () => { A?.Invoke(); return true; };
         public static TimeSpan Seconds(double s) => TimeSpan.FromSeconds(s);
         public static TimeSpan Milliseconds(double s) => TimeSpan.FromMilliseconds(s);
+
     }
     ///// <summary>
     ///// An uninitialized Void object.
