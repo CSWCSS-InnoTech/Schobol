@@ -6,7 +6,18 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-
+        public static void SetClipboardText(string Text)
+        {
+#if __IOS__
+            ClipBoard.String = Text;
+#elif __ANDROID__
+            ClipBoard.Text = Text;
+#elif NETFX_CORE
+            var ItemToSet = new Windows.ApplicationModel.DataTransfer.DataPackage();
+            ItemToSet.SetText(Text);
+            ClipBoard.SetContent(ItemToSet);
+#endif
+        }
 #if __IOS__
         public static UIKit.UIPasteboard ClipBoard { get; } = UIKit.UIPasteboard.General;
 #elif __ANDROID__
@@ -14,7 +25,7 @@ namespace InnoTecheLearning
             (Android.Content.ClipboardManager)
             Xamarin.Forms.Forms.Context.GetSystemService(Android.Content.Context.ClipboardService);
 #elif NETFX_CORE
-        public static SystemClipboard Clipboard { get; } = new SystemClipboard();
+        public static SystemClipboard ClipBoard { get; } = new SystemClipboard();
         public sealed class SystemClipboard {
             public void Clear() => Windows​.ApplicationModel​.DataTransfer.Clipboard.Clear();
             public event EventHandler<object> ContentChanged {

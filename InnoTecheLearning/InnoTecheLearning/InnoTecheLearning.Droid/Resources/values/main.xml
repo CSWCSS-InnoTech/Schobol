@@ -1,0 +1,6 @@
+﻿<resources>
+  <style name="Main" parent ="@android:style/Theme.Holo">
+    <item name="android:windowNoTitle">false</item>
+    <item name="android:windowFullscreen">false</item>
+  </style>
+</resources>

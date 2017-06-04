@@ -11,7 +11,7 @@ using Android.Content;
 
 namespace InnoTecheLearning.Droid
 {
-	[Activity (Label = "CSWCSS eLearning App", Icon = "@drawable/elearn", MainLauncher = false, 
+	[Activity (Label = "CSWCSS eLearning App", Theme = "@style/Main", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
@@ -42,8 +42,13 @@ namespace InnoTecheLearning.Droid
         //static System.Threading.ManualResetEvent _Ready = new System.Threading.ManualResetEvent(false);
         //public static void Ready() => _Ready.Set();
         //static readonly string TAG = "X:" + typeof(SplashActivity).Name;
-        
-        protected override void OnCreate(Bundle bundle) { base.OnCreate(bundle); MainActivity.Bundle = bundle; }
+
+        protected override void OnCreate(Bundle bundle)
+        {
+            base.OnCreate(bundle);
+            Exceptions.RegisterHandlers();
+            MainActivity.Bundle = bundle;
+        }
 
         // Launches the startup task
         protected override void OnResume()

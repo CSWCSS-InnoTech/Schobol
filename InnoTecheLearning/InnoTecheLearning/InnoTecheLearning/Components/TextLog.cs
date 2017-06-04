@@ -7,19 +7,24 @@ using System.Threading.Tasks;
 namespace InnoTecheLearning
 {
     partial class Utils
-    {   public static TextLog Logger { get; } = new TextLog(Temp.GetFile("InnoTecheLearning.log"));
-        public static ValueTask<string> ReadAll()
-        { return Logger.ReadAll(); }//""; }
-        public static ValueTask<string> Log(string Message)
-        { return Logger.Log(Message); }//""; }
-        public static ValueTask<string> Log(string Message, LogImportance Importance)
-        { return Logger.Log(Message, Importance); }//""; }
-        public static ValueTask<string> Log(Exception e)
-        { return Logger.Log(e); }//""; }
-        public static ValueTask<string> Log(Exception e, LogImportance Importance)
-        { return Logger.Log(e, Importance); }//""; }
-        public static string Region
-        { get { return Logger.Region; } set { Logger.Region = value; } }//""; 
+    {
+        public static TextLog Logger { get => DebugLog.Default; }
+        /*public static ValueTask<string> ReadAll()
+        { return Logger.ReadAll(); }*/
+        public static ValueTask<string> Log(string Message) => Logger.Log(Message);
+        public static ValueTask<string> Log(string Message, LogImportance Importance) => Logger.Log(Message, Importance);
+        public static ValueTask<string> Log(string Message, string Format) => Logger.Log(Message, Format);
+        public static ValueTask<string> Log(string Message, string Format, LogImportance Importance) => 
+            Logger.Log(Message, Format, Importance);
+        public static ValueTask<string> Log(Exception e) => Logger.Log(e);
+        public static ValueTask<string> Log(Exception e, LogImportance Importance) => Logger.Log(e, Importance);
+
+        public static T Log<T>(T Object) => Logger.Log(Object);
+        public static T Log<T>(T Object, LogImportance Importance) => Logger.Log(Object, Importance);
+        public static T Log<T>(T Object, string Format) => Logger.Log(Object, Format);
+        public static T Log<T>(T Object, string Format, LogImportance Importance) => Logger.Log(Object, Format, Importance);
+
+        public static string Region { get { return Logger.Region; } set { Logger.Region = value; } }
         public enum LogImportance : byte
         {
             /// <summary>
@@ -43,41 +48,68 @@ namespace InnoTecheLearning
             /// </summary>
             V
         }
-        public static char Symbol(LogImportance Importance)
+        public abstract class TextLog
         {
-            switch (Importance)
+            public virtual string Region { get; set; }
+            public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.FFF";
+
+            public abstract ValueTask<string> ReadAll();
+            public virtual ValueTask<string> Log(string Message)
+            { return Log(Message, LogImportance.I); }
+            public virtual ValueTask<string> Log(string Message, string Format)
+            { return Log(string.Format(Format, Message), LogImportance.I); }
+            public virtual ValueTask<string> Log(Exception e)
+            { return Log(e, LogImportance.E); }
+            public virtual ValueTask<string> Log(Exception e, string Format)
+            { return Log(string.Format(Format, e), LogImportance.I); }
+            public virtual ValueTask<string> Log(Exception e, LogImportance Importance)
+            { return Log(e.ToString(), Importance); }
+            public virtual ValueTask<string> Log(Exception e, string Format, LogImportance Importance)
+            { return Log(string.Format(Format, e), Importance); }
+            public abstract ValueTask<string> Log(string Message, LogImportance Importance);
+            public virtual ValueTask<string> Log(string Message, string Format, LogImportance Importance)
+            { return Log(string.Format(Format, Message), Importance); }
+
+
+            public virtual T Log<T>(T Object)
+            { Log(Object.ToString()); return Object; }
+            public virtual T Log<T>(T Object, LogImportance Importance)
+            { Log(Object.ToString(), Importance); return Object; }
+            public virtual T Log<T>(T Object, string Format)
+            { Log(string.Format(Format, Object)); return Object; }
+            public virtual T Log<T>(T Object, string Format, LogImportance Importance)
+            { Log(string.Format(Format, Object), Importance); return Object; }
+
+            public virtual string Format(DateTime Time, LogImportance Importance, string Region, string Message)
+            { return '[' + Time.ToString(DateTimeFormat) + ']' + Symbol(Importance) + Region + '|' + Message; }
+            public static char Symbol(LogImportance Importance)
             {
-                case LogImportance.C:
-                    return '❗';
-                case LogImportance.E:
-                    return 'ⓧ'; //⮾
-                case LogImportance.W:
-                    return '⚠';
-                case LogImportance.I:
-                    return 'ⓘ';
-                case LogImportance.V:
-                    return '#';
-                default:
-                    throw new ArgumentOutOfRangeException("Importance", Importance, "Importance is out of range.");
+                switch (Importance)
+                {
+                    case LogImportance.C:
+                        return '❗';
+                    case LogImportance.E:
+                        return 'ⓧ'; //⮾
+                    case LogImportance.W:
+                        return '⚠';
+                    case LogImportance.I:
+                        return 'ⓘ';
+                    case LogImportance.V:
+                        return '#';
+                    default:
+                        throw new ArgumentOutOfRangeException("Importance", Importance, "Importance is out of range.");
+                }
             }
-        }
-        public interface ITextLog
-        {
-            ValueTask<string> ReadAll();
-            ValueTask<string> Log(string Message);
-            ValueTask<string> Log(string Message, LogImportance Importance);
-            ValueTask<string> Log(Exception e);
-            ValueTask<string> Log(Exception e, LogImportance Importance);
-            string Format(DateTime Time, LogImportance Importance, string Region, string Message);
         }
         /// <summary>
         /// For app logging.
         /// </summary>
-        public class TextLog : ITextLog
+        public class FileLog : TextLog
         {
-            public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.FFF";
+            public static FileLog Default => new FileLog(Temp.GetFile("InnoTecheLearning.log"));
+            public FileLog(string Path) { Init(Path); }
+            public FileLog(string Path, string Region) : this(Path) { this.Region = Region; }
             string Path;
-            public string Region { get; set; }
             public async void Init(string Path)
             {
 #if __IOS__ || __ANDROID__
@@ -96,15 +128,7 @@ namespace InnoTecheLearning
 #endif
                 this.Path = Path;
             }
-            public TextLog(string Path) { Init(Path); }
-            public TextLog(string Path, string Region) : this(Path) { this.Region = Region; }
-            public ValueTask<string> Log(string Message)
-            { return Log(Message, LogImportance.I); }
-            public ValueTask<string> Log(Exception e)
-            { return Log(e, LogImportance.E); }
-            public ValueTask<string> Log(Exception e, LogImportance Importance)
-            { return Log(e.ToString(), Importance); }
-            public async ValueTask<string> Log(string Message, LogImportance Importance)
+            public override async ValueTask<string> Log(string Message, LogImportance Importance)
             {
 #if __IOS__|| __ANDROID__
                 using (StreamWriter Writer = new StreamWriter(Path, true, Encoding.Unicode))
@@ -116,7 +140,7 @@ namespace InnoTecheLearning
 #endif
                 return Message;
             }
-            public async ValueTask<string> ReadAll()
+            public override async ValueTask<string> ReadAll()
             {
 #if __IOS__ || __ANDROID__
                 using (StreamReader Reader = new StreamReader(Path, Encoding.Unicode))
@@ -127,8 +151,18 @@ namespace InnoTecheLearning
 #endif
                 return await Reader.ReadToEndAsync(); 
             }
-            public string Format(DateTime Time, LogImportance Importance, string Region, string Message)
-            { return '[' + Time.ToString(DateTimeFormat) + ']' + Symbol(Importance) + Region + '|' + Message; }
+        }
+        public class DebugLog : TextLog
+        {
+            public override ValueTask<string> Log(string Message, LogImportance Importance)
+            {
+                System.Diagnostics.Debug.WriteLine(Message, Format(DateTime.Now, Importance, Region, Message));
+                return new ValueTask<string>(Message);
+            }
+
+            public override ValueTask<string> ReadAll() => throw new NotSupportedException("Cannot read logs back from output.");
+
+            public static DebugLog Default { get; } = new DebugLog();
         }
     }
 }

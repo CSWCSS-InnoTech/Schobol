@@ -48,8 +48,8 @@ namespace InnoTecheLearning
                     "folded-paper_318-31112.jpg"
                 };
             public static ImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[(int)File]);
-            public static ImageSource ImageSource(string FileName) => Xamarin.Forms.ImageSource.FromResource
-                (CurrentNamespace + ".Images." + FileName, typeof(Utils));
+            public static ImageSource ImageSource(string FileName) => Log(Xamarin.Forms.ImageSource.FromResource
+                (CurrentNamespace + ".Images." + FileName, typeof(Utils)), "ImageSource created: " + FileName);
 
             public static Image Image(ImageFile File, Action OnTap) => Image(ImageSource(File), OnTap);
             public static Image Image(ImageFile File, Action OnTap, Size Size) => Image(ImageSource(File), OnTap, Size);
@@ -108,7 +108,7 @@ namespace InnoTecheLearning
                             )
                     }
                 }; else */
-                return new StackLayout
+                return Log(new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
                     VerticalOptions = LayoutOptions.StartAndExpand,
@@ -116,7 +116,7 @@ namespace InnoTecheLearning
                     WidthRequest = 71.5,
                     Scale = 2,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
-                };
+                }, "MainScreenItem returned: " + Display.Text);
             }
             [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
             public static Button ButtonB(FileImageSource Image, EventHandler OnClick)

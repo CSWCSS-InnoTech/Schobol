@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 Release Candidate 1"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.10.0 Release Candidate 2"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;
@@ -110,7 +110,7 @@ namespace InnoTecheLearning
 #if __IOS__
             "KAIU.TTF"
 #elif __ANDROID__
-            "Droid Sans Mono" //"KAIU.TTF#標楷體"
+            "monospace" //"KAIU.TTF#標楷體"
 #elif WINDOWS_UWP
             "Assets/Fonts/KAIU.TTF#標楷體"
 #endif

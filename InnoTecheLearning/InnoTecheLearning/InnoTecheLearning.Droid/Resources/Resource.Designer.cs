@@ -4301,6 +4301,9 @@ namespace InnoTecheLearning.Droid
 			// aapt resource value: 0x7f0b000e
 			public const int CardView_Light = 2131427342;
 			
+			// aapt resource value: 0x7f0b0189
+			public const int Main = 2131427721;
+			
 			// aapt resource value: 0x7f0b002d
 			public const int Platform_AppCompat = 2131427373;
 			
@@ -4385,8 +4388,8 @@ namespace InnoTecheLearning.Droid
 			// aapt resource value: 0x7f0b004d
 			public const int RtlUnderlay_Widget_AppCompat_ActionButton_Overflow = 2131427405;
 			
-			// aapt resource value: 0x7f0b0189
-			public const int Splash = 2131427721;
+			// aapt resource value: 0x7f0b018a
+			public const int Splash = 2131427722;
 			
 			// aapt resource value: 0x7f0b00dd
 			public const int TextAppearance_AppCompat = 2131427549;

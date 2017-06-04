@@ -87,9 +87,18 @@ namespace InnoTecheLearning
             }
         }
         */
-        public static bool FirstTime = true;
-        public ValueTask<Unit> Push(View v) => Unit.Await(PushAsync(new ContentPage { Content = v,
-            BackgroundColor = Color.White}));
+        public bool AnimateRows = true;
+        public ValueTask<Unit> Push(View v, string Title = null) => 
+            Log(
+                Unit.Await(
+                    PushAsync(
+                        Log(
+                            new ContentPage { Content = v, BackgroundColor = Color.White, Title = Title ?? "" },
+                            $"Pushing a page, Page title: {Title}..."
+                        )
+                    )
+                ),
+            $"Page pushed. Page title: {Title}");
         public ValueTask<Page> Pop() => new ValueTask<Page>(PopAsync());
         Pages _Showing = Pages.Uninitialised;
         public Pages Showing
@@ -97,62 +106,65 @@ namespace InnoTecheLearning
             get { return _Showing; }
             set
             {
+                Log($"Setting Showing to {value}...");
                 switch (value)
                 {
                     case Pages.Crashlog:
                         Region = "Crashlog";
-                        Push(CrashLog);
+                        Push(CrashLog, "eLearn Crashes");
                         break;
                     case Pages.Changelog:
                         Region = "Changelog";
-                        Push(ChangelogView(this));
+                        Push(ChangelogView(this), "eLearn Changelog");
                         break;
                     case Pages.Main:
                         Region = "Main";
                         if (_Showing == Pages.Uninitialised)
-                            Push(MainView);
+                            Push(MainView, AssemblyTitle);
                         else Pop();
                         break;
                     case Pages.Translate:
                         Region = "Translate";
-                        Push(Translator);
+                        Push(Translator, "eLearn Lingual");
                         break;
                     case Pages.Calculator:
                         Region = "Calculator";
-                        Push(Calculator);
+                        Push(Calculator, "eLearn Logic");
                         break;
                     case Pages.Calculator_Free:
                         Region = "Calculator_Free";
-                        Push(Calculator_Free);
+                        Push(Calculator_Free, "eLearn Logic");
                         break;
                     case Pages.Factorizer:
                         Region = "Factorizer";
-                        Push(Factorizer);
+                        Push(Factorizer, "eLearn Logic");
                         break;
                     case Pages.Sports:
                         Region = "Sports";
-                        Push(Sports);
+                        Push(Sports, "eLearn Health");
                         break;
                     case Pages.MusicTuner:
                         Region = "MusicTuner";
-                        Push(MusicTuner);
+                        Push(MusicTuner, "eLearn Tunes");
                         break;
                     case Pages.MathSolver:
                         Region = "MathSolver";
-                        Push(MathSolver);
+                        Push(MathSolver, "eLearn Excel");
                         break;
                     default:
                         throw new ArgumentException($"{value} is not a supported member of {nameof(Pages)}.", nameof(value));
                         //Region = "App";
                 }
                 _Showing = value;
+                Log($"Set Showing to {value}.");
             }
         }
         //StreamPlayer _Player;
         public Main()
         {
-            Exceptions.RegisterHandlers();
-            //throw new Exception("OH NO sadasd");
+            Log("Main.ctor()");
+            //throw new Java.Lang.Throwable("Can a java throwable be logged?");
+            //Wire this up on start in every project: Exceptions.RegisterHandlers();
             //if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");
             async void AsyncInit()
             {
@@ -161,20 +173,22 @@ namespace InnoTecheLearning
             AsyncInit();
             // Accomodate iPhone status bar.
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
+            //BarBackgroundColor = Color.Silver;
+            //BarTextColor = Color.Black;
             BackgroundColor = Color.White;
-            //Alert(this, "Main constructor"); 
+            Log("Before pushing main...");
             Showing = Pages.Main;
+            Popped += (sender, e) => { MusicSound?.Dispose(); MusicSound = null; };
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
             Log("Main page initialized.");
-            FirstTime = false;
+            AnimateRows = false;
         }
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
         {
             if (Showing != Pages.Main)
             {
-                if (Showing == Pages.MusicTuner) MusicSound?.Stop();
                 Showing = Pages.Main;
                 return true;
             }
@@ -186,37 +200,36 @@ namespace InnoTecheLearning
         {
             get
             {
-                return new StackLayout
+                return Log(new StackLayout
                 { 
                     Orientation = StackOrientation.Vertical,
                     Children = {
-                        Title(AssemblyTitle),
-                        Society,
+                         Log(Society, "Generating Society Label in MainView"),
 
-           MainScreenRow(true, MainScreenItem(ImageSource(ImageFile.Translate), delegate{
+       Log(MainScreenRow(true, AnimateRows, MainScreenItem(ImageSource(ImageFile.Translate), delegate{
                          Showing = Pages.Translate; }, BoldLabel("LINGUAL")),
                          MainScreenItem(ImageSource(ImageFile.Calculator), delegate {
                                 ThreeButtonDialog.Show("Choose Logic mode", "Which Logic mode?",
                                     "Keypad", () => Showing = Pages.Calculator,
                                     "Freeform", () => Showing = Pages.Calculator_Free,
                                     "Factor", () => Showing = Pages.Factorizer);
-                             },BoldLabel("LOGIC"))),
+                             },BoldLabel("LOGIC"))), "Generated first row"),
 
-           MainScreenRow(true, MainScreenItem(ImageSource(ImageFile.Sports), delegate {
+       Log(MainScreenRow(true, AnimateRows, MainScreenItem(ImageSource(ImageFile.Sports), delegate {
                              Showing = Pages.Sports;
                          },BoldLabel("HEALTH")),
                          MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
                              Showing = Pages.MusicTuner;
                          },BoldLabel("TUNES"))
-                         ),
+                         ), "Generated second row"),
 
-            MainScreenRow(true, MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
+           MainScreenRow(true, AnimateRows, MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
                              Showing = Pages.MathSolver; },BoldLabel("EXCEL"))),
 
                         Button("Changelog", () => { Showing = Pages.Changelog; }),
                         VersionDisplay
                     }
-                };
+                }, "Generated MainView");
             }
         }
         StreamPlayer MusicSound { get; set; }
@@ -276,9 +289,9 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Orientation = StackOrientation.Vertical,
                     Children = {
-                        Title("eLearn Tunes"),
+                        //Title("eLearn Tunes"),
 
-                        MainScreenRow(false, Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(false, false, Image(ImageFile.Violin, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                             .With((ref Image x) =>
                             {
                                 x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -295,7 +308,7 @@ namespace InnoTecheLearning
                         Row(true, Violin)
                             .With((ref StackLayout x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
 
-                        MainScreenRow(false, Image(ImageFile.Cello, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
+                        MainScreenRow(false, false, Image(ImageFile.Cello, async delegate {await Alert(this, "🎻♫♬♩♪♬♩♪♬"); })
                             .With((ref Image x) =>
                             {
                                 x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
@@ -599,7 +612,7 @@ namespace InnoTecheLearning
                 }
 
                 StackLayout Return = new StackLayout
-                { Children = { Title("eLearn Logic"), In, new StackLayout(), Norm, new StackLayout(), Out } };
+                { Children = { /*Title("eLearn Logic"),*/ In, new StackLayout(), Norm, new StackLayout(), Out } };
                 Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
                 Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
@@ -609,15 +622,15 @@ namespace InnoTecheLearning
                     Mode.Text = AngleUnit.ToString();
                 };
                 var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { if (Return.Children[3] != Menus[i]) Return.Children[3] = Menus[i]; }, 0, false,
+                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0, false,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
-                Return.Children[2] = Row(false, Select[0], 
+                Return.Children[1] = Row(false, Select[0], 
                         Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode }))//, Back(this)
                     );
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate
                     {
-                        if (Calculator_Modifier != (Modifier)i)
+                        if (Calculator_Modifier != (Modifier)i && !string.IsNullOrWhiteSpace(Calculator_Value))
                         {
                             Calculator_Modifier = (Modifier)i;
                             var Result = JSEngine.GetCompletionValue();
@@ -628,7 +641,7 @@ namespace InnoTecheLearning
                     }, 0, false,
                     "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"), 
                     OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
-                Return.Children[4] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
+                Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*
@@ -735,7 +748,7 @@ namespace InnoTecheLearning
                 {
                     Children =
                     {
-                        Title("eLearn Logic"),
+                        //Title("eLearn Logic"),
                         new ScrollView { Content = Editor,
                         HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
 
@@ -775,15 +788,25 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Title("eLearn Logic"),
+                        //Title("eLearn Logic"),
                         Row(false, S1, C1, (Text)(X + "²")),
                         Row(false, S2, C2, (Text)(X + Y)),
                         Row(false, S3, C3, (Text)(Y + "²")),
-                        Button("Factorize", () => {Factorizer_Result = Factorize(TryParseDouble(S1.Text + C1.Text, 0d),
-                            TryParseDouble(S2.Text + C2.Text, 0d),
-                            TryParseDouble(S3.Text + C3.Text, 0d), out System.Numerics.Complex X1, out System.Numerics.Complex X2, X, Y);
-                            Factorizer_Root1 = X1.ToABi(); Factorizer_Root2 = X2.ToABi();
-                            R1.Text = Factorizer_Root1; R2.Text = Factorizer_Root2; F.Text = Factorizer_Result; }), R1, R2, F,
+                        Button("Factorize", () => 
+                        {
+                            Factorizer_Result = 
+                                Factorize(
+                                    TryParseDouble(C1.Text, 1d) * (S1.Text == "+" ? 1 : -1),
+                                    TryParseDouble(C2.Text, 1d) * (S2.Text == "+" ? 1 : -1),
+                                    TryParseDouble(C3.Text, 1d) * (S3.Text == "+" ? 1 : -1),
+                                    out System.Numerics.Complex X1, out System.Numerics.Complex X2, X, Y
+                                );
+                            Factorizer_Root1 = X1.ToABi();
+                            Factorizer_Root2 = X2.ToABi();
+                            R1.Text = Factorizer_Root1;
+                            R2.Text = Factorizer_Root2;
+                            F.Text = Factorizer_Result;
+                        }), R1, R2, F,
                         //Back(this)
                     }
                 };
@@ -819,7 +842,7 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Title("eLearn Health"),
+                        //Title("eLearn Health"),
                         Button("Start Running", async () => {
                                 try { await Pedometer.Start(); }
                                 catch(UnauthorizedAccessException)
@@ -1064,7 +1087,7 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children =
                     {
-                        Title("eLearn Excel"),
+                        //Title("eLearn Excel"),
                         Instruction,
                         Question,
                         Display, CharGrid, Dragon,
@@ -1076,7 +1099,7 @@ namespace InnoTecheLearning
         }
         //SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
         ObservableCollection<Result> Favourites = new ObservableCollection<Result>();
-        public StackLayout Translator
+        public Grid Translator
         {
             get
             {
@@ -1156,6 +1179,7 @@ namespace InnoTecheLearning
                 };
                 var Formatted = new StackLayout
                 {
+                    Scale = 1,
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     Children = {
                         FormattedLabel(
@@ -1212,7 +1236,7 @@ namespace InnoTecheLearning
                     }
                 }, 0, 0);
                 Grid.Children.Add(new GridSplitter(Color.FromRgb(223, 223, 223)){ VerticalOptions = LayoutOptions.Center }, 0, 1);
-                var FavouritesView = new StackLayout();
+                var FavouritesView = new StackLayout { Scale = 1 };
                 void FavouritesUpdate() => ViewUpdate(FavouritesView, Favourites, new Span
                 {
                     Text = "There's nothing here...\n",
@@ -1235,17 +1259,11 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Content = FavouritesView
                 }, 0, 2);
-                return new StackLayout
-                {
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = {
-                        Title("eLearn Lingual"), Grid, //Back(this)
-                    }
-                };
+                return Grid;
             }
         }
         
-        string CrashLogCurrent;
+        string CrashLogCurrent = null;
         public StackLayout CrashLog
         {
             get
@@ -1253,7 +1271,7 @@ namespace InnoTecheLearning
                 if (Storage.Empty(Storage.CrashDir))
                     return new StackLayout { Children = { (Text)"Fortunately, the app has not crashed yet..." } };
 
-                CrashLogCurrent = Storage.First(Storage.CrashDir);
+                CrashLogCurrent = CrashLogCurrent ?? Storage.Last(Storage.CrashDir);
 
                 Label File = (Text)CrashLogCurrent;
                 File.HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -1279,11 +1297,14 @@ namespace InnoTecheLearning
                 if (!Storage.HasBefore(Storage.CrashDir, CrashLogCurrent)) Prev.IsEnabled = false;
                 if (!Storage.HasAfter(Storage.CrashDir, CrashLogCurrent)) Next.IsEnabled = false;
 
+                var Copy = Button("Copy log", () => SetClipboardText(Disp.Text))
+                    .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand);
+
                 return new StackLayout
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.FillAndExpand, 
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = { Row(false, Prev, File, Next), Disp }
+                    Children = { Row(false, Prev, File, Next), Scroll(ScrollOrientation.Vertical, Disp), Copy }
                 };
             }
         }

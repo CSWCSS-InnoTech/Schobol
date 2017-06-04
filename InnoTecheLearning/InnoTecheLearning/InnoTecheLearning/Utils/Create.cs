@@ -154,11 +154,12 @@ namespace InnoTecheLearning
                 return Button;
             }
 
-            public static StackLayout MainScreenRow(bool Animate, params View[] MainScreenItems) =>
-                MainScreenRow<View>(Animate, MainScreenItems);
+            public static StackLayout MainScreenRow(bool Dropdown, bool Animate, params View[] MainScreenItems) =>
+                MainScreenRow<View>(Dropdown, Animate, MainScreenItems);
 
-            public static StackLayout MainScreenRow<T>(bool Animate, params T[] MainScreenItems) where T : View
+            public static StackLayout MainScreenRow<T>(bool Dropdown, bool Animate, params T[] MainScreenItems) where T : View
             {
+                Log("Generating MainScreenRow...");
                 StackLayout MenuScreenRow = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
@@ -169,8 +170,9 @@ namespace InnoTecheLearning
                 };
                 foreach (T MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
-                if(Animate)
-                    Device.StartTimer(Device.Idiom != TargetIdiom.Desktop && Main.FirstTime ? Seconds(1) : Milliseconds(1),
+                Log("Added all items into MainScreenRow");
+                if(Dropdown)
+                    Device.StartTimer(Device.Idiom != TargetIdiom.Desktop && Animate ? Seconds(1) : Milliseconds(1),
                     () => { MenuScreenRow.Spacing = MainScreenItems[0].Width;
                     MenuScreenRow.TranslateTo(0, MainScreenItems[0].Height / 2, 1000, Easing.BounceOut); return false; });
                 return MenuScreenRow;
@@ -367,6 +369,7 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.Fill
                 };
             }
+            [Obsolete("Title of ContentPage will show on NavigationPage's bar.")]
             public static Label Title(Text Text)
             {
                 return new Label
@@ -571,6 +574,23 @@ namespace InnoTecheLearning
                 (Base.Content as StackLayout).Children.AddRange(Items);
             public static void FillGrid(Grid Base, View Item) => 
                 Base.Children.Add(Item, 0, Base.RowDefinitions.Count, 0, Base.ColumnDefinitions.Count);
+            public static ScrollView Scroll(ScrollOrientation Orientation, View View) =>
+                new ScrollView { Orientation = Orientation, Content = View }
+                .With((ref ScrollView x) =>
+                {
+                    switch (Orientation)
+                    {
+                        case ScrollOrientation.Vertical:
+                            x.VerticalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                        case ScrollOrientation.Horizontal:
+                            x.HorizontalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                        case ScrollOrientation.Both:
+                            x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                    }
+                });
             public static ScrollView Scroll<T>(StackOrientation Orientation, params T[] Views) where T : View
             {
                 ScrollView Modificator = new ScrollView
