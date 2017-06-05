@@ -759,7 +759,7 @@ namespace InnoTecheLearning
                         Row(false, Button("Evaluate", () => 
                         {
                             Calculator_Free_Value = 
-                                string.IsNullOrWhiteSpace(Editor.Text) ? JSEvaluate(Editor.Text, this) : string.Empty;
+                                string.IsNullOrWhiteSpace(Editor.Text) ? string.Empty : JSEvaluate(Editor.Text, this);
                             Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value));
                         }).With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
                             //,Back(this)
