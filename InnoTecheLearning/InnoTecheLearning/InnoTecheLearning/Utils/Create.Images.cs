@@ -114,7 +114,7 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.StartAndExpand,
                     HorizontalOptions = LayoutOptions.Center,
                     WidthRequest = 71.5,
-                    Scale = 2,
+                    Scale = 1.5,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 }, "MainScreenItem returned: " + Display.Text);
             }

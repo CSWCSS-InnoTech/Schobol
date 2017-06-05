@@ -1089,6 +1089,7 @@ const Log10e = Math.LOG10E;
                         await System.Net.Dns.GetHostEntryAsync("www.google.com");
                         return true;
                     }
+                    catch (System.Net.Sockets.SocketException) { return false; }
                     catch (AggregateException ex) when (ex.InnerException is System.Net.Sockets.SocketException)
                     {
                         return false;

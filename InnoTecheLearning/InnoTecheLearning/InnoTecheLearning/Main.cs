@@ -749,12 +749,19 @@ namespace InnoTecheLearning
                     Children =
                     {
                         //Title("eLearn Logic"),
-                        new ScrollView { Content = Editor,
-                        HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand },
+                        new ScrollView
+                        {
+                            Content = Editor,
+                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand
+                        },
 
-                        Row(false, Button("Evaluate", () => { Calculator_Free_Value = JSEvaluate(Editor.Text, this);
-                            Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value)); })
-                            .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
+                        Row(false, Button("Evaluate", () => 
+                        {
+                            Calculator_Free_Value = 
+                                string.IsNullOrWhiteSpace(Editor.Text) ? JSEvaluate(Editor.Text, this) : string.Empty;
+                            Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value));
+                        }).With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
                             //,Back(this)
                         ),
                         Entry
@@ -1268,8 +1275,18 @@ namespace InnoTecheLearning
         {
             get
             {
+                var Crash = Button("Crash me!", OnClick:() => throw new NotSupportedException("Oops, crashing is not supported!"));
                 if (Storage.Empty(Storage.CrashDir))
-                    return new StackLayout { Children = { (Text)"Fortunately, the app has not crashed yet..." } };
+                    return new StackLayout {
+                        Children = {
+                            ((Label)(Text)"Fortunately, the app has not crashed yet...")
+                                .With((ref Label x) => {
+                                    x.HorizontalTextAlignment = TextAlignment.Center;
+                                    x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
+                                }),
+                            Crash
+                        }
+                    };
 
                 CrashLogCurrent = CrashLogCurrent ?? Storage.Last(Storage.CrashDir);
 
@@ -1302,9 +1319,28 @@ namespace InnoTecheLearning
 
                 return new StackLayout
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand, 
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.FillAndExpand,
-                    Children = { Row(false, Prev, File, Next), Scroll(ScrollOrientation.Vertical, Disp), Copy }
+                    Children =
+                    {
+                        Row(false, Prev, File, Next), Scroll(ScrollOrientation.Vertical, Disp),
+                        Row(false, Copy,
+                            Button("Delete", () =>
+                            {
+                                string NextDisp = Storage.Before(Storage.CrashDir, CrashLogCurrent) ??
+                                                  Storage.After(Storage.CrashDir, CrashLogCurrent);
+                                Storage.Delete(Storage.Combine(Storage.CrashDir, CrashLogCurrent)).Ignore();
+                                if (NextDisp == null) Pop();
+                                else
+                                {
+                                    File.Text = CrashLogCurrent = NextDisp;
+                                    new Action(async () => Disp.Text =
+                                        await Storage.Read(Storage.Combine(Storage.CrashDir, CrashLogCurrent)))();
+                                    Prev.IsEnabled = Storage.HasBefore(Storage.CrashDir, CrashLogCurrent);
+                                    Next.IsEnabled = Storage.HasAfter(Storage.CrashDir, CrashLogCurrent);
+                                }
+                            }), Crash)
+                    }
                 };
             }
         }

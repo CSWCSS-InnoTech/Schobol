@@ -9,10 +9,11 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 !Security to invite users to upgrade in case of vulnerabilities.
 ~Comment for notes.
 
-v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0b6.apk,
-                                       https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0b6.appxbundle}
+v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0.appxbundle}
 +Windows 10 support
++Splash screen
 +Proper negative factorizer calculations in Logic (Factor)
+*New icon by Qige0902
 *Lingual replaces Translator
 *VocabBook integrated into Lingual's Favourites
 *Logic (Keypad) replaces MathConverter

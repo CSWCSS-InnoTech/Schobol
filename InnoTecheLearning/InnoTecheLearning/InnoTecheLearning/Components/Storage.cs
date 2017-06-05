@@ -37,6 +37,8 @@ namespace InnoTecheLearning
 
             public static void CreateSync(string FileName) => File.Create(GetSaveLocation(FileName)).Dispose();
             public static void WriteSync(string FileName, object o) => File.WriteAllText(GetSaveLocation(FileName), o.ToString());
+            public static ValueTask<Unit> Delete(string FileName) => Unit.InvokeAsync(() => File.Delete(GetSaveLocation(FileName)));
+
             public static async ValueTask<Unit> Write(string FileName, object Content)
             {
                 using (var File = await GetWriteStream(FileName))
