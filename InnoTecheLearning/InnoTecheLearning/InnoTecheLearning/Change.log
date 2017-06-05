@@ -10,6 +10,7 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 ~Comment for notes.
 
 v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0.appxbundle}
+☆Now uses Xamarin Forms instead of App Inventor 2
 +Windows 10 support
 +Splash screen
 +Proper negative factorizer calculations in Logic (Factor)
@@ -26,7 +27,6 @@ v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTe
 -Forum (@Issac Chan)
 -0.9.0 Haloween theme
 ~Contains most features from 0.8.0 (Smallest Update Ever)
-~Now uses Xamarin Forms instead of App Inventor 2
 ~The name Xamarin Update is omitted in app version due to possible trademark conflicts
 
 Changelog format update [2016-11-15 Tue 17:30]:
@@ -65,6 +65,9 @@ v0.7.1 (Factorizer Update Bugfix) [2016-10-13 Thu 23:14] {https://github.com/CSW
 *Improved Factorizer output -1(3X+-2Y) => -(3X-2Y)
 *Now stops trying to factorize when the expression in unfactorizable.
 
+Versions before the changelog screen was added
+=======================================
+
 v0.7.0 (Factorizer Update) [2016-10-12 Wed 21:55] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_7_0.apk}
 +Introducing the Quadratic Factorizer
 +Copying text for all three maths screens, Translator and VocabBook
@@ -76,21 +79,42 @@ v0.7.0 (Factorizer Update) [2016-10-12 Wed 21:55] {https://github.com/CSWCSS-Inn
 -Developer Screen due to the 10 screen limit
 ~New stuff for every screen!
 
-Versions before the changelog was added
+v0.6.9 (Open Day Post-release) [2016-10-08 Sat 19:28] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_9.apk}
+*Fixed Sports time layout
+*Changed the way MathConverter interacts with MathConverter_DuoView
+
+v0.6.8 (Open Day Official Release) [2016-10-08 Sat 13:14] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_8.apk}
++Sports reset button
+*Major change in Sports code
+
+v0.6.7 (Open Day Official Release) [2016-10-08 Sat 12:42] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_7.apk}
+*Fixed border glitches in Sports and Maths Solver
+*Corrected the name of Maths Solver in Screen1 and title
+
+v0.6.6 (Open Day Official Release) [2016-10-08 Sat 12:03] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_6.apk}
+*Fixed Math Game
+*Math Game in Screen1 is now bold
+*Forum FIXED 2
+
+v0.6.5 (Open Day Official Release) [2016-10-08 Sat 10:52] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_5.apk}
+*Forum text display FIXED
+*CSWCSS icon
+
+v0.6.4 (Open Day Official Release) [2016-10-08 Sat 10:25] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_4.apk}
++CSWCSS icon
+*Title of Sports screen
+*Forum display not having separate lines
+*App name
+
+Versions before the changelog in code blocks was added
 =======================================
 
-v0.6.9 [2016-10-08 Sat 19:28] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_9.apk}
-v0.6.8 [2016-10-08 Sat 13:14] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_8.apk}
-v0.6.7 [2016-10-08 Sat 12:42] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2//InnoTechELearning_0_6_7.apk}
-v0.6.6 [2016-10-08 Sat 12:03] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_6.apk}
-v0.6.5 [2016-10-08 Sat 10:52] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_5.apk}
-v0.6.4 [2016-10-08 Sat 10:25] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_4.apk}
-v0.6.3 [2016-10-08 Sat 09:55] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_3.apk}
-v0.6.2 [2016-10-07 Fri 19:03] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_2.apk}
-v0.6.1 [2016-10-07 Fri 17:41] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_1.apk}
-v0.5.0 [2016-10-07 Fri 16:46] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_5_0.apk}
-v0.4.2 [2016-10-06 Thu 20:09] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechEApp_0_4_2.apk}
-v0.4.1 [2016-10-06 Thu 20:09] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechEApp_0_4_1.apk}
+v0.6.3 (Open Day Official Release) [2016-10-08 Sat 09:55] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_3.apk}
+v0.6.2 (Open Day Release) [2016-10-07 Fri 19:03] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_2.apk}
+v0.6.1 (Open Day Release) [2016-10-07 Fri 17:41] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_6_1.apk}
+v0.5.0 (Open Day Prerelease) [2016-10-07 Fri 16:46] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechELearning_0_5_0.apk}
+v0.4.2 (Pre-Open Day) [2016-10-06 Thu 20:09] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechEApp_0_4_2.apk}
+v0.4.1 (Pre-Open Day) [2016-10-06 Thu 20:09] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechEApp_0_4_1.apk}
 v0.3.0 [2016-10-06 Thu 18:42] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechE_0_3_0.aia}
 v0.2.0 [2016-10-05 Wed 19:21] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechE_0_2_0.aia}
 v0.1.0 [2016-10-04 Tue 17:19] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android-AI2/InnoTechE_0_1_0.apk}

@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.10.0 Release Candidate 4"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.10.0"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.10.0";
         public const string VersionAssemblyFile = "0.10";
         public const string VersionAssemblyInfo = VersionFull;
@@ -27,7 +27,7 @@ namespace InnoTecheLearning
             {
                 var VersionDecomposition = VersionShort.Split('.');
                 var IndexOfStage = VersionDecomposition[2].IndexOfAny(new[] { 'a', 'b', 'c' });
-                return Create.Version(int.Parse(VersionDecomposition[0]), int.Parse(VersionDecomposition[1]),
+                return CreateVersion(int.Parse(VersionDecomposition[0]), int.Parse(VersionDecomposition[1]),
                     int.Parse(IndexOfStage == -1 ? VersionDecomposition[2] : VersionDecomposition[2].Remove(IndexOfStage)),
                     IndexOfStage == -1 ? VersionStage.Release : (VersionStage)(VersionDecomposition[2][IndexOfStage] - 'a'),
                     IndexOfStage == -1 ? (short)0 : short.Parse(VersionDecomposition[2].Substring(IndexOfStage + 1)));
@@ -38,6 +38,8 @@ namespace InnoTecheLearning
                  VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1) :
                  string.Empty; }
         public static VersionStage VersionState { get => (VersionStage)Version.MajorRevision; }
+        public static Version CreateVersion(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0) =>
+            new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision);
 
         public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
         public static string ToShort(this Version Version) =>
