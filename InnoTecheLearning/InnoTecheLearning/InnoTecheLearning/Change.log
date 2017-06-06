@@ -9,7 +9,7 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 !Security to invite users to upgrade in case of vulnerabilities.
 ~Comment for notes.
 
-v0.10.0 (Xamarin Update) [Unreleased] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0.appxbundle}
+v0.10.0 (Xamarin Update) [2017-06-06 Tue 18:35] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0.appxbundle}
 ☆Now uses Xamarin Forms instead of App Inventor 2
 +Windows 10 support
 +Splash screen
