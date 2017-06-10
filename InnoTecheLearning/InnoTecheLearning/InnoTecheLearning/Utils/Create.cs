@@ -10,9 +10,9 @@ namespace InnoTecheLearning
         /// <summary>
         /// A class that provides methods to help create the UI.
         /// </summary>
-        public static class Create
+        public static partial class Create
         {
-            public static Button Button(Text Text, EventHandler OnClick, Color BackColor =
+            public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Color BackColor =
                 default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -23,7 +23,7 @@ namespace InnoTecheLearning
                 Button.Clicked += OnClick;
                 return Button;
             }
-            public static Button Button(Text Text, EventHandler OnClick, Size Size,
+            public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Size Size,
                  Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -39,6 +39,51 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor
                 };
                 Button.Clicked += OnClick;
+                return Button;
+            }
+            public delegate void ButtonOnClick(ref Button sender, EventArgs e);
+            public static Button Button(Text Text, Action OnClick,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => OnClick(), BackColor, TextColor);
+            public static Button Button(Text Text, Action OnClick, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => OnClick(), Size,
+                    BackColor, TextColor);
+            public static Button Button(Text Text, Func<System.Threading.Tasks.Task> OnClickAsync,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => System.Threading.Tasks.Task.Run(OnClickAsync),
+                    BackColor, TextColor);
+            public static Button Button(Text Text, Func<System.Threading.Tasks.Task> OnClickAsync, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                Button(Text, (ref Button sender, EventArgs e) => System.Threading.Tasks.Task.Run(OnClickAsync), Size, 
+                    BackColor, TextColor);
+            public static Button Button(Text Text, ButtonOnClick OnClick, Color BackColor =
+                default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button { Text = Text, TextColor = TextColor, BackgroundColor = BackColor };
+                Button.Clicked += (sender, e) => { OnClick(ref Button, e); };
+                return Button;
+            }
+            public static Button Button(Text Text, ButtonOnClick OnClick, Size Size,
+                 Color BackColor = default(Color), Color TextColor = default(Color))
+            {
+                if (BackColor == default(Color))
+                    BackColor = Color.Silver;
+                if (TextColor == default(Color))
+                    TextColor = Color.Black;
+                Button Button = new Button
+                {
+                    Text = Text,
+                    TextColor = TextColor,
+                    WidthRequest = Size.Width,
+                    HeightRequest = Size.Height,
+                    BackgroundColor = BackColor
+                };
+                Button.Clicked += (sender, e) => { OnClick(ref Button, e); };
                 return Button;
             }
             public class ExpressionEventArgs : EventArgs
@@ -108,157 +153,68 @@ namespace InnoTecheLearning
                 Button.Clicked += (object sender, EventArgs e) => { OnClick(sender, new ExpressionEventArgs(Expression)); };
                 return Button;
             }
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
-            public static Button ButtonB(FileImageSource Image, EventHandler OnClick)
-            {   return ButtonB(Image, OnClick, new Size(50, 50));}
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
-            public static Button ButtonB(FileImageSource Image, EventHandler OnClick, Size Size)
-            {
-                Button Button = new Button
-                {
-                    Image = Image,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
-                };
-                Button.Clicked += OnClick;
-                return Button;
-            }
 
-            [Obsolete("Use MainScreenItem(ImageSource Source, Action OnTap, Label Display) instead.\nDeprecated in 0.10.0a46")]
-            public static StackLayout MainScreenItemB/*B = Button*/(FileImageSource Image, EventHandler OnClick, Text Display)
-            {
-                return new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Children = { ButtonB(Image: Image, OnClick: OnClick), Display }
-                };
-            }
+            public static StackLayout MainScreenRow(bool Dropdown, bool Animate, params View[] MainScreenItems) =>
+                MainScreenRow<View>(Dropdown, Animate, MainScreenItems);
 
-            public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display)
+            public static StackLayout MainScreenRow<T>(bool Dropdown, bool Animate, params T[] MainScreenItems) where T : View
             {
-                return new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
-                    WidthRequest = 70,
-                    Children = { Image(Source: Source, OnTap: OnTap), Display }
-                };
-            }
-
-            public static StackLayout MainScreenRow(params StackLayout[] MainScreenItems)
-            {
+                Log("Generating MainScreenRow...");
                 StackLayout MenuScreenRow = new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-					Spacing = 50,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
+					//Spacing = 50,
                     Children = { }
                 };
-                foreach (StackLayout MenuScreenItem in MainScreenItems)
+                foreach (T MenuScreenItem in MainScreenItems)
                     MenuScreenRow.Children.Add(MenuScreenItem);
+                Log("Added all items into MainScreenRow");
+                if(Dropdown)
+                    Device.StartTimer(Device.Idiom != TargetIdiom.Desktop && Animate ? Seconds(1) : Milliseconds(1),
+                    () => { MenuScreenRow.Spacing = MainScreenItems[0].Width;
+                    MenuScreenRow.TranslateTo(0, MainScreenItems[0].Height / 2, 1000, Easing.BounceOut); return false; });
                 return MenuScreenRow;
             }
-
-            public static ImageSource Image(string FileName)
+            
+            public static Label FormattedLabel(params Span[] Spans)
             {
-                return ImageSource.FromResource(CurrentNamespace + ".Images." + FileName);
-            }
-
-            public enum ImageFile : int
-            {
-                Forum = 1,
-                Translate = 2,
-                VocabBook = 3,
-                Calculator = 4,
-                Calculator_Free = 5,
-                Factorizer = 6,
-                Sports = 7,
-                MusicTuner = 8,
-                MathSolver = 9,
-                Cello = 10,
-                Violin = 11
-            }
-
-
-            public static ImageSource Image(ImageFile File)
-            {
-                string ActualFile = "";
-                switch (File)
+                var Text = new FormattedString();
+                Text.Spans.AddRange(Spans);
+                return new Label
                 {
-                    case ImageFile.Forum:
-                        ActualFile = "forum-message-3.png";
-                        break;
-                    case ImageFile.Translate:
-                        ActualFile = "translator-tool-3.png";
-                        break;
-                    case ImageFile.VocabBook:
-                        ActualFile = "book-2.png";
-                        break;
-                    case ImageFile.Calculator:
-                        ActualFile = "square-root-of-x-mathematical-signs.png";
-                        break;
-                    case ImageFile.Calculator_Free:
-                        ActualFile = "square-root-of-x-mathematical-signs.png";
-                        break;
-                    case ImageFile.Factorizer:
-                        ActualFile = "mathematical-operation.png";
-                        break;
-                    case ImageFile.Sports:
-                        ActualFile = "man-sprinting.png";
-                        break;
-                    case ImageFile.MusicTuner:
-                        ActualFile = "treble-clef-2.png";
-                        break;
-                    case ImageFile.MathSolver:
-                        ActualFile = "japanese-dragon.png";
-                        break;
-                    case ImageFile.Cello:
-                        ActualFile = "cello-icon.png";
-                        break;
-                    case ImageFile.Violin:
-                        ActualFile = "violin-icon.png";
-                        break;
-                    default:
-                        ActualFile = "";
-                        break;
-                }
-                return Image(ActualFile);
-                ;
-            }
-            public static Image Image(ImageFile File, Action OnTap)
-            { return Image(Image(File), OnTap); }
-            public static Image Image(ImageFile File, Action OnTap, Size Size)
-            { return Image(Image(File), OnTap, Size); }
-            public static Image ImageD/*D = Default (size)*/(ImageFile File, Action OnTap)
-            { return ImageD(Image(File), OnTap); }
-            public static Image ImageD/*D = Default (size)*/(ImageSource Source, Action OnTap)
-            {
-                Image Image = new Image{Source = Source};
-                var Tap = new TapGestureRecognizer();
-                Tap.Command = new Command(OnTap);
-                Image.GestureRecognizers.Add(Tap);
-                return Image;
-            }
-            public static Image Image(ImageSource Source, Action OnTap)
-            {
-                return Image(Source, OnTap, new Size(50, 50));
-            }
-            public static Image Image(ImageSource Source, Action OnTap, Size Size)
-            {
-                Image Image = new Image
-                {
-                    Source = Source,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
+                    FormattedText = Text,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    HorizontalOptions = LayoutOptions.Fill
                 };
-                var Tap = new TapGestureRecognizer();
-                Tap.Command = new Command(OnTap);
-                Image.GestureRecognizers.Add(Tap);
-                return Image;
+            }
+            public static Label FormattedLabel(Color BackColor, NamedSize Size, params Span[] Spans)
+            {
+                var Text = new FormattedString();
+                Text.Spans.AddRange(Spans);
+                return new Label
+                {
+                    FormattedText = Text,
+                    BackgroundColor = BackColor,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = Device.GetNamedSize(Size, targetElementType: typeof(Label)),
+                    HorizontalOptions = LayoutOptions.Fill
+                };
+            }
+            public static Label FormattedLabel(FormattedString Text, Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
+            {
+                return new Label
+                {
+                    FormattedText = Text,
+                    BackgroundColor = BackColor,
+                    VerticalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = Device.GetNamedSize(Size, targetElementType: typeof(Label)),
+                    HorizontalOptions = LayoutOptions.Fill
+                };
             }
             public static Label BoldLabel(Text Text, Color TextColor = default(Color), 
                 Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
@@ -275,7 +231,7 @@ namespace InnoTecheLearning
                     BackgroundColor = BackColor,
                     VerticalTextAlignment = TextAlignment.Start,
                     HorizontalTextAlignment = TextAlignment.Center,
-                    FontSize = Device.GetNamedSize(Size, typeof(Label)),
+                    FontSize = Device.GetNamedSize(Size, targetElementType: typeof(Label)),
                     HorizontalOptions = LayoutOptions.Fill
                 };
             }
@@ -337,18 +293,19 @@ namespace InnoTecheLearning
                     };
                 }
             }
+            [Obsolete("Users will press the native back button instead on NavigationPage.")]
             public static Button Back(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
                     BackColor = Color.Silver;
                 if (TextColor == default(Color))
                     TextColor = Color.Black;
-                Button Return = Button("Back", delegate { Page.SendBackButtonPressed(); }, Color.Silver);
+                Button Return = Button("Back", OnClick: () => Page.SendBackButtonPressed());
                 Return.HorizontalOptions = LayoutOptions.End;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
-            }
-
+            }/*
+            [Obsolete("Not needed. Deprecated in 0.10.0a173")]
             public static Button UpdateAlpha(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
             {
                 if (BackColor == default(Color))
@@ -387,23 +344,32 @@ namespace InnoTecheLearning
                         "For other versions, please check the github repository manually.");
 #endif
                 }, Color.Silver);
-                Return.HorizontalOptions = LayoutOptions.End;
+                Return.HorizontalOptions = LayoutOptions.Start;
                 Return.VerticalOptions = LayoutOptions.Fill;
                 return Return;
-            }
-            public static StackLayout ChangelogView(Page Page, Color BackColor = default(Color))
+            }*/
+            public static StackLayout ChangelogView(Main Instance, Color BackColor = default(Color))
             {
                 ScrollView Changelog = Create.Changelog;
                 if (BackColor == default(Color))
                     BackColor = Color.White;
                 return new StackLayout
                 {
-                    Children = { Changelog, Back(Page) },
+                    Children =
+                    {
+                        Changelog,
+                        Row(false, 
+                        Button("View crash logs", () => Instance.Showing = Main.Pages.Crashlog)
+                            .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
+                        )
+                        /*, Row(false, UpdateAlpha(Page), Back(Page))*/
+                    },
                     BackgroundColor = BackColor,
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill
                 };
             }
+            [Obsolete("Title of ContentPage will show on NavigationPage's bar.")]
             public static Label Title(Text Text)
             {
                 return new Label
@@ -456,6 +422,60 @@ namespace InnoTecheLearning
                     MenuScreenRow.Children.Add(MenuScreenItem);
                 return MenuScreenRow;
             }
+
+            public static StackLayout Row<T>(bool VerticalExpand, IEnumerable<T> Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Center,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+            public static StackLayout Column<T>(IEnumerable<T> Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+
+            public static StackLayout Row<T>(bool VerticalExpand, params T[] Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = VerticalExpand ? LayoutOptions.StartAndExpand : LayoutOptions.Center,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
+            public static StackLayout Column<T>(params T[] Items) where T : View
+            {
+                StackLayout MenuScreenRow = new StackLayout
+                {
+                    Orientation = StackOrientation.Vertical,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.StartAndExpand,
+                    Children = { }
+                };
+                foreach (T MenuScreenItem in Items)
+                    MenuScreenRow.Children.Add(MenuScreenItem);
+                return MenuScreenRow;
+            }
             public static ScrollView ButtonStack(params Button[] Buttons)
             {
                 StackLayout Return = new StackLayout
@@ -477,6 +497,10 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.FillAndExpand
                 };
             }
+            public static ColumnDefinition Column(GridUnitType Unit, double Width) =>
+                new ColumnDefinition { Width = new GridLength(Width, Unit) };
+            public static RowDefinition Row(GridUnitType Unit, double Height) =>
+                new RowDefinition { Height = new GridLength(Height, Unit) };
             public static ColumnDefinitionCollection Columns(GridUnitType Unit, params double[] Widths)
             {
                 ColumnDefinitionCollection Return = new ColumnDefinitionCollection();
@@ -507,8 +531,102 @@ namespace InnoTecheLearning
                 if(ReadOnly!= null) Return.TextChanged += TextChanged(ReadOnly);
                 return Return;
             }
-            public static Version Version(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0)
-            { return new Version(Major, Minor, Build, (int)Stage << 16 + Revision); }
+            public static Slider Slider(EventHandler<ValueChangedEventArgs> ValueChanged, 
+               int Minimum = 0, int Maximum = 100, int Position = 100, Color BackColor = default(Color))
+            {
+                var Return = new Slider { Minimum = Minimum, Maximum = Maximum, Value = Position,
+                    BackgroundColor = BackColor, HorizontalOptions = LayoutOptions.FillAndExpand };
+                Return.ValueChanged += ValueChanged;
+                return Return;
+            }
+            public static Button[] RadioButtons(Color Base, Color Selected,
+                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, bool AllowDeselect = false, params string[] Names)
+            {
+                var Modificators = new Button[Names.Length];
+                for (int Index = 0; Index < Names.Length; Index++)
+                {
+                    ref var B = ref Modificators[Index];
+                    B = Button(Names[Index], Init(Index), Index == DefaultIndex ? Selected : Base);
+                    B.HorizontalOptions = LayoutOptions.FillAndExpand;
+                    B.Clicked += (sender, e) =>
+                    {
+                        var Sender = sender as Button;
+                        if (Sender.BackgroundColor == Base)
+                        {
+                            foreach (var Modify in Modificators)
+                                Modify.BackgroundColor = Base;
+                            Sender.BackgroundColor = Selected;
+                        }
+                        else if (AllowDeselect) Sender.BackgroundColor = Base;
+                    };
+                }
+                return Modificators;
+            }
+            public static ScrollView RadioButtonsView(Color Base, Color Selected,
+                Func<int, ButtonOnClick> Init, int DefaultIndex = 0, bool AllowDeselect = false, params string[] Names) =>
+                Scroll(StackOrientation.Horizontal, RadioButtons(Base, Selected, Init, DefaultIndex, AllowDeselect, Names));
+
+            public static void AppendScrollStack<T>(ScrollView Base, params T[] Items) where T : View =>
+                (Base.Content as StackLayout).Children.AddRange(Items);
+            public static void AppendScrollStack<T>(ScrollView Base, IEnumerable<T> Items) where T : View =>
+                (Base.Content as StackLayout).Children.AddRange(Items);
+            public static void FillGrid(Grid Base, View Item) => 
+                Base.Children.Add(Item, 0, Base.RowDefinitions.Count, 0, Base.ColumnDefinitions.Count);
+            public static ScrollView Scroll(ScrollOrientation Orientation, View View) =>
+                new ScrollView { Orientation = Orientation, Content = View }
+                .With((ref ScrollView x) =>
+                {
+                    switch (Orientation)
+                    {
+                        case ScrollOrientation.Vertical:
+                            x.VerticalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                        case ScrollOrientation.Horizontal:
+                            x.HorizontalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                        case ScrollOrientation.Both:
+                            x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                    }
+                });
+            public static ScrollView Scroll<T>(StackOrientation Orientation, params T[] Views) where T : View
+            {
+                ScrollView Modificator = new ScrollView
+                {
+                    Orientation = (ScrollOrientation)Orientation,
+                    Content = new StackLayout
+                    {
+                        Orientation = Orientation
+                    }
+                };
+                if (Orientation == StackOrientation.Horizontal)
+                    (Modificator.Content as StackLayout).HorizontalOptions = 
+                        Modificator.HorizontalOptions = LayoutOptions.FillAndExpand;
+                else
+                    (Modificator.Content as StackLayout).VerticalOptions = 
+                        Modificator.VerticalOptions = LayoutOptions.FillAndExpand;
+                AppendScrollStack(Modificator, Views);
+                return Modificator;
+            }
+            public static ScrollView Scroll<T>(StackOrientation Orientation, IEnumerable<T> IEViews) where T : View
+            {
+                ScrollView Modificator = new ScrollView
+                {
+                    Orientation = (ScrollOrientation)Orientation,
+                    Content = new StackLayout
+                    {
+                        Orientation = Orientation,
+                    }
+                };
+                if (Orientation == StackOrientation.Horizontal)
+                    (Modificator.Content as StackLayout).HorizontalOptions =
+                        Modificator.HorizontalOptions = LayoutOptions.FillAndExpand;
+                else
+                    (Modificator.Content as StackLayout).VerticalOptions =
+                        Modificator.VerticalOptions = LayoutOptions.FillAndExpand;
+                AppendScrollStack(Modificator, IEViews);
+                return Modificator;
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ namespace InnoTecheLearning
         /// </summary>
         public struct Text : IComparable
         {
+            internal static Random Rnd { get; } = new Random();
             public static readonly Text Null = (string)null;
             public static readonly Text Empty = string.Empty;
             public static readonly Text Default = default(Text);
@@ -19,23 +20,30 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(0, 20)];
+                    char[] Chars = new char[Rnd.Next(0, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)new Random().Next(' ', '~');
+                        Chars[i] = (char)Rnd.Next(' ', '~');
                     }
                     return Chars;
+                }
+            }
+            public static Text RandomChar
+            {
+                get
+                {
+                    return new Text((char)Rnd.Next(char.MinValue, char.MaxValue));
                 }
             }
             public static Text RandomLatin
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(1, 20)];
+                    char[] Chars = new char[Rnd.Next(1, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)(Convert.ToBoolean(new Random().Next(0, 1))?
-                            new Random().Next('A', 'Z'):new Random().Next('a', 'z'));
+                        Chars[i] = (char)(Convert.ToBoolean(Rnd.Next(0, 1))?
+                            Rnd.Next('A', 'Z'): Rnd.Next('a', 'z'));
                     }
                     return Chars;
                 }
@@ -44,12 +52,12 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(1, 20)];
+                    char[] Chars = new char[Rnd.Next(1, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)new Random().Next('0', '9');
+                        Chars[i] = (char)Rnd.Next('0', '9');
                     }
-                    if (Convert.ToBoolean(new Random().Next(0, 1))) Chars[0] = '-';
+                    if (Convert.ToBoolean(Rnd.Next(0, 1))) Chars[0] = '-';
                     return new string(Chars).TrimStart('0');
                 }
             }
@@ -57,17 +65,26 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    char[] Chars = new char[new Random().Next(0, 20)];
+                    char[] Chars = new char[Rnd.Next(0, 20)];
                     for (int i = 0; i < Chars.Length; i++)
                     {
-                        Chars[i] = (char)new Random().Next(char.MaxValue);
+                        Chars[i] = (char)Rnd.Next(char.MaxValue);
                     }
                     return Chars;
                 }
             }
             public string Value { get; set; }
+            public Text(char Text)
+            { Value = new string(new[] { Text }); }
+            public Text(char[] Text)
+            { Value = new string(Text); }
             public Text(string Text)
             { Value = Text; }
+            public Text Append(Text Text)
+            {
+                Value += Text;
+                return this;
+            }
             public Text Append(char Char)
             {
                 Value += Char;
@@ -144,10 +161,14 @@ namespace InnoTecheLearning
             { return First() == Char; }
             public bool StartsWith(string String)
             { return Value.StartsWith(String); }
+            public bool StartsWith(Text Text)
+            { return Value.StartsWith(Text); }
             public bool EndsWith(char Char)
             { return Last() == Char; }
             public bool EndsWith(string String)
             { return Value.EndsWith(String); }
+            public bool EndsWith(Text Text)
+            { return Value.EndsWith(Text); }
             public char First()
             { return Value[0]; }
             public char Last()
@@ -184,6 +205,11 @@ namespace InnoTecheLearning
             public Text Replace(string OldString, string NewString)
             {
                 Value = Value.Replace(OldString, NewString);
+                return this;
+            }
+            public Text Replace(Text OldText, Text NewText)
+            {
+                Value = Value.Replace(OldText, NewText);
                 return this;
             }
             public int Length
@@ -278,16 +304,20 @@ namespace InnoTecheLearning
             {
                 Text Text = new Text();
                 foreach (var Item in Array)
-                { Text.Append((char)Item); };
+                { char.TryParse(Item.ToString(), out char C); Text.Append(C); };
                 return Text;
             }
             public override string ToString()
             { return Value; }
+            public int CompareTo(Text Text)
+            {
+                return Value.CompareTo(Text);
+            }
             public int CompareTo(string String)
             {
                 return Value.CompareTo(String);
             }
-            public int CompareTo(dynamic value)
+            public int CompareTo(object value)
             {
                 if (value == null)
                     return 1;

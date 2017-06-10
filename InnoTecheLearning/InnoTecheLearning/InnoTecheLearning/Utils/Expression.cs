@@ -13,12 +13,18 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
+            Acosh, Acot, Acoth, Acsc, Acsch, Asec, Asech, Asinh, Atanh, Cbrt, Cosh, Cot, Coth, //Additional Math Functions
+            Csc, Csch, Clz32, Imul, Lb, Ln, Sec, Sech, Sign, Sinh, Tanh, Trunc, Deg, Rad, Grad, Turn, //Additional Math Functions
+            nPr, nCr, GCD, HCF, LCM, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
+            Assign, AssignAdd, AssignSubtraction, AssignMultiplication, AssignDivision, AssignModulus, //Assignment
+            AssignBAnd, AssignBOr, AssignBXor, AssignLShift, AssignRShift, AssignUnsignRShift, //Assignment
+            A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, //Variables
         }
         public enum MoreExpressions : byte
         {
-            #region Expressions
+#region Expressions
             Space, Ans,
             D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, DPoint, //Decimals
             Addition, Subtraction, Multiplication, Division, Modulus, Increment, Decrement, //Arithmetic
@@ -28,12 +34,15 @@
             LAnd, LNot, LOr, //Logical
             Abs, Acos, Asin, Atan, Atan2, Ceil, Cos, Exp, Floor, Log, //Math Functions
             Max, Min, Pow, Random, Round, Sin, Sqrt, Tan, Factorial, //Math Functions
+            Acosh, Acot, Acoth, Acsc, Acsch, Asec, Asech, Asinh, Atanh, Cbrt, Cosh, Cot, Coth, //Additional Math Functions
+            Csc, Csch, Clz32, Imul, Lb, Ln, Sec, Sech, Sign, Sinh, Tanh, Trunc, Deg, Rad, Grad, Turn, //Additional Math Functions
+            nPr, nCr, GCD, HCF, LCM, //Additional Math Functions
             π, e, Root2, Root0_5, Ln2, Ln10, Log2e, Log10e, Infinity, NInfinity, NaN, Undefined, //Constants
             Comma, //Continuation
+            Assign, AssignAdd, AssignSubtraction, AssignMultiplication, AssignDivision, AssignModulus, //Assignment
+            AssignBAnd, AssignBOr, AssignBXor, AssignLShift, AssignRShift, AssignUnsignRShift, //Assignment
+            A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, //Variables
             #endregion Hello this is a comment
-            Assign, AssignAdd, AssignBAnd, AssignBOr, AssignBXor, //Assignment
-            AssignDivision, AssignLShift, AssignModulus, AssignMultiplication, //Assignment
-            AssignRShift, AssignSubtraction, AssignUnsignRShift, //Assignment
             InstanceOf, New, Reference, TypeOf, Void, //Types
             Ternary1, Ternary2, Separator, If, Else, Switch, //Control
             Class, Constant, Delete, Enum, Function,//Declaration
@@ -233,6 +242,74 @@
                     return "Tan(";
                 case MoreExpressions.Factorial:
                     return "Factorial(";
+                case MoreExpressions.Acosh:
+                    return "Acosh(";
+                case MoreExpressions.Acot:
+                    return "Acot(";
+                case MoreExpressions.Acoth:
+                    return "Acoth(";
+                case MoreExpressions.Acsc:
+                    return "Acsc(";
+                case MoreExpressions.Acsch:
+                    return "Acsch(";
+                case MoreExpressions.Asec:
+                    return "Asec(";
+                case MoreExpressions.Asech:
+                    return "Asech(";
+                case MoreExpressions.Asinh:
+                    return "Asinh(";
+                case MoreExpressions.Atanh:
+                    return "Atanh(";
+                case MoreExpressions.Cbrt:
+                    return "Cbrt(";
+                case MoreExpressions.Cosh:
+                    return "Cosh(";
+                case MoreExpressions.Cot:
+                    return "Cot(";
+                case MoreExpressions.Coth:
+                    return "Coth(";
+                case MoreExpressions.Csc:
+                    return "Csc(";
+                case MoreExpressions.Csch:
+                    return "Csch(";
+                case MoreExpressions.Clz32:
+                    return "Clz32(";
+                case MoreExpressions.Imul:
+                    return "Imul(";
+                case MoreExpressions.Lb:
+                    return "Lb(";
+                case MoreExpressions.Ln:
+                    return "Ln(";
+                case MoreExpressions.Sec:
+                    return "Sec(";
+                case MoreExpressions.Sech:
+                    return "Sech(";
+                case MoreExpressions.Sign:
+                    return "Sign(";
+                case MoreExpressions.Sinh:
+                    return "Sinh(";
+                case MoreExpressions.Tanh:
+                    return "Tanh(";
+                case MoreExpressions.Trunc:
+                    return "Trunc(";
+                case MoreExpressions.Deg:
+                    return "Deg(";
+                case MoreExpressions.Rad:
+                    return "Rad(";
+                case MoreExpressions.Grad:
+                    return "Grad(";
+                case MoreExpressions.Turn:
+                    return "Turn(";
+                case MoreExpressions.nPr:
+                    return "nPr(";
+                case MoreExpressions.nCr:
+                    return "nCr(";
+                case MoreExpressions.GCD:
+                    return "GCD(";
+                case MoreExpressions.HCF:
+                    return "HCF(";
+                case MoreExpressions.LCM:
+                    return "LCM(";
                 case MoreExpressions.π:
                     return "π";
                 case MoreExpressions.e:
@@ -259,7 +336,6 @@
                     return "undefined";
                 case MoreExpressions.Comma:
                     return ",";
-                //Expressions - MoreExpressions Line
                 case MoreExpressions.Assign:
                     return "=";
                 case MoreExpressions.AssignAdd:
@@ -284,6 +360,59 @@
                     return "-=";
                 case MoreExpressions.AssignUnsignRShift:
                     return ">>>=";
+                case MoreExpressions.A:
+                    return "A";
+                case MoreExpressions.B:
+                    return "B";
+                case MoreExpressions.C:
+                    return "C";
+                case MoreExpressions.D:
+                    return "D";
+                case MoreExpressions.E:
+                    return "E";
+                case MoreExpressions.F:
+                    return "F";
+                case MoreExpressions.G:
+                    return "G";
+                case MoreExpressions.H:
+                    return "H";
+                case MoreExpressions.I:
+                    return "I";
+                case MoreExpressions.J:
+                    return "J";
+                case MoreExpressions.K:
+                    return "K";
+                case MoreExpressions.L:
+                    return "L";
+                case MoreExpressions.M:
+                    return "M";
+                case MoreExpressions.N:
+                    return "N";
+                case MoreExpressions.O:
+                    return "O";
+                case MoreExpressions.P:
+                    return "P";
+                case MoreExpressions.Q:
+                    return "Q";
+                case MoreExpressions.R:
+                    return "R";
+                case MoreExpressions.S:
+                    return "S";
+                case MoreExpressions.T:
+                    return "T";
+                case MoreExpressions.U:
+                    return "U";
+                case MoreExpressions.V:
+                    return "V";
+                case MoreExpressions.W:
+                    return "W";
+                case MoreExpressions.X:
+                    return "X";
+                case MoreExpressions.Y:
+                    return "Y";
+                case MoreExpressions.Z:
+                    return "Z";
+                //Expressions - MoreExpressions Line
                 case MoreExpressions.InstanceOf:
                     return "instanceof(";
                 case MoreExpressions.New:

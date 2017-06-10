@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || WINDOWS_UWP
+﻿/*#if __ANDROID__ || WINDOWS_UWP
 using Callback = System.Action<InnoTecheLearning.Utils.Updater.UpdateProgress>;
 using Exception = System.Exception;
 using System.Net;
@@ -343,4 +343,4 @@ namespace InnoTecheLearning
         }
     }
 }
-#endif
+#endif*/

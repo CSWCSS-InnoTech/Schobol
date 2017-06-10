@@ -67,8 +67,8 @@ namespace InnoTecheLearning
         /// <summary>
         /// Cross-platform access to <see cref="SoundRecorder.deleteRecord"/>.
         /// </summary>
-        public static void deleteRecord()
-        { GetImplementation.deleteRecord(); }
+        public static void DeleteRecord()
+        { GetImplementation.DeleteRecord(); }
         /// <summary>
         /// Cross-platform access to <see cref="SoundRecorder.Record"/>.
         /// </summary>
@@ -112,7 +112,7 @@ namespace InnoTecheLearning
 
         void Pause();
 
-        void deleteRecord();
+        void DeleteRecord();
     }
     /// <summary>
     /// The platform-specific implementation of <see cref="ISoundRecorder"/>.
@@ -130,8 +130,7 @@ namespace InnoTecheLearning
         {
             try
             {
-                NSError error = null;
-                AVAudioSession.SharedInstance().SetCategory(AVAudioSession.CategoryPlayback, out error);
+                AVAudioSession.SharedInstance().SetCategory(AVAudioSession.CategoryPlayback, out NSError error);
                 if (error != null)
                     throw new Exception(error.DebugDescription);
 
@@ -156,8 +155,7 @@ namespace InnoTecheLearning
 
             var session = AVAudioSession.SharedInstance();
 
-            NSError error = null;
-            session.SetCategory(AVAudioSession.CategoryRecord, out error);
+            session.SetCategory(AVAudioSession.CategoryRecord, out NSError error);
             if (error != null)
             {
                 Console.WriteLine(error);
@@ -195,9 +193,7 @@ namespace InnoTecheLearning
             };
 
             //Set recorder parameters
-            NSError error;
-
-            recorder = AVAudioRecorder.Create(audioFilePath, audioSettings, out error);
+            recorder = AVAudioRecorder.Create(audioFilePath, audioSettings, out NSError error);
             if (error != null)
             {
                 Console.WriteLine(error);
@@ -239,8 +235,7 @@ namespace InnoTecheLearning
 
             recorder.Stop();
 
-            NSError error = null;
-            NSData audioData = NSData.FromFile(audioFilePath.Path, 0, out error);
+            NSData audioData = NSData.FromFile(audioFilePath.Path, 0, out NSError error);
             if (error != null)
             {
                 Console.WriteLine(error);
@@ -262,7 +257,7 @@ namespace InnoTecheLearning
             player.Pause();
         }
 
-        public void deleteRecord()
+        public void DeleteRecord()
         {
             if (player != null)
             {
@@ -425,7 +420,7 @@ namespace InnoTecheLearning
 
             }
 
-            public void deleteRecord()
+            public void DeleteRecord()
             {
                 if (audioTrack != null)
                 {
@@ -451,7 +446,7 @@ namespace InnoTecheLearning
             public void OnPeriodicNotification(AudioTrack track) { }
 
         ~SoundRecorder()
-        { deleteRecord(); }
+        { DeleteRecord(); }
         }
 #elif NETFX_CORE
     public class SoundRecorder : ISoundRecorder
@@ -569,7 +564,7 @@ namespace InnoTecheLearning
             await capture.StopRecordAsync();
             record = false;
         }
-        public void deleteRecord()
+        public void DeleteRecord()
         {   if (capture != null)
                 capture.Dispose();
             if (buffer != null)

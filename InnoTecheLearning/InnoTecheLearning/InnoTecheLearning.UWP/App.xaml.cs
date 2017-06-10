@@ -39,6 +39,7 @@ namespace InnoTecheLearning.UWP
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
+            Exceptions.RegisterHandlers();
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -55,7 +56,8 @@ namespace InnoTecheLearning.UWP
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
-                Xamarin.Forms.Forms.Init(e); // requires the `e` parameter
+                Xamarin.Forms.Forms.Init(e);
+                // requires the `e` parameter
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {

@@ -61,17 +61,16 @@ namespace InnoTecheLearning
         /// [6] = The highest common factor among the coefficients.
         /// Factorized Result: [6]([2]X+[3]Y)([4]X+[5]Y)</returns>
         public static string Factorize(double A, double B, double C,
-            out Complex Root1, out Complex Root2, char X = 'X', char Y = 'Y', double SafeCheck = 1e6)
+            out Complex Root1, out Complex Root2, string X = "X", string Y = "Y", double SafeCheck = 1e6)
         {
             try
             {
-                double Factor1Co, Factor1CTerm, Factor2Co, Factor2CTerm;
-                double HCF = FactorizeThrowable(A, B, C, out Root1, out Root2, out Factor1Co, out Factor1CTerm,
-                    out Factor2Co, out Factor2CTerm, SafeCheck);
+                double HCF = FactorizeThrowable(A, B, C, out Root1, out Root2, out double Factor1Co, 
+                    out double Factor1CTerm, out double Factor2Co, out double Factor2CTerm, SafeCheck);
                 return Prefix(HCF) + (Factor2Co == 0 && Factor2CTerm == 0 ? X.ToString() :
-                    "(" + Prefix(Factor1Co) + X + Suffix(Factor1CTerm) + ")") +
+                    "(" + Prefix(Factor1Co, X) + Suffix(Factor1CTerm, Y) + ")") +
                     (Factor2Co == 0 && Factor2CTerm == 0 ? "" : 
-                    "(" + Prefix(Factor2Co) + Y + Suffix(Factor2CTerm) + ")");
+                    "(" + Prefix(Factor2Co, X) + Suffix(Factor2CTerm, Y) + ")");
             }
             catch (ArithmeticException ex)
             {
@@ -79,10 +78,10 @@ namespace InnoTecheLearning
                 return ex.Message;
             }
         }
-        public static string Prefix(double n)
-        { return n == 1 ? "" : n == -1 ? "-" : n.ToString(); }
-        public static string Suffix(double n)
-        { return n == 0 ? "" : (n > 0 ? "+" : "") + n.ToString(); }
+        public static string Prefix(double n, string Append = null)
+        { return n == 0 ? "" : n == 1 ? Append ?? "" : n == -1 ? "-" + Append ?? "" : n.ToString() + Append ?? ""; }
+        public static string Suffix(double n, string Append = null)
+        { return n == 0 ? "" : (n > 0 ? "+" : "") + (n == -1 ? "-" : n == 1 ? "" : n.ToString()) + Append ?? ""; }
         public static string ToABi(this Complex complex)
         {
             return (IsNaN(complex.Real) ? "NaN" : complex.Real.ToString()) +

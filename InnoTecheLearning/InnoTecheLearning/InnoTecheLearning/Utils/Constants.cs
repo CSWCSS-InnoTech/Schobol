@@ -8,44 +8,44 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 103); } }
-        public const string VersionName = "Xamarin Update";
+#region Version
+        //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
+        public const string VersionFull = "0.10.0"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionAssembly = "0.10.0";
+        public const string VersionAssemblyFile = "0.10";
+        public const string VersionAssemblyInfo = VersionFull;
 
-        public static VersionStage VersionState { get { return (VersionStage)Version.MajorRevision; } }
-        public static string VersionFull
-        {
-            get
-            {
-                return Version.ToString(3) + (string.IsNullOrEmpty(VersionName) ? "" : $" ({VersionName})") +
-                       (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                       " " + VersionState.ToString().Replace('_', ' ') + " " + Version.MinorRevision : "");
-            }
-        }
+#region VersionFunctions
         public static string VersionShort
+        { get => (VersionFull.Contains("(") ? 
+                     (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 2)) :
+                     VersionFull)
+                 .Replace(" Alpha ", "a").Replace(" Beta ", "b").Replace(" Release Candidate ", "c"); }
+        public static Version Version
         {
             get
             {
-                return Version.ToString(3) +
-                       (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                       (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
+                var VersionDecomposition = VersionShort.Split('.');
+                var IndexOfStage = VersionDecomposition[2].IndexOfAny(new[] { 'a', 'b', 'c' });
+                return CreateVersion(int.Parse(VersionDecomposition[0]), int.Parse(VersionDecomposition[1]),
+                    int.Parse(IndexOfStage == -1 ? VersionDecomposition[2] : VersionDecomposition[2].Remove(IndexOfStage)),
+                    IndexOfStage == -1 ? VersionStage.Release : (VersionStage)(VersionDecomposition[2][IndexOfStage] - 'a'),
+                    IndexOfStage == -1 ? (short)0 : short.Parse(VersionDecomposition[2].Substring(IndexOfStage + 1)));
             }
         }
+        public static string VersionName
+        { get => VersionFull.Contains("(") ? 
+                 VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1) :
+                 string.Empty; }
+        public static VersionStage VersionState { get => (VersionStage)Version.MajorRevision; }
+        public static Version CreateVersion(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0) =>
+            new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision);
 
         public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
-        public static string ToShort(this Version Version)
-        {
-            return Version.ToString(3) +
-                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }
-        public static VersionStage GetVersionState(this ModifiableVersion Version) { return (VersionStage)Version.MajorRevision; }
-        public static string ToShort(this ModifiableVersion Version)
-        {
-            return Version.ToString(3) +
-                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
-                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
-        }
-
+        public static string ToShort(this Version Version) =>
+            Version.ToString(3) +
+            (Version.GetVersionState() > VersionStage.Undefined && Version.GetVersionState() < VersionStage.Release ?
+            (char)((int)Version.GetVersionState() + 'a' - 1) + Version.MinorRevision.ToString() : "");
         public enum VersionStage : byte
         {
             /// <summary>
@@ -69,6 +69,55 @@ namespace InnoTecheLearning
             /// </summary>
             Release
         }
+        #endregion
+#endregion
+
+#region AssemblyInfo
+        public const string AssemblyTitle = "CSWCSS eLearn Utilities";
+        public const string AssemblyDescription = "";
+        public const string AssemblyConfiguration = "";
+        public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";
+        public const string AssemblyProduct = "InnoTecheLearning"; //Plz no change, affects Storage I/O
+        public const string AssemblyCopyright = "Copyright © Innovative Technology Society of CSWCSS 2017";
+        public const string AssemblyTrademark = "";
+        public const string AssemblyCulture = "";
+        public const bool ComVisible = false;
+        public const string ComGuid = "72bdc44f-c588-44f3-b6df-9aace7daafdd";
+#endregion
+
+#region Numbers
+        public const float RawXMultiplier =
+#if __IOS__
+            1
+#elif __ANDROID__
+            1.0f / 3
+#elif NETFX_CORE
+            1
+#endif
+            ;
+
+        public const float RawYMultiplier =
+#if __IOS__
+            1
+#elif __ANDROID__
+            0.5f
+#elif NETFX_CORE
+            1.5f
+#endif
+            ;
+        #endregion
+
+#region Fonts
+        public const string FontDictionary =
+#if __IOS__
+            "KAIU.TTF"
+#elif __ANDROID__
+            "monospace" //"KAIU.TTF#標楷體"
+#elif WINDOWS_UWP
+            "Assets/Fonts/KAIU.TTF#標楷體"
+#endif
+            ;
+#endregion
 
         public static class Constants
         {
@@ -181,9 +230,20 @@ hm = 嗯……
 oops = 弊啦！
 oh = 喔
 yeah/ yup = 同意";
+            public const string Something = @"▬▬▬▬▬▬▬▬ஜ۩۞۩ஜ▬▬▬▬▬▬▬▬▬▬";
         }
 
+#region ModifiableVersion
+        /*
+        public static VersionStage GetVersionState(this ModifiableVersion Version) { return (VersionStage)Version.MajorRevision; }
+        public static string ToShort(this ModifiableVersion Version)
+        {
+            return Version.ToString(3) +
+                   (VersionState > VersionStage.Undefined && VersionState < VersionStage.Release ?
+                   (char)((int)VersionState + 'a' - 1) + Version.MinorRevision.ToString() : "");
+        }*/
 
+        /*
         // A Version object contains four hierarchical numeric components: major, minor,
         // build and revision.  Build and revision may be unspecified, which is represented 
         // internally as a -1.  By definition, an unspecified component matches anything 
@@ -319,13 +379,13 @@ yeah/ yup = 同意";
             public short MajorRevision
             {
                 get { return (short)(_Revision >> 16); }
-                set { _Revision = value << 16 + MinorRevision; }
+                set { _Revision = value * (1 << 16) + MinorRevision; }
             }
 
             public short MinorRevision
             {
                 get { return (short)(_Revision & 0xFFFF); }
-                set { _Revision = MajorRevision + value; }
+                set { _Revision = MajorRevision * (1 << 16) + value; }
             }
 
             public Object Clone()
@@ -579,8 +639,6 @@ yeah/ yup = 同意";
 
             private static bool TryParseVersion(string version, ref VersionResult result)
             {
-                int major, minor, build, revision;
-
                 if ((Object)version == null)
                 {
                     result.SetFailure(ParseFailureKind.ArgumentNullException);
@@ -595,12 +653,12 @@ yeah/ yup = 同意";
                     return false;
                 }
 
-                if (!TryParseComponent(parsedComponents[0], "version", ref result, out major))
+                if (!TryParseComponent(parsedComponents[0], "version", ref result, out int major))
                 {
                     return false;
                 }
 
-                if (!TryParseComponent(parsedComponents[1], "version", ref result, out minor))
+                if (!TryParseComponent(parsedComponents[1], "version", ref result, out int minor))
                 {
                     return false;
                 }
@@ -609,7 +667,7 @@ yeah/ yup = 同意";
 
                 if (parsedComponentsLength > 0)
                 {
-                    if (!TryParseComponent(parsedComponents[2], "build", ref result, out build))
+                    if (!TryParseComponent(parsedComponents[2], "build", ref result, out int build))
                     {
                         return false;
                     }
@@ -618,7 +676,7 @@ yeah/ yup = 同意";
 
                     if (parsedComponentsLength > 0)
                     {
-                        if (!TryParseComponent(parsedComponents[3], "revision", ref result, out revision))
+                        if (!TryParseComponent(parsedComponents[3], "revision", ref result, out int revision))
                         {
                             return false;
                         }
@@ -813,6 +871,7 @@ yeah/ yup = 同意";
                     return result;
                 }
             }
-        }
+        }*/
+#endregion
     }
 }
