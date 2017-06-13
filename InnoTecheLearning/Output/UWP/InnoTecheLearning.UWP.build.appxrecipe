@@ -28,6 +28,9 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\jint\2.10.4\lib\netstandard1.3\jint.dll">
+      <PackagePath>jint.dll</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
     </AppxPackagedFile>
@@ -69,6 +72,24 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.VisualBasic\10.0.1\lib\netcore50\Microsoft.VisualBasic.dll">
       <PackagePath>Microsoft.VisualBasic.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.core\3.0.2.60302\lib\netcore451\Accord.dll">
+      <PackagePath>Accord.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.imaging\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Imaging.dll">
+      <PackagePath>Accord.Imaging.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.machinelearning\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.MachineLearning.dll">
+      <PackagePath>Accord.MachineLearning.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.math\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Math.dll">
+      <PackagePath>Accord.Math.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.statistics\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Statistics.dll">
+      <PackagePath>Accord.Statistics.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.vision\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Vision.dll">
+      <PackagePath>Accord.Vision.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.any.System.Collections\4.0.11\lib\netcore50\System.Collections.dll">
       <PackagePath>System.Collections.dll</PackagePath>
@@ -124,6 +145,9 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win.Microsoft.Win32.Primitives\4.0.1\runtimes\win\lib\netstandard1.3\Microsoft.Win32.Primitives.dll">
       <PackagePath>Microsoft.Win32.Primitives.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win.System.Console\4.0.0\runtimes\win\lib\netcore50\System.Console.dll">
+      <PackagePath>System.Console.dll</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win.System.Diagnostics.Debug\4.0.11\runtimes\win\lib\netcore50\System.Diagnostics.Debug.dll">
       <PackagePath>System.Diagnostics.Debug.dll</PackagePath>
     </AppxPackagedFile>
@@ -147,6 +171,12 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win7.System.Private.Uri\4.0.2\runtimes\win\lib\netcore50\System.Private.Uri.dll">
       <PackagePath>System.Private.Uri.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\shim\2.0.1\lib\uap\Shim.dll">
+      <PackagePath>Shim.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\shim.drawing\3.0.1\lib\portable-win81+wpa81\Shim.Drawing.dll">
+      <PackagePath>Shim.Drawing.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.AppContext\4.1.0\lib\netcore50\System.AppContext.dll">
       <PackagePath>System.AppContext.dll</PackagePath>
@@ -279,6 +309,9 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Reflection.TypeExtensions\4.1.0\lib\netcore50\System.Reflection.TypeExtensions.dll">
       <PackagePath>System.Reflection.TypeExtensions.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Runtime.InteropServices.RuntimeInformation\4.0.0\runtimes\win\lib\netcore50\System.Runtime.InteropServices.RuntimeInformation.dll">
+      <PackagePath>System.Runtime.InteropServices.RuntimeInformation.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Runtime.InteropServices.WindowsRuntime\4.0.1\lib\netcore50\System.Runtime.InteropServices.WindowsRuntime.dll">
       <PackagePath>System.Runtime.InteropServices.WindowsRuntime.dll</PackagePath>

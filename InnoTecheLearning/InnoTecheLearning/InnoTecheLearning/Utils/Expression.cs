@@ -54,31 +54,55 @@
         }
         public static void RemoveLast<T>(this System.Collections.Generic.IList<T> List)
         { if(List.Count != 0) List.RemoveAt(List.Count - 1); }
+        public static void InsertItemLocation
+            (this System.Collections.Generic.IList<Expressions> Expression, int Index, Expressions Item)
+        {
+            Expression.Insert(ToItemLocation(Expression, Index), Item);
+        }
+        public static void InsertItemLocation
+            (this System.Collections.Generic.IList<MoreExpressions> Expression, int Index, MoreExpressions Item)
+        {
+            Expression.Insert(ToItemLocation(Expression, Index), Item);
+        }
         public static void RemoveItemLocation(this System.Collections.Generic.IList<Expressions> Expression, int Index)
         {
-            Expression.RemoveAt(ItemLocation(Expression, Index));
+            Expression.RemoveAt(ToItemLocation(Expression, Index));
         }
         public static void RemoveItemLocation(this System.Collections.Generic.IList<MoreExpressions> Expression, int Index)
         {
-            Expression.RemoveAt(ItemLocation(Expression, Index));
+            Expression.RemoveAt(ToItemLocation(Expression, Index));
         }
-        public static int ItemLocation(this System.Collections.Generic.IList<Expressions> Expression, int Index)
+        public static int ToItemLocation(this System.Collections.Generic.IList<Expressions> Expression, int StringIndex)
         {
             for (int i = 0, j = 0; i < Expression.Count; i++)
             {
                 j += Expression[i].StringLength();
-                if (j > Index) return i;
+                if (j > StringIndex) return i;
             }
             return -1;
         }
-        public static int ItemLocation(this System.Collections.Generic.IList<MoreExpressions> Expression, int Index)
+        public static int ToItemLocation(this System.Collections.Generic.IList<MoreExpressions> Expression, int StringIndex)
         {
             for (int i = 0, j = 0; i < Expression.Count; i++)
             {
                 j += Expression[i].StringLength();
-                if (j > Index) return i;
+                if (j > StringIndex) return i;
             }
             return -1;
+        }
+        public static int ToStringLocation(this System.Collections.Generic.IList<Expressions> Expression, int ItemIndex)
+        {
+            if (ItemIndex > Expression.Count) return -1;
+            int j = 0;
+            for (int i = 0; i < ItemIndex; i++) j += Expression[i].StringLength();
+            return j;
+        }
+        public static int ToStringLocation(this System.Collections.Generic.IList<MoreExpressions> Expression, int ItemIndex)
+        {
+            if (ItemIndex > Expression.Count) return -1;
+            int j = 0;
+            for (int i = 0; i < ItemIndex; i++) j += Expression[i].StringLength();
+            return j;
         }
         public static int StringLength(this Expressions Expression)
         {

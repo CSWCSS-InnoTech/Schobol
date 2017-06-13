@@ -117,6 +117,11 @@ namespace InnoTecheLearning
             "Assets/Fonts/KAIU.TTF#標楷體"
 #endif
             ;
+        #endregion
+
+#region Character Substitutes
+        public const string SubLeftBracket = "毲";
+        public const string SubRightBracket = "䫎";
 #endregion
 
         public static class Constants

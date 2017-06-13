@@ -40,21 +40,42 @@ namespace InnoTecheLearning
         public void Stop() => player.Stop();
     }
 #endif
+    static class PageIdExtensions
+    {
+        public static Main.PageId GetId(this Page P) => 
+            P.StyleId == AssemblyTitle ? Main.PageId.Main :
+                (Main.PageId)Enum.Parse(typeof(Main.PageId),
+                    new StringBuilder(P.StyleId)
+                    .Replace(' ', '_')
+                    .Replace("(", SubLeftBracket)
+                    .Replace(")", SubRightBracket)
+                    .Remove(0, "eLearn ".Length)
+                    .ToString()
+                );
+        public static string GetTitle(this Main.PageId i) =>
+            i == Main.PageId.Main ? AssemblyTitle : 
+                new StringBuilder(i.ToString())
+                .Replace('_', ' ')
+                .Replace(SubLeftBracket, "(")
+                .Replace(SubRightBracket, ")")
+                .Insert(0, "eLearn ")
+                .ToString();
+    }
     public class Main : NavigationPage
     {
-        public enum Pages : sbyte
+        public enum PageId : sbyte
         {
             Uninitialised = sbyte.MinValue,
-            Crashlog = -2,
+            Crashes = -2,
             Changelog = -1,
             Main,
-            Translate,
-            Calculator,
-            Calculator_Free,
-            Factorizer,
-            Sports,
-            MusicTuner,
-            MathSolver
+            Lingual,
+            Logic_毲Keypad䫎,
+            Logic_毲Freeform䫎,
+            Logic_毲Factor䫎,
+            Health,
+            Tunes,
+            Excel
         }
         /*
         public View Content
@@ -87,78 +108,24 @@ namespace InnoTecheLearning
             }
         }
         */
-        public bool AnimateRows = true;
-        public ValueTask<Unit> Push(View v, string Title = null) => 
+        bool AnimateRows = true;
+        public ValueTask<Unit> Push(View v, PageId Id, string Title = null) => 
             Log(
                 Unit.Await(
                     PushAsync(
                         Log(
-                            new ContentPage { Content = v, BackgroundColor = Color.White, Title = Title ?? "" },
+                            new ContentPage { Content = v, BackgroundColor = Color.White }.With(
+                                (ref ContentPage x) => 
+                                {
+                                    if (Enum.IsDefined(typeof(PageId), Id) && Id != PageId.Uninitialised) x.StyleId = Id.GetTitle();
+                                    x.Title = Title ?? x.StyleId ?? string.Empty;
+                                }),
                             $"Pushing a page, Page title: {Title}..."
                         )
                     )
                 ),
             $"Page pushed. Page title: {Title}");
         public ValueTask<Page> Pop() => new ValueTask<Page>(PopAsync());
-        Pages _Showing = Pages.Uninitialised;
-        public Pages Showing
-        {
-            get { return _Showing; }
-            set
-            {
-                Log($"Setting Showing to {value}...");
-                switch (value)
-                {
-                    case Pages.Crashlog:
-                        Region = "Crashlog";
-                        Push(CrashLog, "eLearn Crashes");
-                        break;
-                    case Pages.Changelog:
-                        Region = "Changelog";
-                        Push(ChangelogView(this), "eLearn Changelog");
-                        break;
-                    case Pages.Main:
-                        Region = "Main";
-                        if (_Showing == Pages.Uninitialised)
-                            Push(MainView, AssemblyTitle);
-                        else Pop();
-                        break;
-                    case Pages.Translate:
-                        Region = "Translate";
-                        Push(Translator, "eLearn Lingual");
-                        break;
-                    case Pages.Calculator:
-                        Region = "Calculator";
-                        Push(Calculator, "eLearn Logic");
-                        break;
-                    case Pages.Calculator_Free:
-                        Region = "Calculator_Free";
-                        Push(Calculator_Free, "eLearn Logic");
-                        break;
-                    case Pages.Factorizer:
-                        Region = "Factorizer";
-                        Push(Factorizer, "eLearn Logic");
-                        break;
-                    case Pages.Sports:
-                        Region = "Sports";
-                        Push(Sports, "eLearn Health");
-                        break;
-                    case Pages.MusicTuner:
-                        Region = "MusicTuner";
-                        Push(MusicTuner, "eLearn Tunes");
-                        break;
-                    case Pages.MathSolver:
-                        Region = "MathSolver";
-                        Push(MathSolver, "eLearn Excel");
-                        break;
-                    default:
-                        throw new ArgumentException($"{value} is not a supported member of {nameof(Pages)}.", nameof(value));
-                        //Region = "App";
-                }
-                _Showing = value;
-                Log($"Set Showing to {value}.");
-            }
-        }
         //StreamPlayer _Player;
         public Main()
         {
@@ -177,7 +144,7 @@ namespace InnoTecheLearning
             //BarTextColor = Color.Black;
             BackgroundColor = Color.White;
             Log("Before pushing main...");
-            Showing = Pages.Main;
+            Push(MainView, PageId.Main);
             Popped += (sender, e) => { MusicSound?.Dispose(); MusicSound = null; };
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
@@ -187,9 +154,9 @@ namespace InnoTecheLearning
         //~Main() { _Player.Dispose(); }
         protected override bool OnBackButtonPressed() 
         {
-            if (Showing != Pages.Main)
+            if (Navigation.NavigationStack.Count > 1)
             {
-                Showing = Pages.Main;
+                Pop();
                 return true;
             }
             else
@@ -201,32 +168,54 @@ namespace InnoTecheLearning
             get
             {
                 return Log(new StackLayout
-                { 
+                {
                     Orientation = StackOrientation.Vertical,
                     Children = {
-                         Log(Society, "Generating Society Label in MainView"),
+                        Log(Society, "Generating Society Label in MainView"),
 
-       Log(MainScreenRow(true, AnimateRows, MainScreenItem(ImageSource(ImageFile.Translate), delegate{
-                         Showing = Pages.Translate; }, BoldLabel("LINGUAL")),
-                         MainScreenItem(ImageSource(ImageFile.Calculator), delegate {
-                                ThreeButtonDialog.Show("Choose Logic mode", "Which Logic mode?",
-                                    "Keypad", () => Showing = Pages.Calculator,
-                                    "Freeform", () => Showing = Pages.Calculator_Free,
-                                    "Factor", () => Showing = Pages.Factorizer);
-                             },BoldLabel("LOGIC"))), "Generated first row"),
+                        Log(MainScreenRow(true, AnimateRows, 
+                            MainScreenItem(
+                                ImageSource(ImageFile.Translate), 
+                                () => Push(Translator, PageId.Lingual),
+                                BoldLabel("LINGUAL")
+                            ),
 
-       Log(MainScreenRow(true, AnimateRows, MainScreenItem(ImageSource(ImageFile.Sports), delegate {
-                             Showing = Pages.Sports;
-                         },BoldLabel("HEALTH")),
-                         MainScreenItem(ImageSource(ImageFile.MusicTuner), delegate {
-                             Showing = Pages.MusicTuner;
-                         },BoldLabel("TUNES"))
-                         ), "Generated second row"),
+                             MainScreenItem(
+                                 ImageSource(ImageFile.Calculator), 
+                                 () => ThreeButtonDialog.Show(
+                                     "Choose Logic mode",
+                                     "Which Logic mode?",
+                                     "Keypad", () => Push(Calculator, PageId.Logic_毲Keypad䫎),
+                                     "Freeform", () => Push(Calculator_Free, PageId.Logic_毲Freeform䫎),
+                                     "Factor", () => Push(Factorizer, PageId.Logic_毲Factor䫎)
+                                 ),
+                                 BoldLabel("LOGIC"))
+                            )
+                        , "Generated first row"),
 
-           MainScreenRow(true, AnimateRows, MainScreenItem(ImageSource(ImageFile.MathSolver), delegate {
-                             Showing = Pages.MathSolver; },BoldLabel("EXCEL"))),
+                        Log(MainScreenRow(true, AnimateRows, 
+                            MainScreenItem(
+                                ImageSource(ImageFile.Sports),
+                                () => Push(Sports, PageId.Health),
+                                BoldLabel("HEALTH")
+                            ),
 
-                        Button("Changelog", () => { Showing = Pages.Changelog; }),
+                            MainScreenItem(
+                                ImageSource(ImageFile.MusicTuner), 
+                                () => Push(MusicTuner, PageId.Tunes),
+                                BoldLabel("TUNES"))
+                            )
+                        , "Generated second row"),
+
+                        MainScreenRow(true, AnimateRows, 
+                            MainScreenItem(
+                                ImageSource(ImageFile.MathSolver),
+                                () => Push(MathSolver, PageId.Excel),
+                                BoldLabel("EXCEL")
+                            )
+                        ),
+
+                        Button("Changelog", () => Push(Changelog, PageId.Changelog)),
                         VersionDisplay
                     }
                 }, "Generated MainView");
@@ -390,31 +379,88 @@ namespace InnoTecheLearning
                 };
             }
         }*/
+        public const string Cursor = "‸";
         string Calculator_Value = "";
-        List<Expressions> Calculator_Expression = new List<Expressions>();
-        event Action Calculator_Changed;
-        AngleMode AngleUnit = 0;
+        int Calculator_Cursor_ = 0;
+        int Calculator_Cursor
+        {
+            get => Calculator_Cursor_.LowerBound(0).UpperBound(Calculator_Expression.Count);
+            set
+            {
+                Calculator_Cursor_ = value;
+                Calculator_History[Calculator_HistoryIndex] =
+                    (Calculator_History[Calculator_HistoryIndex].In, Calculator_History[Calculator_HistoryIndex].Out, value);
+                Calculator_Cursor_Update?.Invoke();
+            }
+        }
+        Action Calculator_Cursor_Update;
+        List<Expressions> Calculator_Expression;
+        AngleMode Calculator_AngleUnit = 0;
+        Modifier Calculator_Modifier;
+        readonly List<(List<Expressions> In, string Out, int Cursor)> Calculator_History = 
+            new List<(List<Expressions> In, string Out, int Cursor)> { (new List<Expressions>(), "", 0) };
+        int Calculator_HistoryIndex_ = 0;
+        int Calculator_HistoryIndex
+        {
+            get => Calculator_HistoryIndex_.LowerBound(0).UpperBound(Calculator_History.Count);
+            set
+            {
+                Calculator_HistoryIndex_ = value;
+                Calculator_HistoryIndex_Update?.Invoke();
+            }
+        }
+        Action Calculator_HistoryIndex_Update;
+        #region Append
+        void Calculator_StartModify()
+        {
+            if (Calculator_HistoryIndex != Calculator_History.Count - 1)
+            {
+                Calculator_History[Calculator_History.Count - 1] =
+                    (new List<Expressions>(Calculator_Expression), Calculator_Value, Calculator_Cursor);
+                Calculator_HistoryIndex = Calculator_History.Count - 1;
+            }
+        }
+        EventHandler<ExpressionEventArgs> Append_MethodGen(Expressions Expression) =>
+            (object sender, ExpressionEventArgs e) => 
+                {
+                    Calculator_StartModify();
+                    Calculator_Expression.Insert(Calculator_Cursor.UpperBound(Calculator_Expression.Count), e.Expression);
+                    Calculator_Cursor++;
+                };
+        public void Append(Grid.IGridList<View> List, Expressions Expression,
+            Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            List.Add(Button(Expression, Append_MethodGen(Expression), BackColor, TextColor));
+        public void Append(Grid.IGridList<View> List, Expressions Expression,
+            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            List.Add(Button(Expression, Append_MethodGen(Expression), BackColor, TextColor), Left, Top);
+        public void Append(Grid.IGridList<View> List, Expressions Expression,
+            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            List.Add(Button(Expression, Append_MethodGen(Expression), BackColor, TextColor), Left, Right, Top, Bottom);
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
+            Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor));
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
+            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Top);
+        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
+            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Right, Top, Bottom);
+        #endregion
         public StackLayout Calculator
         {
             get
             {
-                void Calculator_TextChanged(object sender, TextChangedEventArgs e)
-                {
-                    if (((Entry)sender).Text != Calculator_Value) { ((Entry)sender).Text = Calculator_Value; }
-                }
+                var MoveLeft = Button("◀", () => Calculator_Cursor--);
+                var MoveRight = Button("▶", () => Calculator_Cursor++);
+                var MoveUp = Button("▲", () => Calculator_HistoryIndex--);
+                var MoveDown = Button("▼", () => Calculator_HistoryIndex++);
                 Entry In = new Entry
                 {
                     TextColor = Color.Black,
                     Placeholder = "Expression",
                     PlaceholderColor = Color.Gray,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0),
-                    Text = Calculator_Expression.AsString()
-                };
-                In.TextChanged += delegate
-                {
-                    if (In.Text != Calculator_Expression.AsString())
-                        In.Text = Calculator_Expression.AsString();
+                    BackgroundColor = Color.FromRgb(0xD0, 0xD0, 0xD0)
                 };
                 Entry Out = new Entry
                 {
@@ -423,8 +469,48 @@ namespace InnoTecheLearning
                     PlaceholderColor = Color.Gray,
                     HorizontalOptions = LayoutOptions.FillAndExpand
                 };
-                Out.TextChanged += Calculator_TextChanged;
-                Calculator_Changed += delegate { In.Text = Calculator_Expression.AsString(); };
+                void In_TextChanged()
+                {
+                    try
+                    {
+                        var Replacement = Calculator_Expression.AsString()
+                            .Insert(Calculator_Expression.ToStringLocation(Calculator_Cursor), Cursor);
+                        if (In.Text != Replacement)
+                        {
+                            In.Text = Replacement;
+                        }
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        if (In.Text != Cursor)
+                        {
+                            In.Text = Cursor;
+                        }
+                    }
+                }
+                void Out_TextChanged()
+                {
+                    string Replacement = 
+                        double.TryParse(Calculator_Value, out var d) ?
+                            Try(() => Display(d, Calculator_Modifier), (Exception ex) => ) :
+                            Calculator_Value;
+                    if (Out.Text != Replacement) Out.Text = Replacement;
+                }
+                In.TextChanged += (sender, e) => In_TextChanged();
+                Out.TextChanged += (sender, e) => Out_TextChanged();
+                (Calculator_HistoryIndex_Update =
+                    () =>
+                    {
+                        MoveUp.IsEnabled = Calculator_HistoryIndex != 0;
+                        MoveDown.IsEnabled = Calculator_HistoryIndex != Calculator_History.Count - 1;
+                        (Calculator_Expression, Calculator_Value, Calculator_Cursor) =
+                            Calculator_History[Calculator_HistoryIndex];
+                        In_TextChanged();
+                        Out_TextChanged();
+                    }
+                )();
+                (Calculator_Cursor_Update = In_TextChanged)();
+
                 Grid Vars, Const, Trig, Func, Bin, Norm = new Grid
                 {
                     ColumnDefinitions = Columns(GridUnitType.Star, 1, 1, 1, 1, 1),
@@ -438,13 +524,16 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.Ans, 2, 0);
                 Norm.Children.Add(Button("⌫", () =>
                 {
-                    Calculator_Expression.RemoveLast();
-                    Calculator_Changed();
+                    Calculator_StartModify();
+                    if (Calculator_Expression.Count > 0)
+                        Calculator_Expression.RemoveAt((--Calculator_Cursor).LowerBound(0));
+                    Calculator_Cursor_Update?.Invoke();
                 }, Color.FromHex("#E91E63")), 3, 0);
                 Norm.Children.Add(Button("⎚", () =>
                 {
+                    Calculator_StartModify();
                     Calculator_Expression.Clear();
-                    Calculator_Changed();
+                    Calculator_Cursor_Update?.Invoke();
                 }, Color.FromHex("#E91E63")), 4, 0); //Pink
                 Append(Norm.Children, Expressions.D7, 0, 1, Color.FromHex("#607D8B"));
                 Append(Norm.Children, Expressions.D8, 1, 1, Color.FromHex("#607D8B"));
@@ -466,9 +555,16 @@ namespace InnoTecheLearning
                 Append(Norm.Children, Expressions.e, 2, 4);
                 Norm.Children.Add(Button("=", () =>
                 {
-                    Calculator_Value = string.IsNullOrWhiteSpace(In.Text) ? string.Empty : 
-                        Calculator_Value = JSEvaluate(In.Text, this, AngleUnit, Calculator_Modifier);
-                    Calculator_TextChanged(Out, new TextChangedEventArgs("", In.Text));
+                    var ToCalculate = Calculator_Expression.AsString();
+                    Calculator_History[Calculator_History.Count - 1] =
+                    (
+                        Calculator_Expression,
+                        string.IsNullOrWhiteSpace(ToCalculate) ? string.Empty :
+                            JSEvaluate(ToCalculate, this, Calculator_AngleUnit),
+                        Calculator_Cursor
+                    );
+                    Calculator_HistoryIndex = Calculator_History.Count - 1;
+                    Calculator_History.Add((new List<Expressions>(), "", 0));
                 }, Color.FromHex("#FFC107")), 3, 5, 4, 5); //Amber
 
                 Bin = new Grid
@@ -612,14 +708,20 @@ namespace InnoTecheLearning
                 }
 
                 StackLayout Return = new StackLayout
-                { Children = { /*Title("eLearn Logic"),*/ In, new StackLayout(), Norm, new StackLayout(), Out } };
+                {
+                    Children =
+                    {
+                        Row(false, MoveLeft, MoveRight, In, MoveUp, MoveDown),
+                        new StackLayout(), Norm, new StackLayout(), Out
+                    }
+                };
                 Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
-                Button Mode = new Button { Text = AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
+                Button Mode = new Button { Text = Calculator_AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
                 Mode.Clicked += delegate
                 {
-                    AngleUnit++; if (AngleUnit > AngleMode.Turn) AngleUnit = AngleMode.Degree;
-                    Mode.Text = AngleUnit.ToString();
+                    Calculator_AngleUnit++; if (Calculator_AngleUnit > AngleMode.Turn) Calculator_AngleUnit = AngleMode.Degree;
+                    Mode.Text = Calculator_AngleUnit.ToString();
                 };
                 var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0, false,
@@ -630,12 +732,12 @@ namespace InnoTecheLearning
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate
                     {
-                        if (Calculator_Modifier != (Modifier)i && !string.IsNullOrWhiteSpace(Calculator_Value))
+                            var Result = Calculator_History[Calculator_HistoryIndex];
+                        if (string.IsNullOrWhiteSpace(Calculator_Value)) Calculator_Value = string.Empty;
+                        else if (Calculator_Modifier != (Modifier)i)
                         {
                             Calculator_Modifier = (Modifier)i;
-                            var Result = JSEngine.GetCompletionValue();
-                            try { Calculator_Value = JSEngine.Invoke("Display", Result, i).ToString(); }
-                            catch { Calculator_Value = Result.ToString(); }
+                            Calculator_Value = Result.Out.ToString();
                             Out.Text = "";
                         }
                     }, 0, false,
@@ -691,33 +793,6 @@ namespace InnoTecheLearning
 
 */
         }
-        Modifier Calculator_Modifier;
-#region Append
-        public void Append(Grid.IGridList<View> List, Expressions Expression,
-            Color BackColor = default(Color), Color TextColor = default(Color)) =>
-            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor));
-        public void Append(Grid.IGridList<View> List, Expressions Expression,
-            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
-            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor), Left, Top);
-        public void Append(Grid.IGridList<View> List, Expressions Expression,
-            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
-            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, BackColor, TextColor), Left, Right, Top, Bottom);
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            Color BackColor = default(Color), Color TextColor = default(Color)) =>
-            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor));
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
-            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Top);
-        public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
-            List.Add(Button(Expression, (object sender, ExpressionEventArgs e) =>
-            { Calculator_Expression.Add(e.Expression); Calculator_Changed(); }, Name, BackColor, TextColor), Left, Right, Top, Bottom);
-#endregion
         string Calculator_Free_Value = "";
         public StackLayout Calculator_Free
         {
@@ -842,7 +917,7 @@ namespace InnoTecheLearning
                         Sports_Distance.Text = Pedometer.Distance.ToString() + " m";
                         Sports_Time.Text = Pedometer.TimePassed.ToString(@"hh\:mm\:ss");
                         Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
-                        return Showing == Pages.Sports;
+                        return Navigation.NavigationStack.Last().GetId() == PageId.Health;
                     });
                 return new StackLayout
                 {

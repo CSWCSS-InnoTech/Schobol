@@ -359,7 +359,7 @@ namespace InnoTecheLearning
                     {
                         Changelog,
                         Row(false, 
-                        Button("View crash logs", () => Instance.Showing = Main.Pages.Crashlog)
+                        Button("View crash logs", () => Instance.Push(Instance.CrashLog, Main.PageId.Crashes))
                             .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
                         )
                         /*, Row(false, UpdateAlpha(Page), Back(Page))*/
