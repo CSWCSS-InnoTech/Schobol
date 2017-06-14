@@ -215,7 +215,9 @@ namespace InnoTecheLearning
                             )
                         ),
 
-                        Button("Changelog", () => Push(Changelog, PageId.Changelog)),
+                        Button("Changelog", () => Push(
+                            Column(Changelog, Button("View crash logs", () => Push(CrashLog, PageId.Crashes))),
+                        PageId.Changelog)),
                         VersionDisplay
                     }
                 }, "Generated MainView");
@@ -380,7 +382,8 @@ namespace InnoTecheLearning
             }
         }*/
         public const string Cursor = "‸";
-        string Calculator_Value = "";
+        string Calculator_Value_ = "";
+        string Calculator_Value { get => Calculator_Value_; set { Calculator_Display_Dirty = true; Calculator_Value_ = value; } }
         int Calculator_Cursor_ = 0;
         int Calculator_Cursor
         {
@@ -396,7 +399,11 @@ namespace InnoTecheLearning
         Action Calculator_Cursor_Update;
         List<Expressions> Calculator_Expression;
         AngleMode Calculator_AngleUnit = 0;
-        Modifier Calculator_Modifier;
+        string Calculator_Display;
+        bool Calculator_Display_Dirty = true;
+        Modifier Calculator_Modifier_;
+        Modifier Calculator_Modifier
+        { get => Calculator_Modifier_; set { Calculator_Display_Dirty = true; Calculator_Modifier_ = value; } }
         readonly List<(List<Expressions> In, string Out, int Cursor)> Calculator_History = 
             new List<(List<Expressions> In, string Out, int Cursor)> { (new List<Expressions>(), "", 0) };
         int Calculator_HistoryIndex_ = 0;
@@ -450,10 +457,14 @@ namespace InnoTecheLearning
         {
             get
             {
-                var MoveLeft = Button("◀", () => Calculator_Cursor--);
-                var MoveRight = Button("▶", () => Calculator_Cursor++);
-                var MoveUp = Button("▲", () => Calculator_HistoryIndex--);
-                var MoveDown = Button("▼", () => Calculator_HistoryIndex++);
+                var MoveLeft = Button("◀", () => Calculator_Cursor--)
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                var MoveRight = Button("▶", () => Calculator_Cursor++)
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                var MoveUp = Button("▲", () => Calculator_HistoryIndex--)
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                var MoveDown = Button("▼", () => Calculator_HistoryIndex++)
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
                 Entry In = new Entry
                 {
                     TextColor = Color.Black,
@@ -490,11 +501,15 @@ namespace InnoTecheLearning
                 }
                 void Out_TextChanged()
                 {
-                    string Replacement = 
-                        double.TryParse(Calculator_Value, out var d) ?
-                            Try(() => Display(d, Calculator_Modifier), (Exception ex) => ) :
-                            Calculator_Value;
-                    if (Out.Text != Replacement) Out.Text = Replacement;
+                    if (Calculator_Display_Dirty)
+                    {
+                        Calculator_Display =
+                              double.TryParse(Calculator_Value, out var d) ?
+                              Try(() => Display(d, Calculator_Modifier), (Exception ex) => d.ToString()) :
+                              Calculator_Value;
+                        Calculator_Display_Dirty = false;
+                    }
+                    if (Out.Text != Calculator_Display) Out.Text = Calculator_Display;
                 }
                 In.TextChanged += (sender, e) => In_TextChanged();
                 Out.TextChanged += (sender, e) => Out_TextChanged();
@@ -706,15 +721,27 @@ namespace InnoTecheLearning
                     Append(Vars.Children, Expressions.Increment, ++Left, Top);
                     Append(Vars.Children, Expressions.Decrement, ++Left, Top);
                 }
+                
 
-                StackLayout Return = new StackLayout
-                {
-                    Children =
+                StackLayout Return = 
+                    Device.Idiom == TargetIdiom.Desktop ? 
+                    new StackLayout
                     {
-                        Row(false, MoveLeft, MoveRight, In, MoveUp, MoveDown),
-                        new StackLayout(), Norm, new StackLayout(), Out
-                    }
-                };
+                        Children =
+                        {
+                            Row(false, MoveLeft, MoveRight, In, MoveUp, MoveDown),
+                            new StackLayout(), Norm, new StackLayout(), Out
+                        }
+                    } :
+                    new StackLayout
+                    {
+                        Children =
+                        {
+                            In, Row(false, MoveLeft, MoveRight, MoveUp, MoveDown),
+                            new StackLayout(), Norm, new StackLayout(), Out
+                        }
+                    };
+
                 Grid[] Menus = new Grid[] { Norm, Bin, Func, Trig, Const, Vars };
                 Button Mode = new Button { Text = Calculator_AngleUnit.ToString(), BackgroundColor = Color.FromHex("#02A8F3") };
                 //Light Blue
@@ -724,9 +751,13 @@ namespace InnoTecheLearning
                     Mode.Text = Calculator_AngleUnit.ToString();
                 };
                 var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate { if (Return.Children[2] != Menus[i]) Return.Children[2] = Menus[i]; }, 0, false,
+                    i => delegate 
+                    {
+                        if (Return.Children[new OnIdiom<int> { Desktop = 2, Phone = 3, Tablet = 3 }] != Menus[i])
+                            Return.Children[new OnIdiom<int> { Desktop = 2, Phone = 3, Tablet = 3 }] = Menus[i];
+                    }, 0, false,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
-                Return.Children[1] = Row(false, Select[0], 
+                Return.Children[new OnIdiom<int> { Desktop = 1, Phone = 2, Tablet = 2 }] = Row(false, Select[0], 
                         Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode }))//, Back(this)
                     );
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
@@ -743,7 +774,8 @@ namespace InnoTecheLearning
                     }, 0, false,
                     "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"), 
                     OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
-                Return.Children[3] = Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
+                Return.Children[new OnIdiom<int> { Desktop = 3, Phone = 4, Tablet = 4 }] =
+                    Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
             } //http://www.goxuni.com/671054-how-to-create-a-custom-color-picker-for-xamarin-forms/
             /*

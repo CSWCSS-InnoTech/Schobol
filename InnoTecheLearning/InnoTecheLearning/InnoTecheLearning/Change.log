@@ -9,6 +9,12 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 !Security to invite users to upgrade in case of vulnerabilities.
 ~Comment for notes.
 
+v0.10.1 (Keypad Update) [2017-06-14 Wed 22:20] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.1.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.1.appxbundle}
++Logic (Keypad) Cursor
++Logic (Keypad) History
+&Modifiers other than Normal showing stuff like "1e-12%", now shows as "0.000000000001%"
+&Sin(30) in g / h √f̅ mode showing as 0.5 / 1 √̅1 on Windows or 0.5 / 1 √1̅ on other platforms instead of 1 / 2 √̅1 or 1 / 2 √1̅  respectively
+
 v0.10.0 (Xamarin Update) [2017-06-06 Tue 18:35] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.0.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.0.appxbundle}
 ☆Now uses Xamarin Forms instead of App Inventor 2
 +Windows 10 support
