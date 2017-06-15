@@ -31,13 +31,17 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-04T08:24:05.767</Modified>
+      <Modified>2017-06-14T12:43:13.328</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-06-04T08:24:04.882</Modified>
+      <Modified>2017-06-14T12:43:12.321</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\jint\2.10.4\lib\netstandard1.3\jint.dll">
+      <PackagePath>jint.dll</PackagePath>
+      <Modified>2017-03-22T00:13:26.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -94,6 +98,30 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.VisualBasic\10.0.1\lib\netcore50\Microsoft.VisualBasic.dll">
       <PackagePath>Microsoft.VisualBasic.dll</PackagePath>
       <Modified>2016-06-11T15:13:10.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.core\3.0.2.60302\lib\netcore451\Accord.dll">
+      <PackagePath>Accord.dll</PackagePath>
+      <Modified>2016-03-02T06:20:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.imaging\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Imaging.dll">
+      <PackagePath>Accord.Imaging.dll</PackagePath>
+      <Modified>2016-03-02T06:20:54.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.machinelearning\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.MachineLearning.dll">
+      <PackagePath>Accord.MachineLearning.dll</PackagePath>
+      <Modified>2016-03-02T06:20:54.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.math\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Math.dll">
+      <PackagePath>Accord.Math.dll</PackagePath>
+      <Modified>2016-03-02T06:20:54.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.statistics\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Statistics.dll">
+      <PackagePath>Accord.Statistics.dll</PackagePath>
+      <Modified>2016-03-02T06:20:56.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.vision\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Vision.dll">
+      <PackagePath>Accord.Vision.dll</PackagePath>
+      <Modified>2016-03-02T06:20:58.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.any.System.Collections\4.0.11\lib\netcore50\System.Collections.dll">
       <PackagePath>System.Collections.dll</PackagePath>
@@ -167,6 +195,10 @@
       <PackagePath>Microsoft.Win32.Primitives.dll</PackagePath>
       <Modified>2016-06-11T15:13:14.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win.System.Console\4.0.0\runtimes\win\lib\netcore50\System.Console.dll">
+      <PackagePath>System.Console.dll</PackagePath>
+      <Modified>2016-06-11T15:13:24.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win.System.Diagnostics.Debug\4.0.11\runtimes\win\lib\netcore50\System.Diagnostics.Debug.dll">
       <PackagePath>System.Diagnostics.Debug.dll</PackagePath>
       <Modified>2016-06-11T15:13:26.000</Modified>
@@ -198,6 +230,14 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win7.System.Private.Uri\4.0.2\runtimes\win\lib\netcore50\System.Private.Uri.dll">
       <PackagePath>System.Private.Uri.dll</PackagePath>
       <Modified>2016-07-01T07:48:12.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\shim\2.0.1\lib\uap\Shim.dll">
+      <PackagePath>Shim.dll</PackagePath>
+      <Modified>2016-07-08T03:24:14.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\shim.drawing\3.0.1\lib\portable-win81+wpa81\Shim.Drawing.dll">
+      <PackagePath>Shim.Drawing.dll</PackagePath>
+      <Modified>2016-07-08T04:06:38.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.AppContext\4.1.0\lib\netcore50\System.AppContext.dll">
       <PackagePath>System.AppContext.dll</PackagePath>
@@ -374,6 +414,10 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Reflection.TypeExtensions\4.1.0\lib\netcore50\System.Reflection.TypeExtensions.dll">
       <PackagePath>System.Reflection.TypeExtensions.dll</PackagePath>
       <Modified>2016-06-11T15:14:22.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Runtime.InteropServices.RuntimeInformation\4.0.0\runtimes\win\lib\netcore50\System.Runtime.InteropServices.RuntimeInformation.dll">
+      <PackagePath>System.Runtime.InteropServices.RuntimeInformation.dll</PackagePath>
+      <Modified>2016-06-11T15:14:28.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.Runtime.InteropServices.WindowsRuntime\4.0.1\lib\netcore50\System.Runtime.InteropServices.WindowsRuntime.dll">
       <PackagePath>System.Runtime.InteropServices.WindowsRuntime.dll</PackagePath>
@@ -804,11 +848,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-04T01:05:29.277</Modified>
+      <Modified>2017-06-12T13:59:10.570</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-06-04T08:24:05.762</Modified>
+      <Modified>2017-06-14T12:43:13.326</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

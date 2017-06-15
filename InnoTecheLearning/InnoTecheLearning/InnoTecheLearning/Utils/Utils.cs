@@ -435,7 +435,7 @@ namespace InnoTecheLearning
         public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure, IntSurd, FracSurd }
         public static Jint.Engine JSEngine = new Jint.Engine();
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
-           Modifier Mod = Modifier.Normal, bool TrueFree =  false)
+            bool TrueFree =  false)
         {
             string GetVars(params string[] Vars)
             {
@@ -464,8 +464,7 @@ namespace InnoTecheLearning
                 if (TrueFree) return JSEngine.Execute(Expression).GetCompletionValue().ToString();
                 JSEngine.Execute(
                     $@"var Prev = ""{Escape(JSEvaluteAns)}"";
-var AngleUnit = {(byte)Mode};
-var Modifier = {(byte)Mod};" + GetVars(JSVariables)
+var AngleUnit = {(byte)Mode};" + GetVars(JSVariables)
                 + @"
 var Ans = Number(Prev);
 const global = Function('return this')();
@@ -658,27 +657,6 @@ function GCD(a, b)
 function HCF(a, b) { return GCD(a, b); }
 function LCM(a, b) { return (a / GCD(a, b)) * b; }
 
-function Display(Text, Modifier) {
-    switch(Modifier) {
-        case 0: //Normal
-            return Text;
-        case 1: //%
-            return (Text * 100) + '%';
-        case 2: //a b / c
-            return Mixed(Text);
-        case 3: //d / c
-            return Fraction(Text);
-        case 4: //° ′ ″
-            return AngleMeasure(Text);
-        case 5: //e√̅f
-            return IntSurd(Text);
-        case 6: //g / h √̅f
-            return FracSurd(Text);
-        default: //What?
-            throw('Invalid display modifier.');
-    }
-}
-
 const π = Math.PI;
 const e = Math.E;
 const Root2 = Math.SQRT2;
@@ -688,173 +666,181 @@ const Ln10 = Math.LN10;
 const Log2e = Math.LOG2E;
 const Log10e = Math.LOG10E;
 """";")
-#if true
-            .SetValue("Fraction", new Func<double, string>((value) => {
-                for (var denom = 1.0; denom <= 1e6; denom++)
-                {
-                    var numer = Math.Round(value * denom);
-                    if (Math.Abs(value - numer / denom) == 0)
-                        return $"{numer} / {denom}";
-                }
-                throw new ArithmeticException("Cannot find appropriate fraction.");
-                /*
-                var best_numer = 1.0;
-                var best_denom = 1.0;
-                var best_err = Math.Abs(value - best_numer / best_denom);
-                for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
-                {
-                    var numer = Math.Round(value * denom);
-                    var err = Math.Abs(value - numer / denom);
-                    if (err < best_err)
-                    {
-                        best_numer = numer;
-                        best_denom = denom;
-                        best_err = err;
-                        //Console.WriteLine(best_numer + " / " + best_denom + " = " + (best_numer / best_denom) + " error " + best_err);
-                    }
-                }
-                return best_numer + " / " + best_denom;*/
-            })).SetValue("Mixed", new Func<double, string>((double value) =>
-            {
-                for (var denom = 1.0; denom <= 1e6; denom++)
-                {
-                    var numer = Math.Round(value * denom);
-                    if (Math.Abs(value - numer / denom) == 0)
-                        return $"{Math.Round(numer / denom)} {numer % denom} / {denom}";
-                }
-                throw new ArithmeticException("Cannot find appropriate fraction.");
-                /*
-                var best_numer = 1.0;
-                var best_denom = 1.0;
-                var best_err = Math.Abs(value - best_numer / best_denom);
-                for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
-                {
-                    var numer = Math.Round(value * denom);
-                    var err = Math.Abs(value - numer / denom);
-                    if (err < best_err)
-                    {
-                        best_numer = numer;
-                        best_denom = denom;
-                        best_err = err;
-                        //Console.WriteLine(best_numer + " / " + best_denom + " = " + (best_numer / best_denom) + " error " + best_err);
-                    }
-                }
-                return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;*/
-            })).SetValue("AngleMeasure", new Func<double, string>((double value) =>
-            {
-                var degree = Math.Floor(value);
-                var minute = Math.Floor((value - degree) * 60);
-                var second = (value - degree - minute / 60) * 3600;
-                return $"{degree}° {minute}′ {second}″";
-            })).SetValue("IntSurd", new Func<double, string>((double value) =>
-            {
-                if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
-                if (value.IsInteger()) return value.ToString() + OnPlatform("√1̅", "√1̅", "√̅1");
-                var Negative = value < 0;
-                // A = AVariable, B = Builder, C = Char
-                if (value > 5000 || value < -5000)
-                    throw new ArgumentOutOfRangeException(nameof(value), value, 
-                        nameof(value) + "'s absolute value is too large (>5000).");
-                double A = Math.Round(value * value), squa = A;
-                do { A--; } while (squa / (A * A) - Math.Truncate(squa / (A * A)) != 0);
-                if (A == -1 || !HasMinimalDifference(A * Math.Sqrt(squa / (A * A)), value, 2))
-                    throw new ArithmeticException("Cannot find appropriate surd.");
-                //if (A < 0) A = 1;
-                var B = new System.Text.StringBuilder();
-                if (Negative) B.Append("-");
-                B.Append(A).Append("√");
-                foreach(var C in (squa / (A * A)).ToString())
-                {
-#if WINDOWS_UWP
-                    B.Append("̅");
-                    B.Append(C);
-#else
-                    B.Append(C);
-                    B.Append("̅");
-#endif
-                }
-                return B.ToString();
-            })).SetValue("FracSurd", new Func<double, string>((double value) =>
-            {
-                if (double.IsInfinity(value) || double.IsNaN(value)) throw new ArithmeticException(nameof(value) + " is not finite.");
-                bool Negative = value < 0;
-                if (Negative) value = -value;
-                for (int Surd = 1; Surd <= 1000; Surd++)
-                    for (int Denom = 1; Denom <= 500; Denom++)
-                    {
-                        var Numer = value / Math.Sqrt(Surd) * Denom;
-                        if (Numer.IsInteger(2))
-                        {
-                            int GCF(int a, int b)
-                            {
-                                while (b != 0)
-                                {
-                                    int temp = b;
-                                    b = a % b;
-                                    a = temp;
-                                }
-                                return a;
-                            }
-                            /*
-                            int LCM(int a, int b)
-                            {
-                                return (a / GCF(a, b)) * b;
-                            }
-                            */
-                            (int Squared, int Remaining) SimplifySurd(int a)
-                            {
-                                int Number = a, b = 0, Squared = 1;
-                                for (b = 2; a > 1; b++)
-                                    if (a % b == 0)
-                                    {
-                                        int x = 0;
-                                        while (a % b == 0)
-                                        {
-                                            a /= b;
-                                            x++;
-                                        }
-                                        //Console.WriteLine("{0} is a prime factor {1} times!", b, x);
-                                        for (int c = 2; c <= x; c += 2) Squared *= b;
-                                    }
-                                return (Squared, Number / (Squared * Squared));
-                            }
-                            
-                            var Simplified = SimplifySurd(Surd);
-                            Numer *= Simplified.Squared;
-                            Surd = Simplified.Remaining;
-                            var Common = GCF((int)Numer, Denom);
-                            Numer /= Common;
-                            Denom /= Common;
-
-                            var Builder = new System.Text.StringBuilder();
-                            if (Negative) Builder.Append("-");
-                            Builder.Append(Numer).Append(" / ").Append(Denom).Append(" √");
-                            foreach (var C in (Surd).ToString())
-                            {
-#if WINDOWS_UWP
-                                Builder.Append("̅");
-                                Builder.Append(C);
-#else
-                                Builder.Append(C);
-                                Builder.Append("̅");
-#endif
-                            }
-                            return Builder.ToString();
-                        }
-                    }
-                throw new ArithmeticException("Cannot find appropriate fraction and surd.");
-            }))
-#endif
             .Execute(Expression);
                 JSEvaluteAns = JSEngine.GetCompletionValue().ToString();
                 SetVars(JSEngine);
-            return JSEngine.Invoke("Display", JSEngine.GetCompletionValue(), JSEngine.GetValue("Modifier")).ToString();
+            return JSEngine.GetCompletionValue().ToString();
             }
             catch (System.Reflection.TargetInvocationException ex) when (Alert != null)
             { return 'ⓧ' + ex.InnerException.Message.Split('\r', '\n', '\f')[0]; }
             catch (Exception ex) when (Alert != null) { return 'ⓧ' + ex.Message.Split('\r', '\n', '\f')[0]; } //⮾ 
         }
+        public static string Display(double value, Modifier mod)
+        {
+            switch (mod)
+            {
+                case Modifier.Normal:
+                    return value.ToString();
+                case Modifier.Percentage:
+                    return (value * 100).ToString("F99").TrimEnd('0').TrimEnd('.') + "%";
+                case Modifier.Mixed_Fraction:
+                    for (var denom = 1.0; denom <= 1e6; denom++)
+                    {
+                        var numer = Math.Round(value * denom);
+                        if (Math.Abs(value - numer / denom) == 0)
+                            return $"{Math.Round(numer / denom)} {numer % denom} / {denom}";
+                    }
+                    throw new ArithmeticException("Cannot find appropriate fraction.");
+                    /*
+                    var best_numer = 1.0;
+                    var best_denom = 1.0;
+                    var best_err = Math.Abs(value - best_numer / best_denom);
+                    for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
+                    {
+                        var numer = Math.Round(value * denom);
+                        var err = Math.Abs(value - numer / denom);
+                        if (err < best_err)
+                        {
+                            best_numer = numer;
+                            best_denom = denom;
+                            best_err = err;
+                            //Console.WriteLine(best_numer + " / " + best_denom +
+                            //    " = " + (best_numer / best_denom) + " error " + best_err);
+                        }
+                    }
+                    return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;*/
+                case Modifier.Fraction:
+                    for (var denom = 1.0; denom <= 1e6; denom++)
+                    {
+                        var numer = Math.Round(value * denom);
+                        if (HasMinimalDifference(value, numer / denom))
+                            return $"{numer} / {denom}";
+                    }
+                    throw new ArithmeticException("Cannot find appropriate fraction.");
+                    /*
+                    var best_numer = 1.0;
+                    var best_denom = 1.0;
+                    var best_err = Math.Abs(value - best_numer / best_denom);
+                    for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
+                    {
+                        var numer = Math.Round(value * denom);
+                        var err = Math.Abs(value - numer / denom);
+                        if (err < best_err)
+                        {
+                            best_numer = numer;
+                            best_denom = denom;
+                            best_err = err;
+                            //Console.WriteLine(best_numer + " / " + best_denom +
+                            //    " = " + (best_numer / best_denom) + " error " + best_err);
+                        }
+                    }
+                    return best_numer + " / " + best_denom;*/
+                case Modifier.AngleMeasure:
+                    var degree = Math.Floor(value);
+                    var minute = Math.Floor((value - degree) * 60);
+                    var second = ((value - degree - minute / 60) * 3600).ToString("F99").TrimEnd('0').TrimEnd('.');
+                    return $"{degree}° {minute}′ {second}″";
+                case Modifier.IntSurd:
+                    if (double.IsInfinity(value) || double.IsNaN(value))
+                        throw new ArithmeticException(nameof(value) + " is not finite.");
+                    if (value.IsInteger()) return value.ToString() + OnPlatform("√1̅", "√1̅", "√̅1");
+                    var Negative = value < 0;
+                    // A = AVariable, B = Builder, C = Char
+                    if (value > 5000 || value < -5000)
+                        throw new ArgumentOutOfRangeException(nameof(value), value,
+                            nameof(value) + "'s absolute value is too large (>5000).");
+                    double A = Math.Round(value * value), squa = A;
+                    do { A--; } while (squa / (A * A) - Math.Truncate(squa / (A * A)) != 0);
+                    if (A == -1 || !HasMinimalDifference(A * Math.Sqrt(squa / (A * A)), value))
+                        throw new ArithmeticException("Cannot find appropriate surd.");
+                    //if (A < 0) A = 1;
+                    var B = new System.Text.StringBuilder();
+                    if (Negative) B.Append("-");
+                    B.Append(A).Append("√");
+                    foreach (var C in (squa / (A * A)).ToString())
+                    {
+#if WINDOWS_UWP
+                        B.Append("̅");
+                        B.Append(C);
+#else
+                    B.Append(C);
+                    B.Append("̅");
+#endif
+                    }
+                    return B.ToString();
+                case Modifier.FracSurd:
+                    if (double.IsInfinity(value) || double.IsNaN(value))
+                        throw new ArithmeticException(nameof(value) + " is not finite.");
+                    bool Minus = value < 0;
+                    if (Minus) value = -value;
+                    for (int Surd = 1; Surd <= 1000; Surd++)
+                        for (int Denom = 1; Denom <= 500; Denom++)
+                        {
+                            var Numer = value / Math.Sqrt(Surd) * Denom;
+                            if (Numer.IsInteger(2))
+                            {
+                                int GCF(int a, int b)
+                                {
+                                    while (b != 0)
+                                    {
+                                        int temp = b;
+                                        b = a % b;
+                                        a = temp;
+                                    }
+                                    return a;
+                                }
+                                /*
+                                int LCM(int a, int b)
+                                {
+                                    return (a / GCF(a, b)) * b;
+                                }
+                                */
+                                (int Squared, int Remaining) SimplifySurd(int a)
+                                {
+                                    int Number = a, b = 0, Squared = 1;
+                                    for (b = 2; a > 1; b++)
+                                        if (a % b == 0)
+                                        {
+                                            int x = 0;
+                                            while (a % b == 0)
+                                            {
+                                                a /= b;
+                                                x++;
+                                            }
+                                            //Console.WriteLine("{0} is a prime factor {1} times!", b, x);
+                                            for (int c = 2; c <= x; c += 2) Squared *= b;
+                                        }
+                                    return (Squared, Number / (Squared * Squared));
+                                }
 
+                                var Simplified = SimplifySurd(Surd);
+                                Numer *= Simplified.Squared;
+                                Surd = Simplified.Remaining;
+                                var Common = GCF((int)Math.Round(Numer), Denom);
+                                Numer /= Common;
+                                Denom /= Common;
+
+                                var Builder = new System.Text.StringBuilder();
+                                if (Minus) Builder.Append("-");
+                                Builder.Append(Numer).Append(" / ").Append(Denom).Append(" √");
+                                foreach (var C in (Surd).ToString())
+                                {
+#if WINDOWS_UWP
+                                    Builder.Append("̅");
+                                    Builder.Append(C);
+#else
+                                Builder.Append(C);
+                                Builder.Append("̅");
+#endif
+                                }
+                                return Builder.ToString();
+                            }
+                        }
+                    throw new ArithmeticException("Cannot find appropriate fraction and surd.");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mod), mod, $"{mod} is not a valid {nameof(Modifier)}");
+            }
+        }
 #if false
         static void Hi()
         {
@@ -1106,7 +1092,7 @@ const Log10e = Math.LOG10E;
             return result;
         }
         public static float Int32BitsToFloat(int value) => BitConverter.ToSingle(BitConverter.GetBytes(value), 0);
-        public static bool HasMinimalDifference(float value1, float value2, int units)
+        public static bool HasMinimalDifference(float value1, float value2, int units = 2)
         {
             int iValue1 = FloatToInt32Bits(value1);
             int iValue2 = FloatToInt32Bits(value2);
@@ -1118,7 +1104,7 @@ const Log10e = Math.LOG10E;
 
             return diff <= units;
         }
-        public static bool HasMinimalDifference(double value1, double value2, int units)
+        public static bool HasMinimalDifference(double value1, double value2, int units = 2)
         {
             long lValue1 = BitConverter.DoubleToInt64Bits(value1);
             long lValue2 = BitConverter.DoubleToInt64Bits(value2);
