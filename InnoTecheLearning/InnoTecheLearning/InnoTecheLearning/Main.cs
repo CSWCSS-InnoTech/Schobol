@@ -75,7 +75,8 @@ namespace InnoTecheLearning
             Logic_毲Factor䫎,
             Health,
             Tunes,
-            Excel
+            Excel,
+            Facial
         }
         /*
         public View Content
@@ -212,6 +213,11 @@ namespace InnoTecheLearning
                                 ImageSource(ImageFile.MathSolver),
                                 () => Push(MathSolver, PageId.Excel),
                                 BoldLabel("EXCEL")
+                            ),
+                            MainScreenItem(
+                                ImageSource(ImageFile.Facial),
+                                () => Push(Facial, PageId.Facial),
+                                BoldLabel("FACIAL")
                             )
                         ),
 
@@ -1451,5 +1457,8 @@ namespace InnoTecheLearning
                 };
             }
         }
+
+        public StackLayout Facial
+        { get { return new StackLayout { }; } }
     }
 }

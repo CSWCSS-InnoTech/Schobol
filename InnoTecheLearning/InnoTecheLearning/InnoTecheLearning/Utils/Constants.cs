@@ -108,6 +108,8 @@ namespace InnoTecheLearning
         #endregion
 
 #region Fonts
+        public const int ColourIcon = 0x090170;
+
         public const string FontDictionary =
 #if __IOS__
             "KAIU.TTF"
@@ -117,7 +119,7 @@ namespace InnoTecheLearning
             "Assets/Fonts/KAIU.TTF#標楷體"
 #endif
             ;
-        #endregion
+#endregion
 
 #region Character Substitutes
         public const string SubLeftBracket = "毲";
