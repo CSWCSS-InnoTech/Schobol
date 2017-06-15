@@ -17,7 +17,7 @@ The eLearn Utilities App is an app empowering students to learn more efficiently
 #### TUNES
 - Tune your musical instruments.
 
-#### TRAIN
+#### EXCEL
 - Train your mathematical skills through interactive games.
 
 ### Lead Developer: Hadrian Tang Wai To
