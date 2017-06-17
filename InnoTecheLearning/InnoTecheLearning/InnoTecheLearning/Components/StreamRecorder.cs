@@ -10,12 +10,19 @@ namespace InnoTecheLearning
 #if __ANDROID__
         public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener
         {
-            public Camera() : base(Forms.Context) => SurfaceTextureListener = this;
+            public Camera() : base(Forms.Context)
+            {
+                Log(SurfaceTextureListener = this, "new Camera()");
+                Unit.InvokeAsync(() => { while (!IsAvailable) ; OnSurfaceTextureAvailable(SurfaceTexture, Width, Height); });
+            }
 #pragma warning disable 618 //Reason: Need Android 4 support
             Android.Hardware.Camera cam;
             public void OnSurfaceTextureAvailable(Android.Graphics.SurfaceTexture surface, int w, int h)
             {
+                Log("OnSurfaceTextureAvailable");
                 cam = Android.Hardware.Camera.Open();
+                Log("cam Opened");
+
 #pragma warning restore 618
                 switch (
                     ((Android.Views.IWindowManager)Context.GetSystemService(Android.Content.Context.WindowService))
@@ -36,17 +43,20 @@ namespace InnoTecheLearning
                     default:
                         break;
                 }
+                Log("After setting rotation");
                 LayoutParameters = new Android.Widget.FrameLayout.LayoutParams(w, h);
+                Log("LayoutParameters set");
 
                 try
                 {
                     cam.SetPreviewTexture(surface);
+                    Log("PreviewTexture set");
                     cam.StartPreview();
-
+                    Log("Preview started");
                 }
                 catch (Java.IO.IOException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex);
                 }
             }
             public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
@@ -96,16 +106,17 @@ namespace InnoTecheLearning
             }
         }
 #elif WINDOWS_UWP
-        public class Camera : Windows.UI.Xaml.Controls.MediaPlayerElement, IDisposable
+        public class Camera : Windows.UI.Xaml.Controls.UserControl, IDisposable
         {
+            Windows.UI.Xaml.Controls.CaptureElement PreviewControl = new Windows.UI.Xaml.Controls.CaptureElement();
             Windows.Media.Capture.MediaCapture _mediaCapture;
             bool _isPreviewing;
             Windows.System.Display.DisplayRequest _displayRequest = new Windows.System.Display.DisplayRequest();
+            public Camera() => StartPreviewAsync().Ignore();
             private async System.Threading.Tasks.ValueTask<Unit> StartPreviewAsync()
             {
                 try
                 {
-
                     _mediaCapture = new Windows.Media.Capture.MediaCapture();
                     await _mediaCapture.InitializeAsync();
 
@@ -123,7 +134,7 @@ namespace InnoTecheLearning
 
                 try
                 {
-                    Source = _mediaCapture;
+                    PreviewControl.Source = _mediaCapture;
                     await _mediaCapture.StartPreviewAsync();
                     _isPreviewing = true;
                 }
@@ -165,10 +176,7 @@ namespace InnoTecheLearning
                     await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                     {
                         PreviewControl.Source = null;
-                        if (_displayRequest != null)
-                        {
-                            _displayRequest.RequestRelease();
-                        }
+                        _displayRequest?.RequestRelease();
 
                         _mediaCapture.Dispose();
                         _mediaCapture = null;

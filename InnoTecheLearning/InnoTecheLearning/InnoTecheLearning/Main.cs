@@ -16,6 +16,13 @@ using static InnoTecheLearning.Utils.Create;
 using static InnoTecheLearning.Utils.OnlineDict.DictionaryResponse;
 using static InnoTecheLearning.Utils.StreamPlayer;
 using Xamarin.Forms;
+#if __IOS__
+using Xamarin.Forms.Platform.iOS;
+#elif __ANDROID__
+using Xamarin.Forms.Platform.Android;
+#elif WINDOWS_UWP
+using Xamarin.Forms.Platform.UWP;
+#endif
 
 namespace InnoTecheLearning
 {
@@ -1459,6 +1466,6 @@ namespace InnoTecheLearning
         }
 
         public StackLayout Facial
-        { get { return new StackLayout { }; } }
+        { get { var s = new StackLayout(); s.Children.Add(new Camera()); return s; } }
     }
 }

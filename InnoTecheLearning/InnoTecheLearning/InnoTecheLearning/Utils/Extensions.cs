@@ -451,6 +451,7 @@ namespace InnoTecheLearning
 
         public static bool IsCreated(this FileInfo info) => File.Exists(info.FullName);
         public static bool IsCreated(this DirectoryInfo info) => Directory.Exists(info.FullName);
+        
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()
