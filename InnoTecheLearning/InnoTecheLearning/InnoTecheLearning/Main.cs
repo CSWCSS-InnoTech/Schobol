@@ -220,12 +220,15 @@ namespace InnoTecheLearning
                                 ImageSource(ImageFile.MathSolver),
                                 () => Push(MathSolver, PageId.Excel),
                                 BoldLabel("EXCEL")
-                            ),
+                            )
+#if false
+                            ,
                             MainScreenItem(
                                 ImageSource(ImageFile.Facial),
                                 () => Push(Facial, PageId.Facial),
                                 BoldLabel("FACIAL")
                             )
+#endif
                         ),
 
                         Button("Changelog", () => Push(
@@ -430,7 +433,7 @@ namespace InnoTecheLearning
             }
         }
         Action Calculator_HistoryIndex_Update;
-        #region Append
+#region Append
         void Calculator_StartModify()
         {
             if (Calculator_HistoryIndex != Calculator_History.Count - 1)
@@ -465,19 +468,19 @@ namespace InnoTecheLearning
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
             int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Right, Top, Bottom);
-        #endregion
+#endregion
         public StackLayout Calculator
         {
             get
             {
                 var MoveLeft = Button("◀", () => Calculator_Cursor--)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 var MoveRight = Button("▶", () => Calculator_Cursor++)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 var MoveUp = Button("▲", () => Calculator_HistoryIndex--)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 var MoveDown = Button("▼", () => Calculator_HistoryIndex++)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 Entry In = new Entry
                 {
                     TextColor = Color.Black,
@@ -750,7 +753,9 @@ namespace InnoTecheLearning
                     {
                         Children =
                         {
-                            In, Row(false, MoveLeft, MoveRight, MoveUp, MoveDown),
+                            In,
+                            Row(false, MoveLeft, MoveRight, MoveUp, MoveDown)
+                                .With((ref StackLayout x) => x.HorizontalOptions = LayoutOptions.FillAndExpand),
                             new StackLayout(), Norm, new StackLayout(), Out
                         }
                     };

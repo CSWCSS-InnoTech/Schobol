@@ -393,9 +393,9 @@ namespace InnoTecheLearning
 
         public static bool IsInteger(this float d) => d == Math.Truncate(d);
         public static bool IsInteger(this double d) => d == Math.Truncate(d);
-        public static bool IsInteger(this float d, int maxDifference) =>
+        public static bool NearInteger(this float d, int maxDifference = 11) =>
             HasMinimalDifference(d, Math.Round(d), maxDifference);
-        public static bool IsInteger(this double d, int maxDifference) =>
+        public static bool NearInteger(this double d, int maxDifference = 22) =>
             HasMinimalDifference(d, Math.Round(d), maxDifference);
         public static bool IsInteger(this decimal d) => d == Math.Truncate(d);
 

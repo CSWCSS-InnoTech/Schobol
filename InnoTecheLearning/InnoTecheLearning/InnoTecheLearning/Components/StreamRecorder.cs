@@ -8,22 +8,22 @@ namespace InnoTecheLearning
     partial class Utils
     {
 #if __ANDROID__
-        public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener
+        public class Camera : Android.Widget.ImageView
         {
+#pragma warning disable 618 //Reason: Need Android 4 support
+            class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
+            {
+                Action<byte[], Android.Hardware.Camera> callback;
+                public Callback(Action<byte[],Android.Hardware.Camera> CallBack) => callback = CallBack;
+                public void OnPreviewFrame(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
+            }
+            Android.Hardware.Camera cam;
             public Camera() : base(Forms.Context)
             {
-                Log(SurfaceTextureListener = this, "new Camera()");
-                Unit.InvokeAsync(() => { while (!IsAvailable) ; OnSurfaceTextureAvailable(SurfaceTexture, Width, Height); });
-            }
-#pragma warning disable 618 //Reason: Need Android 4 support
-            Android.Hardware.Camera cam;
-            public void OnSurfaceTextureAvailable(Android.Graphics.SurfaceTexture surface, int w, int h)
-            {
-                Log("OnSurfaceTextureAvailable");
                 cam = Android.Hardware.Camera.Open();
+#pragma warning restore 618
                 Log("cam Opened");
 
-#pragma warning restore 618
                 switch (
                     ((Android.Views.IWindowManager)Context.GetSystemService(Android.Content.Context.WindowService))
                         .DefaultDisplay.Rotation)
@@ -43,14 +43,18 @@ namespace InnoTecheLearning
                     default:
                         break;
                 }
-                Log("After setting rotation");
-                LayoutParameters = new Android.Widget.FrameLayout.LayoutParams(w, h);
-                Log("LayoutParameters set");
-
                 try
                 {
-                    cam.SetPreviewTexture(surface);
-                    Log("PreviewTexture set");
+                    cam.SetPreviewCallback(new Callback(
+                        (data, camera) => 
+                        {
+                            var Prev = Drawable;
+                            using (var s = new System.IO.MemoryStream(data))
+                                SetImageDrawable(new Android.Graphics.Drawables.BitmapDrawable(s));
+                            Prev?.Dispose();
+                        }
+                        ));
+                    Log("Preview set");
                     cam.StartPreview();
                     Log("Preview started");
                 }
@@ -59,12 +63,11 @@ namespace InnoTecheLearning
                     Log(ex);
                 }
             }
-            public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
+            protected override void Dispose(bool disposing)
             {
+                base.Dispose(disposing);
                 cam?.StopPreview();
                 cam?.Release();
-
-                return true;
             }
 
             public void OnSurfaceTextureSizeChanged(Android.Graphics.SurfaceTexture surface, int width, int height) { }
@@ -112,11 +115,12 @@ namespace InnoTecheLearning
             Windows.Media.Capture.MediaCapture _mediaCapture;
             bool _isPreviewing;
             Windows.System.Display.DisplayRequest _displayRequest = new Windows.System.Display.DisplayRequest();
-            public Camera() => StartPreviewAsync().Ignore();
+            public Camera() => StartPreviewAsync().ConfigureAwait(false).GetAwaiter().GetResult().Ignore();
             private async System.Threading.Tasks.ValueTask<Unit> StartPreviewAsync()
             {
                 try
                 {
+                    Content = PreviewControl;
                     _mediaCapture = new Windows.Media.Capture.MediaCapture();
                     await _mediaCapture.InitializeAsync();
 
@@ -163,7 +167,7 @@ namespace InnoTecheLearning
                     });
                 }
             }
-            public void Dispose() => CleanupCameraAsync().Result.ToString();
+            public void Dispose() => CleanupCameraAsync().ConfigureAwait(false).GetAwaiter().GetResult();
             private async System.Threading.Tasks.ValueTask<Unit> CleanupCameraAsync()
             {
                 if (_mediaCapture != null)
