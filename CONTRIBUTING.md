@@ -1,6 +1,6 @@
 Please report any bugs/issues or any feedback that you might have to [Issues](https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/issues/new).
 
-Write the app version, OS version, phone model, a description of the bug, expected result and steps to reproduce.
+Write the app version, OS version, device model, a description of the bug, expected result and steps to reproduce.
 
 This will go a long way in making the app better!
 
