@@ -424,7 +424,10 @@ namespace InnoTecheLearning
                 goto Retry;
             }
         }
-
+        public delegate double MathFunc0();
+        public delegate double MathFunc(double x);
+        public delegate double MathFunc2(double x, double y);
+        //public delegate double MathFuncArgs(params double[] arguments);
         public static string Eval(string CodeToExecute)
         { return new Jint.Engine().Execute(CodeToExecute).GetCompletionValue().ToString(); }
         public static T Eval<T>(string CodeToExecute)
@@ -435,26 +438,131 @@ namespace InnoTecheLearning
         public enum Modifier : byte { Normal, Percentage, Mixed_Fraction, Fraction, AngleMeasure, IntSurd, FracSurd }
         public static Jint.Engine JSEngine = new Jint.Engine();
         public static string JSEvaluate(string Expression, Page Alert = null, AngleMode Mode = AngleMode.Radian,
-            bool TrueFree =  false)
+            bool TrueFree = false)
         {
-            string GetVars(params string[] Vars)
+            void GetVars(Jint.Engine Engine, params string[] Vars)
             {
-                var sb = new System.Text.StringBuilder();
                 for (int i = 0; i <= 25; i++)
-                    sb.Append($"var Var{((char)('A' + i)).ToString()} = \"{Escape(Vars[i])}\";");
+                    Engine.SetValue($"Var{((char)('A' + i)).ToString()}", Vars[i]);
                 for (int i = 0; i <= 25; i++)
-                    sb.Append($"var {((char)('A' + i)).ToString()} = Number(\"{Escape(Vars[i])}\");");
-                return sb.ToString();
+                    Engine.SetValue(((char)('A' + i)).ToString(), TryParseDouble(Vars[i], double.NaN));
             }
             void SetVars(Jint.Engine Engine)
             {
                 for (int i = 0; i <= 25; i++)
                     JSVariables[i] = Engine.GetValue(((char)('A' + i)).ToString()).ToString();
-            }
+            }/*
             string Escape(string Value) => new System.Text.StringBuilder(Value).
                 Replace("\\", @"\\").Replace("\b", @"\b").Replace("\f", @"\f").
                 Replace("\n", @"\n").Replace("\r", @"\r").Replace("\t", @"\t").Replace("\v", @"\v").
-                Replace("\0", @"\0").Replace("'", @"\'").Replace("\"", @"\""").ToString();
+                Replace("\0", @"\0").Replace("'", @"\'").Replace("\"", @"\""").ToString();*/
+            double AngleConvert(double Num, AngleMode Origin, AngleMode Target)
+            {
+                switch (Origin)
+                {
+                    case AngleMode.Degree:
+                        switch (Target)
+                        {
+                            case AngleMode.Degree:
+                                return Num;
+                            case AngleMode.Radian:
+                                return Num * Math.PI / 180;
+                            case AngleMode.Gradian:
+                                return Num * 10 / 9;
+                            case AngleMode.Turn:
+                                return Num / 360;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(Target), Target, "Invalid target of angle conversion.");
+                        }
+                    case AngleMode.Radian:
+                        switch (Target)
+                        {
+                            case AngleMode.Degree:
+                                return Num / Math.PI * 180;
+                            case AngleMode.Radian:
+                                return Num;
+                            case AngleMode.Gradian:
+                                return Num * 200 / Math.PI;
+                            case AngleMode.Turn:
+                                return Num / Math.PI / 2;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(Target), Target, "Invalid target of angle conversion.");
+                        }
+                    case AngleMode.Gradian:
+                        switch (Target)
+                        {
+                            case AngleMode.Degree:
+                                return Num / 10 * 9;
+                            case AngleMode.Radian:
+                                return Num / 200 * Math.PI;
+                            case AngleMode.Gradian:
+                                return Num;
+                            case AngleMode.Turn:
+                                return Num / 400;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(Target), Target, "Invalid target of angle conversion.");
+                        }
+                    case AngleMode.Turn:
+                        switch (Target)
+                        {
+                            case AngleMode.Degree:
+                                return Num * 360;
+                            case AngleMode.Radian:
+                                return Num * 2 * Math.PI;
+                            case AngleMode.Gradian:
+                                return Num * 400;
+                            case AngleMode.Turn:
+                                return Num;
+                            default:
+                                throw new ArgumentOutOfRangeException(nameof(Target), Target, "Invalid target of angle conversion.");
+                        }
+                    default://What?
+                        throw new ArgumentOutOfRangeException(nameof(Origin), Origin, "Invalid origin of angle conversion.");
+                }
+            }
+            double Factorial(double x)
+            {
+                // Use type annotation to only accept numbers coercible to integers.
+                // double is used for the return type to allow very large numbers to be returned.
+                if (x < 0)
+                {
+                    return double.NaN; //throw(""Cannot take the factorial of a negative number."");
+                }
+                else
+                {  // Call the recursive function.
+                    return Factorial_(x, 0);
+                }
+                double Factorial_(double aNumber, byte recursNumber)
+                {
+                    // recursNumber keeps track of the number of iterations so far.
+                    if (aNumber < 3)
+                    {  // If the number is 0, its factorial is 1.
+                        if (aNumber == 0) return 1.0;
+                        return aNumber;
+                    }
+                    else
+                    {
+                        if (recursNumber > 170)
+                        {
+                            return double.PositiveInfinity;
+                        }
+                        else
+                        {  // Otherwise, recurse again.
+                            return (aNumber * Factorial_(aNumber - 1, (byte)(recursNumber + 1)));
+                        }
+                    }
+                }
+            }
+            double GCD(double a, double b)
+            {
+                while (b != 0)
+                {
+                    var temp = b;
+                    b = a % b;
+                    a = temp;
+                }
+                return a;
+            }
             // Ask user to enter expression.
             try
             {
@@ -462,214 +570,96 @@ namespace InnoTecheLearning
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
                 JSEngine = new Jint.Engine();
                 if (TrueFree) return JSEngine.Execute(Expression).GetCompletionValue().ToString();
-                JSEngine.Execute(
-                    $@"var Prev = ""{Escape(JSEvaluteAns)}"";
-var AngleUnit = {(byte)Mode};" + GetVars(JSVariables)
-                + @"
-var Ans = Number(Prev);
-const global = Function('return this')();
-function AngleConvert(Num, Origin, Target){
-    switch(Origin) {
-        case 0://Degrees
-            switch(Target) {
-                case 0:
-                    return Num;
-                    break;
-                case 1:
-                    return Num * Math.PI / 180;
-                    break;
-                case 2:
-                    return Num * 10 / 9;
-                    break;
-                case 3:
-                    return Num / 360;
-                    break;
-                default:
-                    throw(""Invalid target of angle conversion."");
-            } 
-            break;
-        case 1://Radians
-            switch(Target) {
-                case 0:
-                    return Num / Math.PI * 180;
-                    break;
-                case 1:
-                    return Num;
-                    break;
-                case 2:
-                    return Num * 200 / Math.PI;
-                    break;
-                case 3:
-                    return Num / Math.PI / 2;
-                    break;
-                default:
-                    throw(""Invalid target of angle conversion."");
-            } 
-            break;
-        case 2://Gradians
-            switch(Target) {
-                case 0:
-                    return Num / 10 * 9;
-                    break;
-                case 1:
-                    return Num / 200 * Math.PI;
-                    break;
-                case 2:
-                    return Num;
-                    break;
-                case 3:
-                    return Num / 400;
-                    break;
-                default:
-                    throw(""Invalid target of angle conversion."");
-            } 
-            break;
-        case 3://Turns
-            switch(Target) {
-                case 0:
-                    return Num * 360;
-                    break;
-                case 1:
-                    return Num * 2 * Math.PI;
-                    break;
-                case 2:
-                    return Num * 400;
-                    break;
-                case 3:
-                    return Num;
-                    break;
-                default:
-                    throw(""Invalid target of angle conversion."");
-            } 
-            break;
-        default://What?
-            throw(""Invalid origin of angle conversion."");
-    } 
-}
-function Abs (n) { return Math.abs(n); }
-function Acos(n) { return AngleConvert(Math.acos(n), 1, AngleUnit); }
-function Acosh (n) { return Math.log(n + Math.sqrt(n * n - 1)); }
-function Acot (n) { return AngleConvert(Math.PI / 2 - Math.atan(n), 1, AngleUnit); }
-function Acoth (n) { return Math.log((n + 1) / (n - 1)) / 2; }
-function Acsc (n) { return AngleConvert(Math.asin(1 / n), 1, AngleUnit); }
-function Acsch (n) { return Math.log((Math.sqrt(1 + n * n) + 1) / n); }
-function Asec (n) { return AngleConvert(Math.acos(1 / n), 1, AngleUnit); }
-function Asech (n) { return Math.log((Math.sqrt(1 - n * n) + 1) / n); }
-function Asin (n) { return AngleConvert(Math.asin(n), 1, AngleUnit); }
-function Asinh (n) { return Math.log(n + Math.sqrt(n * n + 1)); }
-function Atan (n) { return AngleConvert(Math.atan(n), 1, AngleUnit); }
-function Atan2 (y, x){ return AngleConvert(Math.atan2(y, x), 1, AngleUnit); }
-function Atanh (n) { return Math.log((1 + n) / (1 - n)) / 2; }
-function Cbrt (x) { return x ? x / Math.abs(x) * Math.pow(Math.abs(x), 1 / 3) : x; }
-function Ceil(x) { return Math.ceil(x); }
-function Cos(x) { return Math.cos(AngleConvert(x, AngleUnit, 1)); }
-function Cosh(x) { return (1 + Math.exp(-2 * x)) / (2 * Math.exp(-x)); }
-function Cot(n) { return 1 / AngleConvert(Math.tan(n), 1, AngleUnit); }
-function Coth(x) { return (1 + Math.exp(-2 * x)) / (1 - Math.exp(-2 * x)); }
-function Csc(n) { return 1 / AngleConvert(Math.sin(n), 1, AngleUnit); }
-function Csch(x) { return (2 * Math.exp(-x)) / (1 - Math.exp(-2 * x)); }
-function Clz32(x) { return 31 - Math.floor(Math.log(x) * Math.LOG2E); }
-function Exp(x) { return Math.exp(x); }
-function Expm1(x) { return Math.exp(x) - 1; }
-function Floor(x) { return Math.floor(x); }
-function Hypot() {
-  var y = 0;
-  var length = arguments.length;
+                GetVars(JSEngine, JSVariables);
+                JSEngine.SetValue("Prev", JSEvaluteAns)
+                .SetValue("Ans", TryParseDouble(JSEvaluteAns, double.NaN))
+                .SetValue("global", JSEngine.Global)
+.Execute(@"
+function Hypot()
+{                    
+    var y = 0.0;
+    var length = arguments.length;
 
-  for (var i = 0; i < length; i++) {
-    if (arguments[i] === Infinity || arguments[i] === -Infinity) {
-      return Infinity;
-    }
-    y += arguments[i] * arguments[i];
-  }
-  return Math.sqrt(y);
-};
-function Imul(a, b) { return (a*(b%65536)+a*Math.floor(b/65536))%2147483648; }
-function Lb(x) { return Math.log(x) / Math.LN2; }
-function Ln(x) { return Math.log(x); }
-function Log(x, base) { return Math.log(x) / (base ? Math.log(base) : Math.LN10); }
-function Max() {return Math.max.apply(global, arguments);}
-function Min() {return Math.min.apply(global, arguments);}
-function Pow(x, y) { return Math.pow(x, y); }
-function Random() { return Math.random(); }
-function Round(x) { return Math.round(x); }
-function Sec(n) { return 1 / AngleConvert(Math.cos(n), 1, AngleUnit); }
-function Sech(x) { return (2 * Math.exp(-x)) / (1 + Math.exp(-2 * x)); }
-function Sign(n){
-    // Correctly handles all cases where NaN is appropriate
-    n = parseInt(n);
-    
-    // If it is zero, negative zero, or NaN, then it correctly returns itselfs
-    // else it divides itself by the absolute value of itself to acieve its
-    // sign. This division proves to be much faster than an if or teranary
-    // statement because of the overhead costs of branching, especially in JIT
-    // compilers.
-    return n ? n/Math.abs(n) : n;
-}
-function Sin(x) { return Math.sin(AngleConvert(x, AngleUnit, 1)); }
-function Sinh(x) { return (1 - Math.exp(-2 * x)) / (2 * Math.exp(-x)); }
-function Sqrt(x) { return Math.sqrt(x); }
-function Tan(x) { return Math.tan(AngleConvert(x, AngleUnit, 1)); }
-function Tanh(x) { return (1 - Math.exp(-2 * x)) / (1 + Math.exp(-2 * x)); }
-function Trunc(x) { return Sign(x) == 1 ? Math.floor(x) : Math.ceil(x); }
-
-function Deg(x) { return AngleConvert(x, 0, AngleUnit); }
-function Rad(x) { return AngleConvert(x, 1, AngleUnit); }
-function Grad(x) { return AngleConvert(x, 2, AngleUnit); }
-function Turn(x) { return AngleConvert(x, 3, AngleUnit); }
-function Factorial_(aNumber, recursNumber){
-   // recursNumber keeps track of the number of iterations so far.
-   if (aNumber < 3) {  // If the number is 0, its factorial is 1.
-      if (aNumber == 0) return 1.;
-      return Number(aNumber);
-   } else {
-      if(recursNumber > 170) {
-         return Infinity;
-      } else {  // Otherwise, recurse again.
-         return (aNumber* Factorial_(aNumber - 1, recursNumber + 1));
-      }
-   }
-}
-
-function Factorial(aNumber){
-   // Use type annotation to only accept numbers coercible to integers.
-   // double is used for the return type to allow very large numbers to be returned.
-   if(aNumber< 0) {
-      return NaN; //throw(""Cannot take the factorial of a negative number."");
-   } else {  // Call the recursive function.
-      return  Factorial_(aNumber, 0);
-   }
-}
-
-function nPr(n, r) { if(r > n) return 0; return Factorial(n) / Factorial(n - r);}
-function nCr(n, r) { if(r > n) return 0; return Factorial(n) / (Factorial(n - r) * Factorial(r)); }
-
-function GCD(a, b)
-{
-    while (b != 0)
+    for (var i = 0; i < length; i++)
     {
-        var temp = b;
-        b = a % b;
-        a = temp;
+        if (arguments[i] === Infinity || arguments[i] === -Infinity)
+                return Infinity;
+        y += arguments[i] * arguments[i];
     }
-    return a;
-}
-function HCF(a, b) { return GCD(a, b); }
-function LCM(a, b) { return (a / GCD(a, b)) * b; }
-
-const π = Math.PI;
-const e = Math.E;
-const Root2 = Math.SQRT2;
-const Root0_5 = Math.SQRT1_2;
-const Ln2 = Math.LN2;
-const Ln10 = Math.LN10;
-const Log2e = Math.LOG2E;
-const Log10e = Math.LOG10E;
+    return Math.sqrt(y);
+};
+function Max() { return Math.max.apply(global, arguments); }
+function Min() { return Math.min.apply(global, arguments); }
 """";")
-            .Execute(Expression);
+                .SetValue("AngleConvert", new Func<double, AngleMode, AngleMode, double>(AngleConvert))
+                .SetValue("Abs", new MathFunc(Math.Abs))
+                .SetValue("Acos", new MathFunc(x => AngleConvert(Math.Acos(x), AngleMode.Radian, Mode)))
+                .SetValue("Acosh", new MathFunc(x => Math.Log(x + Math.Sqrt(x * x - 1))))
+                .SetValue("Acot", new MathFunc(x => AngleConvert(Math.PI / 2 - Math.Atan(x), AngleMode.Radian, Mode)))
+                .SetValue("Acoth", new MathFunc(x => Math.Log((x + 1) / (x - 1)) / 2))
+                .SetValue("Acsc", new MathFunc(x => AngleConvert(Math.Asin(1 / x), AngleMode.Radian, Mode)))
+                .SetValue("Acsch", new MathFunc(x => Math.Log((Math.Sqrt(1 + x * x) + 1) / x)))
+                .SetValue("Asec", new MathFunc(x => AngleConvert(Math.Acos(1 / x), AngleMode.Radian, Mode)))
+                .SetValue("Asech", new MathFunc(x => Math.Log((Math.Sqrt(1 - x * x) + 1) / x)))
+                .SetValue("Asin", new MathFunc(x => AngleConvert(Math.Asin(x), AngleMode.Radian, Mode)))
+                .SetValue("Asinh", new MathFunc(x => Math.Log(x + Math.Sqrt(x * x + 1))))
+                .SetValue("Atan", new MathFunc(x => AngleConvert(Math.Atan(x), AngleMode.Radian, Mode)))
+                .SetValue("Atan2", new MathFunc2((y, x) => AngleConvert(Math.Atan2(y, x), AngleMode.Radian, Mode)))
+                .SetValue("Atanh", new MathFunc(x => Math.Log((1 + x) / (1 - x)) / 2))
+                .SetValue("Cbrt", new MathFunc(x => 
+                    double.IsInfinity(x) || double.IsNaN(x) ? x : x / Math.Abs(x) * Math.Pow(Math.Abs(x), 1 / 3)))
+                .SetValue("Ceil", new MathFunc(Math.Ceiling))
+                .SetValue("Cos", new MathFunc(x => AngleConvert(Math.Cos(x), AngleMode.Radian, Mode)))
+                .SetValue("Cosh", new MathFunc(Math.Cosh))
+                .SetValue("Cot", new MathFunc(x => 1 / Math.Tan(AngleConvert(x, Mode, AngleMode.Radian))))
+                .SetValue("Coth", new MathFunc(x => (1 + Math.Exp(-2 * x)) / (1 - Math.Exp(-2 * x))))
+                .SetValue("Csc", new MathFunc(x => 1 / Math.Sin(AngleConvert(x, Mode, AngleMode.Radian))))
+                .SetValue("Csch", new MathFunc(x => (2 * Math.Exp(-x)) / (1 - Math.Exp(-2 * x))))
+                .SetValue("Clz32", new MathFunc(x => 31 - Math.Floor(Math.Log(x, 2))))
+                .SetValue("Exp", new MathFunc(Math.Exp))
+                .SetValue("Floor", new MathFunc(Math.Floor))
+                .SetValue("Imul", new MathFunc2((x, y) => (x * (y % 65536) + x * Math.Floor(y / 65536)) % 2147483648))
+                .SetValue("Lb", new MathFunc(x => Math.Log(x, 2)))
+                .SetValue("Ln", new MathFunc(Math.Log))
+                .SetValue("Log", new MathFunc2((x, @base) =>
+                    Math.Log(x, double.IsNaN(@base) || double.IsInfinity(@base) ? Math.Log(10) : Math.Log(@base))))
+                //.SetValue("Max_", new MathFuncArgs(System.Linq.Enumerable.Max))
+                //.SetValue("Min_", new MathFuncArgs(System.Linq.Enumerable.Min))
+                .SetValue("Pow", new MathFunc2(Math.Pow))
+                .SetValue("Round", new MathFunc(Math.Round))
+                .SetValue("Random", new MathFunc0(new Random().NextDouble))
+                .SetValue("Sec", new MathFunc(x => 1 / Math.Cos(AngleConvert(x, Mode, AngleMode.Radian))))
+                .SetValue("Sech", new MathFunc(x => (2 * Math.Exp(-x)) / (1 + Math.Exp(-2 * x))))
+                .SetValue("Sign", new MathFunc(x => Math.Sign(x)))
+                .SetValue("Sin", new MathFunc(x => Math.Sin(AngleConvert(x, Mode, AngleMode.Radian))))
+                .SetValue("Sinh", new MathFunc(Math.Sinh))
+                .SetValue("Sqrt", new MathFunc(Math.Sqrt))
+                .SetValue("Tan", new MathFunc(x => Math.Tan(AngleConvert(x, Mode, AngleMode.Radian))))
+                .SetValue("Tanh", new MathFunc(Math.Tanh))
+                .SetValue("Trunc", new MathFunc(Math.Truncate))
+                .SetValue("Deg", new MathFunc(x => AngleConvert(x, AngleMode.Degree, Mode)))
+                .SetValue("Rad", new MathFunc(x => AngleConvert(x, AngleMode.Radian, Mode)))
+                .SetValue("Grad", new MathFunc(x => AngleConvert(x, AngleMode.Gradian, Mode)))
+                .SetValue("Turn", new MathFunc(x => AngleConvert(x, AngleMode.Turn, Mode)))
+                .SetValue("Factorial", new MathFunc(Factorial))
+                .SetValue("nPr", new MathFunc2((n, r) => r > n ? 0 : Factorial(n) / Factorial(n - r)))
+                .SetValue("nCr", new MathFunc2((n, r) => r > n ? 0 : Factorial(n) / (Factorial(n - r) * Factorial(r))))
+                .SetValue("GCD", new MathFunc2(GCD))
+                .SetValue("HCF", new MathFunc2(GCD))
+                .SetValue("LCM", new MathFunc2((x, y) => (x / GCD(x, y)) * y))
+
+                .SetValue("π", Math.PI)
+                .SetValue("e", Math.E)
+                .SetValue("Root2", Math.Sqrt(2))
+                .SetValue("Root0_5", Math.Sqrt(0.5))
+                .SetValue("Ln2", Math.Log(2))
+                .SetValue("Ln10", Math.Log(10))
+                .SetValue("Log2e", Math.Log(Math.E, 2))
+                .SetValue("Log10e", Math.Log10(Math.E))
+                .Execute(Expression);
                 JSEvaluteAns = JSEngine.GetCompletionValue().ToString();
                 SetVars(JSEngine);
-            return JSEngine.GetCompletionValue().ToString();
+                return JSEngine.GetCompletionValue().ToString();
             }
             catch (System.Reflection.TargetInvocationException ex) when (Alert != null)
             { return 'ⓧ' + ex.InnerException.Message.Split('\r', '\n', '\f')[0]; }
@@ -743,7 +733,7 @@ const Log10e = Math.LOG10E;
                 case Modifier.IntSurd:
                     if (double.IsInfinity(value) || double.IsNaN(value))
                         throw new ArithmeticException(nameof(value) + " is not finite.");
-                    if (value.IsInteger()) return value.ToString() + OnPlatform("√1̅", "√1̅", "√̅1");
+                    if (value.NearInteger()) return value.ToString() + OnPlatform("√1̅", "√1̅", "√̅1");
                     var Negative = value < 0;
                     // A = AVariable, B = Builder, C = Char
                     if (value > 5000 || value < -5000)
@@ -777,8 +767,9 @@ const Log10e = Math.LOG10E;
                         for (int Denom = 1; Denom <= 500; Denom++)
                         {
                             var Numer = value / Math.Sqrt(Surd) * Denom;
-                            if (Numer.IsInteger(2))
+                            if (Numer.NearInteger())
                             {
+                                Numer = Math.Round(Numer);
                                 int GCF(int a, int b)
                                 {
                                     while (b != 0)
@@ -1092,7 +1083,7 @@ const Log10e = Math.LOG10E;
             return result;
         }
         public static float Int32BitsToFloat(int value) => BitConverter.ToSingle(BitConverter.GetBytes(value), 0);
-        public static bool HasMinimalDifference(float value1, float value2, int units = 2)
+        public static bool HasMinimalDifference(float value1, float value2, int units = 11)
         {
             int iValue1 = FloatToInt32Bits(value1);
             int iValue2 = FloatToInt32Bits(value2);
@@ -1104,7 +1095,7 @@ const Log10e = Math.LOG10E;
 
             return diff <= units;
         }
-        public static bool HasMinimalDifference(double value1, double value2, int units = 2)
+        public static bool HasMinimalDifference(double value1, double value2, int units = 22)
         {
             long lValue1 = BitConverter.DoubleToInt64Bits(value1);
             long lValue2 = BitConverter.DoubleToInt64Bits(value2);

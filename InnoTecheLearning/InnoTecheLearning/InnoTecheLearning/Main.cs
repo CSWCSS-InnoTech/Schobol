@@ -16,6 +16,13 @@ using static InnoTecheLearning.Utils.Create;
 using static InnoTecheLearning.Utils.OnlineDict.DictionaryResponse;
 using static InnoTecheLearning.Utils.StreamPlayer;
 using Xamarin.Forms;
+#if __IOS__
+using Xamarin.Forms.Platform.iOS;
+#elif __ANDROID__
+using Xamarin.Forms.Platform.Android;
+#elif WINDOWS_UWP
+using Xamarin.Forms.Platform.UWP;
+#endif
 
 namespace InnoTecheLearning
 {
@@ -75,7 +82,8 @@ namespace InnoTecheLearning
             Logic_毲Factor䫎,
             Health,
             Tunes,
-            Excel
+            Excel,
+            Facial
         }
         /*
         public View Content
@@ -213,6 +221,14 @@ namespace InnoTecheLearning
                                 () => Push(MathSolver, PageId.Excel),
                                 BoldLabel("EXCEL")
                             )
+#if false
+                            ,
+                            MainScreenItem(
+                                ImageSource(ImageFile.Facial),
+                                () => Push(Facial, PageId.Facial),
+                                BoldLabel("FACIAL")
+                            )
+#endif
                         ),
 
                         Button("Changelog", () => Push(
@@ -417,7 +433,7 @@ namespace InnoTecheLearning
             }
         }
         Action Calculator_HistoryIndex_Update;
-        #region Append
+#region Append
         void Calculator_StartModify()
         {
             if (Calculator_HistoryIndex != Calculator_History.Count - 1)
@@ -452,19 +468,19 @@ namespace InnoTecheLearning
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
             int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Right, Top, Bottom);
-        #endregion
+#endregion
         public StackLayout Calculator
         {
             get
             {
                 var MoveLeft = Button("◀", () => Calculator_Cursor--)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 var MoveRight = Button("▶", () => Calculator_Cursor++)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 var MoveUp = Button("▲", () => Calculator_HistoryIndex--)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 var MoveDown = Button("▼", () => Calculator_HistoryIndex++)
-                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.Fill; });
+                    .With((ref Button x) => { if (Device.Idiom != TargetIdiom.Desktop) x.HorizontalOptions = LayoutOptions.FillAndExpand; });
                 Entry In = new Entry
                 {
                     TextColor = Color.Black,
@@ -737,7 +753,9 @@ namespace InnoTecheLearning
                     {
                         Children =
                         {
-                            In, Row(false, MoveLeft, MoveRight, MoveUp, MoveDown),
+                            In,
+                            Row(false, MoveLeft, MoveRight, MoveUp, MoveDown)
+                                .With((ref StackLayout x) => x.HorizontalOptions = LayoutOptions.FillAndExpand),
                             new StackLayout(), Norm, new StackLayout(), Out
                         }
                     };
@@ -1451,5 +1469,8 @@ namespace InnoTecheLearning
                 };
             }
         }
+
+        public StackLayout Facial
+        { get { var s = new StackLayout(); s.Children.Add(new Camera()); return s; } }
     }
 }

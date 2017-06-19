@@ -25,7 +25,8 @@ namespace InnoTecheLearning
                 Heart,
                 Dragon,
                 Dragon_Dead,
-                File_Icon
+                File_Icon,
+                Facial
             }
 
             public static string[] ImageFileSelection { get; } =
@@ -45,7 +46,8 @@ namespace InnoTecheLearning
                     "8_bit_heart_stock_by_xquatrox-d4r844m.png",
                     "dragon.jpg",
                     "dragon.fw.png",
-                    "folded-paper_318-31112.jpg"
+                    "folded-paper_318-31112.jpg",
+                    "boy-smiling.png"
                 };
             public static ImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[(int)File]);
             public static ImageSource ImageSource(string FileName) => Log(Xamarin.Forms.ImageSource.FromResource

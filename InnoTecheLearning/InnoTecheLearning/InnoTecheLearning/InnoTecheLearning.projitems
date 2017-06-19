@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\Storage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SystemClipboard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\StreamRecorder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TempIO.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TextLog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TextToSpeech.cs" />
@@ -95,5 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)OnChange.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\boy-smiling.png" />
   </ItemGroup>
 </Project>

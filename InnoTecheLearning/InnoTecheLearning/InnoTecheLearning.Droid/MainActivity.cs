@@ -12,7 +12,7 @@ using Android.Content;
 namespace InnoTecheLearning.Droid
 {
 	[Activity (Label = "CSWCSS eLearning App", Theme = "@style/Main", MainLauncher = false, 
-        ScreenOrientation = ScreenOrientation.SensorPortrait,
+        ScreenOrientation = ScreenOrientation.SensorPortrait, HardwareAccelerated = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
