@@ -8,22 +8,21 @@ namespace InnoTecheLearning
     partial class Utils
     {
 #if __ANDROID__
-        public class Camera : Android.Widget.ImageView
+        public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener
         {
-#pragma warning disable 618 //Reason: Need Android 4 support
-            class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
-            {
-                Action<byte[], Android.Hardware.Camera> callback;
-                public Callback(Action<byte[],Android.Hardware.Camera> CallBack) => callback = CallBack;
-                public void OnPreviewFrame(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
-            }
-            Android.Hardware.Camera cam;
             public Camera() : base(Forms.Context)
             {
+                SurfaceTextureListener = this;
+                if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
+            }
+#pragma warning disable 618 //Reason: Need Android 4 support
+            Android.Hardware.Camera cam;
+            public void OnSurfaceTextureAvailable(Android.Graphics.SurfaceTexture surface, int w, int h)
+            {
+                Log("OnSurfaceTextureAvailable");
                 cam = Android.Hardware.Camera.Open();
 #pragma warning restore 618
-                Log("cam Opened");
-
+                /*
                 switch (
                     ((Android.Views.IWindowManager)Context.GetSystemService(Android.Content.Context.WindowService))
                         .DefaultDisplay.Rotation)
@@ -42,37 +41,32 @@ namespace InnoTecheLearning
                         break;
                     default:
                         break;
-                }
+                }*/
+                LayoutParameters = new Android.Widget.FrameLayout.LayoutParams(w, h);
+
                 try
                 {
-                    cam.SetPreviewCallback(new Callback(
-                        (data, camera) => 
-                        {
-                            var Prev = Drawable;
-                            using (var s = new System.IO.MemoryStream(data))
-                                SetImageDrawable(new Android.Graphics.Drawables.BitmapDrawable(s));
-                            Prev?.Dispose();
-                        }
-                        ));
-                    Log("Preview set");
+                    cam.SetPreviewTexture(surface);
                     cam.StartPreview();
-                    Log("Preview started");
+
                 }
                 catch (Java.IO.IOException ex)
                 {
-                    Log(ex);
+                    Console.WriteLine(ex.Message);
                 }
             }
-            protected override void Dispose(bool disposing)
+            public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
             {
-                base.Dispose(disposing);
                 cam?.StopPreview();
                 cam?.Release();
+
+                return true;
             }
 
             public void OnSurfaceTextureSizeChanged(Android.Graphics.SurfaceTexture surface, int width, int height) { }
             public void OnSurfaceTextureUpdated(Android.Graphics.SurfaceTexture surface) { }
         }
+
 #elif __IOS__
         public class Camera : UIKit.UIImageView
         {

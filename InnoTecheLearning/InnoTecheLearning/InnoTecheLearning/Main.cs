@@ -220,15 +220,12 @@ namespace InnoTecheLearning
                                 ImageSource(ImageFile.MathSolver),
                                 () => Push(MathSolver, PageId.Excel),
                                 BoldLabel("EXCEL")
-                            )
-#if false
-                            ,
+                            ),
                             MainScreenItem(
                                 ImageSource(ImageFile.Facial),
                                 () => Push(Facial, PageId.Facial),
                                 BoldLabel("FACIAL")
                             )
-#endif
                         ),
 
                         Button("Changelog", () => Push(
