@@ -279,6 +279,25 @@ namespace InnoTecheLearning
                     return Return;
                 }
             }
+            public static StackLayout ConsoleView
+            {
+                get
+                {
+                    var Out = new Label { BindingContext = Console };
+                    Out.SetBinding(Label.TextProperty, new Binding(nameof(Console.Out), BindingMode.OneWay));
+                    Out.HorizontalOptions = Out.VerticalOptions = LayoutOptions.FillAndExpand;
+                    var In = Entry(string.Empty, "Enter command (\"help\" for help)");
+                    In.HorizontalOptions = LayoutOptions.FillAndExpand;
+                    return new StackLayout
+                    {
+                        Children =
+                        {
+                            Out,
+                            Row(false, In, Button("→", () => Unit.Invoke(() => Console.Execute(In.Text))))
+                        }
+                    };
+                }
+            }
             public static Label VersionDisplay
             {
                 get

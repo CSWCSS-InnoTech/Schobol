@@ -73,6 +73,7 @@ namespace InnoTecheLearning
         public enum PageId : sbyte
         {
             Uninitialised = sbyte.MinValue,
+            Console = -3,
             Crashes = -2,
             Changelog = -1,
             Main,
@@ -229,7 +230,10 @@ namespace InnoTecheLearning
                         ),
 
                         Button("Changelog", () => Push(
-                            Column(Changelog, Button("View crash logs", () => Push(CrashLog, PageId.Crashes))),
+                            Column(Changelog, Row(false, 
+                                Button("Enter console", () => Push(ConsoleView, PageId.Console)),
+                                Button("View crash logs", () => Push(CrashLog, PageId.Crashes))
+                           )),
                         PageId.Changelog)),
                         VersionDisplay
                     }
