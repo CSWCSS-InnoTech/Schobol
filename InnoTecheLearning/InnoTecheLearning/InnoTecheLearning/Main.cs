@@ -1468,6 +1468,17 @@ namespace InnoTecheLearning
         }
 
         public StackLayout Facial
-        { get { var s = new StackLayout(); s.Children.Add(new Camera()); return s; } }
+        {
+            get
+            {
+                var s = new StackLayout();
+                s.Children.Add(
+                    new Camera()
+                    .ToView()
+                    .With((ref View x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand)
+                );
+                return s;
+            }
+        }
     }
 }

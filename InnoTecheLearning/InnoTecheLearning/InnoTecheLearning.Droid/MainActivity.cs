@@ -11,7 +11,7 @@ using Android.Content;
 
 namespace InnoTecheLearning.Droid
 {
-	[Activity (Label = "CSWCSS eLearning App", Theme = "@style/Main", MainLauncher = false, 
+	[Activity (Label = "CSWCSS eLearn Utilities", Theme = "@style/Main", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait, HardwareAccelerated = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
@@ -32,6 +32,8 @@ namespace InnoTecheLearning.Droid
             base.OnActivityResult(requestCode, resultCode, data);
             ActivityResult(this, new PreferenceManager.ActivityResultEventArgs(true, requestCode, resultCode, data));
         }
+
+       
     }
 
     [Activity(Label = "CSWCSS eLearning App", Theme = "@style/Splash", MainLauncher = true, NoHistory = true,

@@ -677,8 +677,8 @@ function Min() { return Math.min.apply(global, arguments); }
                     for (var denom = 1.0; denom <= 1e6; denom++)
                     {
                         var numer = Math.Round(value * denom);
-                        if (Math.Abs(value - numer / denom) == 0)
-                            return $"{Math.Round(numer / denom)} {numer % denom} / {denom}";
+                        if (HasMinimalDifference(value, numer / denom))
+                            return $"{Math.Round(numer / denom)} + {numer % denom} / {denom}";
                     }
                     throw new ArithmeticException("Cannot find appropriate fraction.");
                     /*

@@ -22,9 +22,8 @@ namespace InnoTecheLearning
                 Log("OnSurfaceTextureAvailable");
                 cam = Android.Hardware.Camera.Open();
 #pragma warning restore 618
-                /*
-                switch (
-                    ((Android.Views.IWindowManager)Context.GetSystemService(Android.Content.Context.WindowService))
+                switch (Android.Runtime.Extensions.JavaCast<Android.Views.IWindowManager>
+                            (Context.GetSystemService(Android.Content.Context.WindowService))
                         .DefaultDisplay.Rotation)
                 {
                     case Android.Views.SurfaceOrientation.Rotation0:
@@ -41,7 +40,7 @@ namespace InnoTecheLearning
                         break;
                     default:
                         break;
-                }*/
+                }
                 LayoutParameters = new Android.Widget.FrameLayout.LayoutParams(w, h);
 
                 try
@@ -52,7 +51,7 @@ namespace InnoTecheLearning
                 }
                 catch (Java.IO.IOException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex);
                 }
             }
             public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)

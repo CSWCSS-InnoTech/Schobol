@@ -6,6 +6,7 @@ using System;
 using AVFoundation;
 using Foundation;
 #elif __ANDROID__
+using Android.Content;
 using Android.Net;
 using Android.Media;
 using Java.IO;
@@ -48,19 +49,23 @@ namespace InnoTecheLearning
 
                     // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                     // TODO: set large fields to null.
-                    _player.Stop();
 #if __IOS__
-                    _player.Dispose();
-#elif __ANDROID__
-                    _prepared = false;
-                    _player.Flush();
-                    _player.Release();
-                    _player.Dispose();
-                    _content = null;
-#elif NETFX_CORE
-                    _player.ClearValue(MediaElement.SourceProperty);
-#endif
+                    _player?.Stop();
+                    _player?.Dispose();
                     _player = null;
+#elif __ANDROID__
+                    for (int i = 0; i < mp.Length; i++)
+                    {
+                        mp[i]?.Stop();
+                        mp[i]?.Release();
+                        mp[i]?.Dispose();
+                    }
+                    mp = null;
+#elif NETFX_CORE
+                    _player?.Stop();
+                    _player?.ClearValue(MediaElement.SourceProperty);
+                    _player = null;
+#endif
                     Disposed = true;
                 }
             }
@@ -144,6 +149,299 @@ namespace InnoTecheLearning
             public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
             public bool Loop { get { return _player.NumberOfLoops == -1; } set { _player.NumberOfLoops = value ? -1 : 0; } }
 #elif __ANDROID__
+
+            private Context context;
+            private Android.Net.Uri uri;
+            private string file;
+            private int resourceId;
+
+            // which file is getting played
+            enum FileType : byte { Uri, Resource, File }
+            private FileType filePlaying;
+
+            // states of the media player
+            public enum States : byte { Playing, Paused, Stopped }
+
+            // current state
+            private States state = States.Stopped;
+
+            // current mediaPlayer which is playing
+            private int mediaPlayerIndex = -1;
+
+            // 3 media players
+            private MediaPlayer[] mp = new MediaPlayer[3];
+
+            // current volume
+            private float vol;
+
+            bool loop;
+            bool Loop { get => loop; set => loop = value; }
+            public event EventHandler Complete;
+
+            public static StreamPlayer Create(MusicStream Wave)
+            {
+                var Return = new StreamPlayer();
+                Return.Init(Wave);
+                return Return;
+            }
+            void Init(MusicStream Wave)
+            {
+                loop = Wave.Loop;
+                vol = Wave.Volume;
+                context = Forms.Context;
+                completionListener = new Listener((MediaPlayer curmp) =>
+                {
+                    if (!loop)
+                    { Stop(); Complete(this, EventArgs.Empty); return; }
+                    int mpEnds = 0;
+                    int mpPlaying = 0;
+                    int mpNext = 0;
+                    if (curmp == mp[0])
+                    {
+                        mpEnds = 0;
+                        mpPlaying = 1;
+                        mpNext = 2;
+                    }
+                    else if (curmp == mp[1])
+                    {
+                        mpEnds = 1;
+                        mpPlaying = 2;
+                        mpNext = 0;  // corrected, else index out of range
+                    }
+                    else if (curmp == mp[2])
+                    {
+                        mpEnds = 2;
+                        mpPlaying = 0; // corrected, else index out of range
+                        mpNext = 1; // corrected, else index out of range
+                    }
+
+                    // as we have set mp2 mp1's next, so index will be 1
+                    mediaPlayerIndex = mpPlaying;
+                    Log(mpEnds, "BZMediaPlayer Media Player {0}");
+                    try
+                    {
+                        // mp3 is already playing release it
+                        if (mp[mpNext] != null)
+                        {
+                            mp[mpNext].Release();
+                        }
+                        // if we are playing uri
+                        switch (filePlaying)
+                        {
+                            case FileType.Uri:
+                            mp[mpNext] = MediaPlayer.Create(context, uri);
+                                break;
+                            case FileType.Resource:
+                            mp[mpNext] = MediaPlayer.Create(context, resourceId);
+                                break;
+                            case FileType.File:
+                                mp[mpNext] = new MediaPlayer();
+                                mp[mpNext].SetDataSource(new FileInputStream(file).FD);
+                                break;
+                            default:
+                                break;
+                        }
+                        // at listener to mp3
+                        mp[mpNext].SetOnCompletionListener(completionListener);
+                        // set vol
+                        mp[mpNext].SetVolume(vol, vol);
+                        // set nextMediaPlayer
+                        mp[mpPlaying].SetNextMediaPlayer(mp[mpNext]);
+                        // set nextMediaPlayer vol
+                        mp[mpPlaying].SetVolume(vol, vol);
+                    }
+                    catch (Exception e)
+                    {
+                        Log(e);
+                    }
+                });
+                Play(Wave.ReadFully());
+                Pause();
+            }
+            
+            /**
+             * plays the provided uri
+             * @param uri
+             */
+            public void Play(Android.Net.Uri uri)
+            {
+                this.uri = uri;
+                // current playing file
+                filePlaying = FileType.Uri;
+                // stop any playing session
+                Stop();
+
+                // initialize and set listener to three mediaplayers
+                for (int i = 0; i < mp.Length; i++)
+                {
+                    mp[i] = MediaPlayer.Create(context, uri);
+                    mp[i].SetOnCompletionListener(completionListener);
+                }
+
+                // set nextMediaPlayers
+                mp[0].SetNextMediaPlayer(mp[1]);
+                mp[1].SetNextMediaPlayer(mp[2]);
+
+                // start the first MediaPlayer
+                mp[0].Start();
+                // set mediaplayer inex
+                mediaPlayerIndex = 0;
+                // set state
+                state = States.Playing;
+            }
+
+            /**
+             * play file from resource
+             * @param resourceId
+             */
+            public void Play(int resourceId)
+            {
+                this.resourceId = resourceId;
+                filePlaying = FileType.Resource;
+                Stop();
+                for (int i = 0; i < mp.Length; i++)
+                {
+                    mp[i] = MediaPlayer.Create(context, resourceId);
+                    mp[i].SetOnCompletionListener(completionListener);
+                }
+
+                mp[0].SetNextMediaPlayer(mp[1]);
+                mp[1].SetNextMediaPlayer(mp[2]);
+
+                mp[0].Start();
+                mediaPlayerIndex = 0;
+                state = States.Playing;
+            }
+
+            /**
+             * play file from bytes
+             * @param bytes
+             */
+            public void Play(byte[] bytes)
+            {
+                Log("Play(byte[])");
+                file = Path.ChangeExtension(Temp.TempFile, "wav");
+                Android.Net.Uri uri = null;
+                using (var f = new Java.IO.File(file))
+                {
+                    f.DeleteOnExit();
+                    if (!f.Exists()) f.CreateNewFile();
+                    using (var Out = new FileOutputStream(f)) { Out.Write(bytes); Out.Flush(); }
+                    uri = Android.Net.Uri.FromFile(f);
+                    Play(f.AbsolutePath);
+                }
+            }
+
+            /**
+ * play file
+ * @param file
+ */
+            public void Play(string file)
+            {
+                this.file = file;
+                filePlaying = FileType.File;
+                Stop();
+                for (int i = 0; i < mp.Length; i++)
+                {
+                    mp[i] = new MediaPlayer();
+                    using (var s = new FileInputStream(file)) using (var fd = s.FD) mp[i].SetDataSource(fd);
+                    mp[i].Prepare();
+                    mp[i].SetOnCompletionListener(completionListener);
+                }
+
+                mp[0].SetNextMediaPlayer(mp[1]);
+                mp[1].SetNextMediaPlayer(mp[2]);
+
+                mp[0].Start();
+                mediaPlayerIndex = 0;
+                state = States.Playing;
+            }
+
+            /**
+             * play if the mediaplayer is pause
+             */
+            public void Play()
+            {
+                if (state == States.Paused)
+                {
+                    mp[mediaPlayerIndex].Start();
+                    Log("BZMediaPlayer playing");
+                    state = States.Playing;
+                }
+            }
+
+            /**
+             * pause current playing session
+             */
+            public void Pause()
+            {
+                if (state == States.Playing)
+                {
+                    mp[mediaPlayerIndex].Pause();
+                    Log("BZMediaPlayer pausing");
+                    state = States.Paused;
+                }
+            }
+
+            /**
+             * get current state
+             * @return
+             */
+            public States State => state;
+
+            /**
+             * stop every mediaplayer
+             */
+            public void Stop()
+            {
+                for (int i = 0; i < mp.Length; i++)
+                {
+                    if (mp[i] != null)
+                    {
+                        mp[i].Stop();
+
+                        if (mp[i].IsPlaying)
+                        {
+                            mp[i].Release();
+                        }
+                    }
+                }
+                System.IO.File.Delete(file);
+                state = States.Stopped;
+            }
+            
+            /**
+             * set vol for every mediaplayer
+             * @param vol
+             */
+            public float Volume
+            {
+                get => vol;
+                set
+                {
+                    vol = value;
+                    for (int i = 0; i < mp.Length; i++)
+                    {
+                        if (mp[i] != null && mp[i].IsPlaying)
+                        {
+                            mp[i].SetVolume(vol, vol);
+                        }
+                    }
+                }
+            }
+
+            /**
+             * internal listener which handles looping thing
+             */
+            class Listener : Java.Lang.Object, MediaPlayer.IOnCompletionListener
+            {
+                Action<MediaPlayer> handler;
+                public Listener(Action<MediaPlayer> Handler) => handler = Handler;
+                public void OnCompletion(MediaPlayer curmp) => handler(curmp);
+            }
+            private MediaPlayer.IOnCompletionListener completionListener;
+
+#elif __ANDROID__ && AUDIOTRACK
             AudioTrack _player;
             public bool _prepared { get; private set; }
             bool _loop;
@@ -453,7 +751,7 @@ namespace InnoTecheLearning
                     _enumerator = enumerator;
                 }
 
-#region IEnumerator implementation
+        #region IEnumerator implementation
                 public bool MoveNext()
                 {
                     return _didPeek ? !(_didPeek = false) : _enumerator.MoveNext();
@@ -466,23 +764,23 @@ namespace InnoTecheLearning
                 }
 
                 object IEnumerator.Current { get { return this.Current; } }
-#endregion
+        #endregion
 
-#region IDisposable implementation
+        #region IDisposable implementation
                 public void Dispose()
                 {
                     _enumerator.Dispose();
                 }
-#endregion
+        #endregion
 
-#region IEnumerator<T> implementation
+        #region IEnumerator<T> implementation
                 public T Current
                 {
                     get { return _didPeek ? _peek : _enumerator.Current; }
                 }
-#endregion
+        #endregion
                 /*
-#region IEnumerable implementation
+        #region IEnumerable implementation
                 public IEnumerator<T> GetEnumerator()
                 {
                     return this; 
@@ -492,7 +790,7 @@ namespace InnoTecheLearning
                 {
                     return this; 
                 }
-#endregion
+        #endregion
                 */
                 private void TryFetchPeek()
                 {
@@ -606,6 +904,6 @@ namespace InnoTecheLearning
                 }
             }*/
 #endif
-        }
     }
+}
 }
