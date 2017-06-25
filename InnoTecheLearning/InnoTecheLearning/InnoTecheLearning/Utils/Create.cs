@@ -283,8 +283,8 @@ namespace InnoTecheLearning
             {
                 get
                 {
-                    var Out = new Label { BindingContext = Console };
-                    Out.SetBinding(Label.TextProperty, new Binding(nameof(Console.Out), BindingMode.OneWay));
+                    var Out = new Label { BindingContext = Console, Text = Console.OutText, TextColor = Color.Black };
+                    Out.SetBinding(Label.TextProperty, new Binding(nameof(Console.OutText), BindingMode.OneWay));
                     Out.HorizontalOptions = Out.VerticalOptions = LayoutOptions.FillAndExpand;
                     var In = Entry(string.Empty, "Enter command (\"help\" for help)");
                     In.HorizontalOptions = LayoutOptions.FillAndExpand;
@@ -292,7 +292,7 @@ namespace InnoTecheLearning
                     {
                         Children =
                         {
-                            Out,
+                            Scroll(ScrollOrientation.Vertical, Out),
                             Row(false, In, Button("→", () => Unit.Invoke(() => Console.Execute(In.Text))))
                         }
                     };

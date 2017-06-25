@@ -252,7 +252,7 @@ namespace InnoTecheLearning
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex).Ignore();
                 }
             }
 
@@ -288,7 +288,7 @@ namespace InnoTecheLearning
                         //	 Is this the final translation?
                         if (result != null && result.BestTranscription != null && result.BestTranscription.FormattedString != null)
                         {
-                            Console.WriteLine("You said \"{0}\".", result.BestTranscription.FormattedString);
+                            Log(result.BestTranscription.FormattedString, "You said \"{0}\".");
                             OnTextChanged(result.BestTranscription.FormattedString);
                         }
                         if (result.Final)
@@ -301,7 +301,7 @@ namespace InnoTecheLearning
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex);
                 }
             }
 
@@ -314,7 +314,7 @@ namespace InnoTecheLearning
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex).Ignore();
                 }
             }
 
@@ -327,7 +327,7 @@ namespace InnoTecheLearning
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex).Ignore();
                 }
             }
             void OnTextChanged(string text, bool isFinal = false)
@@ -454,7 +454,7 @@ namespace InnoTecheLearning
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log(ex).Ignore();
                 }
                 return Unit.Default;
             }

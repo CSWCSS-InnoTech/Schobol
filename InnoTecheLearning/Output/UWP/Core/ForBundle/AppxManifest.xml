@@ -7,7 +7,7 @@
 
     For more information on package manifest files, see http://go.microsoft.com/fwlink/?LinkID=241727
   -->
-  <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.10.0.0" ProcessorArchitecture="x86" />
+  <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.11.0.0" ProcessorArchitecture="x86" />
   <mp:PhoneIdentity PhoneProductId="47f0706c-3646-4de9-8968-b498fa30d6e7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>CSWCSS eLearn Utilities</DisplayName>
@@ -65,7 +65,7 @@
     <build:Item Name="TargetFrameworkMoniker" Value=".NETCore,Version=v5.0" />
     <build:Item Name="VisualStudio" Version="15.0" />
     <build:Item Name="VisualStudioEdition" Value="Microsoft Visual Studio Community 2017" />
-    <build:Item Name="OperatingSystem" Version="10.0.14393.0 (rs1_release.160715-1616)" />
+    <build:Item Name="OperatingSystem" Version="10.0.15063.0 (WinBuild.160101.0800)" />
     <build:Item Name="Microsoft.Build.AppxPackage.dll" Version="15.0.26419.1" />
     <build:Item Name="ProjectGUID" Value="{75CEA795-2D72-43D6-BF90-32C87C92AF13}" />
     <build:Item Name="OptimizingToolset" Value="None" />

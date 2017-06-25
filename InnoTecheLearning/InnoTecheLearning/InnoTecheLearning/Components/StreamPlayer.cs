@@ -54,6 +54,12 @@ namespace InnoTecheLearning
                     _player?.Dispose();
                     _player = null;
 #elif __ANDROID__
+                    _prepared = false;
+                    _player.Flush();
+                    _player.Release();
+                    _player.Dispose();
+                    _content = null;
+#elif __ANDROID__
                     for (int i = 0; i < mp.Length; i++)
                     {
                         mp[i]?.Stop();
@@ -148,7 +154,7 @@ namespace InnoTecheLearning
             }
             public float Volume { get { return _player.Volume; } set { _player.Volume = value; } }
             public bool Loop { get { return _player.NumberOfLoops == -1; } set { _player.NumberOfLoops = value ? -1 : 0; } }
-#elif __ANDROID__
+#elif __ANDROID__ && false
 
             private Context context;
             private Android.Net.Uri uri;
@@ -156,7 +162,7 @@ namespace InnoTecheLearning
             private int resourceId;
 
             // which file is getting played
-            enum FileType : byte { Uri, Resource, File }
+            enum FileType : byte { Uri, Resource, File, Bytes }
             private FileType filePlaying;
 
             // states of the media player
@@ -235,6 +241,7 @@ namespace InnoTecheLearning
                             mp[mpNext] = MediaPlayer.Create(context, resourceId);
                                 break;
                             case FileType.File:
+                            case FileType.Bytes:
                                 mp[mpNext] = new MediaPlayer();
                                 mp[mpNext].SetDataSource(new FileInputStream(file).FD);
                                 break;
@@ -319,17 +326,43 @@ namespace InnoTecheLearning
              */
             public void Play(byte[] bytes)
             {
+                filePlaying = FileType.Bytes;
                 Log("Play(byte[])");
-                file = Path.ChangeExtension(Temp.TempFile, "wav");
+                //file = Temp.TempFile; wav
+                /*var info = new FileInfo(file);
+                if (info.Exists) info.Delete();
+                using (var s = info.Create()) { s.Write(bytes, 0, bytes.Length); s.Flush(); }
+                Play(info.FullName);*/
+                        
                 Android.Net.Uri uri = null;
-                using (var f = new Java.IO.File(file))
+                    using (var f = Java.IO.File.CreateTempFile("tmp", ".wav"))
+                    {
+                        f.DeleteOnExit();
+                        if (!f.Exists()) Log(f.CreateNewFile(), "CreateNewFile returned {0}");
+                        Log(f.SetReadable(true, false), "SetReadable returned {0}");
+                        using (var Out = new FileOutputStream(f)) { Out.Write(bytes); Out.Flush(); Out.Close(); }
+                        uri = Android.Net.Uri.FromFile(f);
+                    }
+                var file = uri.EncodedPath;
+
+
+
+                this.file = file;
+                Stop();
+                for (int i = 0; i < mp.Length; i++)
                 {
-                    f.DeleteOnExit();
-                    if (!f.Exists()) f.CreateNewFile();
-                    using (var Out = new FileOutputStream(f)) { Out.Write(bytes); Out.Flush(); }
-                    uri = Android.Net.Uri.FromFile(f);
-                    Play(f.AbsolutePath);
+                    mp[i] = new MediaPlayer();
+                    using (var s = new FileInputStream(file)) using (var fd = s.FD) mp[i].SetDataSource(fd);
+                    mp[i].Prepare();
+                    mp[i].SetOnCompletionListener(completionListener);
                 }
+
+                mp[0].SetNextMediaPlayer(mp[1]);
+                mp[1].SetNextMediaPlayer(mp[2]);
+
+                mp[0].Start();
+                mediaPlayerIndex = 0;
+                state = States.Playing;
             }
 
             /**
@@ -338,8 +371,8 @@ namespace InnoTecheLearning
  */
             public void Play(string file)
             {
-                this.file = file;
                 filePlaying = FileType.File;
+                this.file = file;
                 Stop();
                 for (int i = 0; i < mp.Length; i++)
                 {
@@ -406,7 +439,8 @@ namespace InnoTecheLearning
                         }
                     }
                 }
-                System.IO.File.Delete(file);
+                if(filePlaying == FileType.Bytes && System.IO.File.Exists(file))
+                    System.IO.File.Delete(file);
                 state = States.Stopped;
             }
             
@@ -441,7 +475,7 @@ namespace InnoTecheLearning
             }
             private MediaPlayer.IOnCompletionListener completionListener;
 
-#elif __ANDROID__ && AUDIOTRACK
+#elif __ANDROID__
             AudioTrack _player;
             public bool _prepared { get; private set; }
             bool _loop;

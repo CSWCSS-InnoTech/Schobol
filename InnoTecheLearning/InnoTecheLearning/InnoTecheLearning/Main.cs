@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
-using static InnoTecheLearning.Utils.OnlineDict.DictionaryResponse;
+using static InnoTecheLearning.Utils.OnlineDict.PearsonDictionaryResponse;
 using static InnoTecheLearning.Utils.StreamPlayer;
 using Xamarin.Forms;
 #if __IOS__
@@ -144,7 +144,7 @@ namespace InnoTecheLearning
             //if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");
             async void AsyncInit()
             {
-                Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<Result>());
+                Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<OnlineDict.Entry>());
             }
             AsyncInit();
             // Accomodate iPhone status bar.
@@ -1231,12 +1231,12 @@ namespace InnoTecheLearning
             }
         }
         //SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
-        ObservableCollection<Result> Favourites = new ObservableCollection<Result>();
+        ObservableCollection<OnlineDict.Entry> Favourites = new ObservableCollection<OnlineDict.Entry>();
         public Grid Translator
         {
             get
             {
-                Button TranslatorButton(Result R)
+                Button TranslatorButton(OnlineDict.Entry R)
                 {
                     var B = Button(Favourites.Contains(R) ? "★-" : "★+",
                         (ref Button sender, EventArgs e) =>
@@ -1276,7 +1276,7 @@ namespace InnoTecheLearning
                     var a = checker.supportedLanguages;
                     ;
                 });*/
-                void ViewUpdate(StackLayout Layout, IEnumerable<Result> Results, params Span[] NoResults)
+                void ViewUpdate(StackLayout Layout, IEnumerable<OnlineDict.Entry> Results, params Span[] NoResults)
                 {
                     Layout.Children.Clear();
                     foreach (var Result in Results)
@@ -1286,20 +1286,20 @@ namespace InnoTecheLearning
                                 FormattedLabel(
                                     new Span
                                     {
-                                        Text = Result.headword.PadRight(33),
+                                        Text = Result.Headword.PadRight(33),
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                                         FontFamily = FontDictionary//"Courier New, Georgia, Serif"
                                         },
                                     new Span
                                     {
-                                        Text = Result.part_of_speech.PadRight(13),
+                                        Text = Result.PoS.PadRight(13),
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                                         FontFamily = FontDictionary//"Courier New, Georgia, Serif"
                                         }, new Span
                                         {
-                                            Text = Result.senses.Single().translation + " \n",
+                                            Text = Result.Translation + " \n",
                                             ForegroundColor = Color.Black,
                                             FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
                                             FontFamily = FontDictionary
@@ -1342,7 +1342,7 @@ namespace InnoTecheLearning
                                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)) }
                         ));
                     });
-                    var Results = (await OnlineDict.ToChinese(Input.Text)).results;
+                    var Results = (await OnlineDict.ToChinese(Input.Text)).Entries;
                     Device.BeginInvokeOnMainThread(() =>
                         ViewUpdate(Formatted, Results, new Span
                         {
