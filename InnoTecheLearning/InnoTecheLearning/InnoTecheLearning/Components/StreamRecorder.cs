@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Android.Hardware;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
@@ -16,6 +17,12 @@ namespace InnoTecheLearning
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
 #pragma warning disable 618 //Reason: Need Android 4 support
+            class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
+            {
+                public Callback(Action<byte[], Android.Hardware.Camera> callback) => this.callback = callback;
+                Action<byte[], Android.Hardware.Camera> callback;
+                public void OnPreviewFrame(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
+            }
             Android.Hardware.Camera cam;
             public void OnSurfaceTextureAvailable(Android.Graphics.SurfaceTexture surface, int w, int h)
             {
@@ -42,12 +49,15 @@ namespace InnoTecheLearning
                         break;
                 }
                 LayoutParameters = new Android.Widget.FrameLayout.LayoutParams(w, h);
-
+                
                 try
                 {
                     cam.SetPreviewTexture(surface);
                     cam.StartPreview();
-
+                    cam.SetPreviewCallback(new Callback((data, camera) => 
+                    {
+                        new Accord.Vision.Detection.HaarObjectDetector(new Accord.Vision.Detection.Cascades.FaceHaarCascade(), 30);
+                    }));
                 }
                 catch (Java.IO.IOException ex)
                 {
