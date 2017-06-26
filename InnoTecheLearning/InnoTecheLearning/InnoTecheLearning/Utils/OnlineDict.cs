@@ -77,11 +77,11 @@ namespace InnoTecheLearning
 
                 public IEnumerable<Entry> data = default(IEnumerable<Entry>);
                 public override IEnumerable<Entry> Entries =>
-                    data ==  default(IEnumerable<Entry>) ?
+                    data == default(IEnumerable<Entry>) ?
                     data = results.Select(r => new Entry(
                     r.headword, r.part_of_speech, r.senses.Single().translation, r.senses.Single().synonym, r.senses.Single().lexical_unit
                     )) : data;
-                }
+            }
 
             [DataContract] public sealed class PearsonDictionaryIDResponse
             {
@@ -122,9 +122,9 @@ namespace InnoTecheLearning
 
             public sealed class PedosaResponse : DictionaryResponse
             {
-                public override 
+                public override
                     IEnumerable<Entry> Entries { get; }
-                public PedosaResponse (IEnumerable<Entry> Entries) => this.Entries = Entries;
+                public PedosaResponse(IEnumerable<Entry> Entries) => this.Entries = Entries;
             }
             static PearsonDictionaryResponse ProcessPearsonResponse(PearsonDictionaryResponse Data)
             {
@@ -156,7 +156,7 @@ namespace InnoTecheLearning
                 return new PedosaResponse(Return);
             }
             public static (string Headword, string PoS) ProcessContent(string Headword, string PoS) =>
-                (Headword.Replace('’', '\''), 
+                (Headword.Replace('’', '\''),
                 new System.Text.StringBuilder(PoS ??
 #if DEBUG
                         "noun."
@@ -181,12 +181,12 @@ namespace InnoTecheLearning
                     Message.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
                     using (var Client = new System.Net.Http.HttpClient())
-                        return await(await Client.SendAsync(Message)).Content.ReadAsStringAsync();
+                        return await (await Client.SendAsync(Message)).Content.ReadAsStringAsync();
                 }
             }
 
 
-            public static async ValueTask<PearsonDictionaryResponse> PearsonToChinese(string Word) => 
+            public static async ValueTask<PearsonDictionaryResponse> PearsonToChinese(string Word) =>
                 ProcessPearsonResponse(JsonDeserialize<PearsonDictionaryResponse>(await Request
             (new System.Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + EscapeDataString(Word.ToLower())))));
             public static async ValueTask<PearsonDictionaryIDResponse> PearsonLookupID(string ID) =>
@@ -198,8 +198,8 @@ namespace InnoTecheLearning
                 (new System.Uri("http://pedosa.cloud/api/dictionary/eng-chi/query.php?word=" + EscapeDataString(Word.ToLower()))));
 
             public static bool UsePearson = false;
-            public static async ValueTask<DictionaryResponse> ToChinese(string Word) =>
-                UsePearson ? await PearsonToChinese(Word) as DictionaryResponse : await PedosaToChinese(Word);
+            public static async ValueTask<DictionaryResponse> ToChinese(string Word)
+            { if (UsePearson) return await PearsonToChinese(Word); else return await PedosaToChinese(Word); }
         }
     }
 }

@@ -23,9 +23,10 @@ namespace InnoTecheLearning
 
             public void Execute(string Command)
             {
+                void Invalid() => Out.AppendFormat("'{0}' is not recognized as a command.", Command);
                 try
                 {
-                    Out.AppendFormat("> {0}\n", Command);
+                    Out.AppendLine($"> {Command}");
                     Changed();
                     var Content = Command.Contains(" ") ? Command.Substring(Command.IndexOf(' ') + 1) : null;
                     var SubHeader = (Content == null ? null :
@@ -46,11 +47,15 @@ namespace InnoTecheLearning
                                         OnlineDict.UsePearson = false;
                                         Out.Append("Set Lingual server to Pedosa.");
                                         break;
+                                    case null:
+                                        Out.AppendFormat("Current Lingual server is: {0}", OnlineDict.UsePearson ? "Pearson": "Pedosa");
+                                        break;
                                     default:
                                         Out.Append("Invalid argument. Available arguments: pearson, pedosa");
                                         break;
                                 }
                             }
+                            else Invalid();
                             break;
                         case "temp":
                             switch (SubHeader)
@@ -91,12 +96,16 @@ namespace InnoTecheLearning
                                             new FileInfo(Path.Combine(Temp.TempPath, SubContent)).Length
                                             );
                                     break;
+                                default:
+                                    Invalid();
+                                    break;
                             }
                             break;
                         case "help":
                             Out.Append(@"clear: Clears the screen
 help: Shows available commands
-lingual dictionary <pearson|pedosa>: Switches between two Dictionary servers. Default: Pedosa
+lingual server: Querys the current Lingual server. Default: Pedosa
+lingual server <pearson|pedosa>: Switches between two Lingual servers.
 temp clear: Clears all temporary files
 temp delete <file: string>: Deletes a specific temporary file
 temp show: Shows all temporary files
@@ -108,8 +117,8 @@ temp weigh <file: string>: Shows the size of a specific temporary file in bytes"
                         case "clear":
                             Out.Clear();
                             break;
-                        case var s:
-                            Out.AppendFormat("'{0}' is not recognized as a command.", s);
+                        default:
+                            Invalid();
                             break;
                     }
                 }

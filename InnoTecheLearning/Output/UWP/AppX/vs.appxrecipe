@@ -19,25 +19,25 @@
     <DeployOptionalPackages>false</DeployOptionalPackages>
     <WindowsSdkPath>C:\Program Files %28x86%29\Windows Kits\10\</WindowsSdkPath>
     <LayoutDir>C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\AppX</LayoutDir>
-    <RegisteredManifestChecksum>3F9D79284DC91BBC9ED629B43FD3C20DFE37CBE84C00F88BEDFB762EFDCF9188</RegisteredManifestChecksum>
-    <RegisteredPackageMoniker>47f0706c-3646-4de9-8968-b498fa30d6e7_0.10.0.0_x86__jfpdjxaq24k76</RegisteredPackageMoniker>
+    <RegisteredManifestChecksum>D0EBBDFC4314214AC868EBED253CC7FBAD9E6F061B8CCD5E2877B3BF1D10A9AE</RegisteredManifestChecksum>
+    <RegisteredPackageMoniker>47f0706c-3646-4de9-8968-b498fa30d6e7_0.11.0.0_x86__jfpdjxaq24k76</RegisteredPackageMoniker>
     <RegisteredUserModeAppID>47f0706c-3646-4de9-8968-b498fa30d6e7_jfpdjxaq24k76!App</RegisteredUserModeAppID>
     <RegisteredPackageID>47f0706c-3646-4de9-8968-b498fa30d6e7</RegisteredPackageID>
     <RegisteredPackagePublisher>CN=InnoTech Society of CSWCSS</RegisteredPackagePublisher>
-    <RegisteredVersion>0.10.0.0</RegisteredVersion>
+    <RegisteredVersion>0.11.0.0</RegisteredVersion>
     <JitOptimizationSuppressed>True</JitOptimizationSuppressed>
   </PropertyGroup>
   <ItemGroup>
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-25T13:35:26.635</Modified>
+      <Modified>2017-06-26T13:25:39.274</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-06-25T13:35:23.284</Modified>
+      <Modified>2017-06-26T13:25:33.429</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\jint\2.10.4\lib\netstandard1.3\jint.dll">
       <PackagePath>jint.dll</PackagePath>
@@ -98,30 +98,6 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.VisualBasic\10.0.1\lib\netcore50\Microsoft.VisualBasic.dll">
       <PackagePath>Microsoft.VisualBasic.dll</PackagePath>
       <Modified>2016-06-11T15:13:10.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.core\3.0.2.60302\lib\netcore451\Accord.dll">
-      <PackagePath>Accord.dll</PackagePath>
-      <Modified>2016-03-02T06:20:52.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.imaging\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Imaging.dll">
-      <PackagePath>Accord.Imaging.dll</PackagePath>
-      <Modified>2016-03-02T06:20:54.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.machinelearning\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.MachineLearning.dll">
-      <PackagePath>Accord.MachineLearning.dll</PackagePath>
-      <Modified>2016-03-02T06:20:54.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.math\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Math.dll">
-      <PackagePath>Accord.Math.dll</PackagePath>
-      <Modified>2016-03-02T06:20:54.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.statistics\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Statistics.dll">
-      <PackagePath>Accord.Statistics.dll</PackagePath>
-      <Modified>2016-03-02T06:20:56.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\portable.accord.vision\3.0.2.60302\lib\portable-net45+netcore45+wpa81\Accord.Vision.dll">
-      <PackagePath>Accord.Vision.dll</PackagePath>
-      <Modified>2016-03-02T06:20:58.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.any.System.Collections\4.0.11\lib\netcore50\System.Collections.dll">
       <PackagePath>System.Collections.dll</PackagePath>
@@ -230,14 +206,6 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.win7.System.Private.Uri\4.0.2\runtimes\win\lib\netcore50\System.Private.Uri.dll">
       <PackagePath>System.Private.Uri.dll</PackagePath>
       <Modified>2016-07-01T07:48:12.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\shim\2.0.1\lib\uap\Shim.dll">
-      <PackagePath>Shim.dll</PackagePath>
-      <Modified>2016-07-08T03:24:14.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\shim.drawing\3.0.1\lib\portable-win81+wpa81\Shim.Drawing.dll">
-      <PackagePath>Shim.Drawing.dll</PackagePath>
-      <Modified>2016-07-08T04:06:38.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\System.AppContext\4.1.0\lib\netcore50\System.AppContext.dll">
       <PackagePath>System.AppContext.dll</PackagePath>
@@ -559,6 +527,26 @@
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
       <Modified>2017-05-16T04:30:28.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\concrt140.dll">
+      <PackagePath>concrt140.dll</PackagePath>
+      <Modified>2016-06-09T14:46:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\cvextern.dll">
+      <PackagePath>cvextern.dll</PackagePath>
+      <Modified>2017-05-06T09:43:24.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\msvcp140.dll">
+      <PackagePath>msvcp140.dll</PackagePath>
+      <Modified>2016-06-09T14:46:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\opencv_ffmpeg320.dll">
+      <PackagePath>opencv_ffmpeg320.dll</PackagePath>
+      <Modified>2017-05-06T08:44:52.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\vcruntime140.dll">
+      <PackagePath>vcruntime140.dll</PackagePath>
+      <Modified>2016-06-09T14:46:52.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\E-learning-app-icon.png">
       <PackagePath>Assets\E-learning-app-icon.png</PackagePath>
       <Modified>2017-05-30T13:49:17.388</Modified>
@@ -829,6 +817,10 @@
       <PackagePath>Properties\Default.rd.xml</PackagePath>
       <Modified>2016-10-29T10:03:53.268</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\Emgu.CV\README.txt">
+      <PackagePath>Emgu.CV\README.txt</PackagePath>
+      <Modified>2017-05-06T09:55:24.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.xr.xml">
       <PackagePath>CSWCSS eLearn Utilities.xr.xml</PackagePath>
       <Modified>2017-05-29T14:25:01.379</Modified>
@@ -848,11 +840,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-06-23T09:21:50.469</Modified>
+      <Modified>2017-06-26T13:25:37.026</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-06-25T13:35:26.632</Modified>
+      <Modified>2017-06-26T13:25:39.263</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

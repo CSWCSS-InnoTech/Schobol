@@ -1475,6 +1475,8 @@ namespace InnoTecheLearning
         {
             get
             {
+                var a = new Emgu.CV.Face.EigenFaceRecognizer();
+                
                 var s = new StackLayout();
                 s.Children.Add(
                     new Camera()

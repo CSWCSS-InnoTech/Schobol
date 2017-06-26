@@ -7,7 +7,7 @@
 
     For more information on package manifest files, see http://go.microsoft.com/fwlink/?LinkID=241727
   -->
-  <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.10.0.0" ProcessorArchitecture="x86" />
+  <Identity Name="47f0706c-3646-4de9-8968-b498fa30d6e7" Publisher="CN=InnoTech Society of CSWCSS" Version="0.11.0.0" ProcessorArchitecture="x86" />
   <mp:PhoneIdentity PhoneProductId="47f0706c-3646-4de9-8968-b498fa30d6e7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>CSWCSS eLearn Utilities</DisplayName>

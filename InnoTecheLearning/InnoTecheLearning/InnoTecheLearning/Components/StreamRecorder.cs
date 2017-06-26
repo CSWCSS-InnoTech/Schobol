@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Hardware;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
@@ -17,6 +16,20 @@ namespace InnoTecheLearning
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
 #pragma warning disable 618 //Reason: Need Android 4 support
+            private byte[] ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera camera)
+            {
+                var cameraParameters = camera.GetParameters();
+                var width = cameraParameters.PreviewSize.Width;
+                var height = cameraParameters.PreviewSize.Height;
+                var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null);
+                var quality = 80;   // adjust this as needed
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
+                    var jpegData = ms.ToArray();
+                    return jpegData;
+                }
+            }
             class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
             {
                 public Callback(Action<byte[], Android.Hardware.Camera> callback) => this.callback = callback;
@@ -56,7 +69,7 @@ namespace InnoTecheLearning
                     cam.StartPreview();
                     cam.SetPreviewCallback(new Callback((data, camera) => 
                     {
-                        new Accord.Vision.Detection.HaarObjectDetector(new Accord.Vision.Detection.Cascades.FaceHaarCascade(), 30);
+
                     }));
                 }
                 catch (Java.IO.IOException ex)
@@ -91,7 +104,7 @@ namespace InnoTecheLearning
                     Frame = Bounds
                 };
                 Layer.AddSublayer(captureVideoPreviewLayer);
-
+                
 
                 AVFoundation.AVCaptureDeviceInput input = new AVFoundation.AVCaptureDeviceInput(device, out Foundation.NSError error);
                 if (input == null)
