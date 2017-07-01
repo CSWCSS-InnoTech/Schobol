@@ -8,8 +8,11 @@ using static System.Text.Encoding;
 using static System.Uri;
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage
-    ("Style", "IDE1006:Naming Styles", Justification = "Following JSON model schema from the online dictionary API.",
-    Scope = "type", Target = "~T:InnoTecheLearning.Utils.OnlineDict")]
+    ("Style", "IDE1006:Naming Styles", Justification = "Following JSON model schema from the Pearson Dictionaries API.",
+    Scope = "type", Target = "~T:InnoTecheLearning.Utils.PearsonDictionaryResponse")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage
+    ("Style", "IDE1006:Naming Styles", Justification = "Following JSON model schema from the Pearson Dictionaries API.",
+    Scope = "type", Target = "~T:InnoTecheLearning.Utils.PearsonDictionaryIDResponse")]
 
 namespace InnoTecheLearning
 {
@@ -38,11 +41,10 @@ namespace InnoTecheLearning
                     this.LexicalUnit = LexicalUnit;
                 }
             }
-            public abstract class DictionaryResponse
+            [DataContract] public abstract class DictionaryResponse
             {
                 internal DictionaryResponse() { }
-                public abstract IEnumerable<Entry> Entries
-                { get; }
+                public abstract IEnumerable<Entry> Entries { get; }
             }
             [DataContract] public sealed class PearsonDictionaryResponse : DictionaryResponse
             {
@@ -122,8 +124,7 @@ namespace InnoTecheLearning
 
             public sealed class PedosaResponse : DictionaryResponse
             {
-                public override
-                    IEnumerable<Entry> Entries { get; }
+                public override IEnumerable<Entry> Entries { get; }
                 public PedosaResponse(IEnumerable<Entry> Entries) => this.Entries = Entries;
             }
             static PearsonDictionaryResponse ProcessPearsonResponse(PearsonDictionaryResponse Data)
