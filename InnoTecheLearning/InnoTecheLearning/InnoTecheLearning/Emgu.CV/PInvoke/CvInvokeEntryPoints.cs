@@ -6,9 +6,9 @@ namespace Emgu.CV
 {
    public partial class CvInvoke
    {
-      /// <summary>
-      /// The file name of the cvextern library
-      /// </summary>
+        /// <summary>
+        /// The file name of the cvextern library
+        /// </summary>
 #if UNITY_EDITOR_OSX
       public const string ExternLibrary = "Assets/Emgu.CV/Plugins/emgucv.bundle/Contents/MacOS/libcvextern.dylib";
 #elif UNITY_STANDALONE_OSX
@@ -17,8 +17,10 @@ namespace Emgu.CV
       public const string ExternLibrary = "__Internal";
 #elif (!__IOS__ && !__ANDROID__) && __UNIFIED__
       public const string ExternLibrary = "libcvextern.dylib";
+#elif __ANDROID__
+      public const string ExternLibrary = "libcvextern.so";
 #else
-      public const string ExternLibrary = "cvextern";
+        public const string ExternLibrary = "cvextern";
 #endif
 	  
       /// <summary>

@@ -385,6 +385,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\boy-smiling.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)Emgu.CV\README.txt" />
+    <None Include="$(MSBuildThisFileDirectory)Emgu.CV\README.txt" />
   </ItemGroup>
 </Project>
