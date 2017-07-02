@@ -17,8 +17,6 @@ namespace Emgu.CV
       public const string ExternLibrary = "__Internal";
 #elif (!__IOS__ && !__ANDROID__) && __UNIFIED__
       public const string ExternLibrary = "libcvextern.dylib";
-#elif __ANDROID__
-      public const string ExternLibrary = "libcvextern.so";
 #else
         public const string ExternLibrary = "cvextern";
 #endif

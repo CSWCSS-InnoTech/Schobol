@@ -7,7 +7,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{D05F0700-263D-4E6E-9E7D-64AB972068F9}</ProjectGuid>
-    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF},{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>InnoTecheLearning.Droid</RootNamespace>
@@ -32,7 +32,7 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Output\Droid\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;__UNIFIED__;__MOBILE__;__ANDROID__</DefineConstants>
+    <DefineConstants>TRACE,DEBUG,__UNIFIED__,__MOBILE__,__ANDROID__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
@@ -47,13 +47,13 @@
     <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
     <EnableProguard>True</EnableProguard>
     <Debugger>Xamarin</Debugger>
-    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Release\Droid\</OutputPath>
-    <DefineConstants>__UNIFIED__;__MOBILE__;__ANDROID__</DefineConstants>
+    <DefineConstants>__UNIFIED__,__MOBILE__,__ANDROID__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
@@ -67,7 +67,7 @@
     <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
     <EnableProguard>false</EnableProguard>
     <DebugSymbols>False</DebugSymbols>
-    <AndroidSupportedAbis>armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi,armeabi-v7a,x86,x86_64</AndroidSupportedAbis>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="FormsViewGroup, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -314,95 +314,125 @@
     <None Include="Jint\Jint.nuspec" />
     <None Include="Jint\Jint.snk" />
     <None Include="Jint\project.json" />
-    <AndroidNativeLibrary Include="OpenCV\libcvextern.so">
+    <AndroidNativeLibrary Include="libcvextern.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_calib3d.so">
+    <AndroidNativeLibrary Include="libopencv_calib3d.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_contrib.so">
+    <AndroidNativeLibrary Include="libopencv_contrib.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_core.so">
+    <AndroidNativeLibrary Include="libopencv_core.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cuda.so">
+    <AndroidNativeLibrary Include="libopencv_cuda.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudaarithm.so">
+    <AndroidNativeLibrary Include="libopencv_cudaarithm.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudabgsegm.so">
+    <AndroidNativeLibrary Include="libopencv_cudabgsegm.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudacodec.so">
+    <AndroidNativeLibrary Include="libopencv_cudacodec.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudafeatures2d.so">
+    <AndroidNativeLibrary Include="libopencv_cudafeatures2d.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudafilters.so">
+    <AndroidNativeLibrary Include="libopencv_cudafilters.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudaimgproc.so">
+    <AndroidNativeLibrary Include="libopencv_cudaimgproc.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudaoptflow.so">
+    <AndroidNativeLibrary Include="libopencv_cudaoptflow.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudastereo.so">
+    <AndroidNativeLibrary Include="libopencv_cudastereo.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_cudawarping.so">
+    <AndroidNativeLibrary Include="libopencv_cudawarping.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_features2d.so">
+    <AndroidNativeLibrary Include="libopencv_features2d.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_flann.so">
+    <AndroidNativeLibrary Include="libopencv_flann.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_highgui.so">
+    <AndroidNativeLibrary Include="libopencv_highgui.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_imgproc.so">
+    <AndroidNativeLibrary Include="libopencv_imgproc.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_legacy.so">
+    <AndroidNativeLibrary Include="libopencv_legacy.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_ml.so">
+    <AndroidNativeLibrary Include="libopencv_ml.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_nonfree.so">
+    <AndroidNativeLibrary Include="libopencv_nonfree.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_objdetect.so">
+    <AndroidNativeLibrary Include="libopencv_objdetect.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_optim.so">
+    <AndroidNativeLibrary Include="libopencv_optim.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_photo.so">
+    <AndroidNativeLibrary Include="libopencv_photo.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_shape.so">
+    <AndroidNativeLibrary Include="libopencv_shape.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_softcascade.so">
+    <AndroidNativeLibrary Include="libopencv_softcascade.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_stitching.so">
+    <AndroidNativeLibrary Include="libopencv_stitching.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_superres.so">
+    <AndroidNativeLibrary Include="libopencv_superres.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_video.so">
+    <AndroidNativeLibrary Include="libopencv_video.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
-    <AndroidNativeLibrary Include="OpenCV\libopencv_videostab.so">
+    <AndroidNativeLibrary Include="libopencv_videostab.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Abi>armeabi,armeabi-v7a,arm64-v8a,x86,x86_64</Abi>
     </AndroidNativeLibrary>
     <None Include="packages.config" />
     <None Include="Resources\AboutResources.txt" />
