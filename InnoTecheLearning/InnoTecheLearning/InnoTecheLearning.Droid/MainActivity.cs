@@ -50,17 +50,23 @@ namespace InnoTecheLearning.Droid
             base.OnCreate(bundle);
             Exceptions.RegisterHandlers();
             MainActivity.Bundle = bundle;
+            Utils.Unit.InvokeAsync(() =>
+            {
+                global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
+                StartActivity(new Intent(BaseContext, typeof(MainActivity)));
+            });
         }
 
         // Launches the startup task
         protected override void OnResume()
         {
             base.OnResume();
-            Utils.Unit.InvokeAsync(() =>
-            {
-                global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
-                StartActivity(new Intent(BaseContext, typeof(MainActivity)));
-            });
+        }
+
+        protected override void OnPause()
+        {
+            //if (!Xamarin.Forms.Forms.IsInitialized) Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
+            base.OnPause();
         }
     }
 }

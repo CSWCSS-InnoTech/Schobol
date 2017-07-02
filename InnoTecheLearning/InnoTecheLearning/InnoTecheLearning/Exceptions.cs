@@ -57,7 +57,8 @@ namespace InnoTecheLearning
 #endif
                 ;
             var d = DateTime.Now;
-            var file = $"crash-{d.Year}-{d.Month}-{d.Day}_{d.Hour}.{d.Minute}.{d.Second}.txt";
+            var file = $"crash-{d.Year.ToString("D4")}-{d.Month.ToString("D2")}-{d.Day.ToString("D2")}_" +
+                $"{d.Hour.ToString("D2")}.{d.Minute.ToString("D2")}.{d.Second.ToString("D2")}.txt";
             Utils.Log(ex);
             Utils.Storage.CreateSync(Utils.Storage.Combine(Utils.Storage.CrashDir, file));
             Utils.Storage.WriteSync(Utils.Storage.Combine(Utils.Storage.CrashDir, file), ex);
