@@ -17,14 +17,16 @@ namespace Emgu.CV
       public const string ExternLibrary = "__Internal";
 #elif (!__IOS__ && !__ANDROID__) && __UNIFIED__
       public const string ExternLibrary = "libcvextern.dylib";
+#elif __ANDROID__
+        public const string ExternLibrary = "cvextern";
 #else
         public const string ExternLibrary = "cvextern";
 #endif
-	  
-      /// <summary>
-      /// The file name of the cvextern library
-      /// </summary>
-      public const string ExternCudaLibrary = ExternLibrary;
+
+        /// <summary>
+        /// The file name of the cvextern library
+        /// </summary>
+        public const string ExternCudaLibrary = ExternLibrary;
 
       /// <summary>
       /// The file name of the opencv_ffmpeg library

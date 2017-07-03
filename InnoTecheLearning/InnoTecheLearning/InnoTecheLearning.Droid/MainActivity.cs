@@ -65,8 +65,7 @@ namespace InnoTecheLearning.Droid
 
         protected override void OnPause()
         {
-            //if (!Xamarin.Forms.Forms.IsInitialized) Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
-            base.OnPause();
+            if (Xamarin.Forms.Forms.IsInitialized) base.OnPause();
         }
     }
 }

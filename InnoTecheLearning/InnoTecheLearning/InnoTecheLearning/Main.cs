@@ -1475,6 +1475,7 @@ namespace InnoTecheLearning
         {
             get
             {
+                
                 using (Emgu.CV.Face.FaceRecognizer a = new Emgu.CV.Face.EigenFaceRecognizer())
                 { var Images = new List<Emgu.CV.Image<Emgu.CV.Structure.Gray, byte>>();
                 }
