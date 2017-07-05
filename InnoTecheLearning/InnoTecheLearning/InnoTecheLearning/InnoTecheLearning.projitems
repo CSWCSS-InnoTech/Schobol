@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageRecognizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OnlineDict.cs" />
