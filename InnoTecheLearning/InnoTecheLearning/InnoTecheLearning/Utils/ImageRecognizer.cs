@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Reflection;
 using System.IO;
+using MathNet.Numerics.LinearAlgebra;
 //using ILNumerics;
 //using ILNumerics.BuiltInFunctions;
 
@@ -38,11 +39,11 @@ namespace InnoTecheLearning
             public Bitmap InputPic;
 
             //ILNumerics
-            private ILArray<double> _covariance;
-            private ILArray<double> _a;
-            private ILArray<double> _u = new ILArray<double>();
-            private ILArray<double> _s = new ILArray<double>();
-            private ILArray<double> _v = new ILArray<double>();
+            private double[,] _covariance;
+            private double[,] _a;
+            private double[,] _u = new double[0, 0];
+            private double[,] _s = new double[0, 0];
+            private double[,] _v = new double[0, 0];
 
             //Vector + Value collection
             private readonly Collection<double[]> _eigenVectors = new Collection<double[]>();
@@ -199,7 +200,7 @@ namespace InnoTecheLearning
             private void CreateCovarianceMatrix()
             {
                 _a = _columnVectorIntMatrix;
-                _covariance = ILMath.multiply(_a.T, _a);
+                _covariance = _a.TransposeRowsAndColumns().MatrixProduct(_a);
             }
 
             /// <summary>
@@ -207,7 +208,10 @@ namespace InnoTecheLearning
             /// </summary>
             private void CreateSvdOnCorrelation()
             {
-                _s = ILMath.svd(_covariance, ref _v, ref _u);
+                var Intermediate = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix.OfArray(_covariance).Svd(true);
+                _s = Intermediate.W.AsArray();
+                _v = Intermediate.VT.AsArray();
+                _u = Intermediate.U.AsArray();
             }
 
             /// <summary>
@@ -217,7 +221,7 @@ namespace InnoTecheLearning
             {
                 //25 = magicnumber, just needed to initialize double array
                 this._eigenValues = new double[25];
-                _s.Diagonal.ExportValues(ref this._eigenValues);
+                _s.GetDiagonal(ref this._eigenValues);
                 var eigenValuesPow = new double[_eigenValues.Length];
 
                 for (var i = 0; i < eigenValuesPow.Length; i++)
@@ -229,17 +233,12 @@ namespace InnoTecheLearning
 
                 for (var i = 0; i < eigenValuesPow.Length; i++)
                 {
-                    var oneEigenVector = (ILArray<double>)_v.Subarray(new string[]
-                        {
-                        ":",
-                        i.ToString()
-                        });
-                    var oneFace = ILMath.multiply(_a, oneEigenVector);
-                    var oneFace2 = ILMath.multiply(oneFace, eigenValuesPow[i]);
+                    var oneEigenVector = System.Linq.Enumerable.ToArray(_v.SliceColumn(i));
+                    var oneFace = MatrixProduct(_a, oneEigenVector);
+                    var oneFace2 = MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfArray(oneFace).Multiply(eigenValuesPow[i]);
 
                     //25 = magicnumber, just needed to initialize double array
-                    var eigenVectorArray = new double[25];
-                    oneFace2.ExportValues(ref eigenVectorArray);
+                    var eigenVectorArray = oneFace2.AsArray();
 
                     var distance = 0.0;
                     for (var j = 0; j < eigenVectorArray.Length; j++)
@@ -345,7 +344,7 @@ namespace InnoTecheLearning
             {
                 var image = new Bitmap(Image.FromFile(imageSource));
                 InputPic = image;
-
+                
                 double[] newWeight = this.GetEigenWeight(ImageManager.ConvertImageToVector(image), _eigenVectors.Count);
                 var sortedWeights = new Collection<double>();
                 var sortedPictures = new Collection<byte[]>();
@@ -473,7 +472,7 @@ namespace InnoTecheLearning
 
         public static Bitmap ConvertVectorToImage(byte[] pixels)
         {
-            Bitmap image = new Bitmap(width, height);
+            Bitmap image = typeof(Bitmap).GetConstructor(width, height);
 
             int positionCounter = 0;
             for (int i = 0; i < width; i++)
@@ -484,7 +483,7 @@ namespace InnoTecheLearning
                                                  pixels[positionCounter]);
                     positionCounter++;
                     image.SetPixel(i, j, color);
-                }+
+                }
             }
             return image;
         }
@@ -494,11 +493,114 @@ namespace InnoTecheLearning
 
         //}
     }
+        public static Bitmap ImageFromFile(string File)
+        {
+            using (Stream inputFile = new FileStream(File, FileMode.Open))
+            {
+                byte[] buff = new byte[inputFile.Length];
+                inputFile.Read(buff, 0, buff.Length);
+
+                Stream memStream = new MemoryStream(buff);
+                return (Bitmap)Bitmap.FromStream(memStream);
+            }
+        }
         public static Color GetPixel(this Bitmap b, int x, int y) =>
             typeof(Bitmap).GetMethod(nameof(GetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
                   .Invoke(b, new object[] { x, y }).Cast<Color>();
         public static void SetPixel(this Bitmap b, int x, int y, Color color) =>
             typeof(Bitmap).GetMethod(nameof(SetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
                   .Invoke(b, new object[] { x, y, color });
+        public static T[,] TransposeRowsAndColumns<T>(this T[,] arr)
+        {
+            int rowCount = arr.GetLength(0);
+            int columnCount = arr.GetLength(1);
+            T[,] transposed = new T[columnCount, rowCount];
+            if (rowCount == columnCount)
+            {
+                transposed = (T[,])arr.Clone();
+                for (int i = 1; i < rowCount; i++)
+                {
+                    for (int j = 0; j < i; j++)
+                    {
+                        T temp = transposed[i, j];
+                        transposed[i, j] = transposed[j, i];
+                        transposed[j, i] = temp;
+                    }
+                }
+            }
+            else
+            {
+                for (int column = 0; column < columnCount; column++)
+                {
+                    for (int row = 0; row < rowCount; row++)
+                    {
+                        transposed[column, row] = arr[row, column];
+                    }
+                }
+            }
+            return transposed;
+        }
+        public static double[] MatrixProduct(this double[][] matrixA, double[] vectorB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
+            int bRows = vectorB.Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[] result = new double[aRows];
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int k = 0; k < aCols; ++k)
+                    result[i] += matrixA[i][k] * vectorB[k];
+            return result;
+        }
+        public static double[][] MatrixProduct(this double[][] matrixA, double[][] matrixB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
+            int bRows = matrixB.Length; int bCols = matrixB[0].Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[][] result = MatrixCreate(aRows, bCols);
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int j = 0; j < bCols; ++j) // each col of B
+                    for (int k = 0; k < aCols; ++k)
+                        result[i][j] += matrixA[i][k] * matrixB[k][j];
+            return result;
+        }
+        public static double[] MatrixProduct(this double[,] matrixA, double[] vectorB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA.GetLength(1);
+            int bRows = vectorB.Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[] result = new double[aRows];
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int k = 0; k < aCols; ++k)
+                    result[i] += matrixA[i,k] * vectorB[k];
+            return result;
+        }
+        public static double[,] MatrixProduct(this double[,] matrixA, double[,] matrixB)
+        {
+            int aRows = matrixA.GetLength(0); int aCols = matrixA.GetLength(1);
+            int bRows = matrixB.GetLength(0); int bCols = matrixB.GetLength(1);
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[,] result = new double[aRows, bCols];
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int j = 0; j < bCols; ++j) // each col of B
+                    for (int k = 0; k < aCols; ++k)
+                        result[i,j] += matrixA[i,k] * matrixB[k,j];
+            return result;
+        }
+        public static double[][] MatrixCreate(int rows, int cols)
+        {
+            // creates a matrix initialized to all 0.0s  
+            // do error checking here?  
+            double[][] result = new double[rows][];
+            for (int i = 0; i < rows; ++i)
+                result[i] = new double[cols];
+            // auto init to 0.0  
+            return result;
+        }
+        public static void GetDiagonal(this double[,] Matrix, ref double[] Ref)
+        { try { for (int i = 0; i < Matrix.Length; i++) Ref[i] = Matrix[i, i]; } catch { } }
     }
 }
