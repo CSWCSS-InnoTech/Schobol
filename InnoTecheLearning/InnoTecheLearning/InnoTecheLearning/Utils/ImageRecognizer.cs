@@ -16,7 +16,7 @@ namespace InnoTecheLearning
     partial class Utils
     {
         
-        public class EigenfaceManager
+        public class EigenfaceManager : IDisposable
         {
 
             #region Var
@@ -24,9 +24,9 @@ namespace InnoTecheLearning
             private const string TrainingIndicator = "1";
 
             //lists and arrays
-            private readonly ArrayList _trainingSet = new ArrayList();
-            private readonly ArrayList _vectorSet = new ArrayList();
-            private readonly ArrayList _eigenFaces = new ArrayList();
+            private readonly List<Bitmap> _trainingSet = new List<Bitmap>();
+            private readonly List<byte[]> _vectorSet = new List<byte[]>();
+            private readonly List<Bitmap> _eigenFaces = new List<Bitmap>();
             private readonly List<byte[]> _foundFaces = new List<byte[]>();
             private byte[,] _columnVectorMatrix;
             private double[,] _columnVectorIntMatrix;
@@ -68,6 +68,19 @@ namespace InnoTecheLearning
             #endregion
 
             /// <summary>
+            /// Loads all images from given enumerable. 
+            /// No need to dispose any images yourself - they will be disposed when this is disposed.
+            /// </summary>
+            /// <param name="path"></param>
+            public void AddToTrainingSet(IEnumerable<Bitmap> b)
+            {
+                if (!_trainingSetLoaded)
+                {
+                    _trainingSet.AddRange(b);
+                    _trainingSetLoaded = true;
+                }
+            }
+            /// <summary>
             /// Loads all images from given Path, that contain a "1" in their Filename.
             /// </summary>
             /// <param name="path"></param>
@@ -83,7 +96,7 @@ namespace InnoTecheLearning
                         if (file.Name.Contains(TrainingIndicator))
                         {
                             //open file
-                            var image = new Bitmap(Image.FromFile(file.FullName));
+                            var image = BitmapFromFile(file.FullName);
                             _trainingSet.Add(image);
                         }
                     }
@@ -342,7 +355,7 @@ namespace InnoTecheLearning
             /// <returns>Return the most similar image, that was trained by the system.</returns>
             public Bitmap GetFaceForInput(string imageSource)
             {
-                var image = new Bitmap(Image.FromFile(imageSource));
+                var image = BitmapFromFile(imageSource);
                 InputPic = image;
                 
                 double[] newWeight = this.GetEigenWeight(ImageManager.ConvertImageToVector(image), _eigenVectors.Count);
@@ -442,6 +455,46 @@ namespace InnoTecheLearning
                 return resultB;
             }
 
+            #region IDisposable Support
+            private bool disposedValue = false; // To detect redundant calls
+
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // TODO: dispose managed state (managed objects).
+                    }
+
+                    foreach (var b in _trainingSet) b?.Dispose();
+                    foreach (var b in _eigenFaces) b?.Dispose();
+                    MeanFaceBitmap?.Dispose();
+                    TestBild?.Dispose();
+                    InputPic?.Dispose();
+                    // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    // TODO: set large fields to null.
+
+                    disposedValue = true;
+                }
+            }
+
+            // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+             ~EigenfaceManager() {
+               // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+               Dispose(false);
+             }
+
+            // This code added to correctly implement the disposable pattern.
+            public void Dispose()
+            {
+                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+                Dispose(true);
+                // TODO: uncomment the following line if the finalizer is overridden above.
+                GC.SuppressFinalize(this);
+            }
+            #endregion
+
         }
 
     public static class ImageManager
@@ -472,15 +525,14 @@ namespace InnoTecheLearning
 
         public static Bitmap ConvertVectorToImage(byte[] pixels)
         {
-            Bitmap image = typeof(Bitmap).GetConstructor(width, height);
+            Bitmap image = CreateInstanceInternalCtor<Bitmap>(width, height, System.Drawing.Imaging.PixelFormat.Canonical);
 
             int positionCounter = 0;
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
-                    Color color = Color.FromArgb(255, pixels[positionCounter], pixels[positionCounter],
-                                                 pixels[positionCounter]);
+                    Color color = Color.FromArgb(255, pixels[positionCounter], pixels[positionCounter], pixels[positionCounter]);
                     positionCounter++;
                     image.SetPixel(i, j, color);
                 }
@@ -493,7 +545,7 @@ namespace InnoTecheLearning
 
         //}
     }
-        public static Bitmap ImageFromFile(string File)
+        public static Bitmap BitmapFromFile(string File)
         {
             using (Stream inputFile = new FileStream(File, FileMode.Open))
             {
@@ -602,5 +654,14 @@ namespace InnoTecheLearning
         }
         public static void GetDiagonal(this double[,] Matrix, ref double[] Ref)
         { try { for (int i = 0; i < Matrix.Length; i++) Ref[i] = Matrix[i, i]; } catch { } }
+        public static T CreateInstanceInternalCtor<T>(params object[] args)
+        {
+            var type = typeof(T);
+            var instance = type.GetTypeInfo().Assembly.CreateInstance(
+                type.FullName, false,
+                BindingFlags.Instance | BindingFlags.NonPublic,
+                null, args, null, null);
+            return (T)instance;
+        }
     }
 }

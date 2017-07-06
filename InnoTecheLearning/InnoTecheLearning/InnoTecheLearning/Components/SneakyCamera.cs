@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Text;
+using Windows.Foundation.Collections;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
 {
     partial class Utils
     {
+        public class CameraEventArgs : System.EventArgs
+        {
+            public Bitmap PreviewFrame { get; }
+            public IReadOnlyCollection<Bitmap> DetectedFaces { get; }
+            public CameraEventArgs(Bitmap PreviewFrame, IReadOnlyCollection<Bitmap> DetectedFaces)
+            { this.PreviewFrame = PreviewFrame; this.DetectedFaces = DetectedFaces; }
+        }
 #if __ANDROID__
         public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener
         {
@@ -15,20 +25,18 @@ namespace InnoTecheLearning
                 SurfaceTextureListener = this;
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
+            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
 #pragma warning disable 618 //Reason: Need Android 4 support
-            private byte[] ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera camera)
+            private System.IO.Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera camera)
             {
                 var cameraParameters = camera.GetParameters();
                 var width = cameraParameters.PreviewSize.Width;
                 var height = cameraParameters.PreviewSize.Height;
                 var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null);
-                var quality = 80;   // adjust this as needed
-                using (var ms = new System.IO.MemoryStream())
-                {
-                    yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
-                    var jpegData = ms.ToArray();
-                    return jpegData;
-                }
+                var quality = 100;   // adjust this as needed, default: 80
+                var ms = new System.IO.MemoryStream();
+                yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
+                return ms;
             }
             class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
             {
@@ -68,9 +76,7 @@ namespace InnoTecheLearning
                     cam.SetPreviewTexture(surface);
                     cam.StartPreview();
                     cam.SetPreviewCallback(new Callback((data, camera) => 
-                    {
-
-                    }));
+                        ProcessingPreview(this, (Bitmap)System.Drawing.Bitmap.FromStream(ConvertYuvToJpeg(data, camera)))));
                 }
                 catch (Java.IO.IOException ex)
                 {
@@ -92,6 +98,7 @@ namespace InnoTecheLearning
 #elif __IOS__
         public class Camera : UIKit.UIImageView
         {
+            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
             AVFoundation.AVCaptureSession session = new AVFoundation.AVCaptureSession()
             {
                 SessionPreset = AVFoundation.AVCaptureSession.PresetMedium
@@ -104,16 +111,28 @@ namespace InnoTecheLearning
                     Frame = Bounds
                 };
                 Layer.AddSublayer(captureVideoPreviewLayer);
-                
+
 
                 AVFoundation.AVCaptureDeviceInput input = new AVFoundation.AVCaptureDeviceInput(device, out Foundation.NSError error);
                 if (input == null)
                 {
+                    var ex = new Foundation.NSErrorException(error);
                     // Handle the error appropriately.
-                    Log(new Foundation.NSErrorException(error));//@"ERROR: trying to open camera: %@", 
+                    Log(ex);//@"ERROR: trying to open camera: %@", 
+                    throw ex;
                 }
+                AVFoundation.AVCaptureVideoDataOutput output = new AVFoundation.AVCaptureVideoDataOutput();
+                CoreFoundation.DispatchQueue queue = new CoreFoundation.DispatchQueue("edu.cswcss.eLearning.Camera.CtorQueue");
+                output.SetSampleBufferDelegateQueue(new BufferDelegate(
+                    (captureOutput, sampleBuffer, connection) =>
+                    {
+                        // Create a UIImage from the sample buffer data
+                        UIKit.UIImage image = ImageFromSampleBuffer(sampleBuffer);
+                        ProcessingPreview(this, (Bitmap)Bitmap.FromStream(image.AsJPEG().AsStream()));
+                        //< Add your code here that uses the image >;
+                    }), queue);
                 session.AddInput(input);
-
+                session.AddOutput(output);
                 session.StartRunning();
             }
             protected override void Dispose(bool disposing)
@@ -123,10 +142,25 @@ namespace InnoTecheLearning
                 session.Dispose();
                 device.Dispose();
             }
+            class BufferDelegate : Foundation.NSObject, AVFoundation.IAVCaptureVideoDataOutputSampleBufferDelegate
+            {
+                Action<AVFoundation.AVCaptureOutput, CoreMedia.CMSampleBuffer, AVFoundation.AVCaptureConnection> Handler;
+                public BufferDelegate(Action<AVFoundation.AVCaptureOutput, CoreMedia.CMSampleBuffer,
+                    AVFoundation.AVCaptureConnection> Handler) => this.Handler = Handler;
+                // Delegate routine that is called when a sample buffer was written
+                void DidOutputSampleBuffer(AVFoundation.AVCaptureOutput captureOutput, CoreMedia.CMSampleBuffer sampleBuffer,
+                    AVFoundation.AVCaptureConnection connection) => Handler?.Invoke(captureOutput, sampleBuffer, connection);
+
+            }
+            // Create a UIImage from sample buffer data
+            public static UIKit.UIImage ImageFromSampleBuffer(CoreMedia.CMSampleBuffer sampleBuffer) =>
+                // Get a CMSampleBuffer's Core Video image buffer for the media data
+                new UIKit.UIImage(new CoreImage.CIImage(sampleBuffer.GetImageBuffer()));
         }
 #elif WINDOWS_UWP
         public class Camera : Windows.UI.Xaml.Controls.UserControl, IDisposable
         {
+            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
             Windows.UI.Xaml.Controls.CaptureElement PreviewControl = new Windows.UI.Xaml.Controls.CaptureElement();
             Windows.Media.Capture.MediaCapture _mediaCapture;
             bool _isPreviewing;
@@ -141,31 +175,57 @@ namespace InnoTecheLearning
                     await _mediaCapture.InitializeAsync();
 
                     _displayRequest.RequestActive();
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = 
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences =
                         Windows.Graphics.Display.DisplayOrientations.Landscape;
                 }
                 catch (UnauthorizedAccessException)
                 {
                     // This will be thrown if the user denied access to the camera in privacy settings
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, 
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                         async () => await new Windows.UI.Popups.MessageDialog("The app was denied access to the camera").ShowAsync());
                     return Unit.Default;
                 }
-
+                if (_mediaCapture != null)
+                    _mediaCapture.CaptureDeviceExclusiveControlStatusChanged += _mediaCapture_CaptureDeviceExclusiveControlStatusChanged;
                 try
                 {
+
                     PreviewControl.Source = _mediaCapture;
-                    await _mediaCapture.StartPreviewAsync();
+                    await _mediaCapture?.StartPreviewAsync();
                     _isPreviewing = true;
+
+                    using(var TempFrame = await _mediaCapture?.GetPreviewFrameAsync())
+                    Device.StartTimer(TempFrame?.Duration ?? TimeSpan.FromMilliseconds(40), () => {
+                        var ms = new System.IO.MemoryStream();
+
+                        var encoder = Windows.Graphics.Imaging.BitmapEncoder.CreateAsync
+                        (Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId,
+                        System.IO.WindowsRuntimeStreamExtensions.AsRandomAccessStream(ms))
+                        .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
+
+                        using (var b = _mediaCapture.GetPreviewFrameAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult())
+                        {
+                            encoder.SetSoftwareBitmap(b.SoftwareBitmap);
+                            try
+                            {
+                                encoder.FlushAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
+                            }
+                            catch { ms.Dispose(); return _isPreviewing; }
+
+                            Windows.Media.FaceAnalysis.FaceDetector detector = Windows.Media.FaceAnalysis.FaceDetector.
+                            ProcessingPreview(this, new CameraEventArgs((Bitmap)Bitmap.FromStream(ms), ));
+                            return _isPreviewing;
+                        }
+                    });
                 }
                 catch (System.IO.FileLoadException)
                 {
-                    _mediaCapture.CaptureDeviceExclusiveControlStatusChanged += _mediaCapture_CaptureDeviceExclusiveControlStatusChanged;
+                    // _mediaCapture.CaptureDeviceExclusiveControlStatusChanged += _mediaCapture_CaptureDeviceExclusiveControlStatusChanged;
                 }
                 return Unit.Default;
             }
             private async void _mediaCapture_CaptureDeviceExclusiveControlStatusChanged
-                (Windows.Media.Capture.MediaCapture sender, 
+                (Windows.Media.Capture.MediaCapture sender,
                 Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatusChangedEventArgs args)
             {
                 if (args.Status == Windows.Media.Capture.MediaCaptureDeviceExclusiveControlStatus.SharedReadOnlyAvailable)
