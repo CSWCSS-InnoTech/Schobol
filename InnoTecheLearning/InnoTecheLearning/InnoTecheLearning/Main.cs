@@ -1475,11 +1475,11 @@ namespace InnoTecheLearning
         {
             get
             {
+                var cam = new Camera();
+                cam.ProcessingPreview += (sender, e) => { };
                 var s = new StackLayout();
                 s.Children.Add(
-                    new Camera()
-                    .ToView()
-                    .With((ref View x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand)
+                    cam.ToView().With((ref View x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand)
                 );
                 return s;
             }

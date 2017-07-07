@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Bitmap = System.Drawing.Bitmap;
+using BindingFlags = System.Reflection.BindingFlags;
 
 namespace InnoTecheLearning
 {
@@ -452,6 +454,96 @@ namespace InnoTecheLearning
         public static bool IsCreated(this FileInfo info) => File.Exists(info.FullName);
         public static bool IsCreated(this DirectoryInfo info) => Directory.Exists(info.FullName);
         
+        public static System.Drawing.Color GetPixel(this Bitmap b, int x, int y) =>
+            System.Reflection.TypeExtensions.GetMethod(typeof(Bitmap),
+                nameof(GetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
+                  .Invoke(b, new object[] { x, y }).Cast<System.Drawing.Color>();
+        public static void SetPixel(this Bitmap b, int x, int y, System.Drawing.Color color) =>
+            System.Reflection.TypeExtensions.GetMethod(typeof(Bitmap),
+                nameof(SetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
+                  .Invoke(b, new object[] { x, y, color });
+        public static T[,] TransposeRowsAndColumns<T>(this T[,] arr)
+        {
+            int rowCount = arr.GetLength(0);
+            int columnCount = arr.GetLength(1);
+            T[,] transposed = new T[columnCount, rowCount];
+            if (rowCount == columnCount)
+            {
+                transposed = (T[,])arr.Clone();
+                for (int i = 1; i < rowCount; i++)
+                {
+                    for (int j = 0; j < i; j++)
+                    {
+                        T temp = transposed[i, j];
+                        transposed[i, j] = transposed[j, i];
+                        transposed[j, i] = temp;
+                    }
+                }
+            }
+            else
+            {
+                for (int column = 0; column < columnCount; column++)
+                {
+                    for (int row = 0; row < rowCount; row++)
+                    {
+                        transposed[column, row] = arr[row, column];
+                    }
+                }
+            }
+            return transposed;
+        }
+        public static double[] MatrixProduct(this double[][] matrixA, double[] vectorB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
+            int bRows = vectorB.Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[] result = new double[aRows];
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int k = 0; k < aCols; ++k)
+                    result[i] += matrixA[i][k] * vectorB[k];
+            return result;
+        }
+        public static double[][] MatrixProduct(this double[][] matrixA, double[][] matrixB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
+            int bRows = matrixB.Length; int bCols = matrixB[0].Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[][] result = MatrixCreate(aRows, bCols);
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int j = 0; j < bCols; ++j) // each col of B
+                    for (int k = 0; k < aCols; ++k)
+                        result[i][j] += matrixA[i][k] * matrixB[k][j];
+            return result;
+        }
+        public static double[] MatrixProduct(this double[,] matrixA, double[] vectorB)
+        {
+            int aRows = matrixA.Length; int aCols = matrixA.GetLength(1);
+            int bRows = vectorB.Length;
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[] result = new double[aRows];
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int k = 0; k < aCols; ++k)
+                    result[i] += matrixA[i, k] * vectorB[k];
+            return result;
+        }
+        public static double[,] MatrixProduct(this double[,] matrixA, double[,] matrixB)
+        {
+            int aRows = matrixA.GetLength(0); int aCols = matrixA.GetLength(1);
+            int bRows = matrixB.GetLength(0); int bCols = matrixB.GetLength(1);
+            if (aCols != bRows)
+                throw new Exception("Non-conformable matrices in MatrixProduct");
+            double[,] result = new double[aRows, bCols];
+            for (int i = 0; i < aRows; ++i) // each row of A
+                for (int j = 0; j < bCols; ++j) // each col of B
+                    for (int k = 0; k < aCols; ++k)
+                        result[i, j] += matrixA[i, k] * matrixB[k, j];
+            return result;
+        }
+        public static void GetDiagonal(this double[,] Matrix, ref double[] Ref)
+        { try { for (int i = 0; i < Matrix.GetLength(0); i++) Ref[i] = Matrix[i, i]; } catch { } }
         /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
         
         public static void Fill<T>(this IList<T> List) where T : new()

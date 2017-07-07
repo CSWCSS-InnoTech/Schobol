@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using Xamarin.Forms;
+using Bitmap = System.Drawing.Bitmap;
 
 namespace InnoTecheLearning
 {
@@ -645,6 +646,17 @@ namespace InnoTecheLearning
                         Modificator.VerticalOptions = LayoutOptions.FillAndExpand;
                 AppendScrollStack(Modificator, IEViews);
                 return Modificator;
+            }
+            public static Bitmap Bitmap(string File)
+            {
+                using (Stream inputFile = new FileStream(File, FileMode.Open))
+                {
+                    byte[] buff = new byte[inputFile.Length];
+                    inputFile.Read(buff, 0, buff.Length);
+
+                    Stream memStream = new MemoryStream(buff);
+                    return (Bitmap)Bitmap.FromStream(memStream);
+                }
             }
         }
     }

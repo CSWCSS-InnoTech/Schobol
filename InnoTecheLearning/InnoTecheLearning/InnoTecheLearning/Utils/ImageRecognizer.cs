@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Reflection;
 using System.IO;
-using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics.LinearAlgebra.Double;
 //using ILNumerics;
 //using ILNumerics.BuiltInFunctions;
 
@@ -15,7 +15,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        
+
         public class EigenfaceManager : IDisposable
         {
 
@@ -96,7 +96,7 @@ namespace InnoTecheLearning
                         if (file.Name.Contains(TrainingIndicator))
                         {
                             //open file
-                            var image = BitmapFromFile(file.FullName);
+                            var image = Create.Bitmap(file.FullName);
                             _trainingSet.Add(image);
                         }
                     }
@@ -111,7 +111,7 @@ namespace InnoTecheLearning
             /// </summary>
             private void CreateColumnVectorMatrix()
             {
-                var matrixHeightRef = (byte[])_vectorSet[0];
+                var matrixHeightRef = _vectorSet[0];
                 _columnMatrixHeight = matrixHeightRef.Length;
                 _columnMatrixWidth = _vectorSet.Count;
 
@@ -119,7 +119,7 @@ namespace InnoTecheLearning
 
                 for (int i = 0; i < _vectorSet.Count; i++)
                 {
-                    var vector = (byte[])_vectorSet[i];
+                    var vector = _vectorSet[i];
                     for (int j = 0; j < vector.Length; j++)
                     {
                         byte color = vector[j];
@@ -202,7 +202,7 @@ namespace InnoTecheLearning
                 {
                     for (var j = 0; j < _columnMatrixHeight; j++)
                     {
-                        _columnVectorIntMatrix[i, j] = (double)_columnVectorMatrix[i, j];
+                        _columnVectorIntMatrix[i, j] = _columnVectorMatrix[i, j];
                     }
                 }
             }
@@ -221,7 +221,7 @@ namespace InnoTecheLearning
             /// </summary>
             private void CreateSvdOnCorrelation()
             {
-                var Intermediate = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix.OfArray(_covariance).Svd(true);
+                var Intermediate = DenseMatrix.OfArray(_covariance).Svd(true);
                 _s = Intermediate.W.AsArray();
                 _v = Intermediate.VT.AsArray();
                 _u = Intermediate.U.AsArray();
@@ -233,22 +233,22 @@ namespace InnoTecheLearning
             private void CalculateEigenValues()
             {
                 //25 = magicnumber, just needed to initialize double array
-                this._eigenValues = new double[25];
-                _s.GetDiagonal(ref this._eigenValues);
+                _eigenValues = new double[25];
+                _s.GetDiagonal(ref _eigenValues);
                 var eigenValuesPow = new double[_eigenValues.Length];
 
                 for (var i = 0; i < eigenValuesPow.Length; i++)
                 {
-                    eigenValuesPow[i] = (double)Math.Pow((double)_eigenValues[i], -0.5);
+                    eigenValuesPow[i] = Math.Pow(_eigenValues[i], -0.5);
                 }
 
-                this._eigenVectors.Clear();
+                _eigenVectors.Clear();
 
                 for (var i = 0; i < eigenValuesPow.Length; i++)
                 {
                     var oneEigenVector = System.Linq.Enumerable.ToArray(_v.SliceColumn(i));
                     var oneFace = MatrixProduct(_a, oneEigenVector);
-                    var oneFace2 = MathNet.Numerics.LinearAlgebra.Double.DenseVector.OfArray(oneFace).Multiply(eigenValuesPow[i]);
+                    var oneFace2 = DenseVector.OfArray(oneFace).Multiply(eigenValuesPow[i]);
 
                     //25 = magicnumber, just needed to initialize double array
                     var eigenVectorArray = oneFace2.AsArray();
@@ -256,7 +256,7 @@ namespace InnoTecheLearning
                     var distance = 0.0;
                     for (var j = 0; j < eigenVectorArray.Length; j++)
                     {
-                        distance += Math.Pow((double)eigenVectorArray[j], 2.0);
+                        distance += Math.Pow(eigenVectorArray[j], 2.0);
                     }
 
                     distance = Math.Sqrt(distance);
@@ -271,7 +271,7 @@ namespace InnoTecheLearning
 
                 for (var i = 0; i < this._vectorSet.Count; i++)
                 {
-                    var existingWeight = this.GetEigenWeight((byte[])this._vectorSet[i], this._eigenVectors.Count);
+                    var existingWeight = this.GetEigenWeight(this._vectorSet[i], this._eigenVectors.Count);
                     this._eigenWeights.Add(existingWeight);
                 }
             }
@@ -355,9 +355,9 @@ namespace InnoTecheLearning
             /// <returns>Return the most similar image, that was trained by the system.</returns>
             public Bitmap GetFaceForInput(string imageSource)
             {
-                var image = BitmapFromFile(imageSource);
+                var image = Create.Bitmap(imageSource);
                 InputPic = image;
-                
+
                 double[] newWeight = this.GetEigenWeight(ImageManager.ConvertImageToVector(image), _eigenVectors.Count);
                 var sortedWeights = new Collection<double>();
                 var sortedPictures = new Collection<byte[]>();
@@ -372,7 +372,7 @@ namespace InnoTecheLearning
                         if (sortedWeights.Count == 0)
                         {
                             sortedWeights.Add(distance);
-                            sortedPictures.Add((byte[])_vectorSet[i]);
+                            sortedPictures.Add(_vectorSet[i]);
                         }
                         else
                         {
@@ -381,7 +381,7 @@ namespace InnoTecheLearning
                                 if (distance < sortedWeights[j])
                                 {
                                     sortedWeights.Insert(j, distance);
-                                    sortedPictures.Insert(j, (byte[])_vectorSet[i]);
+                                    sortedPictures.Insert(j, _vectorSet[i]);
                                     break;
                                 }
                             }
@@ -407,10 +407,10 @@ namespace InnoTecheLearning
                 var result = 0.0;
                 for (var i = 0; i < newWeight.Length; i++)
                 {
-                    result += Math.Pow(((double)newWeight[i] - (double)existingWeight[i]) / (double)this._eigenVectors[0].Length, 2.0);
+                    result += Math.Pow((newWeight[i] - existingWeight[i]) / _eigenVectors[0].Length, 2.0);
                 }
                 result = Math.Sqrt(result);
-                return result / Math.Sqrt((double)newWeight.Length);
+                return result / Math.Sqrt(newWeight.Length);
             }
 
             /// <summary>
@@ -480,10 +480,11 @@ namespace InnoTecheLearning
             }
 
             // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-             ~EigenfaceManager() {
-               // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-               Dispose(false);
-             }
+            ~EigenfaceManager()
+            {
+                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+                Dispose(false);
+            }
 
             // This code added to correctly implement the disposable pattern.
             public void Dispose()
@@ -495,173 +496,55 @@ namespace InnoTecheLearning
             }
             #endregion
 
-        }
-
-    public static class ImageManager
-    {
-        private static int width;
-        private static int height;
-        public static byte[] ConvertImageToVector(Bitmap Image)
-        {
-            byte[] vector = new byte[Image.Width * Image.Height];
-
-            height = Image.Height;
-            width = Image.Width;
-
-            int positionCounter = 0;
-
-            for (int i = 0; i < Image.Width; i++)
+            public static class ImageManager
             {
-                for (int j = 0; j < Image.Height; j++)
+                private static int width;
+                private static int height;
+                public static byte[] ConvertImageToVector(Bitmap Image)
                 {
-                    vector[positionCounter] = Image.GetPixel(i, j).R;
-                    Color color = Image.GetPixel(i, j);
-                    positionCounter++;
-                }
-            }
+                    byte[] vector = new byte[Image.Width * Image.Height];
 
-            return vector;
-        }
+                    height = Image.Height;
+                    width = Image.Width;
 
-        public static Bitmap ConvertVectorToImage(byte[] pixels)
-        {
-            Bitmap image = CreateInstanceInternalCtor<Bitmap>(width, height, System.Drawing.Imaging.PixelFormat.Canonical);
+                    int positionCounter = 0;
 
-            int positionCounter = 0;
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    Color color = Color.FromArgb(255, pixels[positionCounter], pixels[positionCounter], pixels[positionCounter]);
-                    positionCounter++;
-                    image.SetPixel(i, j, color);
-                }
-            }
-            return image;
-        }
-
-        //public BufferedImage ConvertVectorToImage(int[] ImageVector)
-        //{
-
-        //}
-    }
-        public static Bitmap BitmapFromFile(string File)
-        {
-            using (Stream inputFile = new FileStream(File, FileMode.Open))
-            {
-                byte[] buff = new byte[inputFile.Length];
-                inputFile.Read(buff, 0, buff.Length);
-
-                Stream memStream = new MemoryStream(buff);
-                return (Bitmap)Bitmap.FromStream(memStream);
-            }
-        }
-        public static Color GetPixel(this Bitmap b, int x, int y) =>
-            typeof(Bitmap).GetMethod(nameof(GetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
-                  .Invoke(b, new object[] { x, y }).Cast<Color>();
-        public static void SetPixel(this Bitmap b, int x, int y, Color color) =>
-            typeof(Bitmap).GetMethod(nameof(SetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
-                  .Invoke(b, new object[] { x, y, color });
-        public static T[,] TransposeRowsAndColumns<T>(this T[,] arr)
-        {
-            int rowCount = arr.GetLength(0);
-            int columnCount = arr.GetLength(1);
-            T[,] transposed = new T[columnCount, rowCount];
-            if (rowCount == columnCount)
-            {
-                transposed = (T[,])arr.Clone();
-                for (int i = 1; i < rowCount; i++)
-                {
-                    for (int j = 0; j < i; j++)
+                    for (int i = 0; i < Image.Width; i++)
                     {
-                        T temp = transposed[i, j];
-                        transposed[i, j] = transposed[j, i];
-                        transposed[j, i] = temp;
+                        for (int j = 0; j < Image.Height; j++)
+                        {
+                            vector[positionCounter] = Image.GetPixel(i, j).R;
+                            Color color = Image.GetPixel(i, j);
+                            positionCounter++;
+                        }
                     }
+
+                    return vector;
                 }
-            }
-            else
-            {
-                for (int column = 0; column < columnCount; column++)
+
+                public static Bitmap ConvertVectorToImage(byte[] pixels)
                 {
-                    for (int row = 0; row < rowCount; row++)
+                    Bitmap image = CreateInstanceInternalCtor<Bitmap>(width, height, System.Drawing.Imaging.PixelFormat.Canonical);
+
+                    int positionCounter = 0;
+                    for (int i = 0; i < width; i++)
                     {
-                        transposed[column, row] = arr[row, column];
+                        for (int j = 0; j < height; j++)
+                        {
+                            Color color = Color.FromArgb(255, pixels[positionCounter], pixels[positionCounter], pixels[positionCounter]);
+                            positionCounter++;
+                            image.SetPixel(i, j, color);
+                        }
                     }
+                    return image;
                 }
+
+                //public BufferedImage ConvertVectorToImage(int[] ImageVector)
+                //{
+
+                //}
             }
-            return transposed;
         }
-        public static double[] MatrixProduct(this double[][] matrixA, double[] vectorB)
-        {
-            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
-            int bRows = vectorB.Length;
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[] result = new double[aRows];
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int k = 0; k < aCols; ++k)
-                    result[i] += matrixA[i][k] * vectorB[k];
-            return result;
-        }
-        public static double[][] MatrixProduct(this double[][] matrixA, double[][] matrixB)
-        {
-            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
-            int bRows = matrixB.Length; int bCols = matrixB[0].Length;
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[][] result = MatrixCreate(aRows, bCols);
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int j = 0; j < bCols; ++j) // each col of B
-                    for (int k = 0; k < aCols; ++k)
-                        result[i][j] += matrixA[i][k] * matrixB[k][j];
-            return result;
-        }
-        public static double[] MatrixProduct(this double[,] matrixA, double[] vectorB)
-        {
-            int aRows = matrixA.Length; int aCols = matrixA.GetLength(1);
-            int bRows = vectorB.Length;
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[] result = new double[aRows];
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int k = 0; k < aCols; ++k)
-                    result[i] += matrixA[i,k] * vectorB[k];
-            return result;
-        }
-        public static double[,] MatrixProduct(this double[,] matrixA, double[,] matrixB)
-        {
-            int aRows = matrixA.GetLength(0); int aCols = matrixA.GetLength(1);
-            int bRows = matrixB.GetLength(0); int bCols = matrixB.GetLength(1);
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[,] result = new double[aRows, bCols];
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int j = 0; j < bCols; ++j) // each col of B
-                    for (int k = 0; k < aCols; ++k)
-                        result[i,j] += matrixA[i,k] * matrixB[k,j];
-            return result;
-        }
-        public static double[][] MatrixCreate(int rows, int cols)
-        {
-            // creates a matrix initialized to all 0.0s  
-            // do error checking here?  
-            double[][] result = new double[rows][];
-            for (int i = 0; i < rows; ++i)
-                result[i] = new double[cols];
-            // auto init to 0.0  
-            return result;
-        }
-        public static void GetDiagonal(this double[,] Matrix, ref double[] Ref)
-        { try { for (int i = 0; i < Matrix.Length; i++) Ref[i] = Matrix[i, i]; } catch { } }
-        public static T CreateInstanceInternalCtor<T>(params object[] args)
-        {
-            var type = typeof(T);
-            var instance = type.GetTypeInfo().Assembly.CreateInstance(
-                type.FullName, false,
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null, args, null, null);
-            return (T)instance;
-        }
+
     }
 }

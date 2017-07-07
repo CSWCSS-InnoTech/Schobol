@@ -1111,7 +1111,37 @@ function Min() { return Math.min.apply(global, arguments); }
         public static Func<bool> True(Action A) => () => { A?.Invoke(); return true; };
         public static TimeSpan Seconds(double s) => TimeSpan.FromSeconds(s);
         public static TimeSpan Milliseconds(double s) => TimeSpan.FromMilliseconds(s);
+        
+        public static double[][] MatrixCreate(int rows, int cols)
+        {
+            // creates a matrix initialized to all 0.0s  
+            // do error checking here?  
+            double[][] result = new double[rows][];
+            for (int i = 0; i < rows; ++i)
+                result[i] = new double[cols];
+            // auto init to 0.0  
+            return result;
+        }
 
+
+
+        /// <summary>
+        /// Constructs an object through reflection with a possibly non-public constructor.
+        /// </summary>
+        /// <typeparam name="T">The type of the object.</typeparam>
+        /// <param name="args">Arguments to pass into the constructor.</param>
+        /// <exception cref="MissingMethodException">Thrown when no matching constructor is found.</exception>
+        /// <returns>The constructed object.</returns>
+        public static T CreateInstanceInternalCtor<T>(params object[] args)
+        {
+            var type = typeof(T);
+            foreach (var ctor in System.Linq.Enumerable.Where(
+                System.Reflection.IntrospectionExtensions.GetTypeInfo(type).DeclaredConstructors, x => x.Name == ".ctor"))
+                if (System.Linq.Enumerable.SequenceEqual(
+                    System.Linq.Enumerable.Select(ctor.GetParameters(), x => x.ParameterType),
+                    System.Linq.Enumerable.Select(args, x => x.GetType()))) return (T)ctor.Invoke(args);
+            throw new MissingMethodException("No matching constructor found.");
+        }
     }
     ///// <summary>
     ///// An uninitialized Void object.
