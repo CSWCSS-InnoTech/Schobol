@@ -257,6 +257,9 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CoreCompat.System.Drawing">
+      <Version>1.0.0-beta006</Version>
+    </PackageReference>
     <PackageReference Include="Jint">
       <Version>2.10.4</Version>
     </PackageReference>
