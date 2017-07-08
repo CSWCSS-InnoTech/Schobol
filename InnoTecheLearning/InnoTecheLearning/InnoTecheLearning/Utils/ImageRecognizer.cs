@@ -514,7 +514,7 @@ namespace InnoTecheLearning
                         for (int j = 0; j < Image.Height; j++)
                         {
                             vector[positionCounter] = Image.GetPixel(i, j).R;
-                            Color color = Image.GetPixel(i, j);
+                            //var color = Image.GetPixel(i, j);
                             positionCounter++;
                         }
                     }
@@ -524,19 +524,28 @@ namespace InnoTecheLearning
 
                 public static Bitmap ConvertVectorToImage(byte[] pixels)
                 {
-                    Bitmap image = CreateInstanceInternalCtor<Bitmap>(width, height, System.Drawing.Imaging.PixelFormat.Canonical);
+                    Bitmap image = new Bitmap(width, height);
 
                     int positionCounter = 0;
                     for (int i = 0; i < width; i++)
                     {
                         for (int j = 0; j < height; j++)
                         {
-                            Color color = Color.FromArgb(255, pixels[positionCounter], pixels[positionCounter], pixels[positionCounter]);
                             positionCounter++;
-                            image.SetPixel(i, j, color);
+                            SetPixel.Invoke(image, new object[] { i, j, FromArgb.Invoke(null,
+                                new object[] { 255, pixels[positionCounter], pixels[positionCounter], pixels[positionCounter] }) });
                         }
                     }
                     return image;
+                }
+
+                static System.Reflection.MethodInfo SetPixel;
+                static System.Reflection.MethodInfo FromArgb;
+                static ImageManager()
+                {
+                    FromArgb = typeof(Bitmap).GetMethod(nameof(Bitmap.GetPixel)).ReturnType
+                        .GetMethod("FromArgb", new[] { typeof(int), typeof(int), typeof(int), typeof(int) });
+                    SetPixel = typeof(Bitmap).GetMethod(nameof(Bitmap.SetPixel));
                 }
 
                 //public BufferedImage ConvertVectorToImage(int[] ImageVector)

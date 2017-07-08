@@ -655,7 +655,7 @@ namespace InnoTecheLearning
                     inputFile.Read(buff, 0, buff.Length);
 
                     Stream memStream = new MemoryStream(buff);
-                    return (Bitmap)Bitmap.FromStream(memStream);
+                    return (Bitmap)System.Drawing.Bitmap.FromStream(memStream);
                 }
             }
         }

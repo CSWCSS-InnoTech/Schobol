@@ -454,14 +454,6 @@ namespace InnoTecheLearning
         public static bool IsCreated(this FileInfo info) => File.Exists(info.FullName);
         public static bool IsCreated(this DirectoryInfo info) => Directory.Exists(info.FullName);
         
-        public static System.Drawing.Color GetPixel(this Bitmap b, int x, int y) =>
-            System.Reflection.TypeExtensions.GetMethod(typeof(Bitmap),
-                nameof(GetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
-                  .Invoke(b, new object[] { x, y }).Cast<System.Drawing.Color>();
-        public static void SetPixel(this Bitmap b, int x, int y, System.Drawing.Color color) =>
-            System.Reflection.TypeExtensions.GetMethod(typeof(Bitmap),
-                nameof(SetPixel), BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.Instance)
-                  .Invoke(b, new object[] { x, y, color });
         public static T[,] TransposeRowsAndColumns<T>(this T[,] arr)
         {
             int rowCount = arr.GetLength(0);
