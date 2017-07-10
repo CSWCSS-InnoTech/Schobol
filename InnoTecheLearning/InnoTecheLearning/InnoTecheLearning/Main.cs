@@ -1475,7 +1475,6 @@ namespace InnoTecheLearning
         {
             get
             {
-                
                 var Detected = new StackLayout
                 { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
                 var cam = new Camera();
@@ -1491,12 +1490,12 @@ namespace InnoTecheLearning
                             Aspect = Aspect.AspectFit,
                             Source = new StreamImageSource
                             {
-                                Stream = _ =>
+                                Stream = y => Task.Run(() =>
                                 {
                                     System.IO.Stream memoryStream = new System.IO.MemoryStream();
                                     x.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                                    return Task.FromResult(memoryStream);
-                                }
+                                    return memoryStream;
+                                }, y)
                             }
                         })
                     );

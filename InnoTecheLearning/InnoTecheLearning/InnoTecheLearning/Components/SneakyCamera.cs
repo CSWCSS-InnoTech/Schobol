@@ -78,7 +78,7 @@ namespace InnoTecheLearning
                     cam.SetPreviewTexture(surface);
                     cam.StartPreview();
                     cam.SetPreviewCallback(new Callback((data, camera) => 
-                        ProcessingPreview(this, (ConvertYuvToJpeg(data, camera), Faces))));
+                        Unit.InvokeAsync(() => ProcessingPreview(this, (ConvertYuvToJpeg(data, camera), Faces)))));
                     cam.FaceDetection += (sender, e) => Faces = e.Faces
                         .Select(x => new RectangleF(x.Rect.Left, x.Rect.Top, x.Rect.Right - x.Rect.Left, x.Rect.Bottom - x.Rect.Top));
                     cam.StartFaceDetection();
@@ -131,7 +131,7 @@ namespace InnoTecheLearning
                 AVFoundation.AVCaptureVideoDataOutput output = new AVFoundation.AVCaptureVideoDataOutput();
                 CoreFoundation.DispatchQueue queue = new CoreFoundation.DispatchQueue("edu.cswcss.eLearning.Camera.CtorQueue");
                 output.SetSampleBufferDelegateQueue(new BufferDelegate(
-                    (captureOutput, sampleBuffer, connection) =>
+                    (captureOutput, sampleBuffer, connection) => Unit.InvokeAsync(() =>
                     {
                         // Get a CMSampleBuffer's Core Video image buffer for the media data
                         // Create a UIImage from sample buffer data
@@ -143,7 +143,7 @@ namespace InnoTecheLearning
                             detector.FeaturesInImage(image).Select(x => 
                             new RectangleF((float)x.Bounds.X, (float)x.Bounds.Y, (float)x.Bounds.Width, (float)x.Bounds.Height))));
                         //< Add your code here that uses the image >;
-                    }), queue);
+                    })), queue);
                 session.AddInput(input);
                 session.AddOutput(output);
                 session.StartRunning();
@@ -205,11 +205,10 @@ namespace InnoTecheLearning
 
                     using(var TempFrame = await _mediaCapture?.GetPreviewFrameAsync())
                     Xamarin.Forms.Device.StartTimer(TempFrame?.Duration ?? TimeSpan.FromMilliseconds(40), () => {
-                        var ms = new System.IO.MemoryStream();
+                        var ms = new MemoryStream();
 
                         var encoder = Windows.Graphics.Imaging.BitmapEncoder.CreateAsync
-                            (Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId,
-                            System.IO.WindowsRuntimeStreamExtensions.AsRandomAccessStream(ms))
+                            (Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId, ms.AsRandomAccessStream())
                             .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
                         
                         using (var b = _mediaCapture.GetPreviewFrameAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult())
@@ -227,7 +226,7 @@ namespace InnoTecheLearning
                         }
                     });
                 }
-                catch (System.IO.FileLoadException)
+                catch (FileLoadException)
                 {
                     // _mediaCapture.CaptureDeviceExclusiveControlStatusChanged += _mediaCapture_CaptureDeviceExclusiveControlStatusChanged;
                 }
