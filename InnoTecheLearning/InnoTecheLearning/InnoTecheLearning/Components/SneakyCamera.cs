@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 
 namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public class CameraEventArgs : EventArgs
+        public class CameraEventArgs : EventArgs, IDisposable
         {
-            public Bitmap PreviewFrameJPEG { get; }
+            public Stream PreviewFrameJPEG { get; }
             public IEnumerable<RectangleF> DetectedFaces { get; }
-            public CameraEventArgs(Bitmap PreviewFrameJPEG, IEnumerable<RectangleF> DetectedFaces)
+            public CameraEventArgs(Stream PreviewFrameJPEG, IEnumerable<RectangleF> DetectedFaces)
             { this.PreviewFrameJPEG = PreviewFrameJPEG; this.DetectedFaces = DetectedFaces; }
-            public static implicit operator CameraEventArgs((Image I, IEnumerable<RectangleF> R) T) =>
-                new CameraEventArgs(T.I as Bitmap, T.R);
+            public static implicit operator CameraEventArgs((Stream S, IEnumerable<RectangleF> R) T) =>
+                new CameraEventArgs(T.S, T.R);
+
+            public void Dispose() => PreviewFrameJPEG.Dispose();
+            ~CameraEventArgs() => Dispose();
         }
 #if __ANDROID__
         public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener
@@ -26,14 +30,14 @@ namespace InnoTecheLearning
             }
             public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
 #pragma warning disable 618 //Reason: Need Android 4 support
-            private System.IO.Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera camera)
+            private Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera camera)
             {
                 var cameraParameters = camera.GetParameters();
                 var width = cameraParameters.PreviewSize.Width;
                 var height = cameraParameters.PreviewSize.Height;
                 var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null);
                 var quality = 100;   // adjust this as needed, default: 80
-                var ms = new System.IO.MemoryStream();
+                var ms = new MemoryStream();
                 yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
                 return ms;
             }
@@ -74,7 +78,7 @@ namespace InnoTecheLearning
                     cam.SetPreviewTexture(surface);
                     cam.StartPreview();
                     cam.SetPreviewCallback(new Callback((data, camera) => 
-                        ProcessingPreview(this, (Image.FromStream(ConvertYuvToJpeg(data, camera)), Faces))));
+                        ProcessingPreview(this, (ConvertYuvToJpeg(data, camera), Faces))));
                     cam.FaceDetection += (sender, e) => Faces = e.Faces
                         .Select(x => new RectangleF(x.Rect.Left, x.Rect.Top, x.Rect.Right - x.Rect.Left, x.Rect.Bottom - x.Rect.Top));
                     cam.StartFaceDetection();
@@ -135,7 +139,7 @@ namespace InnoTecheLearning
                         CoreImage.CIContext context = new CoreImage.CIContext(new CoreImage.CIContextOptions());
                         CoreImage.CIDetector detector = CoreImage.CIDetector.CreateFaceDetector(context, true);
                         ProcessingPreview(this, 
-                            (Bitmap.FromStream(new UIKit.UIImage(image).AsJPEG().AsStream()), 
+                            (new UIKit.UIImage(image).AsJPEG().AsStream(), 
                             detector.FeaturesInImage(image).Select(x => 
                             new RectangleF((float)x.Bounds.X, (float)x.Bounds.Y, (float)x.Bounds.Width, (float)x.Bounds.Height))));
                         //< Add your code here that uses the image >;
@@ -216,7 +220,7 @@ namespace InnoTecheLearning
 
                             var detector = Windows.Media.FaceAnalysis.FaceDetector.CreateAsync()
                                 .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
-                            ProcessingPreview(this, (Bitmap.FromStream(ms), 
+                            ProcessingPreview(this, (ms, 
                                 detector.DetectFacesAsync(b.SoftwareBitmap).AsTask().ConfigureAwait(false).GetAwaiter().GetResult()
                                     .Select(x => new RectangleF(x.FaceBox.X, x.FaceBox.Y, x.FaceBox.Width, x.FaceBox.Height))));
                             return _isPreviewing;

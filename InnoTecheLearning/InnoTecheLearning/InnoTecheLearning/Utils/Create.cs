@@ -592,6 +592,20 @@ namespace InnoTecheLearning
                 (Base.Content as StackLayout).Children.AddRange(Items);
             public static void FillGrid(Grid Base, View Item) => 
                 Base.Children.Add(Item, 0, Base.RowDefinitions.Count, 0, Base.ColumnDefinitions.Count);
+            public static ScrollView Scroll(StackLayout Stack) =>
+                new ScrollView { Orientation = (ScrollOrientation)Stack.Orientation, Content = Stack }
+                .With((ref ScrollView x) =>
+                {
+                    switch (Stack.Orientation)
+                    {
+                        case StackOrientation.Vertical:
+                            x.VerticalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                        case StackOrientation.Horizontal:
+                            x.HorizontalOptions = LayoutOptions.FillAndExpand;
+                            break;
+                    }
+                });
             public static ScrollView Scroll(ScrollOrientation Orientation, View View) =>
                 new ScrollView { Orientation = Orientation, Content = View }
                 .With((ref ScrollView x) =>

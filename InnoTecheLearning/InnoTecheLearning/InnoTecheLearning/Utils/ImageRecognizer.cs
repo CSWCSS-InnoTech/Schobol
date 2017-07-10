@@ -539,8 +539,8 @@ namespace InnoTecheLearning
                     return image;
                 }
 
-                static System.Reflection.MethodInfo SetPixel;
-                static System.Reflection.MethodInfo FromArgb;
+                static MethodInfo SetPixel;
+                static MethodInfo FromArgb;
                 static ImageManager()
                 {
                     FromArgb = typeof(Bitmap).GetMethod(nameof(Bitmap.GetPixel)).ReturnType

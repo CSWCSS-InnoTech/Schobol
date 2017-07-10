@@ -1475,13 +1475,39 @@ namespace InnoTecheLearning
         {
             get
             {
+                
+                var Detected = new StackLayout
+                { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
                 var cam = new Camera();
-                cam.ProcessingPreview += (sender, e) => { };
-                var s = new StackLayout();
-                s.Children.Add(
+                cam.ProcessingPreview += (sender, e) =>
+                {
+                    Detected.Children.Clear();
+                    Detected.Children.AddRange(
+                        e.DetectedFaces
+                        .Select(x => new System.Drawing.Bitmap(e.PreviewFrameJPEG)
+                            .Clone(x, System.Drawing.Imaging.PixelFormat.DontCare))
+                        .Select(x => new Image
+                        {
+                            Aspect = Aspect.AspectFit,
+                            Source = new StreamImageSource
+                            {
+                                Stream = _ =>
+                                {
+                                    System.IO.Stream memoryStream = new System.IO.MemoryStream();
+                                    x.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                    return Task.FromResult(memoryStream);
+                                }
+                            }
+                        })
+                    );
+                };
+                var Return = new StackLayout { Orientation = StackOrientation.Vertical };
+                Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;
+                Return.Children.Add(
                     cam.ToView().With((ref View x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand)
                 );
-                return s;
+                Return.Children.Add(Scroll(Detected));
+                return Return;
             }
         }
     }
