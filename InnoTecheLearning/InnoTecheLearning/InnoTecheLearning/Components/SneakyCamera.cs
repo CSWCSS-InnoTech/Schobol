@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using SixLabors.Primitives;
 
 namespace InnoTecheLearning
 {
@@ -11,17 +11,17 @@ namespace InnoTecheLearning
         public class CameraEventArgs : EventArgs, IDisposable
         {
             public Stream PreviewFrameJPEG { get; }
-            public IEnumerable<RectangleF> DetectedFaces { get; }
-            public CameraEventArgs(Stream PreviewFrameJPEG, IEnumerable<RectangleF> DetectedFaces)
+            public IEnumerable<Rectangle> DetectedFaces { get; }
+            public CameraEventArgs(Stream PreviewFrameJPEG, IEnumerable<Rectangle> DetectedFaces)
             { this.PreviewFrameJPEG = PreviewFrameJPEG; this.DetectedFaces = DetectedFaces; }
-            public static implicit operator CameraEventArgs((Stream S, IEnumerable<RectangleF> R) T) =>
+            public static implicit operator CameraEventArgs((Stream S, IEnumerable<Rectangle> R) T) =>
                 new CameraEventArgs(T.S, T.R);
 
             public void Dispose() => PreviewFrameJPEG.Dispose();
             ~CameraEventArgs() => Dispose();
         }
 #if __ANDROID__
-        public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener
+        public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener, IDisposable
         {
             public Camera() : base(Xamarin.Forms.Forms.Context)
             {
@@ -30,13 +30,14 @@ namespace InnoTecheLearning
             }
             public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
 #pragma warning disable 618 //Reason: Need Android 4 support
-            private Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera camera)
+            private async void PreviewHandler(byte[] data, Android.Hardware.Camera camera) => await
+                Unit.InvokeAsync(() => { using (CameraEventArgs e = (ConvertYuvToJpeg(data, param), Faces)) ProcessingPreview(this, e); });
+            private static Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera.Parameters cameraParameters)
             {
-                var cameraParameters = camera.GetParameters();
                 var width = cameraParameters.PreviewSize.Width;
                 var height = cameraParameters.PreviewSize.Height;
                 var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null);
-                var quality = 100;   // adjust this as needed, default: 80
+                var quality = 90;   // adjust this as needed, default: 80
                 var ms = new MemoryStream();
                 yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
                 return ms;
@@ -48,6 +49,7 @@ namespace InnoTecheLearning
                 public void OnPreviewFrame(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
             }
             Android.Hardware.Camera cam;
+            Android.Hardware.Camera.Parameters param;
             public void OnSurfaceTextureAvailable(Android.Graphics.SurfaceTexture surface, int w, int h)
             {
                 Log("OnSurfaceTextureAvailable");
@@ -77,10 +79,10 @@ namespace InnoTecheLearning
                 {
                     cam.SetPreviewTexture(surface);
                     cam.StartPreview();
-                    cam.SetPreviewCallback(new Callback((data, camera) => 
-                        Unit.InvokeAsync(() => ProcessingPreview(this, (ConvertYuvToJpeg(data, camera), Faces)))));
+                    param = cam.GetParameters();
+                    cam.SetPreviewCallback(new Callback(PreviewHandler));
                     cam.FaceDetection += (sender, e) => Faces = e.Faces
-                        .Select(x => new RectangleF(x.Rect.Left, x.Rect.Top, x.Rect.Right - x.Rect.Left, x.Rect.Bottom - x.Rect.Top));
+                        .Select(x => new Rectangle(x.Rect.Left, x.Rect.Top, x.Rect.Right - x.Rect.Left, x.Rect.Bottom - x.Rect.Top));
                     cam.StartFaceDetection();
                 }
                 catch (Java.IO.IOException ex)
@@ -88,9 +90,10 @@ namespace InnoTecheLearning
                     Log(ex);
                 }
             }
-            IEnumerable<RectangleF> Faces = Enumerable.Empty<RectangleF>();
+            IEnumerable<Rectangle> Faces = Enumerable.Empty<Rectangle>();
             public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
             {
+                cam?.SetPreviewCallback(null);
                 cam?.StopFaceDetection();
                 cam?.StopPreview();
                 cam?.Release();
@@ -100,6 +103,27 @@ namespace InnoTecheLearning
 
             public void OnSurfaceTextureSizeChanged(Android.Graphics.SurfaceTexture surface, int width, int height) { }
             public void OnSurfaceTextureUpdated(Android.Graphics.SurfaceTexture surface) { }
+
+            #region IDisposable Support
+            private bool disposedValue = false; // To detect redundant calls
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        // TODO: dispose managed state (managed objects).
+                    }
+
+                    // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                    // TODO: set large fields to null.
+
+                    disposedValue = true;
+                }
+            }
+            #endregion
         }
 
 #elif __IOS__
@@ -141,7 +165,7 @@ namespace InnoTecheLearning
                         ProcessingPreview(this, 
                             (new UIKit.UIImage(image).AsJPEG().AsStream(), 
                             detector.FeaturesInImage(image).Select(x => 
-                            new RectangleF((float)x.Bounds.X, (float)x.Bounds.Y, (float)x.Bounds.Width, (float)x.Bounds.Height))));
+                                new Rectangle((int)x.Bounds.X, (int)x.Bounds.Y, (int)x.Bounds.Width, (int)x.Bounds.Height))));
                         //< Add your code here that uses the image >;
                     })), queue);
                 session.AddInput(input);
@@ -221,7 +245,8 @@ namespace InnoTecheLearning
                                 .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
                             ProcessingPreview(this, (ms, 
                                 detector.DetectFacesAsync(b.SoftwareBitmap).AsTask().ConfigureAwait(false).GetAwaiter().GetResult()
-                                    .Select(x => new RectangleF(x.FaceBox.X, x.FaceBox.Y, x.FaceBox.Width, x.FaceBox.Height))));
+                                    .Select(x =>
+                                        new Rectangle((int)x.FaceBox.X, (int)x.FaceBox.Y, (int)x.FaceBox.Width, (int)x.FaceBox.Height))));
                             return _isPreviewing;
                         }
                     });

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Bitmap = System.Drawing.Bitmap;
 using BindingFlags = System.Reflection.BindingFlags;
 
 namespace InnoTecheLearning

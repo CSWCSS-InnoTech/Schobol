@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Reflection;
 using System.IO;
 using MathNet.Numerics.LinearAlgebra.Double;
+using ImageSharp;
+using Image = ImageSharp.Image<ImageSharp.Rgba32>;
 //using ILNumerics;
 //using ILNumerics.BuiltInFunctions;
 
@@ -24,9 +25,9 @@ namespace InnoTecheLearning
             private const string TrainingIndicator = "1";
 
             //lists and arrays
-            private readonly List<Bitmap> _trainingSet = new List<Bitmap>();
+            private readonly List<Image> _trainingSet = new List<Image>();
             private readonly List<byte[]> _vectorSet = new List<byte[]>();
-            private readonly List<Bitmap> _eigenFaces = new List<Bitmap>();
+            private readonly List<Image> _eigenFaces = new List<Image>();
             private readonly List<byte[]> _foundFaces = new List<byte[]>();
             private byte[,] _columnVectorMatrix;
             private double[,] _columnVectorIntMatrix;
@@ -34,9 +35,9 @@ namespace InnoTecheLearning
             private double[] _eigenValues = null;
 
             //Bitmaps
-            public Bitmap TestBild;
-            public Bitmap MeanFaceBitmap;
-            public Bitmap InputPic;
+            public Image TestBild;
+            public Image MeanFaceBitmap;
+            public Image InputPic;
 
             //ILNumerics
             private double[,] _covariance;
@@ -72,7 +73,7 @@ namespace InnoTecheLearning
             /// No need to dispose any images yourself - they will be disposed when this is disposed.
             /// </summary>
             /// <param name="path"></param>
-            public void AddToTrainingSet(IEnumerable<Bitmap> b)
+            public void AddToTrainingSet(IEnumerable<Image> b)
             {
                 if (!_trainingSetLoaded)
                 {
@@ -96,7 +97,7 @@ namespace InnoTecheLearning
                         if (file.Name.Contains(TrainingIndicator))
                         {
                             //open file
-                            var image = Create.Bitmap(file.FullName);
+                            var image = ImageSharp.Image.Load(file.FullName);
                             _trainingSet.Add(image);
                         }
                     }
@@ -133,7 +134,7 @@ namespace InnoTecheLearning
             /// </summary>
             private void CreateVectorSet()
             {
-                foreach (Bitmap bmp in _trainingSet)
+                foreach (Image bmp in _trainingSet)
                 {
                     _vectorSet.Add(ImageManager.ConvertImageToVector(bmp));
                 }
@@ -353,9 +354,9 @@ namespace InnoTecheLearning
             /// </summary>
             /// <param name="imageSource">Path of the inputimage</param>
             /// <returns>Return the most similar image, that was trained by the system.</returns>
-            public Bitmap GetFaceForInput(string imageSource)
+            public Image GetFaceForInput(string imageSource)
             {
-                var image = Create.Bitmap(imageSource);
+                var image = ImageSharp.Image.Load(imageSource);
                 InputPic = image;
 
                 double[] newWeight = this.GetEigenWeight(ImageManager.ConvertImageToVector(image), _eigenVectors.Count);
@@ -418,7 +419,7 @@ namespace InnoTecheLearning
             /// </summary>
             /// <param name="image">Image considered to reconstruct.</param>
             /// <returns>Returns the reconstructed image.</returns>
-            public Bitmap ReconstructFace(Bitmap image)
+            public Image ReconstructFace(Image image)
             {
                 var weights = this.GetEigenWeight(ImageManager.ConvertImageToVector(image), _eigenVectors.Count);
                 var reconstructedFace = this.CreateReconstructFace(weights);
@@ -500,7 +501,7 @@ namespace InnoTecheLearning
             {
                 private static int width;
                 private static int height;
-                public static byte[] ConvertImageToVector(Bitmap Image)
+                public static byte[] ConvertImageToVector(Image Image)
                 {
                     byte[] vector = new byte[Image.Width * Image.Height];
 
@@ -513,7 +514,7 @@ namespace InnoTecheLearning
                     {
                         for (int j = 0; j < Image.Height; j++)
                         {
-                            vector[positionCounter] = Image.GetPixel(i, j).R;
+                            vector[positionCounter] = Image.GetPixelReference(i, j).R;
                             //var color = Image.GetPixel(i, j);
                             positionCounter++;
                         }
@@ -522,9 +523,9 @@ namespace InnoTecheLearning
                     return vector;
                 }
 
-                public static Bitmap ConvertVectorToImage(byte[] pixels)
+                public static Image ConvertVectorToImage(byte[] pixels)
                 {
-                    Bitmap image = new Bitmap(width, height);
+                    Image image = new Image(width, height);
 
                     int positionCounter = 0;
                     for (int i = 0; i < width; i++)
@@ -532,20 +533,14 @@ namespace InnoTecheLearning
                         for (int j = 0; j < height; j++)
                         {
                             positionCounter++;
-                            SetPixel.Invoke(image, new object[] { i, j, FromArgb.Invoke(null,
-                                new object[] { 255, pixels[positionCounter], pixels[positionCounter], pixels[positionCounter] }) });
+                            ref var pixel = ref image.GetPixelReference(i, j);
+                            pixel.A = 255;
+                            pixel.R = pixels[positionCounter];
+                            pixel.G = pixels[positionCounter];
+                            pixel.B = pixels[positionCounter];
                         }
                     }
                     return image;
-                }
-
-                static MethodInfo SetPixel;
-                static MethodInfo FromArgb;
-                static ImageManager()
-                {
-                    FromArgb = typeof(Bitmap).GetMethod(nameof(Bitmap.GetPixel)).ReturnType
-                        .GetMethod("FromArgb", new[] { typeof(int), typeof(int), typeof(int), typeof(int) });
-                    SetPixel = typeof(Bitmap).GetMethod(nameof(Bitmap.SetPixel));
                 }
 
                 //public BufferedImage ConvertVectorToImage(int[] ImageVector)

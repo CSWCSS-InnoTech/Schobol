@@ -1470,34 +1470,37 @@ namespace InnoTecheLearning
                 };
             }
         }
-
+        
         public StackLayout Facial
         {
             get
             {
                 var Detected = new StackLayout
-                { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand, MinimumHeightRequest = 50 };
                 var cam = new Camera();
                 cam.ProcessingPreview += (sender, e) =>
                 {
                     Detected.Children.Clear();
                     Detected.Children.AddRange(
                         e.DetectedFaces
-                        .Select(x => new System.Drawing.Bitmap(e.PreviewFrameJPEG)
-                            .Clone(x, System.Drawing.Imaging.PixelFormat.DontCare))
-                        .Select(x => new Image
+                        .Select(x => ImageSharp.ImageExtensions.Crop(ImageSharp.Image.Load
+                            (e.PreviewFrameJPEG, new ImageSharp.Formats.JpegDecoder()), x))
+                        .Select<ImageSharp.Image<ImageSharp.Rgba32>, Image>
+                        (x => throw new InvalidProgramException("Kirby wants to say Hi")/*new Image
                         {
+                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
                             Aspect = Aspect.AspectFit,
                             Source = new StreamImageSource
                             {
                                 Stream = y => Task.Run(() =>
                                 {
                                     System.IO.Stream memoryStream = new System.IO.MemoryStream();
-                                    x.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
+                                    x.Save(memoryStream, ImageSharp.ImageFormats.Jpeg);
                                     return memoryStream;
                                 }, y)
                             }
-                        })
+                        }*/)
                     );
                 };
                 var Return = new StackLayout { Orientation = StackOrientation.Vertical };

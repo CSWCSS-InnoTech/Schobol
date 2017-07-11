@@ -257,8 +257,8 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CoreCompat.System.Drawing">
-      <Version>1.0.0-beta006</Version>
+    <PackageReference Include="ImageSharp">
+      <Version>1.0.0-alpha9-00171</Version>
     </PackageReference>
     <PackageReference Include="Jint">
       <Version>2.10.4</Version>
@@ -270,7 +270,7 @@
       <Version>5.3.3</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.3.1</Version>
+      <Version>4.4.0-preview1-25305-02</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms">
       <Version>2.3.4.247</Version>
