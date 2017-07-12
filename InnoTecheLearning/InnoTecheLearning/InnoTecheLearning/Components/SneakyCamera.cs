@@ -36,10 +36,10 @@ namespace InnoTecheLearning
             {
                 var width = cameraParameters.PreviewSize.Width;
                 var height = cameraParameters.PreviewSize.Height;
-                var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null);
                 var quality = 90;   // adjust this as needed, default: 80
                 var ms = new MemoryStream();
-                yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
+                using (var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null))
+                    yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
                 return ms;
             }
             class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
@@ -162,10 +162,10 @@ namespace InnoTecheLearning
                         CoreImage.CIImage image = new CoreImage.CIImage(sampleBuffer.GetImageBuffer());
                         CoreImage.CIContext context = new CoreImage.CIContext(new CoreImage.CIContextOptions());
                         CoreImage.CIDetector detector = CoreImage.CIDetector.CreateFaceDetector(context, true);
-                        ProcessingPreview(this, 
-                            (new UIKit.UIImage(image).AsJPEG().AsStream(), 
+                        using(CameraEventArgs e = (new UIKit.UIImage(image).AsJPEG().AsStream(), 
                             detector.FeaturesInImage(image).Select(x => 
-                                new Rectangle((int)x.Bounds.X, (int)x.Bounds.Y, (int)x.Bounds.Width, (int)x.Bounds.Height))));
+                                new Rectangle((int)x.Bounds.X, (int)x.Bounds.Y, (int)x.Bounds.Width, (int)x.Bounds.Height))))
+                            ProcessingPreview(this, e);
                         //< Add your code here that uses the image >;
                     })), queue);
                 session.AddInput(input);
@@ -243,10 +243,11 @@ namespace InnoTecheLearning
 
                             var detector = Windows.Media.FaceAnalysis.FaceDetector.CreateAsync()
                                 .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
-                            ProcessingPreview(this, (ms, 
+                            using(CameraEventArgs e = (ms,
                                 detector.DetectFacesAsync(b.SoftwareBitmap).AsTask().ConfigureAwait(false).GetAwaiter().GetResult()
                                     .Select(x =>
-                                        new Rectangle((int)x.FaceBox.X, (int)x.FaceBox.Y, (int)x.FaceBox.Width, (int)x.FaceBox.Height))));
+                                        new Rectangle((int)x.FaceBox.X, (int)x.FaceBox.Y, (int)x.FaceBox.Width, (int)x.FaceBox.Height))))
+                                ProcessingPreview(this, e);
                             return _isPreviewing;
                         }
                     });

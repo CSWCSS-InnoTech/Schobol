@@ -1480,28 +1480,41 @@ namespace InnoTecheLearning
                 var cam = new Camera();
                 cam.ProcessingPreview += (sender, e) =>
                 {
+                    foreach (Image image in Detected.Children)
+                    { (image.Source as StreamImageSource).GetStream().AsTask().ContinueWith(x => x.Result.Dispose()); }
                     Detected.Children.Clear();
-                    Detected.Children.AddRange(
-                        e.DetectedFaces
-                        .Select(x => ImageSharp.ImageExtensions.Crop(ImageSharp.Image.Load
-                            (e.PreviewFrameJPEG, new ImageSharp.Formats.JpegDecoder()), x))
-                        .Select<ImageSharp.Image<ImageSharp.Rgba32>, Image>
-                        (x => throw new InvalidProgramException("Kirby wants to say Hi")/*new Image
+                    foreach (var face in Log(e.DetectedFaces, $"Adding faces, count: {e.DetectedFaces.Count()}"))
+                    {
+                        ImageSharp.Image<ImageSharp.Rgba32> cropped = null;
+                        try
                         {
-                            HorizontalOptions = LayoutOptions.FillAndExpand,
+                            Log("Line 1492");
+                            cropped = ImageSharp.ImageExtensions.Crop(ImageSharp.Image.Load
+                                (e.PreviewFrameJPEG, new ImageSharp.Formats.JpegDecoder()), face);
+                            Log("Line 1495");
+                        } catch(Exception ex) when (Log(ex) == null) { }
+                        Log("Line 1497");
+                        Detected.Children.Add(new Image
+                        {
+                            HorizontalOptions = 
+                                Log(LayoutOptions.FillAndExpand, $"Creating face image, width: {face.Width}, height: {face.Height}"),
                             VerticalOptions = LayoutOptions.FillAndExpand,
                             Aspect = Aspect.AspectFit,
                             Source = new StreamImageSource
                             {
                                 Stream = y => Task.Run(() =>
                                 {
+                                    Log("Loading face image...");
                                     System.IO.Stream memoryStream = new System.IO.MemoryStream();
-                                    x.Save(memoryStream, ImageSharp.ImageFormats.Jpeg);
+                                    cropped.Save(memoryStream, ImageSharp.ImageFormats.Jpeg);
+                                    cropped.Dispose();
+                                    Log("Loaded face image");
                                     return memoryStream;
                                 }, y)
                             }
-                        }*/)
-                    );
+                        });
+                    }
+                    Log("Created face image");
                 };
                 var Return = new StackLayout { Orientation = StackOrientation.Vertical };
                 Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;

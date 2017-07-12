@@ -14,7 +14,7 @@ namespace InnoTecheLearning
         public static ValueTask<string> Log(string Message) => Logger.Log(Message);
         public static ValueTask<string> Log(string Message, LogImportance Importance) => Logger.Log(Message, Importance);
         public static ValueTask<string> Log(string Message, string Format) => Logger.Log(Message, Format);
-        public static ValueTask<string> Log(string Message, string Format, LogImportance Importance) => 
+        public static ValueTask<string> Log(string Message, string Format, LogImportance Importance) =>
             Logger.Log(Message, Format, Importance);
         public static ValueTask<string> Log(Exception e) => Logger.Log(e);
         public static ValueTask<string> Log(Exception e, LogImportance Importance) => Logger.Log(e, Importance);
@@ -80,8 +80,8 @@ namespace InnoTecheLearning
             public virtual T Log<T>(T Object, string Format, LogImportance Importance)
             { Log(string.Format(Format, Object), Importance); return Object; }
 
-            public virtual string Format(DateTime Time, LogImportance Importance, string Region, string Message)
-            { return '[' + Time.ToString(DateTimeFormat) + ']' + Symbol(Importance) + Region + '|' + Message; }
+            public virtual string Format(DateTime Time, LogImportance Importance, string Region, string Message = null) =>
+                $"[{Time.ToString(DateTimeFormat)}]{Symbol(Importance)}{Region}{(Message == null ? string.Empty : $"|{Message}")}";
             public static char Symbol(LogImportance Importance)
             {
                 switch (Importance)
@@ -156,7 +156,7 @@ namespace InnoTecheLearning
         {
             public override ValueTask<string> Log(string Message, LogImportance Importance)
             {
-                System.Diagnostics.Debug.WriteLine(Message, Format(DateTime.Now, Importance, Region, Message));
+                System.Diagnostics.Debug.WriteLine(Message, Format(DateTime.Now, Importance, Region));
                 return new ValueTask<string>(Message);
             }
 

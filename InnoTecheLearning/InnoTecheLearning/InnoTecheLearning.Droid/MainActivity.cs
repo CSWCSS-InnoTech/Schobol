@@ -44,15 +44,17 @@ namespace InnoTecheLearning.Droid
         //static System.Threading.ManualResetEvent _Ready = new System.Threading.ManualResetEvent(false);
         //public static void Ready() => _Ready.Set();
         //static readonly string TAG = "X:" + typeof(SplashActivity).Name;
-
+        System.Threading.ManualResetEvent Inited = new System.Threading.ManualResetEvent(false);
         protected override void OnCreate(Bundle bundle)
         {
+            Inited.Reset();
             base.OnCreate(bundle);
             Exceptions.RegisterHandlers();
             MainActivity.Bundle = bundle;
             Utils.Unit.InvokeAsync(() =>
             {
-                global::Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
+                Xamarin.Forms.Forms.Init(this, MainActivity.Bundle);
+                Inited.Set();
                 StartActivity(new Intent(BaseContext, typeof(MainActivity)));
             });
         }
@@ -65,7 +67,8 @@ namespace InnoTecheLearning.Droid
 
         protected override void OnPause()
         {
-            if (Xamarin.Forms.Forms.IsInitialized) base.OnPause();
+            Inited.WaitOne();
+            base.OnPause();
         }
     }
 }
