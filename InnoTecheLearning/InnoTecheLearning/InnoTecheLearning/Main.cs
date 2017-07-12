@@ -1470,7 +1470,8 @@ namespace InnoTecheLearning
                 };
             }
         }
-        
+
+        IEnumerable<SixLabors.Primitives.Rectangle> Faces = Enumerable.Empty<SixLabors.Primitives.Rectangle>();
         public StackLayout Facial
         {
             get
@@ -1478,8 +1479,10 @@ namespace InnoTecheLearning
                 var Detected = new StackLayout
                 { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand, MinimumHeightRequest = 50 };
                 var cam = new Camera();
-                cam.ProcessingPreview += (sender, e) =>
+                cam.ProcessingPreview += async (sender, e) => await Unit.InvokeAsync(() =>
                 {
+                    if (Faces.SequenceEqual(e.DetectedFaces)) return;
+                    Faces = e.DetectedFaces;
                     foreach (Image image in Detected.Children)
                     { (image.Source as StreamImageSource).GetStream().AsTask().ContinueWith(x => x.Result.Dispose()); }
                     Detected.Children.Clear();
@@ -1492,7 +1495,7 @@ namespace InnoTecheLearning
                             cropped = ImageSharp.ImageExtensions.Crop(ImageSharp.Image.Load
                                 (e.PreviewFrameJPEG, new ImageSharp.Formats.JpegDecoder()), face);
                             Log("Line 1495");
-                        } catch(Exception ex) when (Log(ex) == null) { }
+                        } catch(Exception ex) when (Log(ex) == null) { } catch(Exception ex) { Log(ex); }
                         Log("Line 1497");
                         Detected.Children.Add(new Image
                         {
@@ -1515,7 +1518,7 @@ namespace InnoTecheLearning
                         });
                     }
                     Log("Created face image");
-                };
+                });
                 var Return = new StackLayout { Orientation = StackOrientation.Vertical };
                 Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;
                 Return.Children.Add(

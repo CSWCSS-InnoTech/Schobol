@@ -24,6 +24,10 @@ namespace InnoTecheLearning
         public static T Log<T>(T Object, string Format) => Logger.Log(Object, Format);
         public static T Log<T>(T Object, string Format, LogImportance Importance) => Logger.Log(Object, Format, Importance);
 
+        public static T Log<T>(T Object, Func<T, string> Display) => Logger.Log(Object, Display(Object));
+        public static T Log<T>(T Object, Func<T, string> Display, LogImportance Importance) =>
+            Logger.Log(Object, Display(Object), Importance);
+
         public static string Region { get { return Logger.Region; } set { Logger.Region = value; } }
         public enum LogImportance : byte
         {
