@@ -165,6 +165,7 @@ namespace InnoTecheLearning
         {
             if (Navigation.NavigationStack.Count > 1)
             {
+                if (CurrentPage.GetId() == PageId.Facial) GC.Collect();
                 Pop();
                 return true;
             }
@@ -1479,24 +1480,27 @@ namespace InnoTecheLearning
                 var Detected = new StackLayout
                 { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand, MinimumHeightRequest = 50 };
                 var cam = new Camera();
-                cam.ProcessingPreview += async (sender, e) => await Unit.InvokeAsync(() =>
+                cam.ProcessingPreview += async (sender, e) => 
                 {
-                    if (Faces.SequenceEqual(e.DetectedFaces)) return;
+                    if (Faces.SequenceEqual(e.DetectedFaces)) return Unit.Default;
                     Faces = e.DetectedFaces;
                     foreach (Image image in Detected.Children)
-                    { (image.Source as StreamImageSource).GetStream().AsTask().ContinueWith(x => x.Result.Dispose()); }
+                    {
+                        var source = await (image.Source as StreamImageSource).GetStream();
+                        source.Dispose();
+                    }
                     Detected.Children.Clear();
                     foreach (var face in Log(e.DetectedFaces, $"Adding faces, count: {e.DetectedFaces.Count()}"))
                     {
                         ImageSharp.Image<ImageSharp.Rgba32> cropped = null;
                         try
                         {
-                            Log("Line 1492");
+                            await Log("Line 1492");
                             cropped = ImageSharp.ImageExtensions.Crop(ImageSharp.Image.Load
                                 (e.PreviewFrameJPEG, new ImageSharp.Formats.JpegDecoder()), face);
-                            Log("Line 1495");
-                        } catch(Exception ex) when (Log(ex) == null) { } catch(Exception ex) { Log(ex); }
-                        Log("Line 1497");
+                            await Log("Line 1495");
+                        } catch(Exception ex) when (Log(ex) == null) { } catch(Exception ex) { await Log(ex); }
+                        await Log("Line 1497");
                         Detected.Children.Add(new Image
                         {
                             HorizontalOptions = 
@@ -1517,8 +1521,9 @@ namespace InnoTecheLearning
                             }
                         });
                     }
-                    Log("Created face image");
-                });
+                    await Log("Created face image");
+                    return Unit.Default;
+                };
                 var Return = new StackLayout { Orientation = StackOrientation.Vertical };
                 Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;
                 Return.Children.Add(

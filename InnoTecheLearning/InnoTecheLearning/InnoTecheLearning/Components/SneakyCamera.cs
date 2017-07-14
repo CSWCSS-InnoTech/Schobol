@@ -20,6 +20,7 @@ namespace InnoTecheLearning
             public void Dispose() => PreviewFrameJPEG.Dispose();
             ~CameraEventArgs() => Dispose();
         }
+        public delegate System.Threading.Tasks.ValueTask<Unit> CameraEventHandler(Camera sender, CameraEventArgs e);
 #if __ANDROID__
         public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener, IDisposable
         {
@@ -28,10 +29,12 @@ namespace InnoTecheLearning
                 SurfaceTextureListener = this;
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
-            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
+            public event CameraEventHandler ProcessingPreview = delegate { return Unit.CompletedTask; };
 #pragma warning disable 618 //Reason: Need Android 4 support
-            private async void PreviewHandler(byte[] data, Android.Hardware.Camera camera) => await
-                Unit.InvokeAsync(() => { using (CameraEventArgs e = (ConvertYuvToJpeg(data, param), Faces)) ProcessingPreview(this, e); });
+            private async void PreviewHandler(byte[] data, Android.Hardware.Camera camera)
+            {
+                using (CameraEventArgs e = (ConvertYuvToJpeg(data, param), Faces)) await ProcessingPreview(this, e);
+            }
             private static Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera.Parameters cameraParameters)
             {
                 var width = cameraParameters.PreviewSize.Width;
@@ -129,7 +132,7 @@ namespace InnoTecheLearning
 #elif __IOS__
         public class Camera : UIKit.UIImageView
         {
-            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
+            public event CameraEventHandler ProcessingPreview = delegate { return Unit.CompletedTask; };
             AVFoundation.AVCaptureSession session = new AVFoundation.AVCaptureSession()
             {
                 SessionPreset = AVFoundation.AVCaptureSession.PresetMedium
@@ -155,7 +158,7 @@ namespace InnoTecheLearning
                 AVFoundation.AVCaptureVideoDataOutput output = new AVFoundation.AVCaptureVideoDataOutput();
                 CoreFoundation.DispatchQueue queue = new CoreFoundation.DispatchQueue("edu.cswcss.eLearning.Camera.CtorQueue");
                 output.SetSampleBufferDelegateQueue(new BufferDelegate(
-                    (captureOutput, sampleBuffer, connection) => Unit.InvokeAsync(() =>
+                    async (captureOutput, sampleBuffer, connection) =>
                     {
                         // Get a CMSampleBuffer's Core Video image buffer for the media data
                         // Create a UIImage from sample buffer data
@@ -165,9 +168,9 @@ namespace InnoTecheLearning
                         using(CameraEventArgs e = (new UIKit.UIImage(image).AsJPEG().AsStream(), 
                             detector.FeaturesInImage(image).Select(x => 
                                 new Rectangle((int)x.Bounds.X, (int)x.Bounds.Y, (int)x.Bounds.Width, (int)x.Bounds.Height))))
-                            ProcessingPreview(this, e);
+                            await ProcessingPreview(this, e);
                         //< Add your code here that uses the image >;
-                    })), queue);
+                    }), queue);
                 session.AddInput(input);
                 session.AddOutput(output);
                 session.StartRunning();
@@ -193,7 +196,7 @@ namespace InnoTecheLearning
 #elif WINDOWS_UWP
         public class Camera : Windows.UI.Xaml.Controls.UserControl, IDisposable
         {
-            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
+            public event CameraEventHandler ProcessingPreview = delegate { return Unit.CompletedTask; };
             Windows.UI.Xaml.Controls.CaptureElement PreviewControl = new Windows.UI.Xaml.Controls.CaptureElement();
             Windows.Media.Capture.MediaCapture _mediaCapture;
             bool _isPreviewing;
@@ -247,7 +250,7 @@ namespace InnoTecheLearning
                                 detector.DetectFacesAsync(b.SoftwareBitmap).AsTask().ConfigureAwait(false).GetAwaiter().GetResult()
                                     .Select(x =>
                                         new Rectangle((int)x.FaceBox.X, (int)x.FaceBox.Y, (int)x.FaceBox.Width, (int)x.FaceBox.Height))))
-                                ProcessingPreview(this, e);
+                                ProcessingPreview(this, e).AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
                             return _isPreviewing;
                         }
                     });
