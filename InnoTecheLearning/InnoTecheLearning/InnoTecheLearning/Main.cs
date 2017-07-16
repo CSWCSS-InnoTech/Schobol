@@ -1482,7 +1482,7 @@ namespace InnoTecheLearning
                 var cam = new Camera();
                 cam.ProcessingPreview += async (sender, e) => 
                 {
-                    if (Faces.SequenceEqual(e.DetectedFaces)) return Unit.Default;
+                    if (Faces.SequenceEqual(e.DetectedFaces)) return;
                     Faces = e.DetectedFaces;
                     foreach (Image image in Detected.Children)
                     {
@@ -1522,7 +1522,6 @@ namespace InnoTecheLearning
                         });
                     }
                     await Log("Created face image");
-                    return Unit.Default;
                 };
                 var Return = new StackLayout { Orientation = StackOrientation.Vertical };
                 Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;

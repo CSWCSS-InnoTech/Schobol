@@ -8,19 +8,13 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public class CameraEventArgs : EventArgs, IDisposable
+        public class CameraEventArgs : EventArgs
         {
-            public Stream PreviewFrameJPEG { get; }
-            public IEnumerable<Rectangle> DetectedFaces { get; }
-            public CameraEventArgs(Stream PreviewFrameJPEG, IEnumerable<Rectangle> DetectedFaces)
+            public byte[] PreviewFrameJPEG { get; }
+            public Rectangle[] DetectedFaces { get; }
+            public CameraEventArgs(byte[] PreviewFrameJPEG, Rectangle[] DetectedFaces)
             { this.PreviewFrameJPEG = PreviewFrameJPEG; this.DetectedFaces = DetectedFaces; }
-            public static implicit operator CameraEventArgs((Stream S, IEnumerable<Rectangle> R) T) =>
-                new CameraEventArgs(T.S, T.R);
-
-            public void Dispose() => PreviewFrameJPEG.Dispose();
-            ~CameraEventArgs() => Dispose();
         }
-        public delegate System.Threading.Tasks.ValueTask<Unit> CameraEventHandler(Camera sender, CameraEventArgs e);
 #if __ANDROID__
         public class Camera : Android.Views.TextureView, Android.Views.TextureView.ISurfaceTextureListener, IDisposable
         {
@@ -29,21 +23,23 @@ namespace InnoTecheLearning
                 SurfaceTextureListener = this;
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
-            public event CameraEventHandler ProcessingPreview = delegate { return Unit.CompletedTask; };
+            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
 #pragma warning disable 618 //Reason: Need Android 4 support
-            private async void PreviewHandler(byte[] data, Android.Hardware.Camera camera)
+            private void PreviewHandler(byte[] data, Android.Hardware.Camera camera)
             {
-                using (CameraEventArgs e = (ConvertYuvToJpeg(data, param), Faces)) await ProcessingPreview(this, e);
+                 ProcessingPreview(this, new CameraEventArgs(ConvertYuvToJpeg(data, param), Faces.ToArray()));
             }
-            private static Stream ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera.Parameters cameraParameters)
+            private static byte[] ConvertYuvToJpeg(byte[] yuvData, Android.Hardware.Camera.Parameters cameraParameters)
             {
                 var width = cameraParameters.PreviewSize.Width;
                 var height = cameraParameters.PreviewSize.Height;
                 var quality = 90;   // adjust this as needed, default: 80
-                var ms = new MemoryStream();
-                using (var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null))
-                    yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
-                return ms;
+                using (var ms = new MemoryStream())
+                {
+                    using (var yuv = new Android.Graphics.YuvImage(yuvData, cameraParameters.PreviewFormat, width, height, null))
+                        yuv.CompressToJpeg(new Android.Graphics.Rect(0, 0, width, height), quality, ms);
+                    return ms.ToArray();
+                }
             }
             class Callback : Java.Lang.Object, Android.Hardware.Camera.IPreviewCallback
             {
@@ -84,8 +80,16 @@ namespace InnoTecheLearning
                     cam.StartPreview();
                     param = cam.GetParameters();
                     cam.SetPreviewCallback(new Callback(PreviewHandler));
-                    cam.FaceDetection += (sender, e) => Faces = e.Faces
-                        .Select(x => new Rectangle(x.Rect.Left, x.Rect.Top, x.Rect.Right - x.Rect.Left, x.Rect.Bottom - x.Rect.Top));
+                    cam.FaceDetection += (sender, e) =>
+                    {
+                        var FacesArray = new Rectangle[e.Faces.Length];
+                        for (int i = 0; i < FacesArray.Length; i++)
+                        {
+                            var Rect = e.Faces[i].Rect;
+                            FacesArray[i] = new Rectangle(Rect.Left, Rect.Top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top);
+                        }
+                        Faces = FacesArray;
+                    };
                     cam.StartFaceDetection();
                 }
                 catch (Java.IO.IOException ex)
@@ -93,7 +97,7 @@ namespace InnoTecheLearning
                     Log(ex);
                 }
             }
-            IEnumerable<Rectangle> Faces = Enumerable.Empty<Rectangle>();
+            Span<Rectangle> Faces = Array.Empty<Rectangle>();
             public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
             {
                 cam?.SetPreviewCallback(null);
@@ -132,7 +136,7 @@ namespace InnoTecheLearning
 #elif __IOS__
         public class Camera : UIKit.UIImageView
         {
-            public event CameraEventHandler ProcessingPreview = delegate { return Unit.CompletedTask; };
+            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
             AVFoundation.AVCaptureSession session = new AVFoundation.AVCaptureSession()
             {
                 SessionPreset = AVFoundation.AVCaptureSession.PresetMedium
@@ -158,17 +162,22 @@ namespace InnoTecheLearning
                 AVFoundation.AVCaptureVideoDataOutput output = new AVFoundation.AVCaptureVideoDataOutput();
                 CoreFoundation.DispatchQueue queue = new CoreFoundation.DispatchQueue("edu.cswcss.eLearning.Camera.CtorQueue");
                 output.SetSampleBufferDelegateQueue(new BufferDelegate(
-                    async (captureOutput, sampleBuffer, connection) =>
+                    (captureOutput, sampleBuffer, connection) =>
                     {
                         // Get a CMSampleBuffer's Core Video image buffer for the media data
                         // Create a UIImage from sample buffer data
                         CoreImage.CIImage image = new CoreImage.CIImage(sampleBuffer.GetImageBuffer());
                         CoreImage.CIContext context = new CoreImage.CIContext(new CoreImage.CIContextOptions());
                         CoreImage.CIDetector detector = CoreImage.CIDetector.CreateFaceDetector(context, true);
-                        using(CameraEventArgs e = (new UIKit.UIImage(image).AsJPEG().AsStream(), 
-                            detector.FeaturesInImage(image).Select(x => 
-                                new Rectangle((int)x.Bounds.X, (int)x.Bounds.Y, (int)x.Bounds.Width, (int)x.Bounds.Height))))
-                            await ProcessingPreview(this, e);
+                        
+                        var Features = detector.FeaturesInImage(image);
+                        var FacesArray = new Rectangle[Features.Length];
+                        for (int i = 0; i < FacesArray.Length; i++)
+                        {
+                            var Bounds = Features[i].Bounds;
+                            FacesArray[i] = new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);
+                        }
+                        ProcessingPreview(this, new CameraEventArgs(new UIKit.UIImage(image).AsJPEG().ToArray(), FacesArray));
                         //< Add your code here that uses the image >;
                     }), queue);
                 session.AddInput(input);
@@ -196,7 +205,7 @@ namespace InnoTecheLearning
 #elif WINDOWS_UWP
         public class Camera : Windows.UI.Xaml.Controls.UserControl, IDisposable
         {
-            public event CameraEventHandler ProcessingPreview = delegate { return Unit.CompletedTask; };
+            public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
             Windows.UI.Xaml.Controls.CaptureElement PreviewControl = new Windows.UI.Xaml.Controls.CaptureElement();
             Windows.Media.Capture.MediaCapture _mediaCapture;
             bool _isPreviewing;
@@ -232,26 +241,31 @@ namespace InnoTecheLearning
 
                     using(var TempFrame = await _mediaCapture?.GetPreviewFrameAsync())
                     Xamarin.Forms.Device.StartTimer(TempFrame?.Duration ?? TimeSpan.FromMilliseconds(40), () => {
-                        var ms = new MemoryStream();
-
-                        var encoder = Windows.Graphics.Imaging.BitmapEncoder.CreateAsync
-                            (Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId, ms.AsRandomAccessStream())
-                            .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
-                        
-                        using (var b = _mediaCapture.GetPreviewFrameAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult())
+                        using (var ms = new MemoryStream())
                         {
-                            encoder.SetSoftwareBitmap(b.SoftwareBitmap);
-                            try { encoder.FlushAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult(); }
-                            catch { ms.Dispose(); return _isPreviewing; }
-
-                            var detector = Windows.Media.FaceAnalysis.FaceDetector.CreateAsync()
+                            var encoder = Windows.Graphics.Imaging.BitmapEncoder.CreateAsync
+                                (Windows.Graphics.Imaging.BitmapEncoder.JpegEncoderId, ms.AsRandomAccessStream())
                                 .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
-                            using(CameraEventArgs e = (ms,
-                                detector.DetectFacesAsync(b.SoftwareBitmap).AsTask().ConfigureAwait(false).GetAwaiter().GetResult()
-                                    .Select(x =>
-                                        new Rectangle((int)x.FaceBox.X, (int)x.FaceBox.Y, (int)x.FaceBox.Width, (int)x.FaceBox.Height))))
-                                ProcessingPreview(this, e).AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
-                            return _isPreviewing;
+
+                            using (var b = _mediaCapture.GetPreviewFrameAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult())
+                            {
+                                encoder.SetSoftwareBitmap(b.SoftwareBitmap);
+                                try { encoder.FlushAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult(); }
+                                catch { ms.Dispose(); return _isPreviewing; }
+
+                                var detector = Windows.Media.FaceAnalysis.FaceDetector.CreateAsync()
+                                    .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
+                                var Faces = detector.DetectFacesAsync(b.SoftwareBitmap)
+                                    .AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
+                                var FacesArray = new Rectangle[Faces.Count];
+                                for (int i = 0; i < FacesArray.Length; i++)
+                                {
+                                    var Box = Faces[i].FaceBox;
+                                    FacesArray[i] = new Rectangle((int)Box.X, (int)Box.Y, (int)Box.Width, (int)Box.Height);
+                                }
+                                ProcessingPreview(this, new CameraEventArgs(ms.ToArray(), FacesArray));
+                                return _isPreviewing;
+                            }
                         }
                     });
                 }
