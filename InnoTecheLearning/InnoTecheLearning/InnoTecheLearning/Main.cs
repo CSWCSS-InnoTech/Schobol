@@ -118,13 +118,13 @@ namespace InnoTecheLearning
         }
         */
         bool AnimateRows = true;
-        public ValueTask<Unit> Push(View v, PageId Id, string Title = null) => 
+        public ValueTask<Unit> Push(View v, PageId Id, string Title = null) =>
             Log(
                 Unit.Await(
                     PushAsync(
                         Log(
                             new ContentPage { Content = v, BackgroundColor = Color.White }.With(
-                                (ref ContentPage x) => 
+                                (ref ContentPage x) =>
                                 {
                                     if (Enum.IsDefined(typeof(PageId), Id) && Id != PageId.Uninitialised) x.StyleId = Id.GetTitle();
                                     x.Title = Title ?? x.StyleId ?? string.Empty;
@@ -145,6 +145,8 @@ namespace InnoTecheLearning
             async void AsyncInit()
             {
                 Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<OnlineDict.Entry>());
+                Favourites.CollectionChanged += async (object sender, NotifyCollectionChangedEventArgs e) =>
+                    await Storage.SerializedWrite(Storage.VocabFile, Favourites);
             }
             AsyncInit();
             // Accomodate iPhone status bar.
@@ -155,13 +157,13 @@ namespace InnoTecheLearning
             Log("Before pushing main...");
             Push(MainView, PageId.Main);
             Popped += (sender, e) => { MusicSound?.Dispose(); MusicSound = null; };
+            AnimateRows = false;
             //_Player = Create(new StreamPlayerOptions(Utils.Resources.GetStream("Sounds.CNY.wav"), Loop: true));
             //_Player.Play();
             Log("Main page initialized.");
-            AnimateRows = false;
         }
         //~Main() { _Player.Dispose(); }
-        protected override bool OnBackButtonPressed() 
+        protected override bool OnBackButtonPressed()
         {
             if (Navigation.NavigationStack.Count > 1)
             {
@@ -182,15 +184,15 @@ namespace InnoTecheLearning
                     Children = {
                         Log(Society, "Generating Society Label in MainView"),
 
-                        Log(MainScreenRow(true, AnimateRows, 
+                        Log(MainScreenRow(true, AnimateRows,
                             MainScreenItem(
-                                ImageSource(ImageFile.Translate), 
+                                ImageSource(ImageFile.Translate),
                                 () => Push(Translator, PageId.Lingual),
                                 BoldLabel("LINGUAL")
                             ),
 
                              MainScreenItem(
-                                 ImageSource(ImageFile.Calculator), 
+                                 ImageSource(ImageFile.Calculator),
                                  () => ThreeButtonDialog.Show(
                                      "Choose Logic mode",
                                      "Which Logic mode?",
@@ -202,7 +204,7 @@ namespace InnoTecheLearning
                             )
                         , "Generated first row"),
 
-                        Log(MainScreenRow(true, AnimateRows, 
+                        Log(MainScreenRow(true, AnimateRows,
                             MainScreenItem(
                                 ImageSource(ImageFile.Sports),
                                 () => Push(Sports, PageId.Health),
@@ -210,13 +212,13 @@ namespace InnoTecheLearning
                             ),
 
                             MainScreenItem(
-                                ImageSource(ImageFile.MusicTuner), 
+                                ImageSource(ImageFile.MusicTuner),
                                 () => Push(MusicTuner, PageId.Tunes),
                                 BoldLabel("TUNES"))
                             )
                         , "Generated second row"),
 
-                        MainScreenRow(true, AnimateRows, 
+                        MainScreenRow(true, AnimateRows,
                             MainScreenItem(
                                 ImageSource(ImageFile.MathSolver),
                                 () => Push(MathSolver, PageId.Excel),
@@ -230,7 +232,7 @@ namespace InnoTecheLearning
                         ),
 
                         Button("Changelog", () => Push(
-                            Column(Changelog, Row(false, 
+                            Column(Changelog, Row(false,
                                 Button("Enter console", () => Push(ConsoleView, PageId.Console)),
                                 Button("View crash logs", () => Push(CrashLog, PageId.Crashes))
                            )),
@@ -421,7 +423,7 @@ namespace InnoTecheLearning
         Modifier Calculator_Modifier_;
         Modifier Calculator_Modifier
         { get => Calculator_Modifier_; set { Calculator_Display_Dirty = true; Calculator_Modifier_ = value; } }
-        readonly List<(List<Expressions> In, string Out, int Cursor)> Calculator_History = 
+        readonly List<(List<Expressions> In, string Out, int Cursor)> Calculator_History =
             new List<(List<Expressions> In, string Out, int Cursor)> { (new List<Expressions>(), "", 0) };
         int Calculator_HistoryIndex_ = 0;
         int Calculator_HistoryIndex
@@ -434,7 +436,7 @@ namespace InnoTecheLearning
             }
         }
         Action Calculator_HistoryIndex_Update;
-#region Append
+        #region Append
         void Calculator_StartModify()
         {
             if (Calculator_HistoryIndex != Calculator_History.Count - 1)
@@ -445,7 +447,7 @@ namespace InnoTecheLearning
             }
         }
         EventHandler<ExpressionEventArgs> Append_MethodGen(Expressions Expression) =>
-            (object sender, ExpressionEventArgs e) => 
+            (object sender, ExpressionEventArgs e) =>
                 {
                     Calculator_StartModify();
                     Calculator_Expression.Insert(Calculator_Cursor.UpperBound(Calculator_Expression.Count), e.Expression);
@@ -469,7 +471,7 @@ namespace InnoTecheLearning
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
             int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Right, Top, Bottom);
-#endregion
+        #endregion
         public StackLayout Calculator
         {
             get
@@ -738,10 +740,10 @@ namespace InnoTecheLearning
                     Append(Vars.Children, Expressions.Increment, ++Left, Top);
                     Append(Vars.Children, Expressions.Decrement, ++Left, Top);
                 }
-                
 
-                StackLayout Return = 
-                    Device.Idiom == TargetIdiom.Desktop ? 
+
+                StackLayout Return =
+                    Device.Idiom == TargetIdiom.Desktop ?
                     new StackLayout
                     {
                         Children =
@@ -770,19 +772,19 @@ namespace InnoTecheLearning
                     Mode.Text = Calculator_AngleUnit.ToString();
                 };
                 var Select = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
-                    i => delegate 
+                    i => delegate
                     {
                         if (Return.Children[new OnIdiom<int> { Desktop = 2, Phone = 3, Tablet = 3 }] != Menus[i])
                             Return.Children[new OnIdiom<int> { Desktop = 2, Phone = 3, Tablet = 3 }] = Menus[i];
                     }, 0, false,
                     nameof(Norm), nameof(Bin), nameof(Func), nameof(Trig), nameof(Const), nameof(Vars));
-                Return.Children[new OnIdiom<int> { Desktop = 1, Phone = 2, Tablet = 2 }] = Row(false, Select[0], 
+                Return.Children[new OnIdiom<int> { Desktop = 1, Phone = 2, Tablet = 2 }] = Row(false, Select[0],
                         Scroll(StackOrientation.Horizontal, Select.Skip(1).Concat(new[] { Mode }))//, Back(this)
                     );
                 var Modifiers = RadioButtons(Color.FromHex("#8AC249"), Color.FromHex("#4CAF50"),
                     i => delegate
                     {
-                            var Result = Calculator_History[Calculator_HistoryIndex];
+                        var Result = Calculator_History[Calculator_HistoryIndex];
                         if (string.IsNullOrWhiteSpace(Calculator_Value)) Calculator_Value = string.Empty;
                         else if (Calculator_Modifier != (Modifier)i)
                         {
@@ -791,7 +793,7 @@ namespace InnoTecheLearning
                             Out.Text = "";
                         }
                     }, 0, false,
-                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"), 
+                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"),
                     OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
                 Return.Children[new OnIdiom<int> { Desktop = 3, Phone = 4, Tablet = 4 }] =
                     Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
@@ -882,9 +884,9 @@ namespace InnoTecheLearning
                             VerticalOptions = LayoutOptions.FillAndExpand
                         },
 
-                        Row(false, Button("Evaluate", () => 
+                        Row(false, Button("Evaluate", () =>
                         {
-                            Calculator_Free_Value = 
+                            Calculator_Free_Value =
                                 string.IsNullOrWhiteSpace(Editor.Text) ? string.Empty : JSEvaluate(Editor.Text, this);
                             Calculator_Free_TextChanged(Entry, new TextChangedEventArgs(Entry.Text, Calculator_Free_Value));
                         }).With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand)
@@ -925,9 +927,9 @@ namespace InnoTecheLearning
                         Row(false, S1, C1, (Text)(X + "²")),
                         Row(false, S2, C2, (Text)(X + Y)),
                         Row(false, S3, C3, (Text)(Y + "²")),
-                        Button("Factorize", () => 
+                        Button("Factorize", () =>
                         {
-                            Factorizer_Result = 
+                            Factorizer_Result =
                                 Factorize(
                                     TryParseDouble(C1.Text, 1d) * (S1.Text == "+" ? 1 : -1),
                                     TryParseDouble(C2.Text, 1d) * (S2.Text == "+" ? 1 : -1),
@@ -1199,7 +1201,7 @@ namespace InnoTecheLearning
                         case TouchImage.PointerEventArgs.PointerEventType.Up:
                         case TouchImage.PointerEventArgs.PointerEventType.Cancel:
                             if (Answers.Contains(Display.Text))
-                            { 
+                            {
                                 try { CharGrid.Children.Add(new Label()); } catch (InvalidOperationException) { return; }
                                 await Alert(this, "Correct! The dragon got hurt!", "Yay!", "I'll go on and continue");
                                 ++Level; Advance(); }
@@ -1236,7 +1238,7 @@ namespace InnoTecheLearning
         {
             get
             {
-                Button TranslatorButton(OnlineDict.Entry R)
+                Button FavouritesButton(OnlineDict.Entry R)
                 {
                     var B = Button(Favourites.Contains(R) ? "★-" : "★+",
                         (ref Button sender, EventArgs e) =>
@@ -1257,11 +1259,11 @@ namespace InnoTecheLearning
                         {
                             if (e.OldItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★+");
                             if (e.NewItems?.Contains(R) == true) Device.BeginInvokeOnMainThread(() => B.Text = "★-");
-                            IgnoreEx(async () => await Storage.SerializedWrite(Storage.VocabFile, Favourites),
-                                typeof(UnauthorizedAccessException));
                         };
                     return B;
                 }
+                var Mode = Button(OnlineDict.ToEnglishMode ? "文→A" : "A→文", (ref Button sender, EventArgs e) => 
+                    sender.Text = (OnlineDict.ToEnglishMode = !OnlineDict.ToEnglishMode) ? "文→A" : "A→文");
                 var Input = Entry("", "Enter words...");
                 /*var Recognize = Button("🎤", () =>
                 { //http://developer.pearson.com/apis/dictionaries/
@@ -1282,7 +1284,7 @@ namespace InnoTecheLearning
                     foreach (var Result in Results)
                     {
                         Layout.Children.Add(
-                            Row(false, TranslatorButton(Result),
+                            Row(false, FavouritesButton(Result),
                                 FormattedLabel(
                                     new Span
                                     {
@@ -1342,7 +1344,7 @@ namespace InnoTecheLearning
                                 FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)) }
                         ));
                     });
-                    var Results = (await OnlineDict.ToChinese(Input.Text)).Entries;
+                    var Results = (await OnlineDict.Convert(Input.Text)).Entries;
                     Device.BeginInvokeOnMainThread(() =>
                         ViewUpdate(Formatted, Results, new Span
                         {
@@ -1364,7 +1366,7 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Row(false, /*Recognize,*/ Input, Translate),
+                        Row(false, Mode, /*Recognize,*/ Input, Translate),
                         new ScrollView { Orientation = ScrollOrientation.Both, Content = Formatted }
                     }
                 }, 0, 0);

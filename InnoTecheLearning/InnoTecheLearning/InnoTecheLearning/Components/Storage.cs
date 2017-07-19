@@ -36,6 +36,8 @@ namespace InnoTecheLearning
             }
 
             public static void CreateSync(string FileName) => File.Create(GetSaveLocation(FileName)).Dispose();
+            public static void DeleteSync(string FileName) => File.Delete(GetSaveLocation(FileName));
+            public static string ReadSync(string FileName) => File.ReadAllText(GetSaveLocation(FileName));
             public static void WriteSync(string FileName, object o) => File.WriteAllText(GetSaveLocation(FileName), o.ToString());
             public static ValueTask<Unit> Delete(string FileName) => Unit.InvokeAsync(() => File.Delete(GetSaveLocation(FileName)));
 

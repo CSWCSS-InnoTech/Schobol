@@ -29,6 +29,7 @@ namespace System.Runtime.CompilerServices
 
     /// <summary>Represents a builder for asynchronous methods that returns a <see cref="ValueTask{TResult}"/>.</summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
+    [Diagnostics.DebuggerStepThrough]
     [StructLayout(LayoutKind.Auto)]
     public struct AsyncValueTaskMethodBuilder<TResult>
     {
@@ -124,6 +125,7 @@ namespace System.Runtime.CompilerServices
 
     /// <summary>Provides an awaitable type that enables configured awaits on a <see cref="ValueTask{TResult}"/>.</summary>
     /// <typeparam name="TResult">The type of the result produced.</typeparam>
+    [Diagnostics.DebuggerStepThrough]
     [StructLayout(LayoutKind.Auto)]
     public struct ConfiguredValueTaskAwaitable<TResult>
     {
@@ -193,6 +195,7 @@ namespace System.Runtime.CompilerServices
     }
 
     /// <summary>Provides an awaiter for a <see cref="ValueTask{TResult}"/>.</summary>
+    [Diagnostics.DebuggerStepThrough]
     public struct ValueTaskAwaiter<TResult> : ICriticalNotifyCompletion
     {
         /// <summary>The value being awaited.</summary>
@@ -268,6 +271,7 @@ namespace System.Threading.Tasks
     /// a <see cref="Task"/>-returning method completes synchronously and successfully.
     /// </para>
     /// </remarks>
+    [Diagnostics.DebuggerStepThrough]
     [AsyncMethodBuilder(typeof(AsyncValueTaskMethodBuilder<>))]
     [StructLayout(LayoutKind.Auto)]
     public struct ValueTask<TResult> : IEquatable<ValueTask<TResult>>

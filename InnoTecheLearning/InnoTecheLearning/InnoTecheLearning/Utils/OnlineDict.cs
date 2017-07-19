@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -121,6 +122,11 @@ namespace InnoTecheLearning
                 public override IEnumerable<Entry> Entries { get; }
                 public PedosaResponse(IEnumerable<Entry> Entries) => this.Entries = Entries;
             }
+
+            public sealed class NullResponse : DictionaryResponse
+            {
+                public override IEnumerable<Entry> Entries => Enumerable.Empty<Entry>();
+            }
             static PearsonDictionaryResponse ProcessPearsonResponse(PearsonDictionaryResponse Data)
             {
                 for (int i = 0; i < Data.results.Count; i++)
@@ -166,7 +172,7 @@ namespace InnoTecheLearning
                         .Replace("conj", "conjunction").ToString());
 
 
-            public static async ValueTask<string> Request(System.Uri uri)
+            public static async ValueTask<string> Request(Uri uri)
             {
                 using (var Message = new System.Net.Http.HttpRequestMessage
                 {
@@ -184,28 +190,29 @@ namespace InnoTecheLearning
 
             public static async ValueTask<PearsonDictionaryResponse> PearsonToChinese(string Word) =>
                 ProcessPearsonResponse(JsonDeserialize<PearsonDictionaryResponse>(await Request
-            (new System.Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + EscapeDataString(Word.ToLower())))));
+            (new Uri("http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + EscapeDataString(Word.ToLower())))));
             public static async ValueTask<PearsonDictionaryIDResponse> PearsonLookupID(string ID) =>
                 JsonDeserialize<PearsonDictionaryIDResponse>(await Request
-                (new System.Uri("http://api.pearson.com/v2/dictionaries/entries/" + EscapeDataString(ID))));
+                (new Uri("http://api.pearson.com/v2/dictionaries/entries/" + EscapeDataString(ID))));
 
             public static async ValueTask<PedosaResponse> PedosaToChinese(string Word) =>
                 PedosaDeserialize(await Request
-                (new System.Uri("http://pedosa.cloud/api/dictionary/query.php?Language=English&Word=" + EscapeDataString(Word.ToLower()))), Word.ToLower());
+                (new Uri("http://pedosa.cloud/api/dictionary/query.php?Language=English&Word=" + EscapeDataString(Word.ToLower()))), Word.ToLower());
 
             public static async ValueTask<PedosaResponse> PedosaToEnglish(string Word) =>
                 PedosaDeserialize(await Request
-                (new System.Uri("http://pedosa.cloud/api/dictionary/query.php?Language=Chinese&Word=" + EscapeDataString(Word))), Word);
+                (new Uri("http://pedosa.cloud/api/dictionary/query.php?Language=Chinese&Word=" + EscapeDataString(Word))), Word);
 
+            public static bool ToEnglishMode = false;
             public static bool UsePearson = false;
             public static async ValueTask<DictionaryResponse> ToChinese(string Word)
             { if (UsePearson) return await PearsonToChinese(Word); else return await PedosaToChinese(Word); }
-
             public static async ValueTask<DictionaryResponse> ToEnglish(string Word)
             {
-                if (UsePearson) throw new System.InvalidOperationException("Pearson Dictionaries does not provide a Chinese to English API.");
-                return await PedosaToChinese(Word);
+                if (UsePearson) return new NullResponse();
+                return await PedosaToEnglish(Word);
             }
+            public static ValueTask<DictionaryResponse> Convert(string Word) => ToEnglishMode ? ToEnglish(Word) : ToChinese(Word);
         }
     }
 }
