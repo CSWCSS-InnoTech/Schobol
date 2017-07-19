@@ -28,17 +28,13 @@ namespace InnoTecheLearning
             public struct Entry
             {
                 public readonly string Headword;
-                public readonly string PoS;
+                public readonly string PoS; //Or Pinyin
                 public readonly string Translation;
-                public readonly string Synonym;
-                public readonly string LexicalUnit;
-                public Entry(string Headword, string PoS, string Translation, string Synonym, string LexicalUnit)
+                public Entry(string Headword, string PoS, string Translation)
                 {
                     this.Headword = Headword;
                     this.PoS = PoS;
                     this.Translation = Translation;
-                    this.Synonym = Synonym;
-                    this.LexicalUnit = LexicalUnit;
                 }
             }
             [DataContract] public abstract class DictionaryResponse
@@ -80,9 +76,7 @@ namespace InnoTecheLearning
                 public IEnumerable<Entry> data = default(IEnumerable<Entry>);
                 public override IEnumerable<Entry> Entries =>
                     data == default(IEnumerable<Entry>) ?
-                    data = results.Select(r => new Entry(
-                    r.headword, r.part_of_speech, r.senses.Single().translation, r.senses.Single().synonym, r.senses.Single().lexical_unit
-                    )) : data;
+                    data = results.Select(r => new Entry(r.headword, r.part_of_speech, r.senses.Single().translation)) : data;
             }
 
             [DataContract] public sealed class PearsonDictionaryIDResponse
@@ -144,15 +138,16 @@ namespace InnoTecheLearning
             }
 
             public static PedosaResponse
-                PedosaDeserialize(string Data)
+                PedosaDeserialize(string Data, string Headword)
             {
-                var Pieces = Data.Split('^', '-');
-                Pieces = Pieces.Select(s => s == "NULL" ? null : s).ToArray();
-                var Return = new Entry[int.Parse(Pieces[0])];
-                for (int i = 0; i < Return.Length; i++)
+                Data = Data.Trim('\r', '\n');
+                var Pieces = Data.Split('^', '#');
+                //Pieces = Pieces.Select(s => s == "NULL" ? null : s).ToArray();
+                var Return = new List<Entry>();
+                for (int i = 0; i < Pieces.Length / 2; i++)
                 {
-                    var Processed = ProcessContent(Pieces[i * 5 + 1], Pieces[i * 5 + 2]);
-                    Return[i] = new Entry(Processed.Headword, Processed.PoS, Pieces[i * 5 + 3], Pieces[i * 5 + 4], Pieces[i * 5 + 5]);
+                    var Processed = ProcessContent(Headword, Pieces[i * 2]);
+                    Return.Add(new Entry(Processed.Headword, Processed.PoS, Pieces[i * 2 + 1]));
                 }
                 return new PedosaResponse(Return);
             }
@@ -196,11 +191,21 @@ namespace InnoTecheLearning
 
             public static async ValueTask<PedosaResponse> PedosaToChinese(string Word) =>
                 PedosaDeserialize(await Request
-                (new System.Uri("http://pedosa.cloud/api/dictionary/eng-chi/query.php?word=" + EscapeDataString(Word.ToLower()))));
+                (new System.Uri("http://pedosa.cloud/api/dictionary/query.php?Language=English&Word=" + EscapeDataString(Word.ToLower()))), Word.ToLower());
+
+            public static async ValueTask<PedosaResponse> PedosaToEnglish(string Word) =>
+                PedosaDeserialize(await Request
+                (new System.Uri("http://pedosa.cloud/api/dictionary/query.php?Language=Chinese&Word=" + EscapeDataString(Word))), Word);
 
             public static bool UsePearson = false;
             public static async ValueTask<DictionaryResponse> ToChinese(string Word)
             { if (UsePearson) return await PearsonToChinese(Word); else return await PedosaToChinese(Word); }
+
+            public static async ValueTask<DictionaryResponse> ToEnglish(string Word)
+            {
+                if (UsePearson) throw new System.InvalidOperationException("Pearson Dictionaries does not provide a Chinese to English API.");
+                return await PedosaToChinese(Word);
+            }
         }
     }
 }

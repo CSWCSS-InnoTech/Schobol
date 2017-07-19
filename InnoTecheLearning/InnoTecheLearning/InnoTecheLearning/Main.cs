@@ -165,7 +165,6 @@ namespace InnoTecheLearning
         {
             if (Navigation.NavigationStack.Count > 1)
             {
-                if (CurrentPage.GetId() == PageId.Facial) GC.Collect();
                 Pop();
                 return true;
             }
@@ -1298,13 +1297,13 @@ namespace InnoTecheLearning
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                                         FontFamily = FontDictionary//"Courier New, Georgia, Serif"
-                                        }, new Span
-                                        {
-                                            Text = Result.Translation + " \n",
-                                            ForegroundColor = Color.Black,
-                                            FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                            FontFamily = FontDictionary
-                                        }
+                                    }, new Span
+                                    {
+                                        Text = Result.Translation + " \n",
+                                        ForegroundColor = Color.Black,
+                                        FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
+                                        FontFamily = FontDictionary
+                                    }
                                 )
                             )
                         );
