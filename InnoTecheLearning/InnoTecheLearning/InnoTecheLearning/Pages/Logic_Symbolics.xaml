@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Name="Page"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InnoTecheLearning.Pages.Logic_Symbolics"
+             Title="eLearn Logic (Symbolics)" StyleId="eLearn Logic (Symbolics)">
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="White">
+            <Entry x:Name="In" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
+            <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
+                <StackLayout Orientation="Vertical">
+                    <Label TextColor="Black" Text="Algebraic" FontSize="Large" HorizontalOptions="FillAndExpand"/>
+                    <Button VerticalOptions="Start" Text="Expand" x:Name="AExpand"/>
+                    
+                </StackLayout>
+            </ScrollView>
+            <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

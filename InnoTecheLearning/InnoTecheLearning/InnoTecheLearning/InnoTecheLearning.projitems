@@ -28,6 +28,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\Logic_Symbolics.xaml.cs">
+      <DependentUpon>Logic_Symbolics.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Console.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
@@ -101,5 +105,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\boy-smiling.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\Logic_Symbolics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -100,7 +100,7 @@ namespace InnoTecheLearning
                     if (WinPhone != null)
                         return (T)WinPhone.DynamicInvoke();
                     break;
-                case Device.Windows:
+                case Device.WinRT:
                     if (Windows != null)
                         return (T)Windows.DynamicInvoke();
                     break;
@@ -136,7 +136,7 @@ namespace InnoTecheLearning
                     if (!WinPhone.Equals(default(T)))
                         return WinPhone;
                     break;
-                case Device.Windows:
+                case Device.WinRT:
                     if (!Windows.Equals(default(T)))
                         return Windows;
                     break;

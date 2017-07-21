@@ -2,7 +2,7 @@
     open System
 
     [<Flags>]
-    type BindingFlags = 
+    type internal BindingFlags = 
         | CreateInstance = 512
         | DeclaredOnly = 2
         | Default = 0

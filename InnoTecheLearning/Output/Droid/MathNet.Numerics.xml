@@ -11244,6 +11244,63 @@
             period. Periods can be monthly or quarterly depending on the data frequency.
             </summary>
         </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfScalarFunctionConstrained(System.Func{System.Double,System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find value x that minimizes the scalar function f(x), constrained within bounds, using the Golden Section algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.GoldenSectionMinimizer"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunction(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Nelder-Mead Simplex algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.NelderMeadSimplex"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionConstrained(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x), constrained within bounds, using the Broyden–Fletcher–Goldfarb–Shanno Bounded (BFGS-B) algorithm.
+            The missing gradient is evaluated numerically (forward difference).
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.BfgsBMinimizer"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionGradient(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.BfgsMinimizer"/> directly.
+            An alternative routine using conjugate gradients (CG) is available in <see cref="T:MathNet.Numerics.Optimization.ConjugateGradientMinimizer"/>.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionGradient(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Tuple{System.Double,MathNet.Numerics.LinearAlgebra.Vector{System.Double}}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.BfgsMinimizer"/> directly.
+            An alternative routine using conjugate gradients (CG) is available in <see cref="T:MathNet.Numerics.Optimization.ConjugateGradientMinimizer"/>.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionGradientConstrained(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x), constrained within bounds, using the Broyden–Fletcher–Goldfarb–Shanno Bounded (BFGS-B) algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.BfgsBMinimizer"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionGradientConstrained(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Tuple{System.Double,MathNet.Numerics.LinearAlgebra.Vector{System.Double}}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x), constrained within bounds, using the Broyden–Fletcher–Goldfarb–Shanno Bounded (BFGS-B) algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.BfgsBMinimizer"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionGradientHessian(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Newton algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.NewtonMinimizer"/> directly.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.FindMinimum.OfFunctionGradientHessian(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Tuple{System.Double,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}}},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Int32)">
+            <summary>
+            Find vector x that minimizes the function f(x) using the Newton algorithm.
+            For more options and diagnostics consider to use <see cref="T:MathNet.Numerics.Optimization.NewtonMinimizer"/> directly.
+            </summary>
+        </member>
         <member name="M:MathNet.Numerics.FindRoots.OfFunction(System.Func{System.Double,System.Double},System.Double,System.Double,System.Double,System.Int32)">
             <summary>Find a solution of the equation f(x)=0.</summary>
             <param name="f">The function to find roots from.</param>
@@ -33847,7 +33904,8 @@
             matrix and a given other matrix being the 'x' of atan2 and the
             'this' matrix being the 'y'
             </summary>
-            <param name="other"></param>
+            <param name="other">The other matrix 'y'</param>
+            <param name="result">The matrix with the result and 'x'</param>
             <returns></returns>
         </member>
         <member name="M:MathNet.Numerics.LinearAlgebra.Matrix`1.PointwiseCeiling">
@@ -37480,6 +37538,7 @@
             </summary>
             <param name="f">Function which takes a scalar and a vector, modifies the vector in place and returns void</param>
             <param name="x">The scalar to be passed to the function</param>
+            <param name="result">The vector where the result will be placed</param>
             <exception cref="T:System.ArgumentException">If this vector and <paramref name="result"/> are not the same size.</exception>
         </member>
         <member name="M:MathNet.Numerics.LinearAlgebra.Vector`1.PointwiseBinary(System.Action{MathNet.Numerics.LinearAlgebra.Vector{`0},MathNet.Numerics.LinearAlgebra.Vector{`0}},MathNet.Numerics.LinearAlgebra.Vector{`0})">
@@ -38963,6 +39022,290 @@
             <param name="N">Size of output array(the larger, the finer)</param>
             <param name="f">ode function</param>
             <returns>approximations</returns>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.BfgsBMinimizer">
+            <summary>
+            Broyden–Fletcher–Goldfarb–Shanno Bounded (BFGS-B) algorithm is an iterative method for solving box-constrained nonlinear optimization problems
+            http://www.ece.northwestern.edu/~nocedal/PSfiles/limited.ps.gz
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.BfgsBMinimizer.FindMinimum(MathNet.Numerics.Optimization.IObjectiveFunction,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Find the minimum of the objective function given lower and upper bounds
+            </summary>
+            <param name="objective">The objective function, must support a gradient</param>
+            <param name="lowerBound">The lower bound</param>
+            <param name="upperBound">The upper bound</param>
+            <param name="initialGuess">The initial guess</param>
+            <returns>The MinimizationResult which contains the minimum and the ExitCondition</returns>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.BfgsMinimizer">
+            <summary>
+            Broyden–Fletcher–Goldfarb–Shanno (BFGS) algorithm is an iterative method for solving unconstrained nonlinear optimization problems
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.BfgsMinimizer.#ctor(System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Creates BFGS minimizer
+            </summary>
+            <param name="gradientTolerance">The gradient tolerance</param>
+            <param name="parameterTolerance">The parameter tolerance</param>
+            <param name="functionProgressTolerance">The funciton progress tolerance</param>
+            <param name="maximumIterations">The maximum number of iterations</param>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.BfgsMinimizer.FindMinimum(MathNet.Numerics.Optimization.IObjectiveFunction,MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Find the minimum of the objective function given lower and upper bounds
+            </summary>
+            <param name="objective">The objective function, must support a gradient</param>
+            <param name="initialGuess">The initial guess</param>
+            <returns>The MinimizationResult which contains the minimum and the ExitCondition</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.BfgsMinimizerBase.#ctor(System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Creates a base class for BFGS minimization
+            </summary>
+            <param name="gradientTolerance">The gradient tolerance</param>
+            <param name="parameterTolerance">The parameter tolerance</param>
+            <param name="functionProgressTolerance">The funciton progress tolerance</param>
+            <param name="maximumIterations">The maximum number of iterations</param>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.BfgsSolver">
+            <summary>
+            Broyden-Fletcher-Goldfarb-Shanno solver for finding function minima
+            See http://en.wikipedia.org/wiki/Broyden%E2%80%93Fletcher%E2%80%93Goldfarb%E2%80%93Shanno_algorithm
+            Inspired by implementation: https://github.com/PatWie/CppNumericalSolvers/blob/master/src/BfgsSolver.cpp
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.BfgsSolver.Solve(MathNet.Numerics.LinearAlgebra.Double.Vector,System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}})">
+            <summary>
+            Finds a minimum of a function by the BFGS quasi-Newton method
+            This uses the function and it's gradient (partial derivatives in each direction) and approximates the Hessian
+            </summary>
+            <param name="initialGuess">An initial guess</param>
+            <param name="functionValue">Evaluates the function at a point</param>
+            <param name="functionGradient">Evaluates the gradient of the function at a point</param>
+            <returns>The minimum found</returns>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.IObjectiveFunctionEvaluation">
+            <summary>
+            Objective function with a frozen evaluation that must not be changed from the outside.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.IObjectiveFunctionEvaluation.CreateNew">
+            <summary>Create a new unevaluated and independent copy of this objective function</summary>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.IObjectiveFunction">
+            <summary>
+            Objective function with a mutable evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.IObjectiveFunction.Fork">
+            <summary>Create a new independent copy of this objective function, evaluated at the same point.</summary>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.LineSearch.WeakWolfeLineSearch">
+             <summary>
+             Search for a step size alpha that satisfies the weak wolfe conditions. The weak Wolfe
+             Conditions are
+             i)  Armijo Rule:         f(x_k + alpha_k p_k) &lt;= f(x_k) + c1 alpha_k p_k^T g(x_k)
+             ii) Curvature Condition: p_k^T g(x_k + alpha_k p_k) &gt;= c2 p_k^T g(x_k)
+             where g(x) is the gradient of f(x), 0 &lt; c1 &lt; c2 &lt; 1.
+            
+             Implementation is based on http://www.math.washington.edu/~burke/crs/408/lectures/L9-weak-Wolfe.pdf
+            
+             references:
+             http://en.wikipedia.org/wiki/Wolfe_conditions
+             http://www.math.washington.edu/~burke/crs/408/lectures/L9-weak-Wolfe.pdf
+             </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.LineSearch.WolfeLineSearch.FindConformingStep(MathNet.Numerics.Optimization.IObjectiveFunctionEvaluation,MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double)">
+            <summary>Implemented following http://www.math.washington.edu/~burke/crs/408/lectures/L9-weak-Wolfe.pdf</summary>
+            <param name="startingPoint">The objective function being optimized, evaluated at the starting point of the search</param>
+            <param name="searchDirection">Search direction</param>
+            <param name="initialStep">Initial size of the step in the search direction</param>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.LineSearch.WolfeLineSearch.FindConformingStep(MathNet.Numerics.Optimization.IObjectiveFunctionEvaluation,MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Double)">
+            <summary></summary>
+            <param name="startingPoint">The objective function being optimized, evaluated at the starting point of the search</param>
+            <param name="searchDirection">Search direction</param>
+            <param name="initialStep">Initial size of the step in the search direction</param>
+            <param name="upperBound">The upper bound</param>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.NelderMeadSimplex">
+            <summary>
+            Class implementing the Nelder-Mead simplex algorithm, used to find a minima when no gradient is available.
+            Called fminsearch() in Matlab. A description of the algorithm can be found at
+            http://se.mathworks.com/help/matlab/math/optimizing-nonlinear-functions.html#bsgpq6p-11
+            or
+            https://en.wikipedia.org/wiki/Nelder%E2%80%93Mead_method
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.FindMinimum(MathNet.Numerics.Optimization.IObjectiveFunction,MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Finds the minimum of the objective function without an intial pertubation, the default values used
+            by fminsearch() in Matlab are used instead
+            http://se.mathworks.com/help/matlab/math/optimizing-nonlinear-functions.html#bsgpq6p-11
+            </summary>
+            <param name="objectiveFunction">The objective function, no gradient or hessian needed</param>
+            <param name="initialGuess">The intial guess</param>
+            <returns>The minimum point</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.FindMinimum(MathNet.Numerics.Optimization.IObjectiveFunction,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double})">
+            <summary>
+            Finds the minimum of the objective function with an intial pertubation
+            </summary>
+            <param name="objectiveFunction">The objective function, no gradient or hessian needed</param>
+            <param name="initialGuess">The intial guess</param>
+            <param name="initalPertubation">The inital pertubation</param>
+            <returns>The minimum point</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.Minimum(MathNet.Numerics.Optimization.IObjectiveFunction,MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Int32)">
+            <summary>
+            Finds the minimum of the objective function without an intial pertubation, the default values used
+            by fminsearch() in Matlab are used instead
+            http://se.mathworks.com/help/matlab/math/optimizing-nonlinear-functions.html#bsgpq6p-11
+            </summary>
+            <param name="objectiveFunction">The objective function, no gradient or hessian needed</param>
+            <param name="initialGuess">The intial guess</param>
+            <returns>The minimum point</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.Minimum(MathNet.Numerics.Optimization.IObjectiveFunction,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double,System.Int32)">
+            <summary>
+            Finds the minimum of the objective function with an intial pertubation
+            </summary>
+            <param name="objectiveFunction">The objective function, no gradient or hessian needed</param>
+            <param name="initialGuess">The intial guess</param>
+            <param name="initalPertubation">The inital pertubation</param>
+            <returns>The minimum point</returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.InitializeErrorValues(MathNet.Numerics.LinearAlgebra.Vector{System.Double}[],MathNet.Numerics.Optimization.IObjectiveFunction)">
+            <summary>
+            Evaluate the objective function at each vertex to create a corresponding
+            list of error values for each vertex
+            </summary>
+            <param name="vertices"></param>
+            <param name="objectiveFunction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.HasConverged(System.Double,MathNet.Numerics.Optimization.NelderMeadSimplex.ErrorProfile,System.Double[])">
+            <summary>
+            Check whether the points in the error profile have so little range that we
+            consider ourselves to have converged
+            </summary>
+            <param name="convergenceTolerance"></param>
+            <param name="errorProfile"></param>
+            <param name="errorValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.EvaluateSimplex(System.Double[])">
+            <summary>
+            Examine all error values to determine the ErrorProfile
+            </summary>
+            <param name="errorValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.InitializeVertices(MathNet.Numerics.Optimization.NelderMeadSimplex.SimplexConstant[])">
+            <summary>
+            Construct an initial simplex, given starting guesses for the constants, and
+            initial step sizes for each dimension
+            </summary>
+            <param name="simplexConstants"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.TryToScaleSimplex(System.Double,MathNet.Numerics.Optimization.NelderMeadSimplex.ErrorProfile@,MathNet.Numerics.LinearAlgebra.Vector{System.Double}[],System.Double[],MathNet.Numerics.Optimization.IObjectiveFunction)">
+            <summary>
+            Test a scaling operation of the high point, and replace it if it is an improvement
+            </summary>
+            <param name="scaleFactor"></param>
+            <param name="errorProfile"></param>
+            <param name="vertices"></param>
+            <param name="errorValues"></param>
+            <param name="objectiveFunction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.ShrinkSimplex(MathNet.Numerics.Optimization.NelderMeadSimplex.ErrorProfile,MathNet.Numerics.LinearAlgebra.Vector{System.Double}[],System.Double[],MathNet.Numerics.Optimization.IObjectiveFunction)">
+            <summary>
+            Contract the simplex uniformly around the lowest point
+            </summary>
+            <param name="errorProfile"></param>
+            <param name="vertices"></param>
+            <param name="errorValues"></param>
+            <param name="objectiveFunction"></param>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.NelderMeadSimplex.ComputeCentroid(MathNet.Numerics.LinearAlgebra.Vector{System.Double}[],MathNet.Numerics.Optimization.NelderMeadSimplex.ErrorProfile)">
+            <summary>
+            Compute the centroid of all points except the worst
+            </summary>
+            <param name="vertices"></param>
+            <param name="errorProfile"></param>
+            <returns></returns>
+        </member>
+        <member name="P:MathNet.Numerics.Optimization.NelderMeadSimplex.SimplexConstant.Value">
+            <summary>
+            The value of the constant
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.Value(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double})">
+            <summary>
+            Objective function where neither Gradient nor Hessian is available.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.Gradient(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Tuple{System.Double,MathNet.Numerics.LinearAlgebra.Vector{System.Double}}})">
+            <summary>
+            Objective function where the Gradient is available. Greedy evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.Gradient(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}})">
+            <summary>
+            Objective function where the Gradient is available. Lazy evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.Hessian(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Tuple{System.Double,MathNet.Numerics.LinearAlgebra.Matrix{System.Double}}})">
+            <summary>
+            Objective function where the Hessian is available. Greedy evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.Hessian(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}})">
+            <summary>
+            Objective function where the Hessian is available. Lazy evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.GradientHessian(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Tuple{System.Double,MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}}})">
+            <summary>
+            Objective function where both Gradient and Hessian are available. Greedy evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.GradientHessian(System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},System.Double},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Vector{System.Double}},System.Func{MathNet.Numerics.LinearAlgebra.Vector{System.Double},MathNet.Numerics.LinearAlgebra.Matrix{System.Double}})">
+            <summary>
+            Objective function where both Gradient and Hessian are available. Lazy evaluation.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.ScalarValue(System.Func{System.Double,System.Double})">
+            <summary>
+            Objective function where neither first nor second derivative is available.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.ScalarDerivative(System.Func{System.Double,System.Double},System.Func{System.Double,System.Double})">
+            <summary>
+            Objective function where the first derivative is available.
+            </summary>
+        </member>
+        <member name="M:MathNet.Numerics.Optimization.ObjectiveFunction.ScalarSecondDerivative(System.Func{System.Double,System.Double},System.Func{System.Double,System.Double},System.Func{System.Double,System.Double})">
+            <summary>
+            Objective function where the first and second derivatives are available.
+            </summary>
+        </member>
+        <member name="T:MathNet.Numerics.Optimization.ObjectiveFunctions.ForwardDifferenceGradientObjectiveFunction">
+            <summary>
+            Adapts an objective function with only value implemented 
+            to provide a gradient as well. Gradient calculation is 
+            done using the finite difference method, specifically 
+            forward differences.
+            
+            For each gradient computed, the algorithm requires an 
+            additional number of function evaluations equal to the 
+            functions's number of input parameters.
+            </summary>
         </member>
         <member name="T:MathNet.Numerics.Permutation">
             <summary>

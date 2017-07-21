@@ -81,6 +81,7 @@ namespace InnoTecheLearning
             Logic_毲Keypad䫎,
             Logic_毲Freeform䫎,
             Logic_毲Factor䫎,
+            Logic_毲Symbolics䫎,
             Health,
             Tunes,
             Excel,
@@ -200,8 +201,15 @@ namespace InnoTecheLearning
                                      "Freeform", () => Push(Calculator_Free, PageId.Logic_毲Freeform䫎),
                                      "Factor", () => Push(Factorizer, PageId.Logic_毲Factor䫎)
                                  ),
-                                 BoldLabel("LOGIC"))
-                            )
+                                 BoldLabel("LOGIC")
+                            ),
+
+
+                            MainScreenItem(
+                                ImageSource(ImageFile.Factorizer),
+                                () => PushAsync(new Pages.Logic_Symbolics()),
+                                BoldLabel("LOGIC\n(SYMBOLICS)")
+                            ))
                         , "Generated first row"),
 
                         Log(MainScreenRow(true, AnimateRows,
