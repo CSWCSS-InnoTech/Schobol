@@ -3,33 +3,23 @@
     using System;
     using System.Numerics;
     using MathNet.Numerics;
+    using C = System.Numerics.Complex;
 
-// this could be extended to arbitrary/custom precision approximations in the future
-type Approximation =
-    | Real of float
-    | Complex of Complex
+    // this could be extended to arbitrary/custom precision approximations in the future
+    class Approximation : TaggedUnion<double, Complex>
+    {
+        public Approximation(double x) : base(x) { }
+        public Approximation(Complex x) : base(x) { }
+        // Simpler usage in C#
+        public static implicit operator Approximation(double x) => new Approximation(x);
+        public static implicit operator Approximation(Complex x) => new Approximation(x);
 
-    // Simpler usage in C#
-    static member op_Implicit(x:float) = Real x
-    static member op_Implicit(x:complex) = Complex x
-    member x.RealValue =
-        match x with
-        | Real x -> x
-        | Complex x when x.IsReal() -> x.Real
-        | _ -> failwith "Value not convertible to a real number."
-    member x.ComplexValue =
-        match x with
-        | Real x -> complex x 0.0
-        | Complex x -> x
+        public double RealValue => Index == 1 ? Val1 : Index == 2 && Val2.IsReal() ? Val2.Real :
+            throw new InvalidOperationException("Value not convertible to a real number.");
 
+        public Complex ComplexValue => Index == 1 ? new Complex(Val1, 0) : Val2;
 
-[< RequireQualifiedAccess >]
-[< CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix) >]
-module Approximation =
-
-    type C = System.Numerics.Complex
-
-    let fromRational (x:BigRational) = Real(float x)
+        public static Approximation FromRational(BigRational x) => new Approximation((double)x);
 
     let negate = function
         | Real a -> Real(-a)
