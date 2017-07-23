@@ -1,4 +1,5 @@
-﻿//System.Runtime.Serialization.FormatterServices.GetUninitializedObject(((object)typeof(object)).GetType())
+﻿
+//System.Runtime.Serialization.FormatterServices.GetUninitializedObject(((object)typeof(object)).GetType())
 //System.Runtime.Serialization.FormatterServices.GetUninitializedObject(Type.GetType("System.RuntimeType"))
 /*System.Runtime.Serialization.FormatterServices.GetUninitializedObject((Type)
     System.Runtime.Serialization.FormatterServices.GetUninitializedObject(Type.GetType("System.RuntimeType")))*/
@@ -203,14 +204,12 @@ namespace InnoTecheLearning
                                  ),
                                  BoldLabel("LOGIC")
                             ),
-
-
                             MainScreenItem(
                                 ImageSource(ImageFile.Factorizer),
                                 () => PushAsync(new Pages.Logic_Symbolics()),
                                 BoldLabel("LOGIC\n(SYMBOLICS)")
-                            ))
-                        , "Generated first row"),
+                            )
+                        ), "Generated first row"),
 
                         Log(MainScreenRow(true, AnimateRows,
                             MainScreenItem(

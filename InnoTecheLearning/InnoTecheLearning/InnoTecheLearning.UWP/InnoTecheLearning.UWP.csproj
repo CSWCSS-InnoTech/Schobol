@@ -261,7 +261,7 @@
       <Version>1.0.2</Version>
     </PackageReference>
     <PackageReference Include="FSharp.Core">
-      <Version>4.1.17</Version>
+      <Version>3.1.2.5</Version>
     </PackageReference>
     <PackageReference Include="ImageSharp">
       <Version>1.0.0-alpha9-00171</Version>
