@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-07-23T07:24:34.777</Modified>
+      <Modified>2017-07-23T08:18:20.678</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-07-23T07:24:33.442</Modified>
+      <Modified>2017-07-23T08:18:19.871</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsec.dll">
       <PackagePath>FParsec.dll</PackagePath>
@@ -46,10 +46,6 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsecCS.dll">
       <PackagePath>FParsecCS.dll</PackagePath>
       <Modified>2015-09-27T11:20:26.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FSharp.Core\3.1.2.5\lib\portable-net45+netcore45\FSharp.Core.dll">
-      <PackagePath>FSharp.Core.dll</PackagePath>
-      <Modified>2015-07-17T08:51:10.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\ImageSharp\1.0.0-alpha9-00171\lib\netstandard1.3\ImageSharp.dll">
       <PackagePath>ImageSharp.dll</PackagePath>
@@ -62,10 +58,6 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\MathNet.Numerics\3.20.0\lib\portable-net45+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll">
       <PackagePath>MathNet.Numerics.dll</PackagePath>
       <Modified>2017-07-15T14:07:36.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\MathNet.Numerics.FSharp\3.20.0\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.FSharp.dll">
-      <PackagePath>MathNet.Numerics.FSharp.dll</PackagePath>
-      <Modified>2017-07-15T14:07:38.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -563,9 +555,17 @@
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
       <Modified>2017-06-28T07:13:30.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\FSharp.Core.dll">
+      <PackagePath>FSharp.Core.dll</PackagePath>
+      <Modified>2015-07-17T08:51:10.000</Modified>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\MathNet.Numerics.FSharp.dll">
+      <PackagePath>MathNet.Numerics.FSharp.dll</PackagePath>
+      <Modified>2017-07-15T14:07:38.000</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\Symbolics.dll">
       <PackagePath>Symbolics.dll</PackagePath>
-      <Modified>2017-07-23T07:06:12.851</Modified>
+      <Modified>2017-07-23T08:12:16.329</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\concrt140.dll">
       <PackagePath>concrt140.dll</PackagePath>
@@ -872,11 +872,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-07-23T07:24:33.865</Modified>
+      <Modified>2017-07-23T08:18:20.441</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-07-23T07:24:34.773</Modified>
+      <Modified>2017-07-23T08:18:20.676</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

@@ -34,9 +34,6 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsecCS.dll">
       <PackagePath>FParsecCS.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FSharp.Core\3.1.2.5\lib\portable-net45+netcore45\FSharp.Core.dll">
-      <PackagePath>FSharp.Core.dll</PackagePath>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\ImageSharp\1.0.0-alpha9-00171\lib\netstandard1.3\ImageSharp.dll">
       <PackagePath>ImageSharp.dll</PackagePath>
     </AppxPackagedFile>
@@ -45,9 +42,6 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\MathNet.Numerics\3.20.0\lib\portable-net45+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.dll">
       <PackagePath>MathNet.Numerics.dll</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\MathNet.Numerics.FSharp\3.20.0\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\MathNet.Numerics.FSharp.dll">
-      <PackagePath>MathNet.Numerics.FSharp.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.0.1\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -420,6 +414,12 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.3.5.256-pre6\lib\uap10.0\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\FSharp.Core.dll">
+      <PackagePath>FSharp.Core.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\MathNet.Numerics.FSharp.dll">
+      <PackagePath>MathNet.Numerics.FSharp.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\Symbolics.dll">
       <PackagePath>Symbolics.dll</PackagePath>
