@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using MathNet.Symbolics;
+//using MathNet.Symbolics;
 
 namespace InnoTecheLearning.Pages
 {
@@ -18,10 +18,10 @@ namespace InnoTecheLearning.Pages
         {
             InitializeComponent();
 
-            AExpand.Clicked += Eval(Algebraic.Expand);
+            //AExpand.Clicked += Eval(Algebraic.Expand);
 
         }
 
-        EventHandler Eval(Func<Expression, Expression> Func) => (sender, e) => Out.Text = Func(Infix.ParseOrUndefined(In.Text)).ToString();
+        //EventHandler Eval(Func<Expression, Expression> Func) => (sender, e) => Out.Text = Func(Infix.ParseOrUndefined(In.Text)).ToString();
     }
 }

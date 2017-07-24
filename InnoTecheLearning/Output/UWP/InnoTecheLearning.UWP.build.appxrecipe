@@ -28,12 +28,6 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsec.dll">
-      <PackagePath>FParsec.dll</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsecCS.dll">
-      <PackagePath>FParsecCS.dll</PackagePath>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\ImageSharp\1.0.0-alpha9-00171\lib\netstandard1.3\ImageSharp.dll">
       <PackagePath>ImageSharp.dll</PackagePath>
     </AppxPackagedFile>
@@ -414,15 +408,6 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.3.5.256-pre6\lib\uap10.0\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\FSharp.Core.dll">
-      <PackagePath>FSharp.Core.dll</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\MathNet.Numerics.FSharp.dll">
-      <PackagePath>MathNet.Numerics.FSharp.dll</PackagePath>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\Symbolics.dll">
-      <PackagePath>Symbolics.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\concrt140.dll">
       <PackagePath>concrt140.dll</PackagePath>

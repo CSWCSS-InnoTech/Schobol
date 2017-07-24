@@ -31,21 +31,13 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-07-23T08:18:20.678</Modified>
+      <Modified>2017-07-24T07:19:12.270</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-07-23T08:18:19.871</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsec.dll">
-      <PackagePath>FParsec.dll</PackagePath>
-      <Modified>2015-09-27T11:20:26.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\FParsec\1.0.2\lib\portable-net45+netcore45+wpa81+wp8\FParsecCS.dll">
-      <PackagePath>FParsecCS.dll</PackagePath>
-      <Modified>2015-09-27T11:20:26.000</Modified>
+      <Modified>2017-07-24T07:19:11.880</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\ImageSharp\1.0.0-alpha9-00171\lib\netstandard1.3\ImageSharp.dll">
       <PackagePath>ImageSharp.dll</PackagePath>
@@ -555,18 +547,6 @@
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
       <Modified>2017-06-28T07:13:30.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\FSharp.Core.dll">
-      <PackagePath>FSharp.Core.dll</PackagePath>
-      <Modified>2015-07-17T08:51:10.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\MathNet.Numerics.FSharp.dll">
-      <PackagePath>MathNet.Numerics.FSharp.dll</PackagePath>
-      <Modified>2017-07-15T14:07:38.000</Modified>
-    </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Symbolics\bin\Debug\Symbolics.dll">
-      <PackagePath>Symbolics.dll</PackagePath>
-      <Modified>2017-07-23T08:12:16.329</Modified>
-    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\concrt140.dll">
       <PackagePath>concrt140.dll</PackagePath>
       <Modified>2016-06-09T14:46:52.000</Modified>
@@ -872,11 +852,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-07-23T08:18:20.441</Modified>
+      <Modified>2017-07-24T07:14:31.229</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-07-23T08:18:20.676</Modified>
+      <Modified>2017-07-24T07:19:12.267</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
