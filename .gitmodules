@@ -1,0 +1,3 @@
+[submodule "nerdamer"]
+	path = nerdamer
+	url = https://github.com/jiggzson/nerdamer
