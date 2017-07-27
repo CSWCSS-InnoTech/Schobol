@@ -11,7 +11,7 @@ using Xamarin.Forms.Xaml;
 
 namespace InnoTecheLearning.Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Skip)]
     public partial class Logic_Symbolics : ContentPage
     {
         Task<Jint.Engine> Current = CreateEngineAsync();
@@ -25,7 +25,7 @@ namespace InnoTecheLearning.Pages
             {
                 try
                 {
-                    Out.Text = (await Current).Execute($"nerdamer(\"{In.Text.Replace("\"", "\\\"")}\")")
+                    Out.Text = (await Current).Execute($"nerdamer('{In.Text.Replace("'", "\\'")}').toString()")
                         .GetCompletionValue().ToString();
                 }
                 catch (Jint.Runtime.JavaScriptException ex)

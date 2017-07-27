@@ -1,4 +1,4 @@
-﻿#undef DEBUG_RESOURCES
+﻿#define DEBUG_RESOURCES
 
 using System;
 using System.Collections.Generic;
@@ -46,8 +46,12 @@ namespace InnoTecheLearning
         {
             get
             {
-               return new ContentPage { BackgroundColor = Color.White,
-                    Content = new Label { Text = GetResources(), TextColor = Color.Black } };
+               return new ContentPage
+               {
+                   BackgroundColor = Color.White,
+                   Content = new ScrollView { Orientation = ScrollOrientation.Both,
+                       Content = new Label { Text = GetResources(), TextColor = Color.Black } }
+               };
             }
         }
         public string GetResources()
