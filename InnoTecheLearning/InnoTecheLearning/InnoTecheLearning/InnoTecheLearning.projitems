@@ -28,7 +28,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Math.js.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Logic_Symbolics.xaml.cs">
       <DependentUpon>Logic_Symbolics.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -112,5 +111,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Algebra.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Calculus.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Extra.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\nerdamer.core.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Solve.js" />
   </ItemGroup>
 </Project>

@@ -151,13 +151,6 @@ namespace InnoTecheLearning
                     await Storage.SerializedWrite(Storage.VocabFile, Favourites);
             }
             AsyncInit();
-            Task.Run(() => {
-                var a = new System.Diagnostics.Stopwatch();
-                a.Start();
-                JSEngine.Execute(Mathjs);
-                a.Stop();
-                Log(a.Elapsed, LogImportance.V);
-            });
             // Accomodate iPhone status bar.
             Padding = new Thickness(0, OnPlatform(20, 0, 0), 0, 0);
             //BarBackgroundColor = Color.Silver;

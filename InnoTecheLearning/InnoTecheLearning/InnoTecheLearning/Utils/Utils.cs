@@ -568,7 +568,7 @@ namespace InnoTecheLearning
             {
                 //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
                 //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
-                JSEngine = new Jint.Engine();
+                //JSEngine = new Jint.Engine();
                 if (TrueFree) return JSEngine.Execute(Expression).GetCompletionValue().ToString();
                 GetVars(JSEngine, JSVariables);
                 JSEngine.SetValue("Prev", JSEvaluteAns)
@@ -662,8 +662,8 @@ function Min() { return Math.min.apply(global, arguments); }
                 return JSEngine.GetCompletionValue().ToString();
             }
             catch (System.Reflection.TargetInvocationException ex) when (Alert != null)
-            { return 'ⓧ' + ex.InnerException.Message.Split('\r', '\n', '\f')[0]; }
-            catch (Exception ex) when (Alert != null) { return 'ⓧ' + ex.Message.Split('\r', '\n', '\f')[0]; } //⮾ 
+            { return Error + ex.InnerException.Message.Split('\r', '\n', '\f')[0]; }
+            catch (Exception ex) when (Alert != null) { return Error + ex.Message.Split('\r', '\n', '\f')[0]; }
         }
         public static string Display(double value, Modifier mod)
         {

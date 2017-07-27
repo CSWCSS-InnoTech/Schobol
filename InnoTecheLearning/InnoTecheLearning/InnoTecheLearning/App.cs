@@ -1,4 +1,6 @@
-﻿using System;
+﻿#undef DEBUG_RESOURCES
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,7 +20,11 @@ namespace InnoTecheLearning
             Region = "App";
             Log("App strated");
             // The root page of your application
-            MainPage = new Main();//ResourceView;
+#if DEBUG_RESOURCES
+            MainPage = ResourceView;
+#else
+            MainPage = new Main();
+#endif
         }
 
         protected override void OnStart ()
@@ -35,6 +41,7 @@ namespace InnoTecheLearning
 		{
 			// Handle when your app resumes
 		}
+#if DEBUG_RESOURCES
         public ContentPage ResourceView
         {
             get
@@ -52,5 +59,6 @@ namespace InnoTecheLearning
             }
             return Return;
         }
+#endif
     }
 }

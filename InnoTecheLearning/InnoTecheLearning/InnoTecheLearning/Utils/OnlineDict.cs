@@ -26,11 +26,11 @@ namespace InnoTecheLearning
         //[DataMember] public $1 $2;
         public static class OnlineDict
         {
-            public struct Entry
+            [DataContract] public struct Entry
             {
-                public readonly string Headword;
-                public readonly string PoS; //Or Pinyin
-                public readonly string Translation;
+                [DataMember] public string Headword;
+                [DataMember] public string PoS; //Or Pinyin
+                [DataMember] public string Translation;
                 public Entry(string Headword, string PoS, string Translation)
                 {
                     this.Headword = Headword;

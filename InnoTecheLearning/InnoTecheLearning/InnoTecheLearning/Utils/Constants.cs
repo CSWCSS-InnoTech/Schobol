@@ -10,7 +10,7 @@ namespace InnoTecheLearning
     {
 #region Version
         //public static Version Version { get { return Create.Version(0, 10, 0, VersionStage.Alpha, 179); } }
-        public const string VersionFull = "0.11.0 Alpha 1"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.11.0 Alpha 2"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.11.0";
         public const string VersionAssemblyFile = "0.11";
         public const string VersionAssemblyInfo = VersionFull;
@@ -74,7 +74,8 @@ namespace InnoTecheLearning
 
 #region AssemblyInfo
         public const string AssemblyTitle = "CSWCSS eLearn Utilities";
-        public const string AssemblyDescription = "";
+        public const string AssemblyDescription = "The eLearn Utilities App is an app empowering " +
+            "students to learn more efficiently through digitalised learning.";
         public const string AssemblyConfiguration = "";
         public const string AssemblyCompany = "Innovative Technology Society of CSWCSS";
         public const string AssemblyProduct = "InnoTecheLearning"; //Plz no change, affects Storage I/O
@@ -124,7 +125,9 @@ namespace InnoTecheLearning
 #region Character Substitutes
         public const string SubLeftBracket = "毲";
         public const string SubRightBracket = "䫎";
-#endregion
+        #endregion
+
+        public const char Error = 'ⓧ'; //⮾ 
 
         public static class Constants
         {
