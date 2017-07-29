@@ -113,10 +113,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Algebra.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Calculus.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Extra.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\nerdamer.core.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Solve.js" />
+    <None Include="$(MSBuildThisFileDirectory)ToDo.txt" />
   </ItemGroup>
 </Project>

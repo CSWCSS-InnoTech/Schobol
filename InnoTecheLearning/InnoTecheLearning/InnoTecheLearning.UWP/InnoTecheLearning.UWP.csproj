@@ -236,6 +236,13 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Algebra.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Calculus.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Extra.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\nerdamer.core.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Solve.js" />
+  </ItemGroup>
+  <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
