@@ -10,8 +10,10 @@
             <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
                 <StackLayout Orientation="Vertical">
                     
-                    <Button VerticalOptions="Start" Text="Evaluate" x:Name="Evaluate"/>
+                    <Button Text="Evaluate" x:Name="Evaluate"/>
 
+                    <Button Text="Expand" x:Name="Expand"/>
+                    <Button Text="Factorize" x:Name="Factorize"/>
                 </StackLayout>
             </ScrollView>
             <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray" />

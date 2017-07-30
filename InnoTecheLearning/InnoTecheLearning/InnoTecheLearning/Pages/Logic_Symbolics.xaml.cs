@@ -20,16 +20,16 @@ namespace InnoTecheLearning.Pages
             InitializeComponent();
 
             Evaluate.Clicked += Evaluate_Clicked;
-
+            Expand.Clicked += Expand_Clicked;
 
         }
 
 #if WINDOWS_UWP
-        async void Evaluate_Clicked(object sender, EventArgs e)
-        {
+        async Task Eval(string Format)
+        { 
             try
             {
-                Out.Text = (await Current).Execute($"nerdamer('{In.Text.Replace("'", "\\'")}').toString()")
+                Out.Text = (await Current).Execute(string.Format(Format, In.Text.Replace("'", "\\'")))
                     .GetCompletionValue().ToString();
             }
             catch (Jint.Runtime.JavaScriptException ex)
@@ -38,6 +38,8 @@ namespace InnoTecheLearning.Pages
             }
             NextEngine();
         }
+        async void Evaluate_Clicked(object sender, EventArgs e) => await Eval("nerdamer('{0}').toString()");
+        async void Expand_Clicked(object sender, EventArgs e) => await Eval("nerdamer('{0}').toString()");
         Task<Jint.Engine> Current = CreateEngineAsync();
         Task<Jint.Engine> Next = CreateEngineAsync();
         void NextEngine() { Current = Next; Next = CreateEngineAsync(); }
@@ -66,6 +68,10 @@ namespace InnoTecheLearning.Pages
                 default:
                     break;
             }
+        }
+        void Expand_Clicked(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
         //EventHandler Eval(Func<Expression, Expression> Func) => (sender, e) => Out.Text = Func(Infix.ParseOrUndefined(In.Text)).ToString();
 #endif
