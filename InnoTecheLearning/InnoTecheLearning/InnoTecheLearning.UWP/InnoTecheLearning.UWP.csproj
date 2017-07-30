@@ -236,13 +236,6 @@
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Algebra.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Calculus.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Extra.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\nerdamer.core.js" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Solve.js" />
-  </ItemGroup>
-  <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -282,6 +275,12 @@
     <PackageReference Include="Xamarin.Forms">
       <Version>2.3.5.256-pre6</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ChakraHost10, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\InnoTecheLearning\DLL\ChakraHost10.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="..\InnoTecheLearning\InnoTecheLearning.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

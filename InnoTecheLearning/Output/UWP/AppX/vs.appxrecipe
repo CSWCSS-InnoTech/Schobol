@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-07-30T09:15:59.828</Modified>
+      <Modified>2017-07-30T13:58:45.359</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-07-30T09:15:59.179</Modified>
+      <Modified>2017-07-30T13:58:43.842</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\ImageSharp\1.0.0-alpha9-00171\lib\netstandard1.3\ImageSharp.dll">
       <PackagePath>ImageSharp.dll</PackagePath>
@@ -547,6 +547,10 @@
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
       <Modified>2017-06-28T07:13:30.000</Modified>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\ChakraHost10.dll">
+      <PackagePath>ChakraHost10.dll</PackagePath>
+      <Modified>2017-01-13T11:26:55.575</Modified>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\DLL\x86\concrt140.dll">
       <PackagePath>concrt140.dll</PackagePath>
       <Modified>2016-06-09T14:46:52.000</Modified>
@@ -852,11 +856,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-07-30T09:14:17.767</Modified>
+      <Modified>2017-07-30T13:30:05.745</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-07-30T09:15:59.825</Modified>
+      <Modified>2017-07-30T13:58:45.354</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>

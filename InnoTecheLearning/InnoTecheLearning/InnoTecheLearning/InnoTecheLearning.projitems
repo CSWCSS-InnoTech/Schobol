@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\StepCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\Storage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\SymbolicsEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SystemClipboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SneakyCamera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TempIO.cs" />
@@ -39,7 +40,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageRecognizer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\JavaScriptEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OnlineDict.cs" />
@@ -115,5 +115,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ToDo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Algebra.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Calculus.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Extra.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\nerdamer.core.js" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Solve.js" />
   </ItemGroup>
 </Project>
