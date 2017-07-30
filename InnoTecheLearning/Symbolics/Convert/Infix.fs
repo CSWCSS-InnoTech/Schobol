@@ -11,14 +11,14 @@ type ParseResult =
     | ParseFailure of string
 
 
-module private InfixParser =
+module InfixParser =
 
     open Microsoft.FSharp.Reflection
     open FParsec
     open Operators
     open System.Reflection
 
-    type Pseudo =
+    type public Pseudo =
         | Sqrt
         | Pow
 
@@ -73,7 +73,7 @@ module private InfixParser =
     let pseudoName : Pseudo parser =
         let flags = BindingFlags.NonPublic ||| BindingFlags.Public
         let cases =
-            FSharpType.GetUnionCases (typeof<Pseudo>(*, flags*))
+            Microsoft.FSharp.Reflection.FSharpType.GetUnionCases (typeof<Pseudo>(*, flags*))
             |> Array.map
                 (fun case -> (case.Name.ToLower(), FSharpValue.MakeUnion(case, [||](*, flags*)) :?> Pseudo))
             |> Array.sortBy (fun (name,_) -> -name.Length)

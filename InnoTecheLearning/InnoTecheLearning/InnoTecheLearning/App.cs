@@ -1,4 +1,4 @@
-﻿#define DEBUG_RESOURCES
+﻿#undef DEBUG_RESOURCES
 
 using System;
 using System.Collections.Generic;
