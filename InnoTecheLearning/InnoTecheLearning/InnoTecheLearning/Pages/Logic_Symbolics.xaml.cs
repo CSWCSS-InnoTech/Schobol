@@ -33,7 +33,7 @@ namespace InnoTecheLearning.Pages
         { 
             try
             {
-                Out.Text = await (await Current).Execute(string.Format(Format, In.Text.Replace("'", "\\'")));
+                Out.Text = await (await Current).EvaluateNoReturn(string.Format(Format, In.Text.Replace("'", "\\'")));
             }
             catch (Jint.Runtime.JavaScriptException ex)
             {
@@ -51,11 +51,11 @@ namespace InnoTecheLearning.Pages
         static async Task<Engine> CreateEngineAsync()
         {
             var JSEngine = new Engine();
-            await JSEngine.Execute(Utils.Resources.GetString("nerdamer.core.js"));
-            await JSEngine.Execute(Utils.Resources.GetString("Algebra.js"));
-            await JSEngine.Execute(Utils.Resources.GetString("Calculus.js"));
-            await JSEngine.Execute(Utils.Resources.GetString("Solve.js"));
-            await JSEngine.Execute(Utils.Resources.GetString("Extra.js"));
+            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("nerdamer.core.js"));
+            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Algebra.js"));
+            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Calculus.js"));
+            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Solve.js"));
+            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Extra.js"));
             return JSEngine;
         }
 #else
