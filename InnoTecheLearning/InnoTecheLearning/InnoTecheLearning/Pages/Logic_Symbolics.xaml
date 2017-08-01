@@ -9,9 +9,7 @@
             <Entry x:Name="In" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
             <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
                 <StackLayout Orientation="Vertical">
-                    
                     <Button Text="Evaluate" x:Name="Evaluate"/>
-
                     <Button Text="Expand" x:Name="Expand"/>
                     <Button Text="Factorize" x:Name="Factorize"/>
                 </StackLayout>

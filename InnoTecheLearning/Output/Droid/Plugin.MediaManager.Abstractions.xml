@@ -1,0 +1,575 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Plugin.MediaManager.Abstractions</name>
+    </assembly>
+    <members>
+        <member name="T:Plugin.MediaManager.Abstractions.IMediaFileMetadata">
+            <summary>
+            Mediafile Metadata. 
+            </summary>
+            <seealso cref="T:System.ComponentModel.INotifyPropertyChanged" />
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Album">
+            <summary>
+            The album title for the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.AlbumArt">
+            <summary>
+            The artwork for the album of the media's original source as a Bitmap.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.AlbumArtist">
+            <summary>
+            The artist for the album of the media's original source.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.AlbumArtUri">
+            <summary>
+            The artwork for the album of the media's original source as a Uri style string.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Art">
+            <summary>
+            The artwork for the media as a Bitmap.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Artist">
+            <summary>
+            The artist of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.ArtUri">
+            <summary>
+            The artwork for the media as a Uri style string.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Author">
+            <summary>
+            The author of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.BluetoothFolderType">
+            <summary>
+            The bluetooth folder type of the media specified in the section 6.10.2.2 of the Bluetooth AVRCP 1.5.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Compilation">
+            <summary>
+            The compilation status of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Composer">
+            <summary>
+            The composer of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Date">
+            <summary>
+            The date the media was created or published.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.DiscNumber">
+            <summary>
+            The disc number for the media's original source.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.DisplayDescription">
+            <summary>
+            A description that is suitable for display to the user.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.DisplayIcon">
+            <summary>
+            An icon or thumbnail that is suitable for display to the user.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.DisplayIconUri">
+            <summary>
+            An icon or thumbnail that is suitable for display to the user.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.DisplaySubtitle">
+            <summary>
+            A subtitle that is suitable for display to the user.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.DisplayTitle">
+            <summary>
+            A title that is suitable for display to the user.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Duration">
+            <summary>
+            The duration of the media in ms.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Genre">
+            <summary>
+            The genre of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.MediaId">
+            <summary>
+            A string key for identifying the content.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.MediaUri">
+            <summary>
+            A Uri formatted string representing the content.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.NumTracks">
+            <summary>
+            The number of tracks in the media's original source.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Rating">
+            <summary>
+            The overall rating for the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Title">
+            <summary>
+            The title of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.TrackNumber">
+            <summary>
+            The track number for the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.UserRating">
+            <summary>
+            The user's rating for the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Writer">
+            <summary>
+            The writer of the media.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFileMetadata.Year">
+            <summary>
+            The year the media was created or published as a long.
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IMediaManager">
+            <summary>
+            The main purpose of this class is to be a controlling unit for all the single MediaItem implementations, who
+            in themselve can play their media, but need a central controling unit, surrounding them
+            </summary>
+            <seealso cref="T:Plugin.MediaManager.Abstractions.IPlaybackManager" />
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.AudioPlayer">
+            <summary>
+            Player responsible for audio playback
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.VideoPlayer">
+            <summary>
+            Player responsible for video playback
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.MediaQueue">
+            <summary>
+            Queue to play media in sequences
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.MediaNotificationManager">
+            <summary>
+            Manages notifications to the native system
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.MediaExtractor">
+            <summary>
+            Extracts media information to put it into an IMediaFile
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.VolumeManager">
+            <summary>
+            Used to manage the volume
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaManager.PlaybackController">
+            <summary>
+            Used in various views to control the playback
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IMediaManager.MediaFileChanged">
+            <summary>
+            Raised when the media information of the track has changed.
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IMediaManager.MediaFileFailed">
+            <summary>
+            Raised when mediadata of MediaFile failed to update
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.Play(System.String)">
+            <summary>
+            Creates new MediaFile object, adds it to the queue and starts playing
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.Play(System.String,Plugin.MediaManager.Abstractions.Enums.MediaFileType)">
+            <summary>
+            Creates new MediaFile object, adds it to the queue and starts playing
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.Play(System.String,Plugin.MediaManager.Abstractions.Enums.MediaFileType,Plugin.MediaManager.Abstractions.Enums.ResourceAvailability)">
+            <summary>
+            Creates new MediaFile object, adds it to the queue and starts playing
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.Play(System.Collections.Generic.IEnumerable{Plugin.MediaManager.Abstractions.IMediaFile})">
+            <summary>
+            Adds all MediaFiles to the Queue and starts playing the first one
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.PlayNext">
+            <summary>
+            Plays the next MediaFile in the Queue
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.PlayPrevious">
+            <summary>
+            Plays the previous MediaFile in the Queue
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.PlayByPosition(System.Int32)">
+            <summary>
+            Plays a MediaFile by its position in the Queue
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaManager.SetOnBeforePlay(System.Func{Plugin.MediaManager.Abstractions.IMediaFile,System.Threading.Tasks.Task})">
+            <summary>
+            Sets a function which gets called before the MediaFile is played
+            </summary>
+            <param name="beforePlay">The before play.</param>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.Implementations.MediaQueue.CollectionChanged">
+            <summary>
+            Occurs when the collection changes.
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.Implementations.MediaQueue.PropertyChanged">
+            <summary>
+            Occurs when a property value changes.
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.Implementations.MediaManagerBase">
+            <summary>
+                Implementation for MediaManager
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.Implementations.MediaManagerBase.Play(System.Collections.Generic.IEnumerable{Plugin.MediaManager.Abstractions.IMediaFile})">
+            <summary>
+            Adds all MediaFiles to the Queue and starts playing the first item
+            </summary>
+            <param name="mediaFiles"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IPlaybackManager.Status">
+            <summary>
+            Reading the current status of the player
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IPlaybackManager.Position">
+            <summary>
+            Gets the players position
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IPlaybackManager.Duration">
+            <summary>
+            Gets the source duration
+            If the response is TimeSpan.Zero, the duration is unknown or the player is still buffering.
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IPlaybackManager.Buffered">
+            <summary>
+            Gets the buffered time
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IPlaybackManager.StatusChanged">
+            <summary>
+            Raised when the status changes
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IPlaybackManager.PlayingChanged">
+            <summary>
+            Raised at least every second when the player is playing.
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IPlaybackManager.BufferingChanged">
+            <summary>
+            Raised each time the buffering is updated by the player.
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IPlaybackManager.MediaFinished">
+            <summary>
+            Raised when media is finished playing.
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IPlaybackManager.MediaFailed">
+            <summary>
+            Raised when media is failed playing.
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackManager.Play(Plugin.MediaManager.Abstractions.IMediaFile)">
+            <summary>
+            Adds MediaFile to the Queue and starts playing
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackManager.Pause">
+            <summary>
+            Stops playing but retains position
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackManager.Stop">
+            <summary>
+            Stops playing
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackManager.Seek(System.TimeSpan)">
+            <summary>
+            Changes position to the specified number of milliseconds from zero
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IPlaybackManager.RequestHeaders">
+            <summary>
+            Gets or sets the request headers.
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IVideoSurface">
+            <summary>
+            Used to pass through the native view
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IMediaQueue">
+            <summary>
+            Manages all the items that will be played
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IMediaQueue.QueueEnded">
+            <summary>
+            Raised when the end of the Queue has been reached
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IMediaQueue.QueueMediaChanged">
+            <summary>
+            Raised when the current Queue item changes
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaQueue.Current">
+            <summary>
+            Get the current track from the Queue
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaQueue.Repeat">
+            <summary>
+            The type of repeat: None, RepeatOne or RepeatAll
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaQueue.IsShuffled">
+            <summary>
+            Wether the queue is shuffled
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaQueue.HasNext">
+            <summary>
+            If the Queue has a next track
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaQueue.HasPrevious">
+            <summary>
+            If the Queue has a previous track
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaQueue.Index">
+            <summary>
+            Get the current playing index the Queue
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IMediaFile">
+            <summary>
+            Information about the mediafile
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFile.Type">
+            <summary>
+            Indicator for player which type of file it should play
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFile.Availability">
+            <summary>
+            Indicates wether the resource is locally or remotely available
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFile.Metadata">
+            <summary>
+            Gets or sets the metadata.
+            </summary>
+            <value>
+            The metadata.
+            </value>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IMediaFile.MetadataUpdated">
+            <summary>
+            Raised when mediadata of MediaFile failed to update
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFile.Url">
+            <summary>
+            Gets or sets the URL. Can be on the internet or local storage
+            </summary>
+            <value>
+            The URL.
+            </value>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IMediaFile.MetadataExtracted">
+            <summary>
+            Gets or sets a value indicating whether [metadata extracted].
+            </summary>
+            <value>
+              <c>true</c> if [metadata extracted]; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IVideoPlayer">
+            <summary>
+            Plays the video
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IVideoPlayer.RenderSurface">
+            <summary>
+            The native view where the video should be rendered on
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IVideoPlayer.AspectMode">
+            <summary>
+            The aspect mode of the video
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IMediaNotificationManager">
+            <summary>
+            Manages the notifications to the native platform
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaNotificationManager.StartNotification(Plugin.MediaManager.Abstractions.IMediaFile)">
+            <summary>
+            Starts the notification.
+            </summary>
+            <param name="mediaFile">The media file.</param>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaNotificationManager.StopNotifications">
+            <summary>
+            Stops the notifications.
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaNotificationManager.UpdateNotifications(Plugin.MediaManager.Abstractions.IMediaFile,Plugin.MediaManager.Abstractions.Enums.MediaPlayerStatus)">
+            <summary>
+            Updates the notifications.
+            </summary>
+            <param name="mediaFile">The media file.</param>
+            <param name="status">The status.</param>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IMediaExtractor.ExtractMediaInfo(Plugin.MediaManager.Abstractions.IMediaFile)">
+            <summary>
+            Returns the same file with the extracted media information
+            </summary>
+            <param name="mediaFile">The media file</param>
+        </member>
+        <member name="T:Plugin.MediaManager.Abstractions.IVolumeManager">
+            <summary>
+            Manages the volume of media
+            </summary>
+        </member>
+        <member name="E:Plugin.MediaManager.Abstractions.IVolumeManager.VolumeChanged">
+            <summary>
+            Raised when the volume changes
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IVolumeManager.CurrentVolume">
+            <summary>
+            The volume for the current MediaPlayer
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IVolumeManager.MaxVolume">
+            <summary>
+            The Maximum volume that can be used
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IVolumeManager.Mute">
+            <summary>
+            True if the sound is Muted
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.PlayPause">
+            <summary>
+            Plays or pauses the currentl MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.Play">
+            <summary>
+            Plays the current MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.Pause">
+            <summary>
+            Pauses the current MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.Stop">
+            <summary>
+            Stops playing
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.PlayPreviousOrSeekToStart">
+            <summary>
+            Plays the previous MediaFile or seeks to start if far enough into the current one.
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.PlayPrevious">
+            <summary>
+            Plays the previous MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.PlayNext">
+            <summary>
+            Plays the next MediaFile
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.SeekToStart">
+            <summary>
+            Seeks to the start of the current MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.StepForward">
+            <summary>
+            Seeks forward a fixed amount of seconds of the current MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.StepBackward">
+            <summary>
+            Seeks backward a fixed amount of seconds of the current MediaFile
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.SeekTo(System.Double)">
+            <summary>
+            Seeks to the specified amount of seconds
+            </summary>
+            <param name="seconds"></param>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.ToggleRepeat">
+            <summary>
+            Toggles between the different repeat: modes None, RepeatOne and RepeatAll
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.Abstractions.IPlaybackController.ToggleShuffle">
+            <summary>
+            Enables or disables shuffling
+            </summary>
+        </member>
+    </members>
+</doc>

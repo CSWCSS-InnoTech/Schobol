@@ -33,6 +33,10 @@
       <DependentUpon>Logic_Symbolics.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\Tunes.xaml.cs">
+      <DependentUpon>Tunes.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Console.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
@@ -122,5 +126,11 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Extra.js" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\nerdamer.core.js" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)..\..\..\nerdamer\Solve.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\Tunes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
