@@ -2,10 +2,35 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InnoTecheLearning.Pages.Tunes"
+             BackgroundColor="White"
              Title="eLearn Tunes" StyleId="eLearn Tunes">
     <ContentPage.Content>
-        <StackLayout>
-            <Image Source="{}" />
+        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+            <StackLayout Orientation="Horizontal" VerticalOptions="Start" Padding="20,0">
+                <Image x:Name="Violin" BackgroundColor="Gray" Aspect="AspectFit" WidthRequest="128" HeightRequest="128"/>
+                <Label Text="Violin and Viola" TextColor="Black" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
+                <Button Text="G" x:Name="ViolinG" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+                <Button Text="D" x:Name="ViolinD" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+                <Button Text="A" x:Name="ViolinA" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+                <Button Text="E" x:Name="ViolinE" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" VerticalOptions="Start" Padding="20,0">
+                <Image x:Name="Cello" BackgroundColor="Gray" Aspect="AspectFit" WidthRequest="128" HeightRequest="128"/>
+                <Label Text="Cello and Double Bass" TextColor="Black" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" VerticalOptions="FillAndExpand">
+                <Button Text="'C" x:Name="CelloC" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+                <Button Text="'G" x:Name="CelloG" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+                <Button Text="D" x:Name="CelloD" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+                <Button Text="A" x:Name="CelloA" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+            </StackLayout>
+            <Button Text="Stop" x:Name="Stop" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="100" TextColor="Black" />
+                <Slider Minimum="0" Maximum="100" BackgroundColor="Silver" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

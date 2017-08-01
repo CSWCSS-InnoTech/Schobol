@@ -12,6 +12,7 @@
                     <Button Text="Evaluate" x:Name="Evaluate"/>
                     <Button Text="Expand" x:Name="Expand"/>
                     <Button Text="Factorize" x:Name="Factorize"/>
+                    <Button Text="Display as: Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
                 </StackLayout>
             </ScrollView>
             <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray" />
