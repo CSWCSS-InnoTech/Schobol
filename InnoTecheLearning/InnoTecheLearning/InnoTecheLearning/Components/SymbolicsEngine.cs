@@ -101,23 +101,51 @@ namespace InnoTecheLearning
         {
             Android.Webkit.WebView _Engine = new Android.Webkit.WebView(Xamarin.Forms.Forms.Context);
             public SymbolicsEngine() { _Engine.Settings.JavaScriptEnabled = true; }
-            public Task<string> EvaluateNoReturn(string JavaScript)
+            public async Task<string> EvaluateNoReturn(string JavaScript)
             {
-                var CompletionSource = new TaskCompletionSource<string>();
+                var reset = new ManualResetEvent(false);
+                var response = string.Empty;
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
                     //https://stackoverflow.com/questions/19788294/how-does-evaluatejavascript-work
-                    _Engine.EvaluateJavascript($"(function(){{return ({JavaScript});}})()", new Callback(CompletionSource.SetResult));
-                else _Engine.LoadUrl($"javascript:(function(){{return ({JavaScript});}});");
-                return CompletionSource.Task;
+                    // _Engine.EvaluateJavascript($"(function(){{return ({JavaScript});}})()", new Callback((r) => { response = r; reset.Set(); }));
+                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript(JavaScript, new Callback((r) => { response = r; reset.Set(); })));
+                else
+                {
+                    var _Interface = new Interface();
+                    _Interface.Available += (sender, e) => { response = _Interface.Result; reset.Set(); };
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        _Engine.AddJavascriptInterface(_Interface, "__Interface");
+                        //_Engine.LoadData("", "text/html", null); //Must !! Load anything before target url
+                        _Engine.LoadUrl($"javascript:{(Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean ? "window." : string.Empty)}__Interface.__PutResult(eval(\"{JavaScript.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"))");
+                        //$"javascript:(function(){{return ({JavaScript});}})();"
+                    });
+                }
+                await Task.Run(() => reset.WaitOne());
+                return response;
             }
-            public Task<string> EvaluateWithReturn(string JavaScript)
+            public async Task<string> EvaluateWithReturn(string JavaScript)
             {
-                var CompletionSource = new TaskCompletionSource<string>();
-                if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+                var reset = new ManualResetEvent(false);
+                var response = string.Empty;
+                if (Android.OS.Build.VERSION.SdkInt <= Android.OS.BuildVersionCodes.Kitkat)
                     //https://stackoverflow.com/questions/19788294/how-does-evaluatejavascript-work
-                    _Engine.EvaluateJavascript($"(function(){{{JavaScript}}})()", new Callback(CompletionSource.SetResult));
-                else _Engine.LoadUrl($"javascript:(function(){{{JavaScript}}});");
-                return CompletionSource.Task;
+                    // _Engine.EvaluateJavascript($"(function(){{return ({JavaScript});}})()", new Callback((r) => { response = r; reset.Set(); }));
+                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript($"(function(){{{JavaScript}}})()", new Callback((r) => { response = r; reset.Set(); })));
+                else
+                {
+                    var _Interface = new Interface();
+                    _Interface.Available += (sender, e) => { response = _Interface.Result; reset.Set(); };
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        _Engine.AddJavascriptInterface(_Interface, "__Interface");
+                        _Engine.LoadData("", "text/html", null); //Must !! Load anything before target url
+                        _Engine.LoadUrl($"javascript:{(Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean ? "window." : string.Empty)}__Interface.__PutResult((function(){{{JavaScript}}})())");
+                        //$"javascript:(function(){{return ({JavaScript});}})();"
+                    });
+                }
+                await Task.Run(() => reset.WaitOne());
+                return response;
             }
             class Callback : Java.Lang.Object, Android.Webkit.IValueCallback
             {
@@ -125,6 +153,27 @@ namespace InnoTecheLearning
                 public Callback(Action<string> callback) => this.callback = callback;
                 void Android.Webkit.IValueCallback.OnReceiveValue(Java.Lang.Object value) =>
                     callback(Android.Runtime.Extensions.JavaCast<Java.Lang.String>(value).ToString());
+            }
+            class Interface : Java.Lang.Object
+            {
+                string result;
+                public string Result => result;
+                public event EventHandler Available = (sender, e) => { };
+
+                public Interface() : base() { }
+
+                public Interface(IntPtr handle, Android.Runtime.JniHandleOwnership transfer)
+                    : base (handle, transfer)
+                { }
+
+                [Java.Interop.Export("__PutResult")]
+                [Android.Webkit.JavascriptInterface]
+                public string __PutResult(string Result)
+                {
+                    result = Result;
+                    Available(this, EventArgs.Empty);
+                    return result;
+                }
             }
         }
 #elif WINDOWS_UWP

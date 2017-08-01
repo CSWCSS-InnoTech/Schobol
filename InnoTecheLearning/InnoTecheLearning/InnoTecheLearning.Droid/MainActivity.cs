@@ -36,7 +36,7 @@ namespace InnoTecheLearning.Droid
        
     }
 
-    [Activity(Label = "CSWCSS eLearning App", Theme = "@style/Splash", MainLauncher = true, NoHistory = true,
+    [Activity(Label = "CSWCSS eLearn Utilities", Theme = "@style/Splash", MainLauncher = true, NoHistory = true,
         ScreenOrientation = ScreenOrientation.SensorPortrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class SplashActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity

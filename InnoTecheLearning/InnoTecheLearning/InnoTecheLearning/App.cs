@@ -22,6 +22,12 @@ namespace InnoTecheLearning
             // The root page of your application
 #if DEBUG_RESOURCES
             MainPage = ResourceView;
+#elif false
+            var In = new Editor { VerticalOptions = LayoutOptions.FillAndExpand };
+            var Exe = new Button { Text = "Execute" };
+            var Out = new Entry();
+            Exe.Clicked += async (sender, e) => Out.Text = await new SymbolicsEngine().EvaluateNoReturn(In.Text);
+            MainPage = new ContentPage { Content = new StackLayout { Children = { In, Exe, Out } } };
 #else
             MainPage = new Main();
 #endif

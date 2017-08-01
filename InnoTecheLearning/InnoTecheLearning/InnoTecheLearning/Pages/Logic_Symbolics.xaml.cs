@@ -15,7 +15,7 @@ using MathNet.Symbolics;
 
 namespace InnoTecheLearning.Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Skip)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Logic_Symbolics : ContentPage
     {
 
@@ -33,7 +33,8 @@ namespace InnoTecheLearning.Pages
         { 
             try
             {
-                Out.Text = await (await Current).EvaluateNoReturn(string.Format(Format, In.Text.Replace("'", "\\'")));
+                //Android needs .toString() and trim " while Windows 10 does not
+                Out.Text = (await (await Current).EvaluateNoReturn(string.Format(Format, In.Text.Replace("'", "\\'").Replace("\\", "\\\\")))).Trim('"');
             }
             catch (Jint.Runtime.JavaScriptException ex)
             {
@@ -41,9 +42,9 @@ namespace InnoTecheLearning.Pages
             }
             NextEngine();
         }
-        async void Evaluate_Clicked(object sender, EventArgs e) => await Eval("nerdamer('{0}')");
-        async void Expand_Clicked(object sender, EventArgs e) => await Eval("nerdamer.expand('{0}')");
-        async void Factorize_Clicked(object sender, EventArgs e) => await Eval("nerdamer.factor('{0}')");
+        async void Evaluate_Clicked(object sender, EventArgs e) => await Eval("nerdamer('{0}').toString()");
+        async void Expand_Clicked(object sender, EventArgs e) => await Eval("nerdamer.expand('{0}').toString()");
+        async void Factorize_Clicked(object sender, EventArgs e) => await Eval("nerdamer.factor('{0}').toString()");
         Task<Engine> Current = CreateEngineAsync();
         Task<Engine> Next = CreateEngineAsync();
         void NextEngine() { Current = Next; Next = CreateEngineAsync(); }
