@@ -9,15 +9,17 @@ using Xamarin.Forms.Xaml;
 
 using static InnoTecheLearning.Utils.Create;
 using Plugin.MediaManager;
-using Plugin.MediaManager.Abstractions.Implementations;
-using Plugin.MediaManager.Abstractions;
+using static Plugin.MediaManager.CrossMediaManager;
 using Plugin.MediaManager.Abstractions.Enums;
 
 namespace InnoTecheLearning.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+	[XamlCompilation(XamlCompilationOptions.Skip)]
 	public partial class Tunes : ContentPage
 	{
+        MediaManagerImplementation Player1 = new MediaManagerImplementation();
+        MediaManagerImplementation Player2 = new MediaManagerImplementation();
+        bool StopPlaying = false;
 		public Tunes ()
 		{
 			InitializeComponent ();
@@ -34,27 +36,43 @@ namespace InnoTecheLearning.Pages
             {
                 Command = new Command(_ => DisplayAlert("Cello", "🎻♫♬♩♪♬♩♪♬", "Beautiful"))
             });
-
+            
             var OriginalColor = ViolinG.BackgroundColor;
+            var PlayingColor = Color.Orange;
             var AllButtons = new[] { ViolinG, ViolinD, ViolinA, ViolinE, CelloC, CelloG, CelloD, CelloA };
-            foreach(var b in AllButtons)
+            for(byte i = 0; i < AllButtons.Length; i++)
             {
-                b.Clicked += (sender, e) =>
+                var k = i;
+                AllButtons[k].Clicked += (sender, e) =>
                 {
-                    for (int j = 0; j < AllButtons.Length; j++) AllButtons[j].BackgroundColor = OriginalColor;
-                    CrossMediaManager.Current.Play(new MediaFile());
+                    for (byte j = 0; j < AllButtons.Length; j++) AllButtons[j].BackgroundColor = OriginalColor;
+                    AllButtons[k].BackgroundColor = PlayingColor;
+        
+                    Player1.Play(new Utils.SoundFile(Utils.Resources.GetStream($"Sounds.{Utils.GetFileName((Utils.Sounds)k)}")));
+                    Task.Run(async () => { await Task.Delay(500); await Player2.Play(new Utils.SoundFile(Utils.Resources.GetStream($"Sounds.{Utils.GetFileName((Utils.Sounds)k)}"))); Device.StartTimer(TimeSpan.FromSeconds(1), () => { Player2.AudioPlayer.Seek(TimeSpan.Zero); return !StopPlaying; }); });
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () => { Player1.AudioPlayer.Seek(TimeSpan.Zero); return !StopPlaying; });
                 };
             }
-        }
-        class A : IMediaFile
-        {
-            public MediaFileType Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-            public ResourceAvailability Availability { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-            public IMediaFileMetadata Metadata { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-            public string Url { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-            public bool MetadataExtracted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-            public event MetadataUpdatedEventHandler MetadataUpdated;
+            Stop.Clicked += (sender, e) =>
+            {
+                for (byte j = 0; j < AllButtons.Length; j++) AllButtons[j].BackgroundColor = OriginalColor;
+                StopPlaying = true;
+                Player1.Stop();
+                Player2.Stop();
+            };
+            /*
+            Volume.ValueChanged += (sender, e) =>
+            {
+                VolumeLabel.Text = Volume.Value.ToString().PadLeft(3) + "%";
+                Current.VolumeManager.CurrentVolume = (float)(Volume.Value / 100);
+            };*/
         }
-    }
+
+        protected override void OnDisappearing()
+        {
+            using (Player1) using (Player2)
+                base.OnDisappearing();
+        }
+	}
 }

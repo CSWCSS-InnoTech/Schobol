@@ -79,6 +79,18 @@
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.VisualBasic\10.0.1\lib\netcore50\Microsoft.VisualBasic.dll">
       <PackagePath>Microsoft.VisualBasic.dll</PackagePath>
     </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Plugin.MediaManager\0.4.3\lib\uap10.0\Plugin.MediaManager.Abstractions.dll">
+      <PackagePath>Plugin.MediaManager.Abstractions.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Plugin.MediaManager\0.4.3\lib\uap10.0\Plugin.MediaManager.dll">
+      <PackagePath>Plugin.MediaManager.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Plugin.MediaManager.Forms\0.4.3\lib\uap10.0\Plugin.MediaManager.Forms.UWP.dll">
+      <PackagePath>Plugin.MediaManager.Forms.UWP.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Plugin.MediaManager.Forms\0.4.3\lib\uap10.0\Plugin.MediaManager.Forms.dll">
+      <PackagePath>Plugin.MediaManager.Forms.dll</PackagePath>
+    </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\runtime.any.System.Collections\4.3.0\lib\netcore50\System.Collections.dll">
       <PackagePath>System.Collections.dll</PackagePath>
     </AppxPackagedFile>

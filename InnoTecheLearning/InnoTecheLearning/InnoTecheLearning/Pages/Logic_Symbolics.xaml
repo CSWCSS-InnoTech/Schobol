@@ -9,13 +9,20 @@
             <Entry x:Name="In" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
             <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
                 <StackLayout Orientation="Vertical">
-                    <Button Text="Evaluate" x:Name="Evaluate"/>
+                    <Button Text="Evaluate" x:Name="Calculate"/>
                     <Button Text="Expand" x:Name="Expand"/>
                     <Button Text="Factorize" x:Name="Factorize"/>
-                    <Button Text="Display as: Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                        <Button HorizontalOptions="FillAndExpand" Text="Display as: Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                        <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols: Yes" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                    </StackLayout>
                 </StackLayout>
             </ScrollView>
-            <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray" />
+            <StackLayout Orientation="Horizontal">
+                <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray"/>
+                <Button x:Name="OutCopy" Text="Copy" />
+            </StackLayout>
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -44,10 +44,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageRecognizer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageResourceExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OnlineDict.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Sound.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\SoundFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Type.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Factorize.cs" />

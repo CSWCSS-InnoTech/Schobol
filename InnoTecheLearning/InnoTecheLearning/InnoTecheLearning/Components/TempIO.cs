@@ -87,7 +87,7 @@ namespace InnoTecheLearning
             return FromBytes(await LoadBytesAsync(FileName));
         }
 
-#if __IOS__ || __ANDROID__
+#if true
         public string TempPath { get { return Path.GetTempPath(); } }
         public string TempFile { get { return Path.GetTempFileName(); } }
         [Obsolete("Why not use async instead?")]

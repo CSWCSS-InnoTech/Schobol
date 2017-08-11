@@ -220,7 +220,7 @@ namespace InnoTecheLearning
 
                             MainScreenItem(
                                 ImageSource(ImageFile.MusicTuner),
-                                () => Push(MusicTuner, PageId.Tunes),
+                                () => PushAsync(new Pages.Tunes()),
                                 BoldLabel("TUNES"))
                             )
                         , "Generated second row"),
