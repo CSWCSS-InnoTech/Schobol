@@ -15,7 +15,7 @@ using MathNet.Symbolics;
 
 namespace InnoTecheLearning.Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Skip)]
     public partial class Logic_Symbolics : ContentPage
     {
         bool DisplayDecimals = true;
