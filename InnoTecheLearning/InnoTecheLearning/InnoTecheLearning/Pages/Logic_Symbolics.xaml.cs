@@ -28,8 +28,8 @@ namespace InnoTecheLearning.Pages
             Expand.Clicked += Expand_Clicked;
             Factorize.Clicked += Factorize_Clicked;
 
-            Display.Clicked += (sender, e) => Display.Text = (DisplayDecimals = !DisplayDecimals) ? "Display as: Decimals" : "Display as: Fractions";
-            Evaluate.Clicked += (sender, e) => Evaluate.Text = (DoEvaluate = !DoEvaluate) ? "Evaluate Symbols: Yes" : "Evaluate Symbols: No";
+            Display.Clicked += (sender, e) => Display.Text = (DisplayDecimals = !DisplayDecimals) ? "Display Decimals" : "Display Fractions";
+            Evaluate.Clicked += (sender, e) => Evaluate.Text = (DoEvaluate = !DoEvaluate) ? "Evaluate Symbols" : "Keep Symbols";
 
             Out.Focused += (sender, e) => Out.Unfocus();
             OutCopy.Clicked += (sender, e) => Utils.SetClipboardText(Out.Text);

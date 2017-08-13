@@ -3,18 +3,23 @@
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InnoTecheLearning.Pages.Logic_Symbolics"
+             xmlns:local="clr-namespace:InnoTecheLearning"
              Title="eLearn Logic (Symbolics)" StyleId="eLearn Logic (Symbolics)">
     <ContentPage.Content>
         <StackLayout BackgroundColor="White">
             <Entry x:Name="In" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
+            <!--RowDefinitions="1,1,1,1,1,1" ColumnDefinitions="{local:GridColumn 1,1,1,1,1}"--><Grid  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <Button x:Name="Shift" Text="Shift" BackgroundColor="Gold" TextColor="Black"/>
+                <Button x:Name="Alpha" Text="Alpha" BackgroundColor="Red" TextColor="White"/>
+            </Grid>
             <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
                 <StackLayout Orientation="Vertical">
                     <Button Text="Evaluate" x:Name="Calculate"/>
                     <Button Text="Expand" x:Name="Expand"/>
                     <Button Text="Factorize" x:Name="Factorize"/>
                     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
-                        <Button HorizontalOptions="FillAndExpand" Text="Display as: Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
-                        <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols: Yes" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                        <Button HorizontalOptions="FillAndExpand" Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                        <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
                     </StackLayout>
                 </StackLayout>
             </ScrollView>

@@ -5,6 +5,37 @@ using Xamarin.Forms.Xaml;
 namespace InnoTecheLearning
 {
     [AcceptEmptyServiceProvider]
+    [ContentProperty(nameof(Columns))]
+    public class GridColumnExtension : IMarkupExtension<ColumnDefinitionCollection>
+    {
+        public string Columns { get; set; }
+
+        public ColumnDefinitionCollection ProvideValue(IServiceProvider serviceProvider)
+        {
+            var Return = new ColumnDefinitionCollection();
+            var Columns = this.Columns.Split(',');
+            var GridLengths = new GridLength[Columns.Length];
+            for (int i = 0; i < Columns.Length; i++)
+                switch (Columns[i].ToLowerInvariant())
+                {
+                    case "auto":
+                        GridLengths[i] = GridLength.Auto;
+                        break;
+                    case "*":
+                        GridLengths[i] = GridLength.Star;
+                        break;
+                    case var s:
+                        if (double.TryParse(s, out var n)) GridLengths[i] = n;
+                        else GridLengths[i] = new GridLength();
+                        break;
+                }
+            Return.AddRange(System.Linq.Enumerable.Select(GridLengths, x => new ColumnDefinition { Width = x }));
+            return Return;
+        }
+
+        object IMarkupExtension.ProvideValue(IServiceProvider serviceProvider) => ProvideValue(serviceProvider);
+    }
+    [AcceptEmptyServiceProvider]
     [ContentProperty(nameof(Source))]
     public class ImageResourceExtension : IMarkupExtension<ImageSource>
     {
