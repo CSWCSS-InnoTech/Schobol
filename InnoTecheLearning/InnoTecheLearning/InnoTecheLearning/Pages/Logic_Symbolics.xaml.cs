@@ -18,6 +18,38 @@ namespace InnoTecheLearning.Pages
     [XamlCompilation(XamlCompilationOptions.Skip)]
     public partial class Logic_Symbolics : ContentPage
     {
+        static readonly string[,] WhenNorm = new string[,]
+            {
+                { ",", "[", "]", "(", ")" },
+                { "7", "8", "9", "^", "!" },
+                { "4", "5", "6", "*", "/" },
+                { "1", "2", "3", "+", "-" },
+                { "0", ".", "pi", "e", "i" }
+            };
+        static readonly string[,] WhenShift = new string[,]
+            {
+                { ",", "[", "]", "(", ")" },
+                { "7", "8", "9", "^", "!" },
+                { "4", "5", "6", "*", "/" },
+                { "1", "2", "3", "+", "-" },
+                { "0", ".", "pi", "e", "i" }
+            };
+        static readonly string[,] WhenAlpha = new string[,]
+            {
+                { "a", "b", "c", "d", "e" },
+                { "f", "g", "h", "i", "j" },
+                { "k", "l", "m", "n", "o" },
+                { "p", "q", "r", "s", "t" },
+                { "u", "v", "w", "x", "y" }
+            };
+        static readonly string[,] WhenShiftAlpha = new string[,]
+            {
+                { "A", "B", "C", "D", "E" },
+                { "F", "G", "H", "I", "J" },
+                { "K", "L", "M", "N", "O" },
+                { "P", "Q", "R", "S", "T" },
+                { "U", "V", "W", "X", "Y" }
+            };
         bool DisplayDecimals = true;
         bool DoEvaluate = true;
         public Logic_Symbolics()
