@@ -124,6 +124,7 @@ namespace InnoTecheLearning
                 await Task.Run(() => reset.WaitOne());
                 return response;
             }
+            [Obsolete("Plz no use it bug")]
             public async Task<string> EvaluateWithReturn(string JavaScript)
             {
                 var reset = new ManualResetEvent(false);

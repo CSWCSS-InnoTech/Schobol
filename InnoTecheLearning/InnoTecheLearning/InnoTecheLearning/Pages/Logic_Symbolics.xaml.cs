@@ -28,9 +28,9 @@ namespace InnoTecheLearning.Pages
             };
         static readonly string[,] WhenShift = new string[,]
             {
-                { ",", "[", "]", "(", ")" },
-                { "7", "8", "9", "^", "!" },
-                { "4", "5", "6", "*", "/" },
+                { "log(", "log10(", "min(", "max(", "sqrt(" },
+                { "floor(", "ceil(", "round(", "^", "!" },
+                { "Si(", "Ci(", "Shi(", "Chi(", "Ei(" },
                 { "1", "2", "3", "+", "-" },
                 { "0", ".", "pi", "e", "i" }
             };
@@ -65,6 +65,9 @@ namespace InnoTecheLearning.Pages
 
             Out.Focused += (sender, e) => Out.Unfocus();
             OutCopy.Clicked += (sender, e) => Utils.SetClipboardText(Out.Text);
+
+            async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
+            Debug.Clicked += Debug_Clicked;
         }
 
 #if true

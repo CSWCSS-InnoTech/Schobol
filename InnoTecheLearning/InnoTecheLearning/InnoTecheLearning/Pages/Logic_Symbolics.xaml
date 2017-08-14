@@ -61,6 +61,7 @@
                     <Button Text="Evaluate" x:Name="Calculate"/>
                     <Button Text="Expand" x:Name="Expand"/>
                     <Button Text="Factorize" x:Name="Factorize"/>
+                    <Button Text="Debug Evaluate" x:Name="Debug"/>
                     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
                         <Button HorizontalOptions="FillAndExpand" Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
                         <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
