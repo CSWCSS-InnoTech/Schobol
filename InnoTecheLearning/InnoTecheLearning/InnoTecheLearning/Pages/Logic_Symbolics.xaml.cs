@@ -29,10 +29,10 @@ namespace InnoTecheLearning.Pages
         static readonly string[,] WhenShift = new string[,]
             {
                 { "log(", "log10(", "min(", "max(", "sqrt(" },
-                { "floor(", "ceil(", "round(", "^", "!" },
+                { "floor(", "ceil(", "round(", ""/*trunc(*/, ""/**/ },
                 { "Si(", "Ci(", "Shi(", "Chi(", "Ei(" },
-                { "1", "2", "3", "+", "-" },
-                { "0", ".", "pi", "e", "i" }
+                { "sinc(", "step(", "mod(", ""/**/, ""/**/ },
+                { "fib(", "erf(", "pfactor(", "rect(", "tri(" }
             };
         static readonly string[,] WhenAlpha = new string[,]
             {
@@ -49,6 +49,14 @@ namespace InnoTecheLearning.Pages
                 { "K", "L", "M", "N", "O" },
                 { "P", "Q", "R", "S", "T" },
                 { "U", "V", "W", "X", "Y" }
+            };
+        static readonly string[,] WhenTrig = new string[,]
+            {
+                { "sin(", "asin(", "sinh(", "asinh(", "cot(" },
+                { "cos(", "acos(", "cosh(", "acosh(", "acot(" },
+                { "tan(", "atan(", "tanh(", "atanh(", "atan2(" },
+                { "sec(", "asec(", "sech(", "asech(", "coth(" },
+                { "csc(", "acsc(", "csch(", "acsch(", "acoth(" }
             };
         bool DisplayDecimals = true;
         bool DoEvaluate = true;
