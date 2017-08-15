@@ -50,13 +50,21 @@ namespace InnoTecheLearning.Pages
                 { "P", "Q", "R", "S", "T" },
                 { "U", "V", "W", "X", "Y" }
             };
-        static readonly string[,] WhenTrig = new string[,]
+        static readonly string[,] WhenAlt = new string[,]
             {
-                { "sin(", "asin(", "sinh(", "asinh(", "cot(" },
-                { "cos(", "acos(", "cosh(", "acosh(", "acot(" },
-                { "tan(", "atan(", "tanh(", "atanh(", "atan2(" },
-                { "sec(", "asec(", "sech(", "asech(", "coth(" },
-                { "csc(", "acsc(", "csch(", "acsch(", "acoth(" }
+                { "sin(", "asin(", "sinh(", "asinh(", "" },
+                { "cos(", "acos(", "cosh(", "acosh(", "" },
+                { "tan(", "atan(", "tanh(", "atanh(", "" },
+                { "", "atan2(", "gcd(", "lcm(", "" },
+                { "factor(", "roots(", "coeffs(", "solve(", "solveEquations(" }
+            };
+        static readonly string[,] WhenShiftAlt = new string[,]
+            {
+                { "sec(", "asec(", "sech(", "asech(", "" },
+                { "csc(", "acsc(", "csch(", "acsch(", "" },
+                { "cot(", "acot(", "coth(", "acoth(", "" },
+                { "", "", "", "", "" },
+                { "sum(", "product(", "diff(", "integrate(", "defint(" }
             };
         bool DisplayDecimals = true;
         bool DoEvaluate = true;

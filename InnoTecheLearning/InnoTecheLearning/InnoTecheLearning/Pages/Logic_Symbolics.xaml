@@ -28,7 +28,7 @@
                 <Grid.Children>
                     <Button x:Name="Shift" Text="Shift" BackgroundColor="Orange" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                     <Button x:Name="Alpha" Text="Alpha" BackgroundColor="Red" TextColor="White" Grid.Row="0" Grid.Column="1"/>
-                    <Button x:Name="Trig" Text="Trig" BackgroundColor="Green" TextColor="White" Grid.Row="0" Grid.Column="2"/>
+                    <Button x:Name="Alt" Text="Alt" BackgroundColor="Green" TextColor="White" Grid.Row="0" Grid.Column="2"/>
                     <Button x:Name="B01" Text="," Grid.Row="1" Grid.Column="0"/>
                     <Button x:Name="B02" Text="[" Grid.Row="1" Grid.Column="1"/>
                     <Button x:Name="B03" Text="]" Grid.Row="1" Grid.Column="2"/>
