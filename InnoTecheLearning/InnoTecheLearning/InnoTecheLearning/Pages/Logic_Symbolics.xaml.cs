@@ -9,7 +9,7 @@ using Engine = InnoTecheLearning.Utils.SymbolicsEngine;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-#if !WINDOWS_UWP
+#if false
 using MathNet.Symbolics;
 #endif
 
@@ -18,59 +18,129 @@ namespace InnoTecheLearning.Pages
     [XamlCompilation(XamlCompilationOptions.Skip)]
     public partial class Logic_Symbolics : ContentPage
     {
-        static readonly string[,] WhenNorm = new string[,]
+        const int ButtonRows = 5;
+        const int ButtonColumns = 5;
+        [Flags] enum ButtonModifier : byte
+        {
+            Norm = 0,
+            Shift = 1,
+            Alpha = 2,
+            Alt = 4
+        }
+        ButtonModifier Mod = ButtonModifier.Norm;
+        static readonly (string, string[,]) WhenNorm = ("", new string[ButtonRows, ButtonColumns]
             {
                 { ",", "[", "]", "(", ")" },
                 { "7", "8", "9", "^", "!" },
                 { "4", "5", "6", "*", "/" },
                 { "1", "2", "3", "+", "-" },
                 { "0", ".", "pi", "e", "i" }
-            };
-        static readonly string[,] WhenShift = new string[,]
+            });
+        static readonly (string, string[,]) WhenShift = ("", new string[ButtonRows, ButtonColumns]
             {
                 { "log(", "log10(", "min(", "max(", "sqrt(" },
-                { "floor(", "ceil(", "round(", ""/*trunc(*/, ""/**/ },
-                { "Si(", "Ci(", "Shi(", "Chi(", "Ei(" },
-                { "sinc(", "step(", "mod(", ""/**/, ""/**/ },
-                { "fib(", "erf(", "pfactor(", "rect(", "tri(" }
-            };
-        static readonly string[,] WhenAlpha = new string[,]
+                { "floor(", "ceil(", "round(", "trunc(", "mod(" },
+                { "", "", "", "", "" },
+                { "expand(", "divide(", "pfactor(", "fib(", "" },
+                { "factor(", "roots(", "coeffs(", "solve(", "solveEquations(" }
+            });
+        static readonly (string, string[,]) WhenAlpha = ("z", new string[ButtonRows, ButtonColumns]
             {
                 { "a", "b", "c", "d", "e" },
                 { "f", "g", "h", "i", "j" },
                 { "k", "l", "m", "n", "o" },
                 { "p", "q", "r", "s", "t" },
                 { "u", "v", "w", "x", "y" }
-            };
-        static readonly string[,] WhenShiftAlpha = new string[,]
+            });
+        static readonly (string, string[,]) WhenShiftAlpha = ("Z", new string[ButtonRows, ButtonColumns]
             {
                 { "A", "B", "C", "D", "E" },
                 { "F", "G", "H", "I", "J" },
                 { "K", "L", "M", "N", "O" },
                 { "P", "Q", "R", "S", "T" },
                 { "U", "V", "W", "X", "Y" }
-            };
-        static readonly string[,] WhenAlt = new string[,]
+            });
+        static readonly (string, string[,]) WhenAlt = ("sinc(", new string[ButtonRows, ButtonColumns]
             {
-                { "sin(", "asin(", "sinh(", "asinh(", "" },
-                { "cos(", "acos(", "cosh(", "acosh(", "" },
-                { "tan(", "atan(", "tanh(", "atanh(", "" },
+                { "sin(", "asin(", "sinh(", "asinh(", "mean(" },
+                { "cos(", "acos(", "cosh(", "acosh(", "mode(" },
+                { "tan(", "atan(", "tanh(", "atanh(", "median(" },
                 { "", "atan2(", "gcd(", "lcm(", "" },
-                { "factor(", "roots(", "coeffs(", "solve(", "solveEquations(" }
-            };
-        static readonly string[,] WhenShiftAlt = new string[,]
-            {
-                { "sec(", "asec(", "sech(", "asech(", "" },
-                { "csc(", "acsc(", "csch(", "acsch(", "" },
-                { "cot(", "acot(", "coth(", "acoth(", "" },
-                { "", "", "", "", "" },
                 { "sum(", "product(", "diff(", "integrate(", "defint(" }
-            };
+            });
+        static readonly (string, string[,]) WhenShiftAlt = ("step(", new string[ButtonRows, ButtonColumns]
+            {
+                { "sec(", "asec(", "sech(", "asech(", "erf(" },
+                { "csc(", "acsc(", "csch(", "acsch(", "rect(" },
+                { "cot(", "acot(", "coth(", "acoth(", "tri(" },
+                { "Si(", "Ci(", "Shi(", "Chi(", "Ei(" },
+                { "laplace(", "smpvar(", "variance(", "smpstdev(", "stdev(" }
+            });
+        static readonly (string, string[,]) WhenAltAlpha = ("!=", new string[ButtonRows, ButtonColumns]
+            {
+                { "<", "<=" , "==", ">=", ">" },
+                { "", "" , "", "", "" },
+                { "imatrix(", "" , "", "", "" },
+                { "matrix(", "matget(" , "matset(", "invert(", "transpose(" },
+                { "vector(", "vecget(" , "vecset(", "cross(", "dot(" }
+            });
         bool DisplayDecimals = true;
         bool DoEvaluate = true;
         public Logic_Symbolics()
         {
             InitializeComponent();
+
+            var Buttons = new Button[ButtonRows, ButtonColumns]
+            {
+                { B10, B11, B12, B13, B14 },
+                { B20, B21, B22, B23, B24 },
+                { B30, B31, B32, B33, B34 },
+                { B40, B41, B42, B43, B44 },
+                { B50, B51, B52, B53, B54 }
+            };
+
+            Shift.Clicked += (sender, e) => 
+            {
+                Mod ^= ButtonModifier.Shift;
+                if (Mod.HasFlag(ButtonModifier.Shift)) Shift.TranslateTo(0, 0, 0);
+                else Shift.TranslateTo(0, 10, 0);
+            };
+            Alpha.Clicked += (sender, e) =>
+            {
+                Mod ^= ButtonModifier.Alpha;
+                if (Mod.HasFlag(ButtonModifier.Alpha)) Alpha.TranslateTo(0, 0, 0);
+                else Alpha.TranslateTo(0, 10, 0);
+            };
+            Alt.Clicked += (sender, e) =>
+            {
+                Mod ^= ButtonModifier.Alt;
+                if (Mod.HasFlag(ButtonModifier.Alt)) Alt.TranslateTo(0, 0, 0);
+                else Shift.TranslateTo(0, 10, 0);
+            };
+            for (int i = 0; i < ButtonRows; i++)
+                for (int j = 0; j < ButtonColumns; j++)
+                    Buttons[i, j].Clicked += (sender, e) =>
+                    {
+                        switch (Mod)
+                        {
+                            case ButtonModifier.Norm:
+                                break;
+                            case ButtonModifier.Shift:
+                                break;
+                            case ButtonModifier.Alpha:
+                                break;
+                            case ButtonModifier.Alt:
+                                break;
+                            case ButtonModifier.Shift | ButtonModifier.Alpha:
+                                break;
+                            case ButtonModifier.Shift | ButtonModifier.Alt:
+                                break;
+                            case ButtonModifier.Alpha | ButtonModifier.Alt:
+                                break;
+                            default:
+                                break;
+                        }
+                    };
 
             Calculate.Clicked += Calculate_Clicked;
             Expand.Clicked += Expand_Clicked;
@@ -82,8 +152,10 @@ namespace InnoTecheLearning.Pages
             Out.Focused += (sender, e) => Out.Unfocus();
             OutCopy.Clicked += (sender, e) => Utils.SetClipboardText(Out.Text);
 
+            /*
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
             Debug.Clicked += Debug_Clicked;
+            */
         }
 
 #if true

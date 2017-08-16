@@ -29,31 +29,33 @@
                     <Button x:Name="Shift" Text="Shift" BackgroundColor="Orange" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
                     <Button x:Name="Alpha" Text="Alpha" BackgroundColor="Red" TextColor="White" Grid.Row="0" Grid.Column="1"/>
                     <Button x:Name="Alt" Text="Alt" BackgroundColor="Green" TextColor="White" Grid.Row="0" Grid.Column="2"/>
-                    <Button x:Name="B01" Text="," Grid.Row="1" Grid.Column="0"/>
-                    <Button x:Name="B02" Text="[" Grid.Row="1" Grid.Column="1"/>
-                    <Button x:Name="B03" Text="]" Grid.Row="1" Grid.Column="2"/>
-                    <Button x:Name="B04" Text="(" Grid.Row="1" Grid.Column="3"/>
-                    <Button x:Name="B05" Text=")" Grid.Row="1" Grid.Column="4"/>
-                    <Button x:Name="B06" Text="7" Grid.Row="2" Grid.Column="0"/>
-                    <Button x:Name="B07" Text="8" Grid.Row="2" Grid.Column="1"/>
-                    <Button x:Name="B08" Text="9" Grid.Row="2" Grid.Column="2"/>
-                    <Button x:Name="B09" Text="^" Grid.Row="2" Grid.Column="3"/>
-                    <Button x:Name="B10" Text="!" Grid.Row="2" Grid.Column="4"/>
-                    <Button x:Name="B11" Text="4" Grid.Row="3" Grid.Column="0"/>
-                    <Button x:Name="B12" Text="5" Grid.Row="3" Grid.Column="1"/>
-                    <Button x:Name="B13" Text="6" Grid.Row="3" Grid.Column="2"/>
-                    <Button x:Name="B14" Text="*" Grid.Row="3" Grid.Column="3"/>
-                    <Button x:Name="B15" Text="/" Grid.Row="3" Grid.Column="4"/>
-                    <Button x:Name="B16" Text="1" Grid.Row="4" Grid.Column="0"/>
-                    <Button x:Name="B17" Text="2" Grid.Row="4" Grid.Column="1"/>
-                    <Button x:Name="B18" Text="3" Grid.Row="4" Grid.Column="2"/>
-                    <Button x:Name="B19" Text="+" Grid.Row="4" Grid.Column="3"/>
-                    <Button x:Name="B20" Text="-" Grid.Row="4" Grid.Column="4"/>
-                    <Button x:Name="B21" Text="0" Grid.Row="5" Grid.Column="0"/>
-                    <Button x:Name="B22" Text="." Grid.Row="5" Grid.Column="1"/>
-                    <Button x:Name="B23" Text="pi" Grid.Row="5" Grid.Column="2"/>
-                    <Button x:Name="B24" Text="e" Grid.Row="5" Grid.Column="3"/>
-                    <Button x:Name="B25" Text="i" Grid.Row="5" Grid.Column="4"/>
+                    <Button x:Name="B03" Text="%" Grid.Row="0" Grid.Column="3"/>
+                    <Button x:Name="Back" Text="⌫" Grid.Row="0" Grid.Column="4"/>
+                    <Button x:Name="B10" Text="," Grid.Row="1" Grid.Column="0"/>
+                    <Button x:Name="B11" Text="[" Grid.Row="1" Grid.Column="1"/>
+                    <Button x:Name="B12" Text="]" Grid.Row="1" Grid.Column="2"/>
+                    <Button x:Name="B13" Text="(" Grid.Row="1" Grid.Column="3"/>
+                    <Button x:Name="B14" Text=")" Grid.Row="1" Grid.Column="4"/>
+                    <Button x:Name="B20" Text="7" Grid.Row="2" Grid.Column="0"/>
+                    <Button x:Name="B21" Text="8" Grid.Row="2" Grid.Column="1"/>
+                    <Button x:Name="B22" Text="9" Grid.Row="2" Grid.Column="2"/>
+                    <Button x:Name="B23" Text="^" Grid.Row="2" Grid.Column="3"/>
+                    <Button x:Name="B24" Text="!" Grid.Row="2" Grid.Column="4"/>
+                    <Button x:Name="B30" Text="4" Grid.Row="3" Grid.Column="0"/>
+                    <Button x:Name="B31" Text="5" Grid.Row="3" Grid.Column="1"/>
+                    <Button x:Name="B32" Text="6" Grid.Row="3" Grid.Column="2"/>
+                    <Button x:Name="B33" Text="*" Grid.Row="3" Grid.Column="3"/>
+                    <Button x:Name="B34" Text="/" Grid.Row="3" Grid.Column="4"/>
+                    <Button x:Name="B40" Text="1" Grid.Row="4" Grid.Column="0"/>
+                    <Button x:Name="B41" Text="2" Grid.Row="4" Grid.Column="1"/>
+                    <Button x:Name="B42" Text="3" Grid.Row="4" Grid.Column="2"/>
+                    <Button x:Name="B43" Text="+" Grid.Row="4" Grid.Column="3"/>
+                    <Button x:Name="B44" Text="-" Grid.Row="4" Grid.Column="4"/>
+                    <Button x:Name="B50" Text="0" Grid.Row="5" Grid.Column="0"/>
+                    <Button x:Name="B51" Text="." Grid.Row="5" Grid.Column="1"/>
+                    <Button x:Name="B52" Text="pi" Grid.Row="5" Grid.Column="2"/>
+                    <Button x:Name="B53" Text="e" Grid.Row="5" Grid.Column="3"/>
+                    <Button x:Name="B54" Text="i" Grid.Row="5" Grid.Column="4"/>
                 </Grid.Children>
             </Grid>
             <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
@@ -61,7 +63,7 @@
                     <Button Text="Evaluate" x:Name="Calculate"/>
                     <Button Text="Expand" x:Name="Expand"/>
                     <Button Text="Factorize" x:Name="Factorize"/>
-                    <Button Text="Debug Evaluate" x:Name="Debug"/>
+                    <!--<Button Text="Debug Evaluate" x:Name="Debug"/>-->
                     <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
                         <Button HorizontalOptions="FillAndExpand" Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
                         <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
