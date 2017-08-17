@@ -30,7 +30,7 @@
                     <Button x:Name="Alpha" Text="Alpha" BackgroundColor="Red" TextColor="White" Grid.Row="0" Grid.Column="1"/>
                     <Button x:Name="Alt" Text="Alt" BackgroundColor="Green" TextColor="White" Grid.Row="0" Grid.Column="2"/>
                     <Button x:Name="B03" Text="%" Grid.Row="0" Grid.Column="3"/>
-                    <Button x:Name="Back" Text="⌫" Grid.Row="0" Grid.Column="4"/>
+                    <Button x:Name="Back" Text="←" Grid.Row="0" Grid.Column="4"/>
                     <Button x:Name="B10" Text="," Grid.Row="1" Grid.Column="0"/>
                     <Button x:Name="B11" Text="[" Grid.Row="1" Grid.Column="1"/>
                     <Button x:Name="B12" Text="]" Grid.Row="1" Grid.Column="2"/>

@@ -108,7 +108,7 @@ namespace InnoTecheLearning
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
                     //https://stackoverflow.com/questions/19788294/how-does-evaluatejavascript-work
                     // _Engine.EvaluateJavascript($"(function(){{return ({JavaScript});}})()", new Callback((r) => { response = r; reset.Set(); }));
-                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript(JavaScript, new Callback((r) => { response = r; reset.Set(); })));
+                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript($"try{{{JavaScript}}}catch(e){{{Error}+(e.message?e.message:e)}}", new Callback((r) => { response = r; reset.Set(); })));
                 else
                 {
                     var _Interface = new Interface();

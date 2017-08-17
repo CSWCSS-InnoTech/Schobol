@@ -28,7 +28,7 @@ namespace InnoTecheLearning.Pages
             Alt = 4
         }
         ButtonModifier Mod = ButtonModifier.Norm;
-        static readonly (string, string[,]) WhenNorm = ("", new string[ButtonRows, ButtonColumns]
+        static readonly (string, string[,]) WhenNorm = ("%", new string[ButtonRows, ButtonColumns]
             {
                 { ",", "[", "]", "(", ")" },
                 { "7", "8", "9", "^", "!" },
@@ -40,32 +40,32 @@ namespace InnoTecheLearning.Pages
             {
                 { "log(", "log10(", "min(", "max(", "sqrt(" },
                 { "floor(", "ceil(", "round(", "trunc(", "mod(" },
-                { "", "", "", "", "" },
+                { "gcd(", "lcm(", "mean(", "mode(", "median(" },
                 { "expand(", "divide(", "pfactor(", "fib(", "" },
                 { "factor(", "roots(", "coeffs(", "solve(", "solveEquations(" }
             });
-        static readonly (string, string[,]) WhenAlpha = ("z", new string[ButtonRows, ButtonColumns]
+        static readonly (string, string[,]) WhenAlpha = ("a", new string[ButtonRows, ButtonColumns]
             {
-                { "a", "b", "c", "d", "e" },
-                { "f", "g", "h", "i", "j" },
-                { "k", "l", "m", "n", "o" },
-                { "p", "q", "r", "s", "t" },
-                { "u", "v", "w", "x", "y" }
+                { "b", "c", "d", "e", "f" },
+                { "g", "h", "i", "j", "k" },
+                { "l", "m", "n", "o", "p" },
+                { "q", "r", "s", "t", "u" },
+                { "v", "w", "x", "y", "z" }
             });
-        static readonly (string, string[,]) WhenShiftAlpha = ("Z", new string[ButtonRows, ButtonColumns]
+        static readonly (string, string[,]) WhenShiftAlpha = ("A", new string[ButtonRows, ButtonColumns]
             {
-                { "A", "B", "C", "D", "E" },
-                { "F", "G", "H", "I", "J" },
-                { "K", "L", "M", "N", "O" },
-                { "P", "Q", "R", "S", "T" },
-                { "U", "V", "W", "X", "Y" }
+                { "B", "C", "D", "E", "F" },
+                { "G", "H", "I", "J", "K" },
+                { "L", "M", "N", "O", "P" },
+                { "Q", "R", "S", "T", "U" },
+                { "V", "W", "X", "Y", "Z" }
             });
-        static readonly (string, string[,]) WhenAlt = ("sinc(", new string[ButtonRows, ButtonColumns]
+        static readonly (string, string[,]) WhenAlt = ("atan2(", new string[ButtonRows, ButtonColumns]
             {
-                { "sin(", "asin(", "sinh(", "asinh(", "mean(" },
-                { "cos(", "acos(", "cosh(", "acosh(", "mode(" },
-                { "tan(", "atan(", "tanh(", "atanh(", "median(" },
-                { "", "atan2(", "gcd(", "lcm(", "" },
+                { "sin(", "asin(", "sinh(", "asinh(", "" },
+                { "cos(", "acos(", "cosh(", "acosh(", "" },
+                { "tan(", "atan(", "tanh(", "atanh(", "" },
+                { "", "sinc(", "", "", "" },
                 { "sum(", "product(", "diff(", "integrate(", "defint(" }
             });
         static readonly (string, string[,]) WhenShiftAlt = ("step(", new string[ButtonRows, ButtonColumns]
@@ -98,49 +98,75 @@ namespace InnoTecheLearning.Pages
                 { B40, B41, B42, B43, B44 },
                 { B50, B51, B52, B53, B54 }
             };
-
-            Shift.Clicked += (sender, e) => 
+            EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) =>
             {
-                Mod ^= ButtonModifier.Shift;
-                if (Mod.HasFlag(ButtonModifier.Shift)) Shift.TranslateTo(0, 0, 0);
-                else Shift.TranslateTo(0, 10, 0);
-            };
-            Alpha.Clicked += (sender, e) =>
-            {
-                Mod ^= ButtonModifier.Alpha;
-                if (Mod.HasFlag(ButtonModifier.Alpha)) Alpha.TranslateTo(0, 0, 0);
-                else Alpha.TranslateTo(0, 10, 0);
-            };
-            Alt.Clicked += (sender, e) =>
-            {
-                Mod ^= ButtonModifier.Alt;
-                if (Mod.HasFlag(ButtonModifier.Alt)) Alt.TranslateTo(0, 0, 0);
-                else Shift.TranslateTo(0, 10, 0);
-            };
-            for (int i = 0; i < ButtonRows; i++)
-                for (int j = 0; j < ButtonColumns; j++)
-                    Buttons[i, j].Clicked += (sender, e) =>
-                    {
+                Mod ^= Modifier;
+                for (int i = 0; i < ButtonRows; i++)
+                    for (int j = 0; j < ButtonColumns; j++)
                         switch (Mod)
                         {
                             case ButtonModifier.Norm:
+                                B03.Text = WhenNorm.Item1;
+                                Buttons[i, j].Text = WhenNorm.Item2[i, j];
                                 break;
                             case ButtonModifier.Shift:
+                                B03.Text = WhenShift.Item1;
+                                Buttons[i, j].Text = WhenShift.Item2[i, j];
                                 break;
                             case ButtonModifier.Alpha:
+                                B03.Text = WhenAlpha.Item1;
+                                Buttons[i, j].Text = WhenAlpha.Item2[i, j];
                                 break;
                             case ButtonModifier.Alt:
+                                B03.Text = WhenAlt.Item1;
+                                Buttons[i, j].Text = WhenAlt.Item2[i, j];
                                 break;
                             case ButtonModifier.Shift | ButtonModifier.Alpha:
+                                B03.Text = WhenShiftAlpha.Item1;
+                                Buttons[i, j].Text = WhenShiftAlpha.Item2[i, j];
                                 break;
                             case ButtonModifier.Shift | ButtonModifier.Alt:
+                                B03.Text = WhenShiftAlt.Item1;
+                                Buttons[i, j].Text = WhenShiftAlt.Item2[i, j];
                                 break;
-                            case ButtonModifier.Alpha | ButtonModifier.Alt:
+                            case ButtonModifier.Alt | ButtonModifier.Alpha:
+                                B03.Text = WhenAltAlpha.Item1;
+                                Buttons[i, j].Text = WhenAltAlpha.Item2[i, j];
+                                break;
+                            case ButtonModifier.Shift | ButtonModifier.Alt | ButtonModifier.Alpha:
+                                B03.Text = "";
+                                Buttons[i, j].Text = "";
                                 break;
                             default:
+                                B03.Text = Buttons[i, j].Text = "";
                                 break;
                         }
+                if (Mod.HasFlag(Modifier)) (sender as VisualElement)?.TranslateTo(0, 10, 0);
+                else (sender as VisualElement)?.TranslateTo(0, 0, 0);
+            };
+            EventHandler ButtonClicked = (sender, e) =>
+            {
+                In.Text += (sender as Button)?.Text;
+                Mod = ButtonModifier.Norm;
+                Shift.TranslateTo(0, 0, 0);
+                Alpha.TranslateTo(0, 0, 0);
+                Alt.TranslateTo(0, 0, 0);
+                for (int i = 0; i < ButtonRows; i++)
+                    for (int j = 0; j < ButtonColumns; j++)
+                    {
+                        B03.Text = WhenNorm.Item1;
+                        Buttons[i, j].Text = WhenNorm.Item2[i, j];
                     };
+            };
+            Shift.Clicked += ModClicked(ButtonModifier.Shift);
+            Alpha.Clicked += ModClicked(ButtonModifier.Alpha);
+            Alt.Clicked += ModClicked(ButtonModifier.Alt);
+            Back.Clicked += (sender, e) => Utils.IgnoreEx(() => In.Text = In.Text?.Remove(In.Text.Length - 1), typeof(ArgumentOutOfRangeException));
+
+            B03.Clicked += ButtonClicked;
+            for (int i = 0; i < ButtonRows; i++)
+                for (int j = 0; j < ButtonColumns; j++)
+                    Buttons[i, j].Clicked += ButtonClicked;
 
             Calculate.Clicked += Calculate_Clicked;
             Expand.Clicked += Expand_Clicked;

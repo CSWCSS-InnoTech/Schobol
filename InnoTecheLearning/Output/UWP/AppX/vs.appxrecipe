@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-08-16T14:38:08.590</Modified>
+      <Modified>2017-08-17T05:49:46.632</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-08-16T14:38:07.902</Modified>
+      <Modified>2017-08-17T05:49:45.724</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\ImageSharp\1.0.0-alpha9-00171\lib\netstandard1.3\ImageSharp.dll">
       <PackagePath>ImageSharp.dll</PackagePath>
@@ -876,7 +876,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-08-16T14:38:08.588</Modified>
+      <Modified>2017-08-17T05:49:46.630</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
