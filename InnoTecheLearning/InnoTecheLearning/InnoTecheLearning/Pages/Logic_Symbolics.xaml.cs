@@ -161,7 +161,7 @@ namespace InnoTecheLearning.Pages
             Shift.Clicked += ModClicked(ButtonModifier.Shift);
             Alpha.Clicked += ModClicked(ButtonModifier.Alpha);
             Alt.Clicked += ModClicked(ButtonModifier.Alt);
-            Back.Clicked += (sender, e) => Utils.IgnoreEx(() => In.Text = In.Text?.Remove(In.Text.Length - 1), typeof(ArgumentOutOfRangeException));
+            Back.Clicked += (sender, e) => In.Text = In.Text?.Length > 0 ? In.Text.Remove(In.Text.Length - 1) : null;
 
             B03.Clicked += ButtonClicked;
             for (int i = 0; i < ButtonRows; i++)
@@ -176,7 +176,7 @@ namespace InnoTecheLearning.Pages
             Evaluate.Clicked += (sender, e) => Evaluate.Text = (DoEvaluate = !DoEvaluate) ? "Evaluate Symbols" : "Keep Symbols";
 
             Out.Focused += (sender, e) => Out.Unfocus();
-            OutCopy.Clicked += (sender, e) => Utils.SetClipboardText(Out.Text);
+            OutCopy.Clicked += (sender, e) => Utils.ClipboardText = Out.Text;
 
             /*
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
@@ -196,14 +196,14 @@ namespace InnoTecheLearning.Pages
             {
                 Out.Text = Utils.Error + ex.Message;
             }
-            NextEngine();
+            //NextEngine();
         }
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval("nerdamer('{0}'){1}");
         async void Expand_Clicked(object sender, EventArgs e) => await Eval("nerdamer.expand('{0}'){1}");
         async void Factorize_Clicked(object sender, EventArgs e) => await Eval("nerdamer.factor('{0}'){1}");
         Task<Engine> Current = CreateEngineAsync();
-        Task<Engine> Next = CreateEngineAsync();
-        void NextEngine() { Current = Next; Next = CreateEngineAsync(); }
+        //Task<Engine> Next = CreateEngineAsync();
+        //void NextEngine() { Current = Next; Next = CreateEngineAsync(); }
 
         static async Task<Engine> CreateEngineAsync()
         {

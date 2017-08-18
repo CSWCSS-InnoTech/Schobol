@@ -1449,7 +1449,7 @@ namespace InnoTecheLearning
                 if (!Storage.HasBefore(Storage.CrashDir, CrashLogCurrent)) Prev.IsEnabled = false;
                 if (!Storage.HasAfter(Storage.CrashDir, CrashLogCurrent)) Next.IsEnabled = false;
 
-                var Copy = Button("Copy log", () => SetClipboardText(Disp.Text))
+                var Copy = Button("Copy log", () => ClipboardText = Disp.Text)
                     .With((ref Button x) => x.HorizontalOptions = LayoutOptions.FillAndExpand);
 
                 return new StackLayout

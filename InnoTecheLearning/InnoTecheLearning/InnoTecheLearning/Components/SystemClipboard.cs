@@ -6,17 +6,28 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static void SetClipboardText(string Text)
+        public static string ClipboardText
         {
+            get =>
 #if __IOS__
-            ClipBoard.String = Text;
+            ClipBoard.String;
 #elif __ANDROID__
-            ClipBoard.Text = Text;
+            ClipBoard.Text;
 #elif NETFX_CORE
-            var ItemToSet = new Windows.ApplicationModel.DataTransfer.DataPackage();
-            ItemToSet.SetText(Text);
-            ClipBoard.SetContent(ItemToSet);
+            new System.Threading.Tasks.ValueTask<string>(ClipBoard.GetContent().GetTextAsync().AsTask()).RunSynchronously();
 #endif
+            set
+            {
+#if __IOS__
+                ClipBoard.String = value;
+#elif __ANDROID__
+                ClipBoard.Text = value;
+#elif NETFX_CORE
+                var ItemToSet = new Windows.ApplicationModel.DataTransfer.DataPackage();
+                ItemToSet.SetText(value);
+                ClipBoard.SetContent(ItemToSet);
+#endif
+            }
         }
 #if __IOS__
         public static UIKit.UIPasteboard ClipBoard { get; } = UIKit.UIPasteboard.General;

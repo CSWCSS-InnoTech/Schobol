@@ -9,6 +9,18 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
+        public static T RunSynchronously<T>(this ValueTask<T> Task, T Default = default(T))
+        {
+            T Result = Default;
+            using (System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false))
+            {
+                using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
+                    Helper.Run(Task, (ValueTask<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
+                Wait.WaitOne();
+            }
+            return Result;
+        }
+
         [Obsolete("Why not await the task instead?")]
         public static void Do(this Action Task)
         {
@@ -32,7 +44,7 @@ namespace InnoTecheLearning
         public static T Do<T>(this Task<T> Task, T Default = default(T))
         {
             T Result = Default;
-            using (System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false))
+            using (System.Threading.ManualResetEvent Wait = new System.Threading.ManualResetEvent(false))
             {
                 using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
                     Helper.Run(Task, (Task<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });

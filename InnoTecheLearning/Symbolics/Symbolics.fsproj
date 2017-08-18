@@ -93,8 +93,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ValueTuple">
-      <HintPath>..\packages\System.ValueTuple.4.4.0-preview1-25305-02\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
     </Reference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
