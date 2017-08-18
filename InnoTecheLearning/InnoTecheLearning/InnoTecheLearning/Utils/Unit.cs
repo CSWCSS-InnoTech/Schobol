@@ -10,8 +10,7 @@ namespace InnoTecheLearning
 #if !WINDOWS_UWP
         [Serializable]
 #endif
-        [StructLayout(LayoutKind.Sequential, Size = 1)]
-        [ComVisible(true)]
+        [StructLayout(LayoutKind.Sequential, Size = 1), ComVisible(true)]
         public struct Unit : IEquatable<Unit>
         {
             public static readonly Unit Default = new Unit();

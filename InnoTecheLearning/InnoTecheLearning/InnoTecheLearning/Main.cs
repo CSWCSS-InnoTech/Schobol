@@ -9,13 +9,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using static InnoTecheLearning.Utils;
 using static InnoTecheLearning.Utils.Create;
-using static InnoTecheLearning.Utils.OnlineDict.PearsonDictionaryResponse;
-using static InnoTecheLearning.Utils.StreamPlayer;
 using Xamarin.Forms;
 #if __IOS__
 using Xamarin.Forms.Platform.iOS;
@@ -27,27 +24,7 @@ using Xamarin.Forms.Platform.UWP;
 
 namespace InnoTecheLearning
 {
-
-#if CHRISTMAS //|| __ANDROID__ 
-    using Android.Media;
-    public class Media
-    {
-        private MediaPlayer player;
-        public void Start(string Path)
-        {
-            var player = new MediaPlayer();
-            player.Prepared += (s, e) =>
-            {
-                player.Start();
-            };
-            player.SetDataSource(Path);
-            player.Looping = true;
-            player.Prepare();
-        }
-        public void Pause() => player.Pause();
-        public void Stop() => player.Stop();
-    }
-#endif
+    
     static class PageIdExtensions
     {
         public static Main.PageId GetId(this Page P) => 
@@ -88,37 +65,6 @@ namespace InnoTecheLearning
             Excel,
             Facial
         }
-        /*
-        public View Content
-        {
-            get { return (base.CurrentPage as ContentPage).Content; }
-            set
-            {
-#if false
-                var Layout = new RelativeLayout();
-                Layout.Children.Add(new Image
-                {
-                    Aspect = Aspect.Fill,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    Source = Image("CNY.jpg")
-                },
-                    Constraint.Constant(0),
-                    Constraint.Constant(0),
-                    Constraint.RelativeToParent((parent) => { return parent.Width; }),
-                    Constraint.RelativeToParent((parent) => { return parent.Height; }));
-                Layout.Children.Add(value,
-                    Constraint.Constant(0),
-                    Constraint.Constant(0),
-                    Constraint.RelativeToParent((parent) => { return parent.Width; }),
-                    Constraint.RelativeToParent((parent) => { return parent.Height; }));
-                base.Content = Layout;
-#else
-                base.PushAsync(new ContentPage { Content = value });
-#endif
-            }
-        }
-        */
         bool AnimateRows = true;
         public ValueTask<Unit> Push(View v, PageId Id, string Title = null) =>
             Log(
@@ -354,59 +300,6 @@ namespace InnoTecheLearning
                 };
             }
         }
-        /*
-        public StackLayout CloudTest
-        {
-            get
-            {
-                var Display = new
-                {
-                    ID = "ID:".PadRight(8),
-                    Name = "Name:".PadRight(8),
-                    Class = "Class:".PadRight(8),
-                    Number = "Number:".PadRight(8)
-                };
-
-                Entry ID = new Entry
-                {
-                    Keyboard = Keyboard.Numeric,
-                    Placeholder = "Student ID (without beginning s)",
-                    PlaceholderColor = Color.Gray,
-                    TextColor = Color.Black,
-                    Text = "18999"
-                };
-                Entry E = new Entry
-                {
-                    Keyboard = Keyboard.Text,
-                    Placeholder = "Password",
-                    PlaceholderColor = Color.Gray,
-                    TextColor = Color.Black,
-                    Text = "Y1234567"
-                };
-                Label L1 = BoldLabel(Display.ID);
-                Label L2 = BoldLabel(Display.Name);
-                Label L3 = BoldLabel(Display.Class);
-                Label L4 = BoldLabel(Display.Number);
-
-                return new StackLayout
-                {
-                    Children = {ID, E, Button("Test the Cloud",
-                    async () => {
-                        var Response = await Login(ToUShort(ID.Text), E.Text);
-                        Try(delegate {
-                        L1.Text = Display.ID + Response[0];    L2.Text = Display.Name + Response[1];
-                        L3.Text = Display.Class + Response[2]; L4.Text = Display.Number + Response[3]; },
-                        async (IndexOutOfRangeException ex)=> {
-                            await Alert(this, "Abnornal return value from Cloud: " + '"' + string.Join(",", Response) + '"'); },
-                            Catch2:async (Exception ex) => { await Alert(this, ex.ToString()); }
-                        ); }),
-                        L1, L2, L3, L4, //Back(this)
-                    }
-                    ,
-                    VerticalOptions = LayoutOptions.Center
-                };
-            }
-        }*/
         public const string Cursor = "‸";
         string Calculator_Value_ = "";
         string Calculator_Value { get => Calculator_Value_; set { Calculator_Display_Dirty = true; Calculator_Value_ = value; } }
@@ -800,8 +693,8 @@ namespace InnoTecheLearning
                             Out.Text = "";
                         }
                     }, 0, false,
-                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f", "e√̅f", "e√f̅"),
-                    OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f", "g / h √̅f", "g / h √f̅"));
+                    "Norm", "%", "a b / c", "d / c", "° ′ ″", OnPlatform("e√f̅", "e√f̅", "e√̅f"),
+                    OnPlatform("g / h √f̅", "g / h √f̅", "g / h √̅f"));
                 Return.Children[new OnIdiom<int> { Desktop = 3, Phone = 4, Tablet = 4 }] =
                     Row(false, Modifiers[0], Scroll(StackOrientation.Horizontal, Modifiers.Skip(1)));
                 return Return;
@@ -959,11 +852,7 @@ namespace InnoTecheLearning
         Label Sports_Distance = BoldLabel("0 m", Color.White, Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
         Label Sports_Now = BoldLabel(DateTime.Now.ToString("HH:mm:ss"), Color.White,
             Color.FromRgb(0x40, 0x40, 0x40), NamedSize.Large);
-        IStepCounter Pedometer = new StepCounter(/*(uint Steps, TimeSpan TimePassed, float Distance) =>
-            {
-                Sports_Steps.Text = Steps.ToString(); Sports_Time.Text = TimePassed.ToString(@"hh\:mm\:ss");
-                Sports_Distance.Text = Distance.ToString() + " m"; Sports_Now.Text = DateTime.Now.ToString("HH:mm:ss");
-            }*/);
+        IStepCounter Pedometer = new StepCounter();
         public StackLayout Sports
         {
             get
@@ -1025,7 +914,6 @@ namespace InnoTecheLearning
                     TextColor = Color.Black,
                     LineBreakMode = LineBreakMode.NoWrap
                 };
-                //Draw.DrawText("AbCdEfGhIjKlMnOpQrStUvWxYz", Size, TColor);
                 var Dragon = new Image
                 {
                     Source = ImageSource(ImageFile.Dragon),
@@ -1229,17 +1117,15 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children =
                     {
-                        //Title("eLearn Excel"),
                         Instruction,
                         Question,
                         Display, CharGrid, Dragon,
-                        Row(false, Row(false, Hearts), Continue//, Back(this)
+                        Row(false, Row(false, Hearts), Continue
                             )
                     }
                 };
             }
         }
-        //SpeechToText TranslatorRecognizer = new SpeechToText("Say something to translate...", SpeechLanguages.English_US);
         ObservableCollection<OnlineDict.Entry> Favourites = new ObservableCollection<OnlineDict.Entry>();
         public Grid Translator
         {
@@ -1272,19 +1158,6 @@ namespace InnoTecheLearning
                 var Mode = Button(OnlineDict.ToEnglishMode ? "文→A" : "A→文", (ref Button sender, EventArgs e) => 
                     sender.Text = (OnlineDict.ToEnglishMode = !OnlineDict.ToEnglishMode) ? "文→A" : "A→文");
                 var Input = Entry("", "Enter words...");
-                /*var Recognize = Button("🎤", () =>
-                { //http://developer.pearson.com/apis/dictionaries/
-                  //Request(Get, "http://api.pearson.com/v2/dictionaries/ldec/entries?headword=" + Input.Text);
-                    TranslatorRecognizer.TextChanged +=
-                        (sender, e) => Device.BeginInvokeOnMainThread(() => Input.Text = e.Text);
-                    TranslatorRecognizer.Start();
-                    var detailsIntent = new Android.Content.Intent(Android.Speech.RecognizerIntent.ActionGetLanguageDetails);
-                    LanguageDetailsChecker checker = new LanguageDetailsChecker();
-                    Droid.MainActivity.Current.SendOrderedBroadcast(detailsIntent, null, checker, null,
-                            Android.App.Result.Ok, null, null);
-                    var a = checker.supportedLanguages;
-                    ;
-                });*/
                 void ViewUpdate(StackLayout Layout, IEnumerable<OnlineDict.Entry> Results, params Span[] NoResults)
                 {
                     Layout.Children.Clear();
@@ -1298,14 +1171,14 @@ namespace InnoTecheLearning
                                         Text = Result.Headword.PadRight(33),
                                         ForegroundColor = Color.Black,
                                         FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                                        FontFamily = FontDictionary//"Courier New, Georgia, Serif"
+                                        FontFamily = FontDictionary
                                         },
                                     new Span
                                     {
                                         Text = Result.PoS.PadRight(13),
                                         ForegroundColor = Color.Gray,
                                         FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
-                                        FontFamily = FontDictionary//"Courier New, Georgia, Serif"
+                                        FontFamily = FontDictionary
                                     }, new Span
                                     {
                                         Text = Result.Translation + " \n",
@@ -1373,7 +1246,7 @@ namespace InnoTecheLearning
                 {
                     VerticalOptions = LayoutOptions.FillAndExpand,
                     Children = {
-                        Row(false, Mode, /*Recognize,*/ Input, Translate),
+                        Row(false, Mode, Input, Translate),
                         new ScrollView { Orientation = ScrollOrientation.Both, Content = Formatted }
                     }
                 }, 0, 0);
@@ -1384,7 +1257,7 @@ namespace InnoTecheLearning
                     Text = "There's nothing here...\n",
                     ForegroundColor = Color.Gray,
                     FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),
-                    FontFamily = FontDictionary //"Courier New, Georgia, Serif"
+                    FontFamily = FontDictionary
                 }, new Span
                 {
                     Text = "Press the button on the left of one of the\ntranslated results to add it into the Favourites!",
@@ -1479,8 +1352,7 @@ namespace InnoTecheLearning
                 };
             }
         }
-
-        IEnumerable<SixLabors.Primitives.Rectangle> Faces = Enumerable.Empty<SixLabors.Primitives.Rectangle>();
+        
         public StackLayout Facial
         {
             get
@@ -1488,48 +1360,8 @@ namespace InnoTecheLearning
                 var Detected = new StackLayout
                 { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand, MinimumHeightRequest = 50 };
                 var cam = new Camera();
-                cam.ProcessingPreview += async (sender, e) => 
+                cam.ProcessingPreview += (sender, e) => 
                 {
-                    if (Faces.SequenceEqual(e.DetectedFaces)) return;
-                    Faces = e.DetectedFaces;
-                    foreach (Image image in Detected.Children)
-                    {
-                        var source = await (image.Source as StreamImageSource).GetStream();
-                        source.Dispose();
-                    }
-                    Detected.Children.Clear();
-                    foreach (var face in Log(e.DetectedFaces, $"Adding faces, count: {e.DetectedFaces.Count()}"))
-                    {
-                        ImageSharp.Image<ImageSharp.Rgba32> cropped = null;
-                        try
-                        {
-                            await Log("Line 1492");
-                            cropped = ImageSharp.ImageExtensions.Crop(ImageSharp.Image.Load
-                                (e.PreviewFrameJPEG, new ImageSharp.Formats.JpegDecoder()), face);
-                            await Log("Line 1495");
-                        } catch(Exception ex) when (Log(ex) == null) { } catch(Exception ex) { await Log(ex); }
-                        await Log("Line 1497");
-                        Detected.Children.Add(new Image
-                        {
-                            HorizontalOptions = 
-                                Log(LayoutOptions.FillAndExpand, $"Creating face image, width: {face.Width}, height: {face.Height}"),
-                            VerticalOptions = LayoutOptions.FillAndExpand,
-                            Aspect = Aspect.AspectFit,
-                            Source = new StreamImageSource
-                            {
-                                Stream = y => Task.Run(() =>
-                                {
-                                    Log("Loading face image...");
-                                    System.IO.Stream memoryStream = new System.IO.MemoryStream();
-                                    cropped.Save(memoryStream, ImageSharp.ImageFormats.Jpeg);
-                                    cropped.Dispose();
-                                    Log("Loaded face image");
-                                    return memoryStream;
-                                }, y)
-                            }
-                        });
-                    }
-                    await Log("Created face image");
                 };
                 var Return = new StackLayout { Orientation = StackOrientation.Vertical };
                 Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;

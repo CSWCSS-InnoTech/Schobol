@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using SixLabors.Primitives;
 
 namespace InnoTecheLearning
 {
@@ -97,7 +96,7 @@ namespace InnoTecheLearning
                     Log(ex);
                 }
             }
-            Span<Rectangle> Faces = Array.Empty<Rectangle>();
+            Rectangle[] Faces = Array.Empty<Rectangle>();
             public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
             {
                 cam?.SetPreviewCallback(null);

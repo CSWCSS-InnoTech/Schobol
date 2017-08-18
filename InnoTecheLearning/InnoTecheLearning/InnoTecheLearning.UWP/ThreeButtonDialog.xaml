@@ -7,7 +7,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Title="TITLE">
-
     <!-- Content body -->
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="0,20">
         <Grid.RowDefinitions>
@@ -24,5 +23,4 @@
         <Button Grid.Row="1" Grid.Column="1" Content="No" x:Name="btn2" Click="Btn2_Click" Margin="5,0" Width="100" />
         <Button Grid.Row="1" Grid.Column="2" Content="Cancel" x:Name="btn3" Click="Btn3_Click" Margin="5,0" Width="100" />
     </Grid>
-
 </ContentDialog>

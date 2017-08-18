@@ -52,6 +52,7 @@
             Super, This, /*References*/ Throw, Try, Catch, Finally, //Exceptions
             Debugger, Import, Package, Print, With //Miscellaneous
         }
+
         public static void RemoveLast<T>(this System.Collections.Generic.IList<T> List)
         { if(List.Count != 0) List.RemoveAt(List.Count - 1); }
         public static void InsertItemLocation

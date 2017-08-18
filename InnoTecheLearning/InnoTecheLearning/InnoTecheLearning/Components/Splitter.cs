@@ -196,9 +196,8 @@ namespace InnoTecheLearning
                 }
                 return actualWidth;
             }
-            
-#if false
-#elif __IOS__
+
+#if __IOS__
             public class Renderer : VisualElementRenderer<GridSplitter>
             {
                 private UIPanGestureRecognizer _panGestureRecognizer;

@@ -157,33 +157,6 @@ namespace InnoTecheLearning
 #else
                 => await new ValueTask<Stream>(() => new FileStream(GetSaveLocation(FileName), FileMode.CreateNew, FileAccess.Read));
 #endif
-
-            /*
-            public static Stream CreateReadStream(string FileName) =>
-#if WINDOWS_UWP
-                Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(
-                    FileName, new Uri(GetSaveLocation(FileName)), 
-                    Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(
-                        Create.ImageSource(Create.ImageFile.File_Icon).GetStream().AsRandomAccessStream()
-                    )
-                ).Do().OpenStreamForReadAsync().Do()
-#else
-                new FileStream(GetSaveLocation(FileName), FileMode.Open, FileAccess.Read)
-#endif
-                ;
-            public static Stream CreateWriteStream(string FileName) =>
-#if WINDOWS_UWP
-                Windows.Storage.StorageFile.CreateStreamedFileFromUriAsync(
-                    FileName, new Uri(GetSaveLocation(FileName)),
-                    Windows.Storage.Streams.RandomAccessStreamReference.CreateFromStream(
-                        Create.ImageSource(Create.ImageFile.File_Icon).GetStream().AsRandomAccessStream()
-                    )
-                ).Do().OpenStreamForWriteAsync().Do()
-#else
-                new FileStream(GetSaveLocation(FileName), FileMode.OpenOrCreate, FileAccess.Write)
-#endif
-                ;
-*/
             public static bool Empty(string Directory) => new DirectoryInfo(GetSaveLocation(Directory)).GetFiles().Length == 0;
             public static bool Any(string Directory) => new DirectoryInfo(GetSaveLocation(Directory)).GetFiles().Length != 0;
             public static bool HasBefore(string Directory, string FileName) => Before(Directory, FileName) != null;

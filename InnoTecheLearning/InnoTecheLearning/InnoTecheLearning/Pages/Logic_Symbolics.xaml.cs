@@ -18,6 +18,8 @@ namespace InnoTecheLearning.Pages
     [XamlCompilation(XamlCompilationOptions.Skip)]
     public partial class Logic_Symbolics : ContentPage
     {
+        //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
+        //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
         const int ButtonRows = 5;
         const int ButtonColumns = 5;
         [Flags] enum ButtonModifier : byte
@@ -190,7 +192,7 @@ namespace InnoTecheLearning.Pages
             try
             {
                 //Android needs .toString() and trim " while Windows 10 does not
-                Out.Text = (await (await Current).EvaluateNoReturn(string.Format(Format, In.Text.Replace("'", "\\'").Replace("\\", "\\\\"), (DoEvaluate ? ".evaluate()" : null) + (DisplayDecimals ? ".text()" : ".toString()")))).Trim('"');
+                Out.Text = (await (await Current).Evaluate(string.Format(Format, In.Text.Replace("'", "\\'").Replace("\\", "\\\\"), (DoEvaluate ? ".evaluate()" : null) + (DisplayDecimals ? ".text()" : ".toString()")))).Trim('"');
             }
             catch (Exception ex)
             {
@@ -208,11 +210,12 @@ namespace InnoTecheLearning.Pages
         static async Task<Engine> CreateEngineAsync()
         {
             var JSEngine = new Engine();
-            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("nerdamer.core.js"));
-            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Algebra.js"));
-            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Calculus.js"));
-            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Solve.js"));
-            await JSEngine.EvaluateNoReturn(Utils.Resources.GetString("Extra.js"));
+            await JSEngine.Evaluate(Utils.Resources.GetString("nerdamer.core.js"));
+            await JSEngine.Evaluate(Utils.Resources.GetString("Algebra.js"));
+            await JSEngine.Evaluate(Utils.Resources.GetString("Calculus.js"));
+            await JSEngine.Evaluate(Utils.Resources.GetString("Solve.js"));
+            await JSEngine.Evaluate(Utils.Resources.GetString("Extra.js"));
+            await JSEngine.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
             return JSEngine;
         }
 #else

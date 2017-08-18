@@ -20,8 +20,6 @@ namespace InnoTecheLearning
     partial class Utils
     {
         //http://json2csharp.com/
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles",
-        //    Justification = "Following JSON model schema from Oxford Dictionaries.")]
         //public ([^ ]+) ([^ ]+) { get; set; }
         //[DataMember] public $1 $2;
         public static class OnlineDict

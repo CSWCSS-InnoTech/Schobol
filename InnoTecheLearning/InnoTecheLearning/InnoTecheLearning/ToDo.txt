@@ -1,7 +1,7 @@
-﻿[ ] Clean up unused code
-    [ ] Delete Calculator subfolder, deprecated components, remove dlls other than ChakraHost10.dll, 
+﻿[x] Clean up unused code
+    [x] Delete Calculator subfolder, deprecated components, remove dlls other than ChakraHost10.dll, 
 		delete Emgu.CV, Emgu.Util, MathNet.Symbolics, OpenCV folders
-	[ ] Delete all bin/obj folders, and all unused folders in subprojects
+	[x] Delete all bin/obj folders, and all unused folders in subprojects
 	[ ] Remove commented out code
 	[ ] Remove deprecated functions
 [ ] Deprecate Logic (Keypad, Freeform, Factor) and replace with Logic (Symbolics)

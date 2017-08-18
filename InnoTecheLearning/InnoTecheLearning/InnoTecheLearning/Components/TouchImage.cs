@@ -31,6 +31,7 @@ using Xamarin.Forms.Platform.WinRT;
 using Xamarin.Forms.Platform.UWP;
 #endif
 #endif
+
 using XColor = Xamarin.Forms.Color;
 using Image = Xamarin.Forms.Image;
 using TouchImage = InnoTecheLearning.Utils.TouchImage;

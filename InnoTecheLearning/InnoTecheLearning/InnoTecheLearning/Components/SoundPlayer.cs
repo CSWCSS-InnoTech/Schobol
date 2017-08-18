@@ -8,7 +8,6 @@ using Android.Media;
 using Java.IO;
 using Xamarin.Forms;
 #elif NETFX_CORE
-using System;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Storage.Streams;

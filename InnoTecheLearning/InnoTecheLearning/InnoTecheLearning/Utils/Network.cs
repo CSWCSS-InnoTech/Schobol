@@ -1,22 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public class AbnormalReturnException<TReturn> : HttpRequestException
-        {   public TReturn ReturnValue { get; }
-            public AbnormalReturnException(TReturn Value) : base()
-            { ReturnValue = Value; }
-            public AbnormalReturnException(TReturn Value, string Message) : base(Message)
-            { ReturnValue = Value; }
-            public AbnormalReturnException(TReturn Value, string Message, Exception Inner) : base(Message, Inner)
-            { ReturnValue = Value; }
-        }
         public static async ValueTask<string[]> Login(ushort StudentID = 18999, string PassPhrase = "Y1234567")
         {
             return (await Request(HttpMethod.Post, "http://cloud.pedosa.org/platform/solutions/cswcss-innotech/test/index.php",

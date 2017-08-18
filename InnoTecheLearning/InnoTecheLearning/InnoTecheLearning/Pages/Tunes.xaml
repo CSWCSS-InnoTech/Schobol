@@ -28,7 +28,8 @@
                 <Button Text="A" x:Name="CelloA" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
             </StackLayout>
             <Button Text="Stop" x:Name="Stop" VerticalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black"/>
-            <!--<StackLayout Orientation="Horizontal">
+            <!--
+            <StackLayout Orientation="Horizontal">
                 <Label x:Name="VolumeLabel" Text="100%" TextColor="Black" />
                 <Slider x:Name="Volume" Minimum="0" Maximum="100" BackgroundColor="Silver" HorizontalOptions="FillAndExpand"/>
             </StackLayout>-->

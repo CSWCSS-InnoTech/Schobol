@@ -9,6 +9,10 @@ Version (Name) [Time in GMT +08:00] {Links to download} <Optional YANKED label>
 !Security to invite users to upgrade in case of vulnerabilities.
 ~Comment for notes.
 
+v0.11.0 (Anniversary Update) [2017-10-xx Xxx xx:xx] {}
++Facial for Facial recognition
++Logic (Symbolics) for a better calculator than Logic (Keypad)
+
 v0.10.2 (Keypad Bugfix) [2017-06-18 Sun 22:45] {https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/Android/0.10.1.apk, https://github.com/CSWCSS-InnoTech/InnoTech-eLearning/raw/Versions/UWP/0.10.1.appxbundle}
 &Direction buttons now correctly take up the whole row
 &Sqrt(2) not showing as 1 / 1 √̅2 on Windows or 0.5 / 1 √2̅ on other platforms

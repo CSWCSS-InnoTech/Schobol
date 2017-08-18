@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
@@ -25,7 +23,6 @@ namespace InnoTecheLearning
                 Heart,
                 Dragon,
                 Dragon_Dead,
-                File_Icon,
                 Facial
             }
 
@@ -46,7 +43,6 @@ namespace InnoTecheLearning
                     "8_bit_heart_stock_by_xquatrox-d4r844m.png",
                     "dragon.jpg",
                     "dragon.fw.png",
-                    "folded-paper_318-31112.jpg",
                     "boy-smiling.png"
                 };
             public static ImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[(int)File]);
@@ -69,47 +65,8 @@ namespace InnoTecheLearning
                 return Image;
             }
 
-            public static Image ImageD/*D = Default (size)*/(ImageFile File, Action OnTap) => ImageD(ImageSource(File), OnTap);
-            public static Image ImageD/*D = Default (size)*/(ImageSource Source, Action OnTap)
-            {
-                Image Image = new Image { Source = Source };
-                var Tap = new TapGestureRecognizer { Command = new Command(OnTap) };
-                Image.GestureRecognizers.Add(Tap);
-                return Image;
-            }
-
             public static StackLayout MainScreenItem(ImageSource Source, Action OnTap, Label Display)
             {
-                /*
-                if(Device.Idiom == TargetIdiom.Desktop) return new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    //WidthRequest = 71.5,
-                    Children = {
-                        Image(Source: Source, OnTap: OnTap)
-                            .With((ref Image x) => {
-                                x.HorizontalOptions = LayoutOptions.FillAndExpand;
-                                x.VerticalOptions = LayoutOptions.FillAndExpand;
-                                x.Aspect = Aspect.AspectFit;
-                                var a = x;
-                                Device.StartTimer(TimeSpan.FromMilliseconds(10),
-                                    () => { a.WidthRequest = ((a.Parent as StackLayout)?.Height - a.Height)
-                                        ?? a.WidthRequest; return false; });
-                                }
-                            ), Display
-                            .With((ref Label x) => {
-                                x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand;
-                                x.HorizontalTextAlignment = TextAlignment.Center;
-                                var a = x;
-                                Device.StartTimer(TimeSpan.FromMilliseconds(10),
-                                    () => { a.WidthRequest = ((a.Parent as StackLayout)?.Height - a.Height)
-                                        ?? a.WidthRequest; return false; });
-                                }
-                            )
-                    }
-                }; else */
                 return Log(new StackLayout
                 {
                     Orientation = StackOrientation.Vertical,
@@ -119,35 +76,6 @@ namespace InnoTecheLearning
                     Scale = 1.5,
                     Children = { Image(Source: Source, OnTap: OnTap), Display }
                 }, "MainScreenItem returned: " + Display.Text);
-            }
-
-
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap) instead.\nDeprecated in 0.10.0a46")]
-            public static Button ButtonB(FileImageSource Image, EventHandler OnClick)
-            { return ButtonB(Image, OnClick, new Size(50, 50)); }
-            [Obsolete("Use Create.Image(ImageSource Source, Action OnTap, Size Size) instead.\nDeprecated in 0.10.0a46")]
-            public static Button ButtonB(FileImageSource Image, EventHandler OnClick, Size Size)
-            {
-                Button Button = new Button
-                {
-                    Image = Image,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height
-                };
-                Button.Clicked += OnClick;
-                return Button;
-            }
-
-            [Obsolete("Use MainScreenItem(ImageSource Source, Action OnTap, Label Display) instead.\nDeprecated in 0.10.0a46")]
-            public static StackLayout MainScreenItemB/*B = Button*/(FileImageSource Image, EventHandler OnClick, Text Display)
-            {
-                return new StackLayout
-                {
-                    Orientation = StackOrientation.Vertical,
-                    VerticalOptions = LayoutOptions.StartAndExpand,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Children = { ButtonB(Image: Image, OnClick: OnClick), Display }
-                };
             }
         }
     }

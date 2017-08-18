@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using BindingFlags = System.Reflection.BindingFlags;
 
 namespace InnoTecheLearning
 {
@@ -20,80 +19,6 @@ namespace InnoTecheLearning
             }
             return Result;
         }
-
-        [Obsolete("Why not await the task instead?")]
-        public static void Do(this Action Task)
-        {
-            Task?.Invoke();
-        }
-
-        [Obsolete("Why not await the task instead?")]
-        public static T Do<T>(this Delegate Task, params object[] Args)
-        {
-            return (T)Task?.DynamicInvoke(Args);
-        }
-
-        [Obsolete("Why not await the task instead?")]
-        public static void Do(this Task Task)
-        {
-            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
-                Helper.Run(Task);
-        }
-
-        [Obsolete("Why not await the task instead?")]
-        public static T Do<T>(this Task<T> Task, T Default = default(T))
-        {
-            T Result = Default;
-            using (System.Threading.ManualResetEvent Wait = new System.Threading.ManualResetEvent(false))
-            {
-                using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
-                    Helper.Run(Task, (Task<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
-                Wait.WaitOne();
-            }
-            return Result;
-        }
-
-        [Obsolete("Why not await the task instead?")]
-        public static T Do<T>(this ValueTask<T> Task, T Default = default(T))
-        {
-            T Result = Default;
-            using (System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false))
-            {
-                using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
-                    Helper.Run(Task, (ValueTask<T> CallBack) => { Result = CallBack.Result; Wait.Set(); });
-                Wait.WaitOne();
-            }
-            return Result;
-        }
-#if NETFX_CORE
-        [Obsolete("Why not await the task instead?")]
-        public static void Do(this global::Windows.Foundation.IAsyncAction Task)
-        {
-            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
-                Helper.Run(Task.AsTask());
-        }
-        
-        [Obsolete("Why not await the task instead?")]
-        public static T Do<T>(this global::Windows.Foundation.IAsyncOperation<T> Task, T Default = default(T))
-        {
-            return Do(Task.AsTask(), Default);
-        }
-
-        [Obsolete("Why not await the task instead?")]
-        public static void Do<TProgress>(this global::Windows.Foundation.IAsyncActionWithProgress<TProgress> Task)
-        {
-            using (AsyncHelper.AsyncBridge Helper = AsyncHelper.Wait)
-                Helper.Run(Task.AsTask());
-        }
-        
-        [Obsolete("Why not await the task instead?")]
-        public static TResult Do<TResult, TProgress>
-            (this global::Windows.Foundation.IAsyncOperationWithProgress<TResult, TProgress> Task,
-            TResult Default = default(TResult))
-        {
-            return Do(Task.AsTask(), Default);
-        }
-#endif
 
         public static void AddRange<T>(this ICollection<T> ic, IEnumerable<T> ie) { foreach (T obj in ie) ic.Add(obj); }
 
@@ -121,33 +46,6 @@ namespace InnoTecheLearning
                 if (reset && input.CanSeek) input.Seek(pos, SeekOrigin.Begin);
             }
         }
-        public static IEnumerable<T> SliceRow<T>(this T[,] array, int row)
-        {
-            for (var i = array.GetLowerBound(1); i <= array.GetUpperBound(1); i++)
-            {
-                yield return array[row, i];
-            }
-        }
-
-        public static IEnumerable<T> SliceColumn<T>(this T[,] array, int column)
-        {
-            for (var i = array.GetLowerBound(0); i <= array.GetUpperBound(0); i++)
-            {
-                yield return array[i, column];
-            }
-        }
-
-        public static T[,] SetRow<T>(this T[,] array, int row, IList<T> items)
-        {
-            for (var i = array.GetLowerBound(1); i <= array.GetUpperBound(1); i++)
-            {
-                array[row, i] = items[i];
-            }
-            return array;
-        }
-
-        public static System.Reflection.Assembly GetAssembly(this Type T) =>
-            System.Reflection.IntrospectionExtensions.GetTypeInfo(T).Assembly;
 
         public static string ToHex(this byte[] data, string prefix = "")
         {
@@ -412,13 +310,6 @@ namespace InnoTecheLearning
             HasMinimalDifference(d, Math.Round(d), maxDifference);
         public static bool IsInteger(this decimal d) => d == Math.Truncate(d);
 
-        public static Page GetParentPage(this Element e)
-        {
-            while(e != null && !(e is Page))
-                e = e.Parent;
-            return e as Page;
-        }
-
         public static IEnumerable<T> Prepend<T>(this IEnumerable<T> ie, T Item) => new PrependIterator<T>(ie, Item);
         class PrependIterator<T> : IEnumerable<T>, IEnumerator<T>
         {
@@ -461,115 +352,6 @@ namespace InnoTecheLearning
             public void Reset() => UnderIterator = Under.GetEnumerator();
 
         }
-
-        public static bool IsCreated(this FileInfo info) => File.Exists(info.FullName);
-        public static bool IsCreated(this DirectoryInfo info) => Directory.Exists(info.FullName);
         
-        public static T[,] TransposeRowsAndColumns<T>(this T[,] arr)
-        {
-            int rowCount = arr.GetLength(0);
-            int columnCount = arr.GetLength(1);
-            T[,] transposed = new T[columnCount, rowCount];
-            if (rowCount == columnCount)
-            {
-                transposed = (T[,])arr.Clone();
-                for (int i = 1; i < rowCount; i++)
-                {
-                    for (int j = 0; j < i; j++)
-                    {
-                        T temp = transposed[i, j];
-                        transposed[i, j] = transposed[j, i];
-                        transposed[j, i] = temp;
-                    }
-                }
-            }
-            else
-            {
-                for (int column = 0; column < columnCount; column++)
-                {
-                    for (int row = 0; row < rowCount; row++)
-                    {
-                        transposed[column, row] = arr[row, column];
-                    }
-                }
-            }
-            return transposed;
-        }
-        public static double[] MatrixProduct(this double[][] matrixA, double[] vectorB)
-        {
-            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
-            int bRows = vectorB.Length;
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[] result = new double[aRows];
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int k = 0; k < aCols; ++k)
-                    result[i] += matrixA[i][k] * vectorB[k];
-            return result;
-        }
-        public static double[][] MatrixProduct(this double[][] matrixA, double[][] matrixB)
-        {
-            int aRows = matrixA.Length; int aCols = matrixA[0].Length;
-            int bRows = matrixB.Length; int bCols = matrixB[0].Length;
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[][] result = MatrixCreate(aRows, bCols);
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int j = 0; j < bCols; ++j) // each col of B
-                    for (int k = 0; k < aCols; ++k)
-                        result[i][j] += matrixA[i][k] * matrixB[k][j];
-            return result;
-        }
-        public static double[] MatrixProduct(this double[,] matrixA, double[] vectorB)
-        {
-            int aRows = matrixA.Length; int aCols = matrixA.GetLength(1);
-            int bRows = vectorB.Length;
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[] result = new double[aRows];
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int k = 0; k < aCols; ++k)
-                    result[i] += matrixA[i, k] * vectorB[k];
-            return result;
-        }
-        public static double[,] MatrixProduct(this double[,] matrixA, double[,] matrixB)
-        {
-            int aRows = matrixA.GetLength(0); int aCols = matrixA.GetLength(1);
-            int bRows = matrixB.GetLength(0); int bCols = matrixB.GetLength(1);
-            if (aCols != bRows)
-                throw new Exception("Non-conformable matrices in MatrixProduct");
-            double[,] result = new double[aRows, bCols];
-            for (int i = 0; i < aRows; ++i) // each row of A
-                for (int j = 0; j < bCols; ++j) // each col of B
-                    for (int k = 0; k < aCols; ++k)
-                        result[i, j] += matrixA[i, k] * matrixB[k, j];
-            return result;
-        }
-        public static void GetDiagonal(this double[,] Matrix, ref double[] Ref)
-        { try { for (int i = 0; i < Matrix.GetLength(0); i++) Ref[i] = Matrix[i, i]; } catch { } }
-        /*public static TResult Chain<T, TResult>(this T Instance, Func<T, TResult> Action) { return Action(Instance); }
-        
-        public static void Fill<T>(this IList<T> List) where T : new()
-        {
-            for (int i = 0; i < List.Count; i++)
-                List[i] = new T();
-        }
-        public static void Fill<T>(this T[] List) where T : new()
-        {
-            for (int i = 0; i < List.Length; i++)
-                List[i] = new T();
-        }
-        public static void Fill<T>(this T[,] List) where T : new()
-        {
-            for (int i = 0; i < List.Rank; i++)
-                for (int j = 0; j < List.GetLength(i); j++)
-                    List[i, j] = new T();
-        }
-        public static void Fill<T>(this T[][] List) where T : new()
-        {
-            for (int i = 0; i < List.Length; i++)
-                for (int j = 0; j < List[i].Length; j++)
-                    List[i][j] = new T();
-        }*/
     }
 }

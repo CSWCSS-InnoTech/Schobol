@@ -2,16 +2,13 @@
 
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Android.Preferences;
 using Android.Content;
 
 namespace InnoTecheLearning.Droid
 {
-	[Activity (Label = "CSWCSS eLearn Utilities", Theme = "@style/Main", MainLauncher = false, 
+	[Activity (Label = Utils.AssemblyTitle, Theme = "@style/Main", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait, HardwareAccelerated = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
@@ -36,14 +33,11 @@ namespace InnoTecheLearning.Droid
        
     }
 
-    [Activity(Label = "CSWCSS eLearn Utilities", Theme = "@style/Splash", MainLauncher = true, NoHistory = true,
+    [Activity(Label = Utils.AssemblyTitle, Theme = "@style/Splash", MainLauncher = true, NoHistory = true,
         ScreenOrientation = ScreenOrientation.SensorPortrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class SplashActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
-        //static System.Threading.ManualResetEvent _Ready = new System.Threading.ManualResetEvent(false);
-        //public static void Ready() => _Ready.Set();
-        //static readonly string TAG = "X:" + typeof(SplashActivity).Name;
         System.Threading.ManualResetEvent Inited = new System.Threading.ManualResetEvent(false);
         protected override void OnCreate(Bundle bundle)
         {

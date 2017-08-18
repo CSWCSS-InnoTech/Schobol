@@ -29,7 +29,8 @@ namespace InnoTecheLearning
                             FontSize = Device.GetNamedSize(NamedSize.Small, typeof(Label)),
                             FontFamily = "Courier New, Georgia, Serif"
                         },
-                        new Span {
+                        new Span
+                        {
                             Text = s.Value.Chi,
                             ForegroundColor = Color.Black,
                             FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Label)),

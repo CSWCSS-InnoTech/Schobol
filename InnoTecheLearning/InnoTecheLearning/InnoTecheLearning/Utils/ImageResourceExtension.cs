@@ -4,8 +4,7 @@ using Xamarin.Forms.Xaml;
 
 namespace InnoTecheLearning
 {
-    [AcceptEmptyServiceProvider]
-    [ContentProperty(nameof(Columns))]
+    [AcceptEmptyServiceProvider, ContentProperty(nameof(Columns))]
     public class GridColumnExtension : IMarkupExtension<ColumnDefinitionCollection>
     {
         public string Columns { get; set; }

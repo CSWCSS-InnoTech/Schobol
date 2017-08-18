@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
@@ -12,35 +11,6 @@ namespace InnoTecheLearning
         /// </summary>
         public static partial class Create
         {
-            public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Color BackColor =
-                default(Color), Color TextColor = default(Color))
-            {
-                if (BackColor == default(Color))
-                    BackColor = Color.Silver;
-                if (TextColor == default(Color))
-                    TextColor = Color.Black;
-                Button Button = new Button{Text = Text, TextColor = TextColor, BackgroundColor = BackColor};
-                Button.Clicked += OnClick;
-                return Button;
-            }
-            public static Button ButtonU/*Uncoloured*/(Text Text, EventHandler OnClick, Size Size,
-                 Color BackColor = default(Color), Color TextColor = default(Color))
-            {
-                if (BackColor == default(Color))
-                    BackColor = Color.Silver;
-                if (TextColor == default(Color))
-                    TextColor = Color.Black;
-                Button Button = new Button
-                {
-                    Text = Text,
-                    TextColor = TextColor,
-                    WidthRequest = Size.Width,
-                    HeightRequest = Size.Height,
-                    BackgroundColor = BackColor
-                };
-                Button.Clicked += OnClick;
-                return Button;
-            }
             public delegate void ButtonOnClick(ref Button sender, EventArgs e);
             public static Button Button(Text Text, Action OnClick,
                  Color BackColor = default(Color), Color TextColor = default(Color)) =>
@@ -235,24 +205,6 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.Fill
                 };
             }
-            public static Label BoldLabel2(Text Text, Color TextColor = default(Color), 
-                Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
-            {
-                if (TextColor == default(Color))
-                    TextColor = Color.Black;
-                if (TextColor == default(Color))
-                    TextColor = Color.Default;
-                return new Label
-                {
-                    FormattedText = Format(Bold(Text)),
-                    TextColor = TextColor,
-                    BackgroundColor = BackColor,
-                    VerticalTextAlignment = TextAlignment.Start,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    FontSize = Device.GetNamedSize(Size, typeof(Label)),
-                    HorizontalOptions = LayoutOptions.Fill
-                };
-            }
             public static ScrollView Changelog
             {
                 get
@@ -270,12 +222,6 @@ namespace InnoTecheLearning
                         VerticalOptions = LayoutOptions.FillAndExpand,
                         HorizontalOptions = LayoutOptions.FillAndExpand
                     };
-                    /*Return.SizeChanged += (object sender, EventArgs e) =>
-                    {
-                        var View = (View)sender;
-                        if (View.Width <= 0 || View.Height <= 0) return;
-                        Return.WidthRequest = View.Width; Return.HeightRequest = View.Height;
-                    };*/
                     return Return;
                 }
             }
@@ -312,61 +258,6 @@ namespace InnoTecheLearning
                     };
                 }
             }
-            [Obsolete("Users will press the native back button instead on NavigationPage.")]
-            public static Button Back(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
-            {
-                if (BackColor == default(Color))
-                    BackColor = Color.Silver;
-                if (TextColor == default(Color))
-                    TextColor = Color.Black;
-                Button Return = Button("Back", OnClick: () => Page.SendBackButtonPressed());
-                Return.HorizontalOptions = LayoutOptions.End;
-                Return.VerticalOptions = LayoutOptions.Fill;
-                return Return;
-            }/*
-            [Obsolete("Not needed. Deprecated in 0.10.0a173")]
-            public static Button UpdateAlpha(Page Page, Color BackColor = default(Color), Color TextColor = default(Color))
-            {
-                if (BackColor == default(Color))
-                    BackColor = Color.Silver;
-                if (TextColor == default(Color))
-                    TextColor = Color.Black;
-                Button Return = Button("Check for Alpha", delegate
-                {
-#if __ANDROID__
-                    Android.App.ProgressDialog progress = new Android.App.ProgressDialog(Forms.Context);
-                    progress.Indeterminate = true;
-                    progress.SetProgressStyle(Android.App.ProgressDialogStyle.Horizontal);
-                    progress.SetMessage("Please wait... Loading updater....");
-                    progress.SetCancelable(true);
-                    progress.Show();
-                    progress.SetMessage(new Updater((Updater.UpdateProgress Progress) =>
-                    {
-                        progress.SetMessage(Progress.ToName());
-                        progress.Progress = Progress.Percentage() * 100;
-                    }).CheckUpdate().ToString());
-                    Do(System.Threading.Tasks.Task.Delay(2000));
-                    progress.Dismiss();
-#elif WINDOWS_UWP
-                    var w = new ProgressDialog(
-                        new ProgressDialogConfig { Title = "Please wait... Loading updater...." });
-                    w.Show();
-                    w.Title = new Updater((Updater.UpdateProgress Progress) =>
-                    {
-                        w.Title = Progress.ToName();
-                        w.PercentComplete = Progress.Percentage();
-                    }).CheckUpdate().ToString();
-                    Do(System.Threading.Tasks.Task.Delay(2000));
-                    w.Hide();
-#else
-                    Alert(Page, "Only supported on Android and Windows 10. " +
-                        "For other versions, please check the github repository manually.");
-#endif
-                }, Color.Silver);
-                Return.HorizontalOptions = LayoutOptions.Start;
-                Return.VerticalOptions = LayoutOptions.Fill;
-                return Return;
-            }*/
             public static StackLayout ChangelogView(Main Instance, Color BackColor = default(Color))
             {
                 ScrollView Changelog = Create.Changelog;
@@ -388,20 +279,6 @@ namespace InnoTecheLearning
                     VerticalOptions = LayoutOptions.Fill
                 };
             }
-            [Obsolete("Title of ContentPage will show on NavigationPage's bar.")]
-            public static Label Title(Text Text)
-            {
-                return new Label
-                {
-                    FontSize = 25,
-                    BackgroundColor = Color.FromUint(4285098345),
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = Color.White,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalOptions = LayoutOptions.Start,
-                    Text = Text
-                };
-            }
             public static Label Society
             {
                 get
@@ -410,7 +287,7 @@ namespace InnoTecheLearning
                     {
                         HorizontalTextAlignment = TextAlignment.Center,
                         TextColor = Color.Black,
-                        FormattedText = Format((Text)"Developed by the\n", Bold("Innovative Technology Society of CSWCSS"))
+                        FormattedText = Format((Text)"Developed by Hadrian Tang Wai To of the\n", Bold("Innovative Technology Society of CSWCSS"))
                     };
                 }
             }

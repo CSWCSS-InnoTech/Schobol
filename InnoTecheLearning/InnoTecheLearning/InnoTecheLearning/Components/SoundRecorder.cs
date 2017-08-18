@@ -1,59 +1,26 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-using System.Linq; 
-using System.Runtime.InteropServices.WindowsRuntime; 
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
 using InnoTecheLearning;
 //using Xamarin.Media;
 #if __IOS__
 using AVFoundation;
 using Foundation;
+    using System;
+using System.IO;
 #elif __ANDROID__
-using Android.App;
 using Android.Content;
-using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
 using Android.Media;
 using Java.Lang;
+    using System;
 #elif NETFX_CORE
-using Windows.Foundation; 
-using Windows.Foundation.Collections; 
 using Windows.Media.Capture; 
 using Windows.Media.MediaProperties; 
 using Windows.Storage; 
 using Windows.Storage.Streams; 
 using Windows.UI.Core; 
-using Windows.UI.Xaml; 
 using Windows.UI.Xaml.Controls; 
-using Windows.UI.Xaml.Controls.Primitives; 
-using Windows.UI.Xaml.Data; 
-using Windows.UI.Xaml.Input; 
-using Windows.UI.Xaml.Media; 
-using Windows.UI.Xaml.Navigation; 
 #endif
 [assembly: Dependency(typeof(SoundRecorder))]
-/*      Windows.Storage.StorageFolder folder =
-        await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFolderAsync(folderName);
-    Windows.Storage.StorageFile file = await folder.GetFileAsync(fileName);
-    Windows.Storage.Streams.IRandomAccessStream stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-
-    MediaElement el = new MediaElement();
-    el.SetSource(stream, file.ContentType);
-    el.IsMuted = false;
-    el.Volume = 1;
-    await new Task(() =>
-    {
-        el.Position = new TimeSpan(0, 0, 0);
-        el.Play();
-    });*/
 namespace InnoTecheLearning
 {   /// <summary>
     /// Cross-platform access to <see cref="SoundRecorder"/>.

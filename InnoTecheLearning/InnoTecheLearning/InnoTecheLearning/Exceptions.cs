@@ -35,7 +35,6 @@ namespace InnoTecheLearning
 #if !__IOS__
             object sender,
 #endif
-
 #if WINDOWS_UWP
             Windows.UI.Xaml.UnhandledExceptionEventArgs
 #elif __ANDROID__

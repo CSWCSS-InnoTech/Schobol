@@ -4,7 +4,7 @@
   <mp:PhoneIdentity PhoneProductId="47f0706c-3646-4de9-8968-b498fa30d6e7" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>CSWCSS eLearn Utilities</DisplayName>
-    <PublisherDisplayName>InnoTech Society of CSWCSS</PublisherDisplayName>
+    <PublisherDisplayName>Innovative Technology Society of CSWCSS</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>

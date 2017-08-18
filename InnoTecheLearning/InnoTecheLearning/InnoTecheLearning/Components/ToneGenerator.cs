@@ -1,9 +1,10 @@
-﻿namespace InnoTecheLearning
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+    
+namespace InnoTecheLearning
 {
-    using System;
-    using System.Threading;
-    using System.Threading.Tasks;
-    partial class Utils
+partial class Utils
     {
         public class ToneGenerator : IDisposable
         {

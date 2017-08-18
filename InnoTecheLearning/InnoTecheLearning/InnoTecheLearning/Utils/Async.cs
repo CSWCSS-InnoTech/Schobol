@@ -10,7 +10,6 @@ namespace InnoTecheLearning
     using EventQueue = ConcurrentQueue<Tuple<SendOrPostCallback, object>>;
     partial class Utils
     {
-
         /// <summary>
         /// A Helper class to run Asynchronous functions from synchronous ones
         /// </summary>

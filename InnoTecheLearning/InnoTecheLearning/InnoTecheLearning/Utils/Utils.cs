@@ -1,226 +1,47 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-
-//[assembly: Dependency(typeof(Utils))]
 
 namespace InnoTecheLearning
 {/// <summary>
 /// A class that provides methods to help run the App.
 /// </summary>
     public static partial class Utils
-    {   /// <summary>
-        /// Which project is the app built in?
-        /// </summary>
-        public static ProjectType Project
-        {
-            get
-            {
-#if __ANDROID__
-                return ProjectType.Android;
-#elif __IOS__
-                return ProjectType.iOS;
+    {   
+        public const string CurrentNamespace =
+            "InnoTecheLearning." +
+#if __IOS__
+            "iOS"
+#elif __ANDROID__
+            "Droid"
 #elif WINDOWS_UWP
-                return ProjectType.UWP10;
+            "UWP"
 #elif WINDOWS_APP
-                return ProjectType.Win81;
+            "Windows"
 #elif WINDOWS_PHONE_APP
-                return ProjectType.WinPhone81;
-#else
-                return ProjectType.Undefined;
+            "WinPhone"
 #endif
-            }
-        }
-        /// <summary>
-        /// All project types.
-        /// </summary>
-        public enum ProjectType : sbyte
-        {
-            Undefined = -1,
-            iOS,
-            Android,
-            UWP10,
-            WinPhone81,
-            Win81
-        }
-#if false && !(WINDOWS_APP || WINDOWS_PHONE_APP || WINDOWS_UWP)
-        public class FileIO
-        {
-            public FileIO(string FileName, FileMode Mode = FileMode.Create)
-            {
-                this.FileName = FileName;
-                FileStream = new System.IO.IsolatedStorage.IsolatedStorageFileStream(FileName, Mode);
-            }
-            //var a = new FileImageSourceConverter();
-            //var uri = new Image().Source.GetValue(UriImageSource.UriProperty);
-            public string FileName { get; }
-            public string FilePath { get; }
-            public System.IO.IsolatedStorage.IsolatedStorageFileStream FileStream { get; }
-            public int Read(byte[] Buffer, int Offset, int Count)
-            { return FileStream.Read(Buffer, Offset, Count); }
-            public void Write(byte[] Buffer, int Offset, int Count)
-            { FileStream.Write(Buffer, Offset, Count); }
-            public void Dispose(bool Delete = false)
-            {
-                FileStream.Dispose();
-                if (Delete)
-                    File.Delete(FilePath);
-            }
-            ~FileIO()
-            { try { Dispose(); } catch { } }
-        }
+                ;
+
+        public static T OnPlatform<T>(T iOS, T Android, T UWP) =>
+#if __IOS__
+            iOS
+#elif __ANDROID__
+            Android
+#elif WINDOWS_UWP
+            UWP
 #endif
-        /// <summary>
-        /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.</typeparam>
-        /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
-        /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
-        /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
-        /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
-        /// <param name="Default">The value to return if no value was provided for the current OS.</param>
-        /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-        public static T OnPlatform<T>(Func<T> iOS = null, Func<T> Android = null,
-            Func<T> Windows = null, Func<T> WinPhone = null, Func<T> Default = null)
-        {
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
-                    if (iOS != null)
-                        return (T)iOS.DynamicInvoke();
-                    break;
-                case Device.Android:
-                    if (Android != null)
-                        return (T)Android.DynamicInvoke();
-                    break;
-                case Device.WinPhone:
-                    if (WinPhone != null)
-                        return (T)WinPhone.DynamicInvoke();
-                    break;
-                case Device.WinRT:
-                    if (Windows != null)
-                        return (T)Windows.DynamicInvoke();
-                    break;
-                default:
-                    break;
-            }
-            return Default == null ? default(T) : (T)Default.DynamicInvoke();
-        }
-        /// <summary>
-        /// Returns different values depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.
-        /// </summary>
-        /// <typeparam name="T">The <see cref="Type"/> of the value to be returned.></typeparam>
-        /// <param name="iOS">The value for an Apple <paramref name="iOS"/> OS.</param>
-        /// <param name="Android">The value for a Google <paramref name="Android"/> OS.</param>
-        /// <param name="Windows">The value for the <paramref name="Windows"/> platform.</param>
-        /// <param name="WinPhone">The value for a Microsoft <paramref name="WinPhone"/> OS.</param>
-        /// <param name="Default">The value to return if no value was provided for the current OS.</param>
-        /// <returns>The value depending on the <see cref="ProjectType"/> <see cref="Xamarin.Forms"/> is working on.</returns>
-        public static T OnPlatform<T>(T iOS = default(T), T Android = default(T), T Windows = default(T),
-                                      T WinPhone = default(T), T Default = default(T))
-        {
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
-                    if (!iOS.Equals(default(T)))
-                        return iOS;
-                    break;
-                case Device.Android:
-                    if (!Android.Equals(default(T)))
-                        return Android;
-                    break;
-                case Device.WinPhone:
-                    if (!WinPhone.Equals(default(T)))
-                        return WinPhone;
-                    break;
-                case Device.WinRT:
-                    if (!Windows.Equals(default(T)))
-                        return Windows;
-                    break;
-                default:
-                    break;
-            }
-            return Default;
-        }
-        public static T OnProject<T>(Func<T> iOS = null, Func<T> Android = null, Func<T> UWP10 = null,
-            Func<T> Win81 = null, Func<T> WinPhone81 = null, Func<T> Default = null)
-        {
-            switch (Project)
-            {
-                case ProjectType.iOS:
-                    if (iOS != null)
-                        return (T)iOS.DynamicInvoke();
-                    break;
-                case ProjectType.Android:
-                    if (Android != null)
-                        return (T)Android.DynamicInvoke();
-                    break;
-                case ProjectType.UWP10:
-                    if (UWP10 != null)
-                        return (T)UWP10.DynamicInvoke();
-                    break;
-                case ProjectType.Win81:
-                    if (Win81 != null)
-                        return (T)Win81.DynamicInvoke();
-                    break;
-                case ProjectType.WinPhone81:
-                    if (WinPhone81 != null)
-                        return (T)WinPhone81.DynamicInvoke();
-                    break;
-                case ProjectType.Undefined:
-                default:
-                    break;
-            }
-            return Default == null ? default(T) : (T)Default.DynamicInvoke();
-        }
-        public static T OnProject<T>(T iOS = default(T), T Android = default(T), T UWP10 = default(T),
-                                      T Win81 = default(T), T WinPhone81 = default(T), T Default = default(T))
-        {
-            switch (Project)
-            {
-                case ProjectType.iOS:
-                    if (!iOS.Equals(default(T)))
-                        return iOS;
-                    break;
-                case ProjectType.Android:
-                    if (!Android.Equals(default(T)))
-                        return Android;
-                    break;
-                case ProjectType.UWP10:
-                    if (!UWP10.Equals(default(T)))
-                        return UWP10;
-                    break;
-                case ProjectType.Win81:
-                    if (!Win81.Equals(default(T)))
-                        return Win81;
-                    break;
-                case ProjectType.WinPhone81:
-                    if (!WinPhone81.Equals(default(T)))
-                        return WinPhone81;
-                    break;
-                case ProjectType.Undefined:
-                default:
-                    break;
-            }
-            return Default;
-        }
-
-        public static string CurrentNamespace
-        { get { return "InnoTecheLearning." + OnProject("iOS", "Droid", "UWP", "Windows", "WinPhone"); } }
-
-        public async static ValueTask<T> Alert<T>(T Return, Page Page, Text Message = default(Text),
+            ;
+        public async static ValueTask<T> Alert<T>(T Return, Page Page, string Message = "",
                                                   string Title = "Alert", string Cancel = "OK")
         {
             await Page.DisplayAlert(Title, Message, Cancel);
             return Return;
         }
 
-        public static ValueTask<Unit> Alert(Page Page, Text Message = default(Text),
+        public static ValueTask<Unit> Alert(Page Page, string Message = "",
             string Title = "Alert", string Cancel = "OK") => Unit.Await(Page.DisplayAlert(Title, Message, Cancel));
-        public async static ValueTask<bool> AlertChoose(Page Page, Text Message = default(Text),
+        public async static ValueTask<bool> AlertChoose(Page Page, string Message = "",
             string Title = "Alert", string Accept = "OK", string Cancel = "Cancel") =>
             await Page.DisplayAlert(Message, Title, Accept, Cancel);
 
@@ -236,9 +57,6 @@ namespace InnoTecheLearning
             {
                 fs.Spans.Add(Span);
             }
-            /*fs.Spans.Add(new Span { Text = "First ", ForegroundColor = Color.Red, FontSize = 14 });
-            fs.Spans.Add(new Span { Text = " second ", ForegroundColor = Color.Blue, FontSize = 28 });
-            fs.Spans.Add(new Span { Text = " third.", ForegroundColor = Color.Yellow, FontSize = 14 });*/
             return fs;
         }
 
@@ -247,33 +65,8 @@ namespace InnoTecheLearning
         /// </summary>
         /// <param name="Text"><see cref="Text"/> to make bold.</param>
         /// <returns></returns>
-        public static Span Bold(Text Text)
+        public static Span Bold(string Text)
         { return new Span { Text = Text, FontAttributes = FontAttributes.Bold }; }
-        /// <summary>
-        /// Returns a <see cref="string"/> consisting of the specified
-        /// <see cref="char"/> repeated the specified number of times.
-        /// </summary>
-        /// <param name="Char">The <see cref="char"/> that you want to duplicate. </param>
-        /// <param name="Count">Number of times to duplicate the <see cref="char"/>.</param>
-        /// <returns>Returns a <see cref="string"/> consisting of the specified
-        /// <see cref="char"/> repeated the specified number of times. </returns>
-        public static string StrDup(char Char, int Count)
-        { return new string(Char, Count); }
-        /// <summary>
-        /// Returns a <see cref="string"/> consisting of the specified
-        /// <see cref="string"/> repeated the specified number of times.
-        /// </summary>
-        /// <param name="String">The <see cref="string"/> that you want to duplicate. </param>
-        /// <param name="Count">Number of times to duplicate the <see cref="string"/>.</param>
-        /// <returns>Returns a <see cref="string"/> consisting of the specified
-        /// <see cref="string"/> repeated the specified number of times. </returns>
-        public static string StrDup(string String, int Count)
-        {
-            string Return = "";
-            for (int i = 0; i < Count; i++)
-                Return += String;
-            return Return;
-        }
         public static T[] Duplicate<T>(T Item, int Count)
         {
             T[] Return = new T[Count];
@@ -382,48 +175,7 @@ namespace InnoTecheLearning
             }
             return Return.ToCharArray();
         }
-
-        public static void DoNothing(params object[] Params)
-        { }
-
-        public static T Return<T>(T Return)
-        { return Return; }
-
-        public static T Return<T>(T Return, params object[] Params)
-        { return Return; }
-
-        public static T Assign<T>(T Value, out T Object)
-        { return Object = Value; }
-
-        public static ushort ToUShort(string String)
-        {
-            Retry: try
-            {
-                return ushort.Parse(String);
-            }
-            catch (OverflowException)
-            {
-                try
-                {
-                    return ushort.Parse(String.Replace(System.Globalization.NumberFormatInfo.CurrentInfo.
-                        NegativeSign, string.Empty).Replace("-", string.Empty).Remove(6));
-                }
-                catch (OverflowException)
-                {
-                    return ushort.Parse(String.Replace(System.Globalization.NumberFormatInfo.CurrentInfo.
-                        NegativeSign, string.Empty).Replace("-", string.Empty).Remove(5));
-                }
-            }
-            catch (ArgumentNullException)
-            { return 0; }
-            catch (FormatException)
-            {
-                for (int i = 0; i < String.Length; i++)
-                    if (!char.IsDigit(String[i]))
-                    { String = String.Remove(i, 1); i--; }
-                goto Retry;
-            }
-        }
+        
         public delegate double MathFunc0();
         public delegate double MathFunc(double x);
         public delegate double MathFunc2(double x, double y);
@@ -451,11 +203,7 @@ namespace InnoTecheLearning
             {
                 for (int i = 0; i <= 25; i++)
                     JSVariables[i] = Engine.GetValue(((char)('A' + i)).ToString()).ToString();
-            }/*
-            string Escape(string Value) => new System.Text.StringBuilder(Value).
-                Replace("\\", @"\\").Replace("\b", @"\b").Replace("\f", @"\f").
-                Replace("\n", @"\n").Replace("\r", @"\r").Replace("\t", @"\t").Replace("\v", @"\v").
-                Replace("\0", @"\0").Replace("'", @"\'").Replace("\"", @"\""").ToString();*/
+            }
             double AngleConvert(double Num, AngleMode Origin, AngleMode Target)
             {
                 switch (Origin)
@@ -566,8 +314,6 @@ namespace InnoTecheLearning
             // Ask user to enter expression.
             try
             {
-                //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
-                //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
                 JSEngine = new Jint.Engine();
                 if (TrueFree) return JSEngine.Execute(Expression).GetCompletionValue().ToString();
                 GetVars(JSEngine, JSVariables);
@@ -743,7 +489,6 @@ function Min() { return Math.min.apply(global, arguments); }
                     do { A--; } while (squa / (A * A) - Math.Truncate(squa / (A * A)) != 0);
                     if (A == -1 || !HasMinimalDifference(A * Math.Sqrt(squa / (A * A)), value))
                         throw new ArithmeticException("Cannot find appropriate surd.");
-                    //if (A < 0) A = 1;
                     var B = new System.Text.StringBuilder();
                     if (Negative) B.Append("-");
                     B.Append(A).Append("√");
@@ -780,12 +525,6 @@ function Min() { return Math.min.apply(global, arguments); }
                                     }
                                     return a;
                                 }
-                                /*
-                                int LCM(int a, int b)
-                                {
-                                    return (a / GCF(a, b)) * b;
-                                }
-                                */
                                 (int Squared, int Remaining) SimplifySurd(int a)
                                 {
                                     int Number = a, b = 0, Squared = 1;
@@ -832,17 +571,7 @@ function Min() { return Math.min.apply(global, arguments); }
                     throw new ArgumentOutOfRangeException(nameof(mod), mod, $"{mod} is not a valid {nameof(Modifier)}");
             }
         }
-#if false
-        static void Hi()
-        {
-            Type scriptType = Type.GetTypeFromCLSID(Guid.Parse("0E59F1D5-1FBE-11D0-8FF2-00A0D10038BC"));
 
-            dynamic obj = Activator.CreateInstance(scriptType, false);
-            obj.Language = "javascript";
-
-            var res = obj.Eval("a=3; 2*a+32-Math.sin(6)");
-        }
-#endif
         public static void Try<TException>(Action Try, Action<TException> Catch = null,
             Func<bool> CatchFilter = null, Action Finally = null) where TException : Exception
         {
@@ -926,112 +655,7 @@ function Min() { return Math.min.apply(global, arguments); }
         }
         public static double TryParseDouble(string s, double @default)
         { if (double.TryParse(s, out double d)) { return d; } else { return @default; }; }
-
-        public static byte[] Resample(byte[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
-        {
-            int srcLength = samples.Length;
-            var destLength = (long)samples.Length * toSampleRate / fromSampleRate;
-            byte[] _samples = new byte[destLength];
-            var dx = srcLength / destLength;
-
-            // fmax : nyqist half of destination sampleRate
-            // fmax / fsr = 0.5;
-            var fmaxDivSR = 0.5;
-            var r_g = 2 * fmaxDivSR;
-
-            // Quality is half the window width
-            var wndWidth2 = quality;
-            var wndWidth = quality * 2;
-
-            var x = 0;
-            int i, j;
-            double r_y;
-            int tau;
-            double r_w;
-            double r_a;
-            double r_snc;
-            for (i = 0; i < destLength; ++i)
-            {
-                r_y = 0.0;
-                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
-                {
-                    // input sample index
-                    j = x + tau;
-
-                    // Hann Window. Scale and calculate sinc
-                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
-                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
-                    r_snc = 1.0;
-                    if (r_a != 0)
-                        r_snc = Math.Sin(r_a) / r_a;
-
-                    if ((j >= 0) && (j < srcLength))
-                    {
-                        r_y += r_g * r_w * r_snc * samples[j];
-                    }
-                }
-                _samples[i] = (byte)r_y;
-                x += (int)dx; 
-            }
-
-            return _samples;
-        }
-        public static double[] Resample(double[] samples, int fromSampleRate, int toSampleRate, int quality = 10)
-        {
-            List<double> _samples = new List<double>();
-
-            int srcLength = samples.Length;
-            var destLength = (long)samples.Length * toSampleRate / fromSampleRate;
-            var dx = srcLength / destLength;
-
-            // fmax : nyqist half of destination sampleRate
-            // fmax / fsr = 0.5;
-            var fmaxDivSR = 0.5;
-            var r_g = 2 * fmaxDivSR;
-
-            // Quality is half the window width
-            var wndWidth2 = quality;
-            var wndWidth = quality * 2;
-
-            var x = 0;
-            int i, j;
-            double r_y;
-            int tau;
-            double r_w;
-            double r_a;
-            double r_snc;
-            for (i = 0; i < destLength; ++i)
-            {
-                r_y = 0.0;
-                for (tau = -wndWidth2; tau < wndWidth2; ++tau)
-                {
-                    // input sample index
-                    j = x + tau;
-
-                    // Hann Window. Scale and calculate sinc
-                    r_w = 0.5 - 0.5 * Math.Cos(2 * Math.PI * (0.5 + (j - x) / wndWidth));
-                    r_a = 2 * Math.PI * (j - x) * fmaxDivSR;
-                    r_snc = 1.0;
-                    if (r_a != 0)
-                        r_snc = Math.Sin(r_a) / r_a;
-
-                    if ((j >= 0) && (j < srcLength))
-                    {
-                        r_y += r_g * r_w * r_snc * samples[j];
-                    }
-                }
-                _samples[i] = r_y;
-                x += (int)dx;
-            }
-
-            return _samples.ToArray();
-        }
-        public static IEnumerable<T> ToEnumerable<T>(params T[] Items)
-        {
-            foreach (T Item in Items)
-                yield return Item;
-        }
-
+        
         /// <summary>Formula for computing Luminance out of R G B, which is something close to
         /// luminance = (red * 0.3) + (green * 0.6) + (blue * 0.1).</summary>
         // Original Source: http://stackoverflow.com/questions/20978198/how-to-match-uilabels-textcolor-to-its-background
@@ -1041,9 +665,7 @@ function Min() { return Math.min.apply(global, arguments); }
 
             return (backgroundColorDelta > 0.4f) ? Color.Black : Color.White;
         }
-
-        public static Dictionary<TKey, TValue> NewDictionary<TKey, TValue>(TKey key, TValue value) => 
-            new Dictionary<TKey, TValue>() {[key] = value};
+        
         public static void IgnoreEx(Action Action, params Type[] Exceptions)
         {
             try { Action(); }
@@ -1107,8 +729,6 @@ function Min() { return Math.min.apply(global, arguments); }
 
             return diff <= units;
         }
-        public static Func<bool> False(Action A) => () => { A?.Invoke(); return false; };
-        public static Func<bool> True(Action A) => () => { A?.Invoke(); return true; };
         public static TimeSpan Seconds(double s) => TimeSpan.FromSeconds(s);
         public static TimeSpan Milliseconds(double s) => TimeSpan.FromMilliseconds(s);
         
@@ -1143,216 +763,4 @@ function Min() { return Math.min.apply(global, arguments); }
             throw new MissingMethodException("No matching constructor found.");
         }
     }
-    ///// <summary>
-    ///// An uninitialized Void object.
-    ///// </summary>
-    //public static object Void
-    //{ get { return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(void)); } }
-    /*
-    public string TransformForCurrentPlatform(string url)
-    {
-        string result = ArgumentValidator.AssertNotNull(url, "url");
-
-        if (Device.OS == TargetPlatform.Android || Device.OS == TargetPlatform.iOS)
-        {
-            const string filePrefix = "file:///";
-
-            if (url.StartsWith(filePrefix))
-            {
-                result = url.Substring(filePrefix.Length);
-            }
-
-            result = result.Replace("/", "_").Replace("\\", "_");
-
-            if (result.StartsWith("_") && result.Length > 1)
-            {
-                result = result.Substring(1);
-            }
-        }
-        else if (Device.OS == TargetPlatform.WinPhone)
-        {
-            if (url.StartsWith("/") && url.Length > 1)
-            {
-                result = result.Substring(1);
-            }
-        }
-
-        return result;
-    }
-    [ContentProperty("Source")]
-    public class ImageResourceExtension : IMarkupExtension
-    {
-        public string Source { get; set; }
-
-        public object ProvideValue(IServiceProvider serviceProvider)
-        {
-            if (Source == null)
-            {
-                return null;
-            }
-
-            ImageSource imageSource = null;
-
-            var transformer = Dependency.Resolve<IImageUrlTransformer, ImageUrlTransformer>(true);
-            string url = transformer.TransformForCurrentPlatform(Source);
-
-            if (Device.OS == TargetPlatform.Android)
-            {
-                imageSource = ImageSource.FromFile(url);
-            }
-            else if (Device.OS == TargetPlatform.iOS)
-            {
-                imageSource = ImageSource.FromFile(url);
-            }
-            else if (Device.OS == TargetPlatform.WinPhone)
-            {
-#if WINDOWS_PHONE
-    if (url.StartsWith("/") && url.Length > 1)
-    {
-        url = url.Substring(1);
-    }
-
-    var stream = System.Windows.Application.GetResourceStream(new Uri(url, UriKind.Relative));
-
-    if (stream != null)
-    {
-        imageSource = ImageSource.FromStream(() => stream.Stream);
-    }
-    else
-    {
-        ILog log;
-        if (Dependency.TryResolve<ILog>(out log))
-        {
-           log.Debug("Unable to located create ImageSource using URL: " + url);
-        }
-    }
-#endif
-            }
-
-            if (imageSource == null)
-            {
-                imageSource = ImageSource.FromFile(url);
-            }
-
-            return imageSource;
-        }
-    }
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
-.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;}
-.tg .tg-s6z2{text-align:center}
-.tg .tg-baqh{text-align:center;vertical-align:top}
-</style>
-<table class="tg">
-<tbody><tr>
-<th class="tg-s6z2" colspan="19"></th>
-</tr>
-<tr>
-<td class="tg-baqh" rowspan="6"></td>
-<td class="tg-baqh">π</td>
-<td class="tg-baqh">e</td>
-<td class="tg-baqh" rowspan="6"></td>
-<td class="tg-baqh">Log</td>
-<td class="tg-baqh">Pow</td>
-<td class="tg-baqh">Sin</td>
-<td class="tg-baqh">Asin</td>
-<td class="tg-baqh" rowspan="6"></td>
-<td class="tg-baqh">&lt;</td>
-<td class="tg-baqh">&gt;</td>
-<td class="tg-baqh">&amp;&amp;</td>
-<td class="tg-baqh">&gt;&gt;&gt;</td>
-<td class="tg-baqh" rowspan="6"><br></td>
-<td class="tg-baqh">␣</td>
-<td class="tg-baqh">%</td>
-<td class="tg-baqh">Ans</td>
-<td class="tg-baqh">⌫</td>
-<td class="tg-baqh">⎚</td>
-</tr>
-<tr>
-<td class="tg-s6z2">Root2</td>
-<td class="tg-s6z2">Root0_5</td>
-<td class="tg-s6z2">Rdm</td>
-<td class="tg-s6z2">Exp</td>
-<td class="tg-s6z2">Cos</td>
-<td class="tg-s6z2">Acos</td>
-<td class="tg-s6z2">&lt;=</td>
-<td class="tg-s6z2">&gt;=</td>
-<td class="tg-s6z2">&lt;&lt;</td>
-<td class="tg-s6z2">&gt;&gt;</td>
-<td class="tg-baqh">7</td>
-<td class="tg-s6z2">8</td>
-<td class="tg-s6z2">9</td>
-<td class="tg-s6z2">(</td>
-<td class="tg-s6z2">)</td>
-</tr>
-<tr>
-<td class="tg-s6z2">Ln2</td>
-<td class="tg-s6z2">Ln10</td>
-<td class="tg-s6z2">Max</td>
-<td class="tg-s6z2">Min</td>
-<td class="tg-s6z2">Tan</td>
-<td class="tg-s6z2">Atan</td>
-<td class="tg-s6z2">==</td>
-<td class="tg-s6z2">!=</td>
-<td class="tg-s6z2">++</td>
-<td class="tg-s6z2">--</td>
-<td class="tg-baqh">4</td>
-<td class="tg-s6z2">5</td>
-<td class="tg-s6z2">6</td>
-<td class="tg-s6z2">*</td>
-<td class="tg-s6z2">/</td>
-</tr>
-<tr>
-<td class="tg-s6z2">Log2e</td>
-<td class="tg-s6z2">Log10e</td>
-<td class="tg-s6z2">Sqrt</td>
-<td class="tg-s6z2">Rnd</td>
-<td class="tg-s6z2">Ceil</td>
-<td class="tg-s6z2">Floor</td>
-<td class="tg-s6z2">===</td>
-<td class="tg-s6z2">!==</td>
-<td class="tg-s6z2">~</td>
-<td class="tg-s6z2">&amp;</td>
-<td class="tg-baqh">1</td>
-<td class="tg-s6z2">2</td>
-<td class="tg-s6z2">3</td>
-<td class="tg-s6z2">+</td>
-<td class="tg-s6z2">-</td>
-</tr>
-<tr>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2" colspan="2">,</td>
-
-<td class="tg-s6z2">Abs</td>
-<td class="tg-s6z2">Fct</td>
-<td class="tg-s6z2">!</td>
-<td class="tg-s6z2">||</td>
-<td class="tg-s6z2">^</td>
-<td class="tg-s6z2">|</td>
-<td class="tg-baqh">0</td>
-<td class="tg-s6z2">.</td>
-<td class="tg-s6z2">e</td>
-<td class="tg-s6z2" colspan="2">=</td>
-</tr>
-<tr>
-<td class="tg-s6z2">Const</td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2">Func</td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2">Bin</td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-<td class="tg-baqh"></td>
-<td class="tg-s6z2">Norm</td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-<td class="tg-s6z2"></td>
-</tr>
-</tbody></table>
-     */
 }

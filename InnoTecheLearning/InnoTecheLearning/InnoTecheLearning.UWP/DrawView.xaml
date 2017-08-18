@@ -6,7 +6,5 @@
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     d:DesignHeight="480" d:DesignWidth="480">
-
-<Canvas x:Name="ContentPanelCanvas" Background="Cornsilk" HorizontalAlignment="Stretch"
-          VerticalAlignment="Stretch" />
+    <Canvas x:Name="ContentPanelCanvas" Background="Cornsilk" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 </UserControl>

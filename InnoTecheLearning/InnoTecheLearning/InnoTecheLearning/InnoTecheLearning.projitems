@@ -26,7 +26,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\ToneGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TouchImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)GlobalSuppressions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Intermediate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Pages\Logic_Symbolics.xaml.cs">
@@ -40,17 +39,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Async.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Console.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\Conversion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageRecognizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageResourceExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OnlineDict.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Sound.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SoundFile.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\Type.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Factorize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Network.cs" />
@@ -61,9 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ValueTask.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\cswcss.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Change.log" />
-    <None Include="$(MSBuildThisFileDirectory)GettingStarted.Xamarin" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\forum-message-3.png" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.cs" />
   </ItemGroup>
@@ -96,16 +90,9 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\ViolinG.wav" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\CNY.jpg" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Sounds\CNY.wav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\8_bit_heart_stock_by_xquatrox-d4r844m.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\dragon.fw.png" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\dragon.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Images\folded-paper_318-31112.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)OnChange.txt" />

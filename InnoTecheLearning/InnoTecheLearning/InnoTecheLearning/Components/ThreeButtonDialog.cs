@@ -7,7 +7,7 @@ namespace InnoTecheLearning
         public static class ThreeButtonDialog
         {
             // Define your own ContentDialogResult enum
-            public enum ThreeButtonDialogResult
+            public enum ThreeButtonDialogResult : byte
             {
                 Nothing,
                 Yes,

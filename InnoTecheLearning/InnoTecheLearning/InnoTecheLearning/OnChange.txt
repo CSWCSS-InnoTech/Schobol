@@ -1,11 +1,11 @@
 ﻿On Change App Version (Minor Build), Also Change:
 	InnoTecheLearning/Utils/Constants.cs/VersionAssemblyFile
-	+All Build Increment
+	+All App Version (Build Increment)
 
 On Change App Version (Build Increment), Also Change:
 	InnoTecheLearning/Utils/Constants.cs/VersionAssembly
 	InnoTecheLearning.UWP/Properties/Application/Package Manifest/Packaging/Version
-	+All Dev Build
+	+All App Version (Dev Build)
 
 On Change App Version (Dev Build), Also Change:
 	InnoTecheLearning/Utils/Constants.cs/VersionFull

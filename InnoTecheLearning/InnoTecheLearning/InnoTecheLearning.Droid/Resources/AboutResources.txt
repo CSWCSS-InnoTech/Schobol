@@ -30,16 +30,20 @@ the build system will package the resources for distribution and generate a clas
 "Resource" that contains the tokens for each one of the resources included. For example, 
 for the above Resources layout, this is what the Resource class would expose:
 
-public class Resource {
-    public class drawable {
+public class Resource 
+{
+    public class drawable 
+	{
         public const int icon = 0x123;
     }
 
-    public class layout {
+    public class layout 
+	{
         public const int main = 0x456;
     }
 
-    public class strings {
+    public class strings 
+	{
         public const int first_string = 0xabc;
         public const int second_string = 0xbcd;
     }
