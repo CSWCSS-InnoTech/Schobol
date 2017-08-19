@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Plugin.MediaManager</name>
+    </assembly>
+    <members>
+        <member name="T:Plugin.MediaManager.CrossMediaManager">
+            <summary>
+            Cross platform MediaManager implemenations
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.CrossMediaManager.Current">
+            <summary>
+            Current settings to use
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.MediaManagerImplementation.MediaRemoteControl">
+            <summary>
+            Default implementation for IMediaRemoteControl that uses the default PlaybackController.
+            </summary>
+        </member>
+        <member name="T:Plugin.MediaManager.MediaManagerAppleBase">
+            <summary>
+                Implementation for MediaManager that is common for MacOS, tvOS and iOS.
+            </summary>
+        </member>
+    </members>
+</doc>

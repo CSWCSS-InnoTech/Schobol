@@ -10,7 +10,8 @@
 #elif __ANDROID__
             ClipBoard.Text;
 #elif NETFX_CORE
-            new System.Threading.Tasks.ValueTask<string>(ClipBoard.GetContent().GetTextAsync().AsTask()).RunSynchronously();
+            new System.Threading.Tasks.ValueTask<string>(System.WindowsRuntimeSystemExtensions.AsTask(
+                ClipBoard.GetContent().GetTextAsync())).RunSynchronously();
 #endif
             set
             {
@@ -35,7 +36,7 @@
         public static SystemClipboard ClipBoard { get; } = new SystemClipboard();
         public sealed class SystemClipboard {
             public void Clear() => Windows​.ApplicationModel​.DataTransfer.Clipboard.Clear();
-            public event EventHandler<object> ContentChanged {
+            public event System.EventHandler<object> ContentChanged {
                 add => Windows​.ApplicationModel​.DataTransfer.Clipboard.ContentChanged += value;
                 remove => Windows​.ApplicationModel​.DataTransfer.Clipboard.ContentChanged -= value;
             }

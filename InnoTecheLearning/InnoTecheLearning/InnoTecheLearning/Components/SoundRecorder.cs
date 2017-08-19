@@ -4,15 +4,18 @@ using InnoTecheLearning;
 #if __IOS__
 using AVFoundation;
 using Foundation;
-    using System;
+using System;
 using System.IO;
 #elif __ANDROID__
 using Android.Content;
 using Android.OS;
 using Android.Media;
 using Java.Lang;
-    using System;
+using System;
+using System.IO;
 #elif NETFX_CORE
+using System;
+using System.Threading.Tasks;
 using Windows.Media.Capture; 
 using Windows.Media.MediaProperties; 
 using Windows.Storage; 

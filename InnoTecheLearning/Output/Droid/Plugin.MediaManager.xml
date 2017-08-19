@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Plugin.MediaManager</name>
+    </assembly>
+    <members>
+        <member name="T:Plugin.MediaManager.CrossMediaManager">
+            <summary>
+            Cross platform MediaManager implemenations
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.CrossMediaManager.Current">
+            <summary>
+            Current settings to use
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaNotificationManagerImplementation.StartNotification(Plugin.MediaManager.Abstractions.IMediaFile)">
+            <summary>
+            Starts the notification.
+            </summary>
+            <param name="mediaFile">The media file.</param>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaNotificationManagerImplementation.StartNotification(Plugin.MediaManager.Abstractions.IMediaFile,System.Boolean,System.Boolean)">
+            <summary>
+            When we start on the foreground we will present a notification to the user
+            When they press the notification it will take them to the main page so they can control the music
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaSession.MediaSessionCallback.OnMediaButtonEvent(Android.Content.Intent)">
+            <summary>
+            Called when [media button event]. Handle Headphone double click
+            </summary>
+            <param name="mediaButtonEvent">The media button event.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaSession.MediaSessionManager.UpdatePlaybackState(System.Int32,System.Int32,System.String)">
+            <summary>
+            Updates the state of the player.
+            </summary>
+            <param name="state">The state.</param>
+            <param name="position"></param>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaSession.MediaSessionManager.UpdateMetadata(Plugin.MediaManager.Abstractions.IMediaFile)">
+            <summary>
+            Updates the metadata on the lock screen
+            </summary>
+            <param name="currentTrack"></param>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.OnCreate">
+            <summary>
+            On create simply detect some of our managers
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.InitializePlayer">
+            <summary>
+            Intializes the player.
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.AquireWifiLock">
+            <summary>
+            Lock the wifi so we can still stream under lock screen
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.ReleaseWifiLock">
+            <summary>
+            This will release the wifi lock if it is no longer needed
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.OnDestroy">
+            <summary>
+            Properly cleanup of your player by releasing resources
+            </summary>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.OnAudioFocusChange(Android.Media.AudioFocus)">
+            <summary>
+            For a good user experience we should account for when audio focus has changed.
+            There is only 1 audio output there may be several media services trying to use it so
+            we should act correctly based on this.  "duck" to be quiet and when we gain go full.
+            All applications are encouraged to follow this, but are not enforced.
+            </summary>
+            <param name="focusChange"></param>
+        </member>
+        <member name="M:Plugin.MediaManager.MediaServiceBase.CheckIfFileAlreadyIsPlaying(Plugin.MediaManager.Abstractions.IMediaFile)">
+            <summary>
+            Checks if player just paused.
+            </summary>
+            <param name="mediaFile">The media file.</param>
+        </member>
+        <member name="T:Plugin.MediaManager.Audio.AudioPlayerBroadcastReceiver">
+            <summary>
+            This is a simple intent receiver that is used to stop playback
+            when audio become noisy, such as the user unplugged headphones
+            </summary>
+        </member>
+        <member name="P:Plugin.MediaManager.RemoteControlBroadcastReceiver.ComponentName">
+            <summary>
+            gets the class name for the component
+            </summary>
+            <value>The name of the component.</value>
+        </member>
+        <member name="M:Plugin.MediaManager.RemoteControlBroadcastReceiver.OnReceive(Android.Content.Context,Android.Content.Intent)">
+            <Docs>The Context in which the receiver is running.</Docs>
+            <summary>
+            When we receive the action media button intent
+            parse the key event and tell our service what to do.
+            </summary>
+            <param name="context">Context.</param>
+            <param name="intent">Intent.</param>
+        </member>
+    </members>
+</doc>

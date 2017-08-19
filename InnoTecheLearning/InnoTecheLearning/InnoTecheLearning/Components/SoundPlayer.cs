@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 #if __IOS__
 using AVFoundation;
 using Foundation;
@@ -7,6 +8,7 @@ using Android.Net;
 using Android.Media;
 using Java.IO;
 using Xamarin.Forms;
+using Uri = Android.Net.Uri;
 #elif NETFX_CORE
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;

@@ -11,7 +11,7 @@ namespace InnoTecheLearning.Droid
 	[Activity (Label = Utils.AssemblyTitle, Theme = "@style/Main", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait, HardwareAccelerated = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static Bundle Bundle { get; internal set; }
         public static MainActivity Current { get; private set; }
@@ -41,9 +41,9 @@ namespace InnoTecheLearning.Droid
         System.Threading.ManualResetEvent Inited = new System.Threading.ManualResetEvent(false);
         protected override void OnCreate(Bundle bundle)
         {
+            Exceptions.RegisterHandlers();
             Inited.Reset();
             base.OnCreate(bundle);
-            Exceptions.RegisterHandlers();
             MainActivity.Bundle = bundle;
             Utils.Unit.InvokeAsync(() =>
             {

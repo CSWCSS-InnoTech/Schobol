@@ -140,7 +140,7 @@ namespace InnoTecheLearning
             {
                 SessionPreset = AVFoundation.AVCaptureSession.PresetMedium
             };
-            AVFoundation.AVCaptureDevice device = AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaTypes.Video);
+            AVFoundation.AVCaptureDevice device = AVFoundation.AVCaptureDevice.DefaultDeviceWithMediaType(AVFoundation.AVMediaType.Video);
             public Camera() : base()
             {
                 AVFoundation.AVCaptureVideoPreviewLayer captureVideoPreviewLayer = new AVFoundation.AVCaptureVideoPreviewLayer(session)
