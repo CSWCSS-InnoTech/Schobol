@@ -8,7 +8,7 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
-        public static T RunSynchronously<T>(this ValueTask<T> Task, T Default = default(T))
+        public static T RunSynchronously<T>(this ValueTask<T> Task, T Default = default)
         {
             T Result = Default;
             using (System.Threading.AutoResetEvent Wait = new System.Threading.AutoResetEvent(false))
@@ -21,6 +21,23 @@ namespace InnoTecheLearning
         }
 
         public static void AddRange<T>(this ICollection<T> ic, IEnumerable<T> ie) { foreach (T obj in ie) ic.Add(obj); }
+
+        public static (int x, int y) IndicesOf<T>(this T[,] matrix, T value)
+        {
+            int w = matrix.GetLength(0); // width
+            int h = matrix.GetLength(1); // height
+
+            for (int x = 0; x < w; ++x)
+            {
+                for (int y = 0; y < h; ++y)
+                {
+                    if (matrix[x, y].Equals(value))
+                        return (x, y);
+                }
+            }
+
+            return (-1, -1);
+        }
 
         public static byte[] ReadFully(this Stream input, bool reset = false)
         {
@@ -147,7 +164,7 @@ namespace InnoTecheLearning
         { Dict.Add(key, value); return Dict; }
 
         public static T Random<T>(this IEnumerable<T> IE) =>
-            System.Linq.Enumerable.Count(IE) == 0 ? default(T) :
+            System.Linq.Enumerable.Count(IE) == 0 ? default :
             System.Linq.Enumerable.ElementAt(IE, Text.Rnd.Next(System.Linq.Enumerable.Count(IE)));
 
         public static void Ignore(this object Instance) => Instance.ToString();

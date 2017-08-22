@@ -9,7 +9,13 @@ namespace InnoTecheLearning
     partial class Utils
     {
         public class SymbolicsEngine
-#if __IOS__
+        {
+            Jint.Engine _Engine = new Jint.Engine();
+            public Task<string> Evaluate(string JavaScript) =>
+                Task.Run(() => _Engine.Execute(JavaScript).GetCompletionValue().ToString());
+        }
+#if true
+#elif __IOS__
         {
             JavaScriptCore.JSContext _Engine = new JavaScriptCore.JSContext();
             public Task<string> Evaluate(string JavaScript) =>
@@ -25,7 +31,7 @@ namespace InnoTecheLearning
                 var response = string.Empty;
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
                     //https://stackoverflow.com/questions/19788294/how-does-evaluatejavascript-work
-                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript($"try{{{JavaScript}}}catch(e){{{Error}+(e.message?e.message:e)}}", new Callback((r) => { response = r; reset.Set(); })));
+                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript($"(function(){{try{{eval({EncodeJavascript(JavaScript)})}}catch(e){{{Error}+(e.message?e.message:e)}}}})()", new Callback((r) => { response = r; reset.Set(); })));
                 else
                 {
                     var _Interface = new Interface();
@@ -34,7 +40,7 @@ namespace InnoTecheLearning
                     {
                         _Engine.AddJavascriptInterface(_Interface, "__Interface");
                         //_Engine.LoadData("", "text/html", null); //Must !! Load anything before target url
-                        _Engine.LoadUrl($"javascript:{(Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean ? "window." : string.Empty)}__Interface.__PutResult(eval(\"try{{{JavaScript.Replace("\\", "\\\\").Replace("\"", "\\\"")}}}catch(e){{{Error}+(e.message?e.message:e)}}\"))");
+                        _Engine.LoadUrl($"javascript:{(Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.JellyBean ? "window." : string.Empty)}__Interface.__PutResult(eval({EncodeJavascript($"try{{{JavaScript}}}catch(e){{{Error}+(e.message?e.message:e)")}}}))");
                     });
                 }
                 await Task.Run(() => reset.WaitOne());

@@ -86,7 +86,7 @@ namespace InnoTecheLearning
                 using (var File = await GetReadStream(FileName))
                     return (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
             }
-            public static async ValueTask<T> SerializedReadOrDefault<T>(string FileName, T Default = default(T))
+            public static async ValueTask<T> SerializedReadOrDefault<T>(string FileName, T Default = default)
             {
                 try
                 {
@@ -104,7 +104,7 @@ namespace InnoTecheLearning
                     return (T)new System.Xml.Serialization.XmlSerializer(typeof(T)).Deserialize(File);
             }
             public static async ValueTask<T> SerializedReadOrCreateOrDefault<T>
-                (string FileName, T Default = default(T))
+                (string FileName, T Default = default)
             {
                 try
                 {

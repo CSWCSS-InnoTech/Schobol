@@ -71,7 +71,9 @@ namespace InnoTecheLearning.Pages
 
         protected override void OnDisappearing()
         {
-            using (Player1) using (Player2) base.OnDisappearing();
+            Player1?.Dispose();
+            Player2?.Dispose();
+            base.OnDisappearing();
         }
 	}
 }

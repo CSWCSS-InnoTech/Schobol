@@ -141,19 +141,18 @@ namespace InnoTecheLearning
 
                              MainScreenItem(
                                  ImageSource(ImageFile.Calculator),
-                                 () => ThreeButtonDialog.Show(
-                                     "Choose Logic mode",
-                                     "Which Logic mode?",
-                                     "Keypad", () => Push(Calculator, PageId.Logic_毲Keypad䫎),
-                                     "Freeform", () => Push(Calculator_Free, PageId.Logic_毲Freeform䫎),
-                                     "Factor", () => Push(Factorizer, PageId.Logic_毲Factor䫎)
+                                 async () => Switch(
+                                     await DisplayActionSheet(
+                                     "Choose Logic mode", "Cancel", null,
+                                     "Keypad", "Freeform", "Factor", "Symbolics"),
+
+                                     null,
+                                     ("Keypad", () => Push(Calculator, PageId.Logic_毲Keypad䫎)),
+                                     ("Freeform", () => Push(Calculator_Free, PageId.Logic_毲Freeform䫎)),
+                                     ("Factor", () => Push(Factorizer, PageId.Logic_毲Factor䫎)),
+                                     ("Symbolics", () => PushAsync(new Pages.Logic_Symbolics()))
                                  ),
                                  BoldLabel("LOGIC")
-                            ),
-                            MainScreenItem(
-                                ImageSource(ImageFile.Factorizer),
-                                () => PushAsync(new Pages.Logic_Symbolics()),
-                                BoldLabel("LOGIC\n(SYMBOLICS)")
                             )
                         ), "Generated first row"),
 

@@ -11,7 +11,7 @@ namespace InnoTecheLearning.Droid
 	[Activity (Label = Utils.AssemblyTitle, Theme = "@style/Main", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait, HardwareAccelerated = true,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
     {
         public static Bundle Bundle { get; internal set; }
         public static MainActivity Current { get; private set; }

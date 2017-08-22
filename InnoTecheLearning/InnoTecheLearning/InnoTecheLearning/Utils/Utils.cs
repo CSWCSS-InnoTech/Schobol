@@ -7,7 +7,7 @@ namespace InnoTecheLearning
 /// A class that provides methods to help run the App.
 /// </summary>
     public static partial class Utils
-    {   
+    {
         public const string CurrentNamespace =
             "InnoTecheLearning." +
 #if __IOS__
@@ -79,6 +79,18 @@ namespace InnoTecheLearning
             for (int i = 0; i < Count; i++) Return[i] = Creator();
             return Return;
         }
+        public static T[,] Duplicate<T>(T Item, int Rows, int Columns)
+        {
+            T[,] Return = new T[Rows, Columns];
+            for (int i = 0; i < Rows; i++) for (int j = 0; j < Columns; j++) Return[i, j] = Item;
+            return Return;
+        }
+        public static T[,] Duplicate<T>(Func<T> Creator, int Rows, int Columns)
+        {
+            T[,] Return = new T[Rows, Columns];
+            for (int i = 0; i < Rows; i++) for (int j = 0; j < Columns; j++) Return[i, j] = Creator();
+            return Return;
+        }
         /// <summary>
         /// Trys to convert an <see cref="object"/> instance to a specified <see cref="Type"/>.
         /// </summary>
@@ -97,7 +109,7 @@ namespace InnoTecheLearning
             catch (Exception)
             //when(ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
-                Result = default(T);
+                Result = default;
                 return false;
             }
         }
@@ -118,7 +130,7 @@ namespace InnoTecheLearning
             catch (Exception)
             //when (ex is InvalidCastException || ex is Microsoft.CSharp.RuntimeBinder.RuntimeBinderException)
             {
-                return default(T);
+                return default;
             }
         }
         /// <summary>
@@ -175,7 +187,7 @@ namespace InnoTecheLearning
             }
             return Return.ToCharArray();
         }
-        
+
         public delegate double MathFunc0();
         public delegate double MathFunc(double x);
         public delegate double MathFunc2(double x, double y);
@@ -352,7 +364,7 @@ function Min() { return Math.min.apply(global, arguments); }
                 .SetValue("Atan", new MathFunc(x => AngleConvert(Math.Atan(x), AngleMode.Radian, Mode)))
                 .SetValue("Atan2", new MathFunc2((y, x) => AngleConvert(Math.Atan2(y, x), AngleMode.Radian, Mode)))
                 .SetValue("Atanh", new MathFunc(x => Math.Log((1 + x) / (1 - x)) / 2))
-                .SetValue("Cbrt", new MathFunc(x => 
+                .SetValue("Cbrt", new MathFunc(x =>
                     double.IsInfinity(x) || double.IsNaN(x) ? x : x / Math.Abs(x) * Math.Pow(Math.Abs(x), 1 / 3)))
                 .SetValue("Ceil", new MathFunc(Math.Ceiling))
                 .SetValue("Cos", new MathFunc(x => AngleConvert(Math.Cos(x), AngleMode.Radian, Mode)))
@@ -427,24 +439,24 @@ function Min() { return Math.min.apply(global, arguments); }
                             return $"{Math.Round(numer / denom)} + {numer % denom} / {denom}";
                     }
                     throw new ArithmeticException("Cannot find appropriate fraction.");
-                    /*
-                    var best_numer = 1.0;
-                    var best_denom = 1.0;
-                    var best_err = Math.Abs(value - best_numer / best_denom);
-                    for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
+                /*
+                var best_numer = 1.0;
+                var best_denom = 1.0;
+                var best_err = Math.Abs(value - best_numer / best_denom);
+                for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
+                {
+                    var numer = Math.Round(value * denom);
+                    var err = Math.Abs(value - numer / denom);
+                    if (err < best_err)
                     {
-                        var numer = Math.Round(value * denom);
-                        var err = Math.Abs(value - numer / denom);
-                        if (err < best_err)
-                        {
-                            best_numer = numer;
-                            best_denom = denom;
-                            best_err = err;
-                            //Console.WriteLine(best_numer + " / " + best_denom +
-                            //    " = " + (best_numer / best_denom) + " error " + best_err);
-                        }
+                        best_numer = numer;
+                        best_denom = denom;
+                        best_err = err;
+                        //Console.WriteLine(best_numer + " / " + best_denom +
+                        //    " = " + (best_numer / best_denom) + " error " + best_err);
                     }
-                    return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;*/
+                }
+                return Math.Round(best_numer / best_denom) + " " + best_numer % best_denom + " / " + best_denom;*/
                 case Modifier.Fraction:
                     for (var denom = 1.0; denom <= 1e6; denom++)
                     {
@@ -453,24 +465,24 @@ function Min() { return Math.min.apply(global, arguments); }
                             return $"{numer} / {denom}";
                     }
                     throw new ArithmeticException("Cannot find appropriate fraction.");
-                    /*
-                    var best_numer = 1.0;
-                    var best_denom = 1.0;
-                    var best_err = Math.Abs(value - best_numer / best_denom);
-                    for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
+                /*
+                var best_numer = 1.0;
+                var best_denom = 1.0;
+                var best_err = Math.Abs(value - best_numer / best_denom);
+                for (var denom = 1.0; best_err > 0 && denom <= 1e6; denom++)
+                {
+                    var numer = Math.Round(value * denom);
+                    var err = Math.Abs(value - numer / denom);
+                    if (err < best_err)
                     {
-                        var numer = Math.Round(value * denom);
-                        var err = Math.Abs(value - numer / denom);
-                        if (err < best_err)
-                        {
-                            best_numer = numer;
-                            best_denom = denom;
-                            best_err = err;
-                            //Console.WriteLine(best_numer + " / " + best_denom +
-                            //    " = " + (best_numer / best_denom) + " error " + best_err);
-                        }
+                        best_numer = numer;
+                        best_denom = denom;
+                        best_err = err;
+                        //Console.WriteLine(best_numer + " / " + best_denom +
+                        //    " = " + (best_numer / best_denom) + " error " + best_err);
                     }
-                    return best_numer + " / " + best_denom;*/
+                }
+                return best_numer + " / " + best_denom;*/
                 case Modifier.AngleMeasure:
                     var degree = Math.Floor(value);
                     var minute = Math.Floor((value - degree) * 60);
@@ -498,8 +510,8 @@ function Min() { return Math.min.apply(global, arguments); }
                         B.Append("̅");
                         B.Append(C);
 #else
-                    B.Append(C);
-                    B.Append("̅");
+                        B.Append(C);
+                        B.Append("̅");
 #endif
                     }
                     return B.ToString();
@@ -559,8 +571,8 @@ function Min() { return Math.min.apply(global, arguments); }
                                     Builder.Append("̅");
                                     Builder.Append(C);
 #else
-                                Builder.Append(C);
-                                Builder.Append("̅");
+                                    Builder.Append(C);
+                                    Builder.Append("̅");
 #endif
                                 }
                                 return Builder.ToString();
@@ -655,7 +667,7 @@ function Min() { return Math.min.apply(global, arguments); }
         }
         public static double TryParseDouble(string s, double @default)
         { if (double.TryParse(s, out double d)) { return d; } else { return @default; }; }
-        
+
         /// <summary>Formula for computing Luminance out of R G B, which is something close to
         /// luminance = (red * 0.3) + (green * 0.6) + (blue * 0.1).</summary>
         // Original Source: http://stackoverflow.com/questions/20978198/how-to-match-uilabels-textcolor-to-its-background
@@ -665,7 +677,7 @@ function Min() { return Math.min.apply(global, arguments); }
 
             return (backgroundColorDelta > 0.4f) ? Color.Black : Color.White;
         }
-        
+
         public static void IgnoreEx(Action Action, params Type[] Exceptions)
         {
             try { Action(); }
@@ -674,7 +686,7 @@ function Min() { return Math.min.apply(global, arguments); }
         public static T IgnoreEx<T>(Func<T> Action, params Type[] Exceptions)
         {
             try { return Action(); }
-            catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { return default(T); }
+            catch (Exception e) when (System.Linq.Enumerable.Contains(Exceptions, e.GetType())) { return default; }
         }
 
         public static ValueTask<bool> InternetAvaliable
@@ -731,7 +743,7 @@ function Min() { return Math.min.apply(global, arguments); }
         }
         public static TimeSpan Seconds(double s) => TimeSpan.FromSeconds(s);
         public static TimeSpan Milliseconds(double s) => TimeSpan.FromMilliseconds(s);
-        
+
         public static double[][] MatrixCreate(int rows, int cols)
         {
             // creates a matrix initialized to all 0.0s  
@@ -761,6 +773,95 @@ function Min() { return Math.min.apply(global, arguments); }
                     System.Linq.Enumerable.Select(ctor.GetParameters(), x => x.ParameterType),
                     System.Linq.Enumerable.Select(args, x => x.GetType()))) return (T)ctor.Invoke(args);
             throw new MissingMethodException("No matching constructor found.");
+        }
+
+        public static async ValueTask<string> Send(System.Net.Http.HttpMethod Method, string URI, string Parameters = null)
+        //, string ProxyString
+        {
+            System.Net.WebRequest req = System.Net.WebRequest.Create(URI);
+            //req.Proxy = new System.Net.WebProxy(ProxyString, true);
+            //Add these, as we're doing a POST
+            req.ContentType = "application/x-www-form-urlencoded";
+            req.Method = Method.Method;
+            if (!string.IsNullOrEmpty(Parameters))
+                using (System.IO.StreamWriter sw = new System.IO.StreamWriter(await req.GetRequestStreamAsync()))
+                //We need to count how many bytes we're sending. Post'ed Faked Forms should be name=value&
+                {
+                    //req.ContentLength = sw.Encoding.GetBytes(Parameters).Length;
+                    sw.Write(Parameters); //Push it out there
+                    sw.Flush();
+                }
+            System.Net.WebResponse resp = await req.GetResponseAsync();
+            if (resp == null) return null;
+            using (System.IO.StreamReader sr = new System.IO.StreamReader(resp.GetResponseStream()))
+                return sr.ReadToEnd().Trim();
+        }
+
+        /// <summary>
+        /// Encodes a string to be represented as a string literal. The format
+        /// is essentially a JSON string.
+        /// 
+        /// The string returned includes outer quotes 
+        /// Example Output: "Hello \"Rick\"!\r\nRock on"
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string EncodeJavascript(string s, bool generateQuotes = true)
+        {
+            var sb = new System.Text.StringBuilder();
+            if (generateQuotes) sb.Append("\"");
+            foreach (char c in s)
+            {
+                switch (c)
+                {
+                    case '\"':
+                        sb.Append("\\\"");
+                        break;
+                    case '\\':
+                        sb.Append("\\\\");
+                        break;
+                    case '\b':
+                        sb.Append("\\b");
+                        break;
+                    case '\f':
+                        sb.Append("\\f");
+                        break;
+                    case '\n':
+                        sb.Append("\\n");
+                        break;
+                    case '\r':
+                        sb.Append("\\r");
+                        break;
+                    case '\t':
+                        sb.Append("\\t");
+                        break;
+                    default:
+                        int i = c;
+                        if (i < 32 || i > 127)
+                        {
+                            sb.AppendFormat("\\u{0:X04}", i);
+                        }
+                        else
+                        {
+                            sb.Append(c);
+                        }
+                        break;
+                }
+            }
+            if (generateQuotes) sb.Append("\"");
+            return sb.ToString();
+        }
+
+        public static void Switch<T>(T SwitchOn, Action Default = null, params (T Case, Action Action)[] Options)
+        {
+            if (Options == null) { Default?.Invoke(); return; }
+            bool Found = true;
+            for (int i = 0; i < Options.Length; i++)
+            {
+                if ((SwitchOn == null && Options[i].Case == null) || SwitchOn.Equals(Options[i].Case))
+                { Options[i].Action?.Invoke(); Found = true; }
+            }
+            if (!Found) Default?.Invoke();
         }
     }
 }

@@ -16,7 +16,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\StepCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\Storage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Components\SymbolicsEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SystemClipboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SneakyCamera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TempIO.cs" />
@@ -41,15 +40,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\HeldPress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageResourceExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\NerdamerPart.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\OnlineDict.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Sound.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SoundFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Expression.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Factorize.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\Network.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Resources.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Unit.cs" />
