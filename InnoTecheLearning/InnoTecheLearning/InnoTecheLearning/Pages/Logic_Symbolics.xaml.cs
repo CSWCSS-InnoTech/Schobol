@@ -203,6 +203,21 @@ namespace InnoTecheLearning.Pages
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
             Debug.Clicked += Debug_Clicked;
             */
+
+            Current.GetAwaiter().OnCompleted(() => Current.Result.Break += (sender, e) =>
+            {
+                Device.BeginInvokeOnMainThread(() => DisplayAlert("Jint Breakpoint Reached",
+$@"Current Statement:
+{e.CurrentStatement.Location.Source}
+Call Stack:
+{e.CallStack}
+Locals:
+{e.Locals.Select(x => x.ToString()).Aggregate((prev, current) => $"{prev}\n{current}")}
+Globals:
+{e.Globals.Select(x => x.ToString()).Aggregate((prev, current) => $"{prev}\n{current}")}",
+"Continue"));
+                return Jint.Runtime.Debugger.StepMode.None;
+            });
             #endregion
         }
 
@@ -215,6 +230,7 @@ namespace InnoTecheLearning.Pages
         }
 
         #region Talking to the Engine
+        public static List<Jint.Runtime.Debugger.BreakPoint> Breakpoints = new List<Jint.Runtime.Debugger.BreakPoint>();
         async Task Eval(string Format)
         { 
             try
@@ -225,8 +241,17 @@ namespace InnoTecheLearning.Pages
                     (DoEvaluate ? ".evaluate()" : null) + (DisplayDecimals ? ".text()" : ".toString()")
                 )).GetCompletionValue().ToString();
             }
-            catch (System.Exception ex)
+            catch (Jint.Runtime.JavaScriptException ex)
             {
+                /*
+[0:] [2017-08-23 15:31:52.134]ⓘApp: Inner Exception: 
+[0:] [2017-08-23 15:31:52.139]ⓘApp: Message: Cannot divide by zero
+[0:] [2017-08-23 15:31:52.148]ⓘApp: Source: Jint
+[0:] [2017-08-23 15:31:52.179]ⓘApp: Stack Trace:   at Jint.Engine.Execute (Jint.Parser.Ast.Program program) [0x00080] in <e6f5095cef844b52bb56752dbb5a896e>:0 
+  at Jint.Engine.Execute (System.String source) [0x0000e] in <e6f5095cef844b52bb56752dbb5a896e>:0 
+  at InnoTecheLearning.Pages.Logic_Symbolics+<Eval>d__21.MoveNext () [0x000c5] in <2fe46c649a114e3fa1fb3541c924b108>:0 
+                 */
+                await Utils.Log($"Line Number: {ex.LineNumber}, Column: {ex.Column}");
                 Out.Text = Utils.Error + ex.Message;
             }
         }
@@ -243,6 +268,7 @@ namespace InnoTecheLearning.Pages
                 .Execute(Utils.Resources.GetString("Solve.js"))
                 .Execute(Utils.Resources.GetString("Extra.js"))
                 .Execute("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')")
+                .With((ref Engine x) => x.BreakPoints.AddRange(Breakpoints))
         );
 #endregion
     }

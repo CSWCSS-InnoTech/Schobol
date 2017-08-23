@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Diagnostics;
 using Xamarin.Forms;
 
 namespace InnoTecheLearning
@@ -10,15 +10,14 @@ namespace InnoTecheLearning
         public static class LongPress
         {
             const uint LongPressMilliseconds = 250;
-            const uint TimesToCheck = 10;
             class Extensions
             {
                 internal Extensions(EventHandler handler, EventHandler onPress, EventHandler onRelease)
                 { Handler = handler; OnPress = onPress; OnRelease = onRelease; }
                 internal EventHandler Handler;
-                internal bool Pressed = false;
                 internal EventHandler OnPress;
                 internal EventHandler OnRelease;
+                internal Stopwatch Stopwatch = new Stopwatch();
             }
             static Dictionary<Button, Extensions> ElementExtensions =
                 new Dictionary<Button, Extensions>();
@@ -32,15 +31,18 @@ namespace InnoTecheLearning
                 {
                     ElementExtensions.Add(button, new Extensions(eventHandler, (sender, e) =>
                     {
-                        ElementExtensions[button].Pressed = true;
-                        uint Counter = 0;
-                        Device.StartTimer(TimeSpan.FromMilliseconds(LongPressMilliseconds / TimesToCheck), () =>
+                        ElementExtensions[button].Stopwatch.Restart();
+                        Device.StartTimer(TimeSpan.FromMilliseconds(LongPressMilliseconds), () =>
                         {
-                            if (ElementExtensions[button].Pressed && Counter == TimesToCheck)
+                            if (ElementExtensions[button].Stopwatch.IsRunning &&
+                                ElementExtensions[button].Stopwatch.ElapsedMilliseconds >= LongPressMilliseconds)
+                            {
+                                ElementExtensions[button].Stopwatch.Stop();
                                 ElementExtensions[button].Handler(button, EventArgs.Empty);
-                            return ElementExtensions[button].Pressed && Counter++ < TimesToCheck;
+                            }
+                            return false;
                         });
-                    }, (sender, e) => ElementExtensions[button].Pressed = false));
+                    }, (sender, e) => ElementExtensions[button].Stopwatch.Stop()));
                     button.Pressed += ElementExtensions[button].OnPress;
                     button.Released += ElementExtensions[button].OnRelease;
                 }

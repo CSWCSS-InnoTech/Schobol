@@ -855,13 +855,12 @@ function Min() { return Math.min.apply(global, arguments); }
         public static void Switch<T>(T SwitchOn, Action Default = null, params (T Case, Action Action)[] Options)
         {
             if (Options == null) { Default?.Invoke(); return; }
-            bool Found = true;
             for (int i = 0; i < Options.Length; i++)
             {
-                if ((SwitchOn == null && Options[i].Case == null) || SwitchOn.Equals(Options[i].Case))
-                { Options[i].Action?.Invoke(); Found = true; }
+                if ((SwitchOn == null && Options[i].Case == null) || SwitchOn?.Equals(Options[i].Case) == true)
+                { Options[i].Action?.Invoke(); return; }
             }
-            if (!Found) Default?.Invoke();
+            Default?.Invoke();
         }
     }
 }

@@ -33,6 +33,23 @@ namespace InnoTecheLearning
                     var SubContent = Content == null || !Content.Contains(" ") ? null : Content.Substring(Content.IndexOf(' ') + 1);
                     switch ((Command.Contains(" ") ? Command.Remove(Command.IndexOf(' ')) : Command).ToLower())
                     {
+                        case "jint":
+                            switch (SubHeader)
+                            {
+                                case "breakat":
+                                    var i = int.Parse(SubContent);
+                                    Pages.Logic_Symbolics.Breakpoints.Add(new Jint.Runtime.Debugger.BreakPoint(i, 0));
+                                    Out.Append($"Breakpoint added at line {i}.");
+                                    break;
+                                case "nobreak":
+                                    Pages.Logic_Symbolics.Breakpoints.Clear();
+                                    Out.Append("Breakpoints cleared.");
+                                    break;
+                                default:
+                                    Invalid();
+                                    break;
+                            }
+                            break;
                         case "lingual":
                             switch (SubHeader)
                             {
@@ -123,6 +140,8 @@ namespace InnoTecheLearning
                         case "help":
                             Out.Append(@"clear: Clears the screen
 help: Shows available commands
+jint breakat <line: number>: Tells Jint to break at specified line in Logic (Symbolics).
+jint nobreak: Clears all Jint breakpoints.
 lingual server: Querys the current Lingual server. Default: Pedosa
 lingual server <pearson|pedosa>: Switches between two Lingual servers.
 lingual vocabfile delete: Deletes the Lingual Favourites file.
