@@ -20,8 +20,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\SneakyCamera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TempIO.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TextLog.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Components\TextToSpeech.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Components\ThreeButtonDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\ToneGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TouchImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions.cs" />

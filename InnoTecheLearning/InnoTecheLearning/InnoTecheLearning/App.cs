@@ -50,8 +50,12 @@ namespace InnoTecheLearning
         }
         public string GetResources()
         {
+            var x = 1073741826.0;
+            return ((int)(uint)x).ToString();
+            return Jint.Runtime.TypeConverter.ToInt32(new Jint.Native.JsValue(1073741826.0)).ToString();
             string Return = "";
-            foreach (var s in GetType().GetTypeInfo().Assembly.GetManifestResourceNames())
+            foreach (var s in System.Reflection.IntrospectionExtensions.GetTypeInfo(GetType())
+                .Assembly.GetManifestResourceNames())
             {
                 Return += s + '\n';
             }

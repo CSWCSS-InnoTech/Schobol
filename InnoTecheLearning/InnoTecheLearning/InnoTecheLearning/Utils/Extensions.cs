@@ -168,7 +168,7 @@ namespace InnoTecheLearning
             System.Linq.Enumerable.ElementAt(IE, Text.Rnd.Next(System.Linq.Enumerable.Count(IE)));
 
         public static void Ignore(this object Instance) => Instance.ToString();
-        
+#if false
 #if __IOS__
         public static IEnumerable<Foundation.NSLocale> ToLocale(this SpeechLanguages Langs)
         {
@@ -278,6 +278,7 @@ namespace InnoTecheLearning
             foreach (var Item in Langs.ToIdentiifiers())
                 yield return Item.Split('_', '-')[0];
         }
+#endif
         public static T DebugWrite<T>(this T Object, string Format = "{0}\n", string Category = null)
         { System.Diagnostics.Debug.Write(string.Format(Format, Object), Category); return Object; }
 

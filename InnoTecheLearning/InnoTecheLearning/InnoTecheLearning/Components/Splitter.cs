@@ -26,7 +26,7 @@ namespace InnoTecheLearning
 
             public static new readonly BindableProperty ControlTemplateProperty =
                 BindableProperty.Create(nameof(ControlTemplate), typeof(DataTemplate), typeof(GridSplitter),
-                    default(DataTemplate), BindingMode.Default, null, (bo, oldCT, newCT) =>
+                    default, BindingMode.Default, null, (bo, oldCT, newCT) =>
                     {
                         (bo as GridSplitter).Content = (View)(newCT as DataTemplate).CreateContent();
                     });
@@ -70,10 +70,10 @@ namespace InnoTecheLearning
 
             private GridSplitter() => Android();
             public GridSplitter(DataTemplate ControlTemplate) => this.ControlTemplate = ControlTemplate;
-            public GridSplitter(Color BackColor = default(Color), Color HandleColor = default(Color)) =>
+            public GridSplitter(Color BackColor = default, Color HandleColor = default) =>
                 ControlTemplate = new DataTemplate(
                     () => new Grid {
-                        BackgroundColor = BackColor == default(Color) ? new Color(0, 0, 0, double.Epsilon) : BackColor,
+                        BackgroundColor = BackColor == default ? new Color(0, 0, 0, double.Epsilon) : BackColor,
                         WidthRequest = 20,
                         Children = {
                             new StackLayout {
@@ -81,9 +81,9 @@ namespace InnoTecheLearning
                                 VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center,
                                 Spacing = 2, Children = {
                                     new BoxView { HeightRequest = 3,
-                                        BackgroundColor = HandleColor == default(Color) ? Color.Gray : HandleColor },
+                                        BackgroundColor = HandleColor == default ? Color.Gray : HandleColor },
                                     new BoxView { HeightRequest = 3,
-                                        BackgroundColor = HandleColor == default(Color) ? Color.Gray : HandleColor }
+                                        BackgroundColor = HandleColor == default ? Color.Gray : HandleColor }
                                 }
                             }
                         }
@@ -252,12 +252,10 @@ namespace InnoTecheLearning
 
                 public override bool OnTouchEvent(MotionEvent e)
                 { 
-                    new Android.App.AlertDialog.Builder(Context).SetTitle("OnTouchEvent").Create().Show();
                     switch (e.Action)
                     {
                         case MotionEventActions.Down:
                             {
-                                new Android.App.AlertDialog.Builder(Context).SetTitle("Down").Create().Show();
                                 _lastPoint = new Point(e.RawX, e.RawY);
                                 break;
                             }
