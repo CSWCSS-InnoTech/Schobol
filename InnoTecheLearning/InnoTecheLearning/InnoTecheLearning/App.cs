@@ -1,4 +1,5 @@
-﻿#undef DEBUG_RESOURCES
+﻿#undef DEBUG_WRITE
+#define DEBUG_INTERACTIVE
 
 using static InnoTecheLearning.Utils;
 using Xamarin.Forms;
@@ -14,8 +15,10 @@ namespace InnoTecheLearning
             Region = "App";
             Log("App strated");
             // The root page of your application
-#if DEBUG_RESOURCES
+#if DEBUG_WRITE
             MainPage = ResourceView;
+#elif DEBUG_INTERACTIVE
+            MainPage = InteractiveView;
 #else
             MainPage = new Main();
 #endif
@@ -35,7 +38,7 @@ namespace InnoTecheLearning
 		{
 			// Handle when your app resumes
 		}
-#if DEBUG_RESOURCES
+#if DEBUG_WRITE
         public ContentPage ResourceView
         {
             get
@@ -60,6 +63,28 @@ namespace InnoTecheLearning
                 Return += s + '\n';
             }
             return Return;
+        }
+#elif DEBUG_INTERACTIVE
+        public ContentPage InteractiveView
+        {
+            get
+            {
+                Android.Webkit.WebView _View = new Android.Webkit.WebView(Forms.Context);
+                var In = new Editor();
+                var Execute = new Button
+                {
+                    Text = "Execute"
+                };
+                var Out = new Entry();
+                return new ContentPage
+                {
+                    Content = new StackLayout
+                    {
+                        Orientation = StackOrientation.Vertical,
+                        Content = new Label { Text = GetResources(), TextColor = Color.Black }
+                    }
+                };
+            }
         }
 #endif
     }

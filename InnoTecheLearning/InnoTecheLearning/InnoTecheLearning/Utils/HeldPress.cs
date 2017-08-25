@@ -7,6 +7,9 @@ namespace InnoTecheLearning
 {
     partial class Utils
     {
+        /// <summary>
+        /// A long press gesture recognizer.
+        /// </summary>
         public static class LongPress
         {
             const uint LongPressMilliseconds = 250;

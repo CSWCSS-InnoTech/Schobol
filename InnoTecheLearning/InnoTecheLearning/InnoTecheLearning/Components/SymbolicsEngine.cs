@@ -9,12 +9,12 @@ namespace InnoTecheLearning
     partial class Utils
     {
         public class SymbolicsEngine
+#if false
         {
             Jint.Engine _Engine = new Jint.Engine();
             public Task<string> Evaluate(string JavaScript) =>
                 Task.Run(() => _Engine.Execute(JavaScript).GetCompletionValue().ToString());
         }
-#if true
 #elif __IOS__
         {
             JavaScriptCore.JSContext _Engine = new JavaScriptCore.JSContext();
@@ -23,15 +23,24 @@ namespace InnoTecheLearning
         }
 #elif __ANDROID__
         {
-            Android.Webkit.WebView _Engine = new Android.Webkit.WebView(Forms.Context);
-            public SymbolicsEngine() => _Engine.Settings.JavaScriptEnabled = true;
-            public async Task<string> Evaluate(string JavaScript)
+            ManualResetEvent _Ready = new ManualResetEvent(false);
+            Android.Webkit.WebView _Engine;
+            public SymbolicsEngine() =>
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    _Engine = new Android.Webkit.WebView(Forms.Context);
+                    _Engine.Settings.JavaScriptEnabled = true;
+                    _Ready.Set();
+                });
+            public async ValueTask<string> Evaluate(string JavaScript)
             {
                 var reset = new ManualResetEvent(false);
                 var response = string.Empty;
+                _Ready.WaitOne();
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+                    //$"try{{{JavaScript}}}catch(e){{{Error}+(e.message?e.message:e)}}"
                     //https://stackoverflow.com/questions/19788294/how-does-evaluatejavascript-work
-                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript($"(function(){{try{{eval({EncodeJavascript(JavaScript)})}}catch(e){{{Error}+(e.message?e.message:e)}}}})()", new Callback((r) => { response = r; reset.Set(); })));
+                    Device.BeginInvokeOnMainThread(() => _Engine.EvaluateJavascript(JavaScript, new Callback((r) => { response = r; reset.Set(); })));
                 else
                 {
                     var _Interface = new Interface();
@@ -75,7 +84,7 @@ namespace InnoTecheLearning
                 }
             }
         }
-#elif WINDOWS_UWP
+#else
         {
             Jint.Engine _Engine = new Jint.Engine();
             public Task<string> Evaluate(string JavaScript) =>

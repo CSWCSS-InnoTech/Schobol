@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using EventHandler = System.EventHandler;
 using EventArgs = System.EventArgs;
 
-using Jint;
 using Part = InnoTecheLearning.Utils.NerdamerPart;
 using static InnoTecheLearning.Utils.NerdamerPart;
 
@@ -203,7 +202,7 @@ namespace InnoTecheLearning.Pages
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
             Debug.Clicked += Debug_Clicked;
             */
-
+#if false
             Current.GetAwaiter().OnCompleted(() => Current.Result.Break += (sender, e) =>
             {
                 Device.BeginInvokeOnMainThread(() => DisplayAlert("Jint Breakpoint Reached",
@@ -218,6 +217,7 @@ Globals:
 "Continue"));
                 return Jint.Runtime.Debugger.StepMode.None;
             });
+#endif
             #endregion
         }
 
@@ -231,34 +231,27 @@ Globals:
 
         #region Talking to the Engine
         public static List<Jint.Runtime.Debugger.BreakPoint> Breakpoints = new List<Jint.Runtime.Debugger.BreakPoint>();
-        async Task Eval(string Format)
-        { 
-            try
-            {
-                //Android needs .toString() and trim " while Windows 10 does not
-                Out.Text = (await Current).Execute(string.Format(Format, 
-                    Utils.EncodeJavascript(In.Text, false),
-                    (DoEvaluate ? ".evaluate()" : null) + (DisplayDecimals ? ".text()" : ".toString()")
-                )).GetCompletionValue().ToString();
-            }
-            catch (Jint.Runtime.JavaScriptException ex)
-            {
-                /*
-[0:] [2017-08-23 15:31:52.134]ⓘApp: Inner Exception: 
-[0:] [2017-08-23 15:31:52.139]ⓘApp: Message: Cannot divide by zero
-[0:] [2017-08-23 15:31:52.148]ⓘApp: Source: Jint
-[0:] [2017-08-23 15:31:52.179]ⓘApp: Stack Trace:   at Jint.Engine.Execute (Jint.Parser.Ast.Program program) [0x00080] in <e6f5095cef844b52bb56752dbb5a896e>:0 
-  at Jint.Engine.Execute (System.String source) [0x0000e] in <e6f5095cef844b52bb56752dbb5a896e>:0 
-  at InnoTecheLearning.Pages.Logic_Symbolics+<Eval>d__21.MoveNext () [0x000c5] in <2fe46c649a114e3fa1fb3541c924b108>:0 
-                 */
-                await Utils.Log($"Line Number: {ex.LineNumber}, Column: {ex.Column}");
-                Out.Text = Utils.Error + ex.Message;
-            }
+        async Task Eval()
+        {
+            Out.Text = await (await Current).Evaluate(
+                $"(function(){{try{{return nerdamer('{Utils.EncodeJavascript(In.Text, false)}'){(DoEvaluate ? ".evaluate()" : null)}" +
+                $"{(DisplayDecimals ? ".text()" : ".toString()")};}}catch(e){{return {Utils.Error}+(e.message?e.message:e);}}}})();");
         }
-        async void Calculate_Clicked(object sender, EventArgs e) => await Eval("nerdamer('{0}'){1}");
-        async void Expand_Clicked(object sender, EventArgs e) => await Eval("nerdamer.expand('{0}'){1}");
-        async void Factorize_Clicked(object sender, EventArgs e) => await Eval("nerdamer.factor('{0}'){1}");
+        async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
 
+        ValueTask<Utils.SymbolicsEngine> Current = CreateEngineAsync();
+        static ValueTask<Utils.SymbolicsEngine> CreateEngineAsync() => new ValueTask<Utils.SymbolicsEngine>(async () =>
+        {
+            var Return = new Utils.SymbolicsEngine();
+            await Return.Evaluate(Utils.Resources.GetString("nerdamer.core.js"));
+            await Return.Evaluate(Utils.Resources.GetString("Algebra.js"));
+            await Return.Evaluate(Utils.Resources.GetString("Calculus.js"));
+            await Return.Evaluate(Utils.Resources.GetString("Solve.js"));
+            await Return.Evaluate(Utils.Resources.GetString("Extra.js"));
+            await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+            return Return;
+        });
+#if false
         ValueTask<Engine> Current = CreateEngineAsync();
         static ValueTask<Engine> CreateEngineAsync() => new ValueTask<Engine>(() =>
             new Engine()
@@ -272,6 +265,7 @@ Globals:
                 .Execute("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')")
                 .With((ref Engine x) => x.BreakPoints.AddRange(Breakpoints))
         );
-#endregion
+#endif
+        #endregion
     }
 }

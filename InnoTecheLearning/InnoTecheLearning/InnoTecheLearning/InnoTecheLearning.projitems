@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Components\StepCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\Storage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\StreamPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Components\SymbolicsEngine.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SystemClipboard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\SneakyCamera.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Components\TempIO.cs" />
