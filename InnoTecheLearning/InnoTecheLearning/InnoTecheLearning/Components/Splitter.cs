@@ -42,7 +42,7 @@ namespace InnoTecheLearning
                     SetValue(ControlTemplateProperty, value);
                 }
             }
-
+            /*
             [System.Diagnostics.Conditional("__ANDROID__")]
             void Android()
             {
@@ -68,7 +68,8 @@ namespace InnoTecheLearning
                 GestureRecognizers.Add(R);
             }
 
-            private GridSplitter() => Android();
+            private GridSplitter() => Android();*/
+            new const double Scale = 1.5;
             public GridSplitter(DataTemplate ControlTemplate) => this.ControlTemplate = ControlTemplate;
             public GridSplitter(Color BackColor = default, Color HandleColor = default) =>
                 ControlTemplate = new DataTemplate(
@@ -77,12 +78,12 @@ namespace InnoTecheLearning
                         WidthRequest = 20,
                         Children = {
                             new StackLayout {
-                                HeightRequest = 10, Orientation = StackOrientation.Vertical, Padding = 5,
+                                HeightRequest = 10 * Scale, Orientation = StackOrientation.Vertical, Padding = 5 * Scale,
                                 VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Center,
                                 Spacing = 2, Children = {
-                                    new BoxView { HeightRequest = 3,
+                                    new BoxView { HeightRequest = 3 * Scale,
                                         BackgroundColor = HandleColor == default ? Color.Gray : HandleColor },
-                                    new BoxView { HeightRequest = 3,
+                                    new BoxView { HeightRequest = 3 * Scale,
                                         BackgroundColor = HandleColor == default ? Color.Gray : HandleColor }
                                 }
                             }
@@ -251,18 +252,29 @@ namespace InnoTecheLearning
                 private Point _lastPoint;
 
                 public override bool OnTouchEvent(MotionEvent e)
-                { 
-                    switch (e.Action)
+                {
+                    Log("GridSplitter.Renderer.OnTouchEvent");
+                    int action = MotionEventCompat.GetActionMasked(e);
+                    Log(action, "MotionEventCompat.GetActionMasked(e) = {0}");
+                    Log(e.Action, "e.Action = {0}");
+                    Log($"_lastPoint = ({_lastPoint.X}, {_lastPoint.Y})");
+                    Log($"e.Raw = ({e.RawX}, {e.RawY})");
+                    switch (action)
                     {
-                        case MotionEventActions.Down:
+                        /*
+                        case (int)MotionEventActions.Down:
                             {
                                 _lastPoint = new Point(e.RawX, e.RawY);
                                 break;
                             }
 
-                        case MotionEventActions.Move:
+                        case (int)MotionEventActions.Move:
+                        */
+                        default:
                             {
-                                Element.UpdateGrid(Context.FromPixels(e.RawX - _lastPoint.X), Context.FromPixels(e.RawY - _lastPoint.Y));
+                                if(!_lastPoint.IsEmpty)
+                                    Element.UpdateGrid(Context.FromPixels(e.RawX - _lastPoint.X), 
+                                                       Context.FromPixels(e.RawY - _lastPoint.Y));
                                 _lastPoint = new Point(e.RawX, e.RawY);
                                 break;
                             }

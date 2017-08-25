@@ -95,6 +95,7 @@ namespace InnoTecheLearning
                 Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<OnlineDict.Entry>());
                 Favourites.CollectionChanged += async (object sender, NotifyCollectionChangedEventArgs e) =>
                     await Storage.SerializedWrite(Storage.VocabFile, Favourites);
+                await Log("AsyncInit completed.");
             }
             AsyncInit();
             // Accomodate iPhone status bar.

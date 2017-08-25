@@ -262,6 +262,8 @@ Globals:
         ValueTask<Engine> Current = CreateEngineAsync();
         static ValueTask<Engine> CreateEngineAsync() => new ValueTask<Engine>(() =>
             new Engine()
+#warning Workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=58995, used at nerdamer.core.js:7501
+                .SetValue("___AND", new System.Func<double, double, int>((x, y) => (int)x & (int)y))
                 .Execute(Utils.Resources.GetString("nerdamer.core.js"))
                 .Execute(Utils.Resources.GetString("Algebra.js"))
                 .Execute(Utils.Resources.GetString("Calculus.js"))
