@@ -30,18 +30,18 @@ namespace InnoTecheLearning.Pages
         ButtonModifier ButtonMod = ButtonModifier.Norm;
         static readonly (Part, Part[,]) WhenNorm = (Percent, new Part[ButtonRows, ButtonColumns]
             {
-                { Comma, LeftSquare, RightSquare, LeftRound, RightRound },
+                { Comma, Equation, Assign, LeftRound, RightRound },
                 { D7, D8, D9, Exponent, Factorial },
                 { D4, D5, D6, Multiply, Divide },
                 { D1, D2, D3, Add, Subtract },
                 { D0, Decimal, ConstPi, ConstE, ConstI }
             });
-        static readonly (Part, Part[,]) WhenShift = (Empty, new Part[ButtonRows, ButtonColumns]
+        static readonly (Part, Part[,]) WhenShift = (Fib, new Part[ButtonRows, ButtonColumns]
             {
-                { Log, Log10, Min, Max, Sqrt },
+                { Log, Log10, Sqrt, LeftSquare, RightSquare },
                 { Floor, Ceil, Round, Trunc, Mod },
                 { Gcd, Lcm, Mean, Mode, Median },
-                { Expand, DivideFunc, PFactor, Fib, Empty },
+                { Expand, DivideFunc, PFactor, Min, Max },
                 { Factor, Roots, Coeffs, Solve, SolveEquations }
             });
         static readonly (Part, Part[,]) WhenAlpha = (a, new Part[ButtonRows, ButtonColumns]
@@ -99,6 +99,8 @@ namespace InnoTecheLearning.Pages
                     {
                         Buttons[i, j].Text = _Mapper.Item2[i, j].Name;
                     };
+                if (ButtonMod == ButtonModifier.Shift) Back.Text = "CLR";
+                else Back.Text = "←";
             }
         }
         bool DisplayDecimals = true;
@@ -165,12 +167,7 @@ namespace InnoTecheLearning.Pages
                 var button = (Button)sender;
                 var (x, y) = Utils.IndicesOf(Buttons, button);
                 var Part = x == -1 && y == -1 ? Mapper.Item1 : Mapper.Item2[x, y];
-                if (Part.DescriptionContent != null)
-                {
-                    button.IsEnabled = false;
-                    DisplayAlert(Part.DescriptionTitle, Part.DescriptionContent, "OK");
-                    button.IsEnabled = true;
-                }
+                if (Part.DescriptionContent != null) DisplayAlert(Part.DescriptionTitle, Part.DescriptionContent, "OK");
             };
             #endregion
 
@@ -180,7 +177,9 @@ namespace InnoTecheLearning.Pages
             Shift.Clicked += ModClicked(ButtonModifier.Shift);
             Alpha.Clicked += ModClicked(ButtonModifier.Alpha);
             Alt.Clicked += ModClicked(ButtonModifier.Alt);
-            Back.Clicked += (sender, e) => In.Text = In.Text?.Length > 0 ? In.Text.Remove(In.Text.Length - 1) : null;
+            Back.Clicked += (sender, e) => 
+                In.Text = ButtonMod != ButtonModifier.Shift && In.Text?.Length > 0 ?
+                     In.Text.Remove(In.Text.Length - 1) : string.Empty;
 
             B03.Clicked += ButtonClicked;
             Utils.LongPress.Register(B03, ButtonLongPressed);
@@ -192,6 +191,7 @@ namespace InnoTecheLearning.Pages
                 }
 
             Calculate.Clicked += Calculate_Clicked;
+            Utils.LongPress.Register(Calculate, async (sender, e) => Out.Text = await (await Current).Evaluate(In.Text));
             Display.Clicked += (sender, e) => Display.Text = (DisplayDecimals = !DisplayDecimals) ? "Display Decimals" : "Display Fractions";
             Evaluate.Clicked += (sender, e) => Evaluate.Text = (DoEvaluate = !DoEvaluate) ? "Evaluate Symbols" : "Keep Symbols";
 
@@ -233,9 +233,13 @@ Globals:
         public static List<Jint.Runtime.Debugger.BreakPoint> Breakpoints = new List<Jint.Runtime.Debugger.BreakPoint>();
         async Task Eval()
         {
-            Out.Text = await (await Current).Evaluate(
-                $"(function(){{try{{return nerdamer('{Utils.EncodeJavascript(In.Text, false)}'){(DoEvaluate ? ".evaluate()" : null)}" +
-                $"{(DisplayDecimals ? ".text()" : ".toString()")};}}catch(e){{return {Utils.Error}+(e.message?e.message:e);}}}})();");
+            Out.Text = await (await Current).Evaluate(string.Concat(
+                "try{",
+                    "nerdamer('", Utils.EncodeJavascript(In.Text, false), "')",
+                    DoEvaluate ? ".evaluate()" : string.Empty,
+                    DisplayDecimals ? ".text()" : ".toString()",
+                "}catch(e){'", Utils.Error, "'+(e.message?e.message:e)}"
+                ));
         }
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
 

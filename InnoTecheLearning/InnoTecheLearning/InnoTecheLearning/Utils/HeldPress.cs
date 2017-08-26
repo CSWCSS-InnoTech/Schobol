@@ -41,7 +41,9 @@ namespace InnoTecheLearning
                                 ElementExtensions[button].Stopwatch.ElapsedMilliseconds >= LongPressMilliseconds)
                             {
                                 ElementExtensions[button].Stopwatch.Stop();
+                                button.IsEnabled = false;
                                 ElementExtensions[button].Handler(button, EventArgs.Empty);
+                                button.IsEnabled = true;
                             }
                             return false;
                         });

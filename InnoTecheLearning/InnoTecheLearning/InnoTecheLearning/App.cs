@@ -1,5 +1,5 @@
 ﻿#undef DEBUG_WRITE
-#define DEBUG_INTERACTIVE
+#undef DEBUG_INTERACTIVE
 
 using static InnoTecheLearning.Utils;
 using Xamarin.Forms;
@@ -69,22 +69,48 @@ namespace InnoTecheLearning
         {
             get
             {
-                Android.Webkit.WebView _View = new Android.Webkit.WebView(Forms.Context);
-                var In = new Editor();
+                var In = new Editor { VerticalOptions = LayoutOptions.FillAndExpand };
                 var Execute = new Button
-                {
-                    Text = "Execute"
-                };
+                { Text = "Execute", HorizontalOptions = LayoutOptions.FillAndExpand };
+                var Reset = new Button { Text = "Reset" };
                 var Out = new Entry();
+                Execute.Clicked += async (sender, e) =>
+                { Out.ClearValue(Entry.TextProperty); Out.Text = await this.Execute(In.Text); };
+                Reset.Clicked += async (sender, e) => await this.Reset();
                 return new ContentPage
                 {
                     Content = new StackLayout
                     {
                         Orientation = StackOrientation.Vertical,
-                        Content = new Label { Text = GetResources(), TextColor = Color.Black }
+                        Children =
+                        {
+                            In,
+                            new StackLayout
+                            { Orientation = StackOrientation.Horizontal, Children = { Execute, Reset } },
+                            Out
+                        }
                     }
                 };
             }
+        }
+
+        Android.Webkit.WebView _View = new Android.Webkit.WebView(Forms.Context);
+        public System.Threading.Tasks.Task<string> Execute(string Input)
+        {
+            _View.Settings.JavaScriptEnabled = true;
+            var Completion = new System.Threading.Tasks.TaskCompletionSource<string>();
+            Device.BeginInvokeOnMainThread(() =>
+                _View.EvaluateJavascript(Input, new Callback(s => Completion.SetResult(s))));
+            return Completion.Task;
+        }
+        public System.Threading.Tasks.Task Reset()
+        { _View = new Android.Webkit.WebView(Forms.Context); return System.Threading.Tasks.Task.CompletedTask; }
+        class Callback : Java.Lang.Object, Android.Webkit.IValueCallback
+        {
+            System.Action<string> _Callback;
+            public Callback(System.Action<string> Callback) => _Callback = Callback;
+            public void OnReceiveValue(Java.Lang.Object value) => 
+                _Callback(Android.Runtime.Extensions.JavaCast<Java.Lang.String>(value).ToString());
         }
 #endif
     }
