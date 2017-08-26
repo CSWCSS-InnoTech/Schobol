@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using EventHandler = System.EventHandler;
 using EventArgs = System.EventArgs;
@@ -27,82 +26,102 @@ namespace InnoTecheLearning.Pages
             Alpha = 2,
             Alt = 4
         }
-        ButtonModifier ButtonMod = ButtonModifier.Norm;
-        static readonly (Part, Part[,]) WhenNorm = (Percent, new Part[ButtonRows, ButtonColumns]
-            {
-                { Comma, Equation, Assign, LeftRound, RightRound },
-                { D7, D8, D9, Exponent, Factorial },
-                { D4, D5, D6, Multiply, Divide },
-                { D1, D2, D3, Add, Subtract },
-                { D0, Decimal, ConstPi, ConstE, ConstI }
-            });
-        static readonly (Part, Part[,]) WhenShift = (Fib, new Part[ButtonRows, ButtonColumns]
-            {
-                { Log, Log10, Sqrt, LeftSquare, RightSquare },
-                { Floor, Ceil, Round, Trunc, Mod },
-                { Gcd, Lcm, Mean, Mode, Median },
-                { Expand, DivideFunc, PFactor, Min, Max },
-                { Factor, Roots, Coeffs, Solve, SolveEquations }
-            });
-        static readonly (Part, Part[,]) WhenAlpha = (a, new Part[ButtonRows, ButtonColumns]
-            {
-                { b, c, d, e, f },
-                { g, h, i, j, k },
-                { l, m, n, o, p },
-                { q, r, s, t, u },
-                { v, w, x, y, z }
-            });
-        static readonly (Part, Part[,]) WhenShiftAlpha = (A, new Part[ButtonRows, ButtonColumns]
-            {
-                { B, C, D, E, F },
-                { G, H, I, J, K },
-                { L, M, N, O, P },
-                { Q, R, S, T, U },
-                { V, W, Part.X, Part.Y, Z }
-            });
-        static readonly (Part, Part[,]) WhenAlt = (Atan2, new Part[ButtonRows, ButtonColumns]
-            {
-                { Sin, Asin, Sinh, Asinh, Empty },
-                { Cos, Acos, Cosh, Acosh, Empty },
-                { Tan, Atan, Tanh, Atanh, Empty },
-                { Empty, Sinc, Empty, Empty, Empty },
-                { Sum, Product, Diff, Integrate, Defint }
-            });
-        static readonly (Part, Part[,]) WhenShiftAlt = (Step, new Part[ButtonRows, ButtonColumns]
-            {
-                { Sec, Asec, Sech, Asech, Erf },
-                { Csc, Acsc, Csch, Acsch, Rect },
-                { Cot, Acot, Coth, Acoth, Tri },
-                { Si, Ci, Shi, Chi, Ei },
-                { Laplace, Smpvar, Variance, Smpstdev, Stdev }
-            });
-        static readonly (Part, Part[,]) WhenAltAlpha = (NotEqual, new Part[ButtonRows, ButtonColumns]
-            {
-                { LessThan, LessEqual, Equal, GreaterEqual, GreaterThan },
-                { Empty, Empty, Empty, Empty, Empty },
-                { IMatrix, Empty, Empty, Empty, Empty },
-                { Matrix, Matget, Matset, Invert, Transpose },
-                { Vector, Vecget, Vecset, Cross, Dot }
-            });
-        static readonly (Part, Part[,]) WhenInvalid = (Empty, Utils.Duplicate(Empty, ButtonRows, ButtonColumns));
-        readonly Button[,] Buttons;
-        (Part, Part[,]) _Mapper = WhenNorm;
-        (Part, Part[,]) Mapper
+        ButtonModifier _ButtonMod = ButtonModifier.Norm;
+        ButtonModifier ButtonMod
         {
-            get => _Mapper;
+            get => _ButtonMod;
             set
             {
-                _Mapper = value;
-                B03.Text = _Mapper.Item1.Name;
+                _ButtonMod = value;
+                B03.Text = GetMapper(value).Item1.Name;
                 for (int i = 0; i < ButtonRows; i++)
                     for (int j = 0; j < ButtonColumns; j++)
                     {
-                        Buttons[i, j].Text = _Mapper.Item2[i, j].Name;
+                        Buttons[i, j].Text = GetMapper(value).Item2[i, j].Name;
                     };
-                if (ButtonMod == ButtonModifier.Shift) Back.Text = "CLR";
-                else Back.Text = "←";
+                if (value.HasFlag(ButtonModifier.Shift))
+                {
+                    Back.Text = "CLR";
+                    Shift.TranslateTo(0, 10, 0);
+                }
+                else
+                {
+                    Back.Text = "←";
+                    Shift.TranslateTo(0, 0, 0);
+                }
+                if (value.HasFlag(ButtonModifier.Alpha)) Alpha.TranslateTo(0, 10, 0);
+                else Alpha.TranslateTo(0, 0, 0);
+                if (value.HasFlag(ButtonModifier.Alt)) Alt.TranslateTo(0, 10, 0);
+                else Alt.TranslateTo(0, 0, 0);
             }
         }
+        static readonly (Part, Part[,]) Invalid = (Empty, Utils.Duplicate(Empty, ButtonRows, ButtonColumns));
+        static (Part, Part[,]) GetMapper(ButtonModifier m)
+        {
+            if (Mappers.TryGetValue(m, out var Result)) return Result;
+            else return Invalid;
+        }
+        static readonly Dictionary<ButtonModifier, (Part, Part[,])> Mappers =
+            new Dictionary<ButtonModifier, (Part, Part[,])>
+            {
+                [ButtonModifier.Norm] = (Percent, new Part[ButtonRows, ButtonColumns]
+                {
+                    { Comma, Equation, Assign, LeftRound, RightRound },
+                    { D7, D8, D9, Exponent, Factorial },
+                    { D4, D5, D6, Multiply, Divide },
+                    { D1, D2, D3, Add, Subtract },
+                    { D0, Decimal, ConstPi, ConstE, ConstI }
+                }),
+                [ButtonModifier.Shift] = (Fib, new Part[ButtonRows, ButtonColumns]
+                {
+                    { Log, Log10, Sqrt, LeftSquare, RightSquare },
+                    { Floor, Ceil, Round, Trunc, Mod },
+                    { Gcd, Lcm, Mean, Mode, Median },
+                    { Expand, DivideFunc, PFactor, Min, Max },
+                    { Factor, Roots, Coeffs, Solve, SolveEquations }
+                }),
+                [ButtonModifier.Alpha] = (a, new Part[ButtonRows, ButtonColumns]
+                {
+                    { b, c, d, e, f },
+                    { g, h, i, j, k },
+                    { l, m, n, o, p },
+                    { q, r, s, t, u },
+                    { v, w, x, y, z }
+                }),
+                [ButtonModifier.Shift | ButtonModifier.Alpha] = (A, new Part[ButtonRows, ButtonColumns]
+                {
+                    { B, C, D, E, F },
+                    { G, H, I, J, K },
+                    { L, M, N, O, P },
+                    { Q, R, S, T, U },
+                    { V, W, Part.X, Part.Y, Z }
+                }),
+                [ButtonModifier.Alt] = (Atan2, new Part[ButtonRows, ButtonColumns]
+                {
+                    { Sin, Asin, Sinh, Asinh, Empty },
+                    { Cos, Acos, Cosh, Acosh, Empty },
+                    { Tan, Atan, Tanh, Atanh, Empty },
+                    { Empty, Sinc, Empty, Empty, Empty },
+                    { Sum, Product, Diff, Integrate, Defint }
+                }),
+                [ButtonModifier.Shift | ButtonModifier.Alt] = (Step, new Part[ButtonRows, ButtonColumns]
+                {
+                    { Sec, Asec, Sech, Asech, Erf },
+                    { Csc, Acsc, Csch, Acsch, Rect },
+                    { Cot, Acot, Coth, Acoth, Tri },
+                    { Si, Ci, Shi, Chi, Ei },
+                    { Laplace, Smpvar, Variance, Smpstdev, Stdev }
+                }),
+                [ButtonModifier.Alt | ButtonModifier.Alpha] = (NotEqual, new Part[ButtonRows, ButtonColumns]
+                {
+                    { LessThan, LessEqual, Equal, GreaterEqual, GreaterThan },
+                    { Empty, Empty, Empty, Empty, Empty },
+                    { IMatrix, Empty, Empty, Empty, Empty },
+                    { Matrix, Matget, Matset, Invert, Transpose },
+                    { Vector, Vecget, Vecset, Cross, Dot }
+                })
+            };
+        readonly Button[,] Buttons;
         bool DisplayDecimals = true;
         bool DoEvaluate = true;
         public Logic_Symbolics()
@@ -118,55 +137,19 @@ namespace InnoTecheLearning.Pages
                 { B40, B41, B42, B43, B44 },
                 { B50, B51, B52, B53, B54 }
             };
-            EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) =>
-            {
-                ButtonMod ^= Modifier;
-                switch (ButtonMod)
-                {
-                    case ButtonModifier.Norm:
-                        Mapper = WhenNorm;
-                        break;
-                    case ButtonModifier.Shift:
-                        Mapper = WhenShift;
-                        break;
-                    case ButtonModifier.Alpha:
-                        Mapper = WhenAlpha;
-                        break;
-                    case ButtonModifier.Alt:
-                        Mapper = WhenAlt;
-                        break;
-                    case ButtonModifier.Shift | ButtonModifier.Alpha:
-                        Mapper = WhenShiftAlpha;
-                        break;
-                    case ButtonModifier.Shift | ButtonModifier.Alt:
-                        Mapper = WhenShiftAlt;
-                        break;
-                    case ButtonModifier.Alt | ButtonModifier.Alpha:
-                        Mapper = WhenAltAlpha;
-                        break;
-                    case ButtonModifier.Shift | ButtonModifier.Alt | ButtonModifier.Alpha:
-                    default:
-                        Mapper = WhenInvalid;
-                        break;
-                }
-                if (ButtonMod.HasFlag(Modifier)) (sender as VisualElement)?.TranslateTo(0, 10, 0);
-                else (sender as VisualElement)?.TranslateTo(0, 0, 0);
-            };
+            EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) => ButtonMod ^= Modifier;
             EventHandler ButtonClicked = (sender, e) =>
             {
                 var (x, y) = Utils.IndicesOf(Buttons, (Button)sender);
-                In.Text += x == -1 && y == -1 ? Mapper.Item1.FullName : Mapper.Item2[x, y].FullName;
+                In.Text += 
+                    x == -1 && y == -1 ? GetMapper(ButtonMod).Item1.FullName : GetMapper(ButtonMod).Item2[x, y].FullName;
                 ButtonMod = ButtonModifier.Norm;
-                Shift.TranslateTo(0, 0, 0);
-                Alpha.TranslateTo(0, 0, 0);
-                Alt.TranslateTo(0, 0, 0);
-                Mapper = WhenNorm;
             };
             EventHandler ButtonLongPressed = (sender, e) => 
             {
                 var button = (Button)sender;
                 var (x, y) = Utils.IndicesOf(Buttons, button);
-                var Part = x == -1 && y == -1 ? Mapper.Item1 : Mapper.Item2[x, y];
+                var Part = x == -1 && y == -1 ? GetMapper(ButtonMod).Item1 : GetMapper(ButtonMod).Item2[x, y];
                 if (Part.DescriptionContent != null) DisplayAlert(Part.DescriptionTitle, Part.DescriptionContent, "OK");
             };
             #endregion
@@ -177,9 +160,12 @@ namespace InnoTecheLearning.Pages
             Shift.Clicked += ModClicked(ButtonModifier.Shift);
             Alpha.Clicked += ModClicked(ButtonModifier.Alpha);
             Alt.Clicked += ModClicked(ButtonModifier.Alt);
-            Back.Clicked += (sender, e) => 
-                In.Text = ButtonMod != ButtonModifier.Shift && In.Text?.Length > 0 ?
-                     In.Text.Remove(In.Text.Length - 1) : string.Empty;
+            Back.Clicked += (sender, e) =>
+                {
+                    In.Text = !ButtonMod.HasFlag(ButtonModifier.Shift) && In.Text?.Length > 0 ?
+                       In.Text.Remove(In.Text.Length - 1) : string.Empty;
+                    ButtonMod = ButtonModifier.Norm;
+                };
 
             B03.Clicked += ButtonClicked;
             Utils.LongPress.Register(B03, ButtonLongPressed);
@@ -191,7 +177,7 @@ namespace InnoTecheLearning.Pages
                 }
 
             Calculate.Clicked += Calculate_Clicked;
-            Utils.LongPress.Register(Calculate, async (sender, e) => Out.Text = await (await Current).Evaluate(In.Text));
+            //Utils.LongPress.Register(Calculate, async (sender, e) => Out.Text = await (await Current).Evaluate(In.Text));
             Display.Clicked += (sender, e) => Display.Text = (DisplayDecimals = !DisplayDecimals) ? "Display Decimals" : "Display Fractions";
             Evaluate.Clicked += (sender, e) => Evaluate.Text = (DoEvaluate = !DoEvaluate) ? "Evaluate Symbols" : "Keep Symbols";
 

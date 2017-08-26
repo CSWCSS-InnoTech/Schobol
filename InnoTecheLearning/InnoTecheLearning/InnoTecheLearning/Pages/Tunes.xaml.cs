@@ -49,8 +49,15 @@ namespace InnoTecheLearning.Pages
                     AllButtons[k].BackgroundColor = PlayingColor;
         
                     Player1.Play(new Utils.SoundFile(Utils.Resources.GetStream($"Sounds.{Utils.GetFileName((Utils.Sounds)k)}")));
-                    Task.Run(async () => { await Task.Delay(500); await Player2.Play(new Utils.SoundFile(Utils.Resources.GetStream($"Sounds.{Utils.GetFileName((Utils.Sounds)k)}"))); Device.StartTimer(TimeSpan.FromSeconds(1), () => { Player2.AudioPlayer.Seek(TimeSpan.Zero); return !StopPlaying; }); });
-                    Device.StartTimer(TimeSpan.FromSeconds(1), () => { Player1.AudioPlayer.Seek(TimeSpan.Zero); return !StopPlaying; });
+                    Task.Run(async () => 
+                    {
+                        await Task.Delay(500);
+                        await Player2?.Play(new Utils.SoundFile(Utils.Resources.GetStream(
+                            $"Sounds.{Utils.GetFileName((Utils.Sounds)k)}")));
+                        Device.StartTimer(TimeSpan.FromSeconds(1), () => 
+                        { Player2?.AudioPlayer.Seek(TimeSpan.Zero); return !StopPlaying; }); });
+                    Device.StartTimer(TimeSpan.FromSeconds(1), () => {
+                        Player1?.AudioPlayer.Seek(TimeSpan.Zero); return !StopPlaying; });
                 };
             }
 
@@ -58,8 +65,8 @@ namespace InnoTecheLearning.Pages
             {
                 for (byte j = 0; j < AllButtons.Length; j++) AllButtons[j].BackgroundColor = OriginalColor;
                 StopPlaying = true;
-                Player1.Stop();
-                Player2.Stop();
+                Player1?.Stop();
+                Player2?.Stop();
             };
             /*
             Volume.ValueChanged += (sender, e) =>
@@ -71,8 +78,12 @@ namespace InnoTecheLearning.Pages
 
         protected override void OnDisappearing()
         {
-            Player1?.Dispose();
-            Player2?.Dispose();
+            try
+            {
+                Player1.Dispose();
+                Player2.Dispose();
+            }
+            catch { }
             base.OnDisappearing();
         }
 	}
