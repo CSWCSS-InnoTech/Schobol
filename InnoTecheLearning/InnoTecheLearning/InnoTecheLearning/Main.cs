@@ -300,7 +300,6 @@ namespace InnoTecheLearning
                 };
             }
         }
-        public const string Cursor = "‸";
         string Calculator_Value_ = "";
         string Calculator_Value { get => Calculator_Value_; set { Calculator_Display_Dirty = true; Calculator_Value_ = value; } }
         int Calculator_Cursor_ = 0;

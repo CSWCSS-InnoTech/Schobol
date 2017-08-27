@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace InnoTecheLearning
 {
@@ -29,6 +30,7 @@ namespace InnoTecheLearning
             public string FullName { get; }
 
             public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty);
+            public static readonly NerdamerPart Space = new NerdamerPart(" ");
             public static readonly NerdamerPart Percent = new NerdamerPart("%");
             public static readonly NerdamerPart Comma = new NerdamerPart(",");
             public static readonly NerdamerPart LeftSquare = new NerdamerPart("[");
@@ -195,6 +197,18 @@ namespace InnoTecheLearning
             public static readonly NerdamerPart Vecset = new NerdamerPart("vecset(");
             public static readonly NerdamerPart Cross = new NerdamerPart("cross(");
             public static readonly NerdamerPart Dot = new NerdamerPart("dot(");
+
+            public static readonly Regex Splitter =
+                new Regex(string.Join("|",
+                    typeof(NerdamerPart).GetTypeInfo()
+                    .DeclaredFields
+                    .Where(x => x.FieldType == typeof(NerdamerPart) && x.Name != nameof(Empty)) //No empty matches
+                    .Select(x => Regex.Escape(((NerdamerPart)x.GetValue(null)).FullName)) //Assuming all fields of type NerdamerPart are static
+                    .OrderByDescending(x => x.Length) //Regexes test from left to right; 
+                    .Append(".")));                   //e.g. Matches("transpose((i))") => 
+                    //No chars left out               //MatchCollection(5) { [transpose(], [(], [i], [)], [)] }
+                    //e.g. Matches("transpose(1234河3守a化)") => 
+                    //MatchCollection(11) { [transpose(], [1], [2], [3], [4], [河], [3], [守], [a], [化], [)] }
         }
     }
 }

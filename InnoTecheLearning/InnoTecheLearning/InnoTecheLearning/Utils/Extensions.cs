@@ -333,7 +333,7 @@ namespace InnoTecheLearning
         {
             public PrependIterator(IEnumerable<T> ie, T Item)
             {
-                UnderIterator = 
+                UnderIterator =
                     (Under = ie ?? throw new ArgumentNullException(nameof(ie)))
                     .GetEnumerator() ?? throw new NullReferenceException($"{nameof(ie)}.GetEnumerator() returned null.");
                 Prepend = Item;
@@ -367,9 +367,51 @@ namespace InnoTecheLearning
                 }
             }
 
-            public void Reset() => UnderIterator = Under.GetEnumerator();
-
+            public void Reset() { UnderIterator.Reset(); Prepended = false; }
         }
         
+        public static IEnumerable<T> Append<T>(this IEnumerable<T> ie, T Item) => new AppendIterator<T>(ie, Item);
+        class AppendIterator<T> : IEnumerable<T>, IEnumerator<T>
+        {
+            public AppendIterator(IEnumerable<T> ie, T Item)
+            {
+                UnderIterator =
+                    (Under = ie ?? throw new ArgumentNullException(nameof(ie)))
+                    .GetEnumerator() ?? throw new NullReferenceException($"{nameof(ie)}.GetEnumerator() returned null.");
+                Append = Item;
+            }
+            IEnumerable<T> Under;
+            IEnumerator<T> UnderIterator;
+            T Append;
+            bool Ending;
+
+            object System.Collections.IEnumerator.Current => Current;
+            public T Current { get; private set; }
+
+            public void Dispose() => UnderIterator.Dispose();
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+            public IEnumerator<T> GetEnumerator() => this;
+
+            public bool MoveNext()
+            {
+                if (Ending) return false;
+                bool Return = UnderIterator.MoveNext();
+                if (Return)
+                {
+                    Current = UnderIterator.Current;
+                    return true;
+                }
+                else
+                {
+                    Current = Append;
+                    Ending = true;
+                    return true;
+                }
+            }
+
+            public void Reset() { UnderIterator.Reset(); Ending = false; }
+
+        }
     }
 }

@@ -123,6 +123,7 @@ namespace InnoTecheLearning
         #endregion
 
         public const char Error = 'ⓧ'; //⮾ 
-        
+        public const string Cursor = "‸";
+
     }
 }

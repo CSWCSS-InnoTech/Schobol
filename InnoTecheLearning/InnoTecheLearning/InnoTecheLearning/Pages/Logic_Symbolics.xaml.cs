@@ -19,6 +19,7 @@ namespace InnoTecheLearning.Pages
         //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
         const int ButtonRows = 5;
         const int ButtonColumns = 5;
+        #region Button Modifiers
         [System.Flags] enum ButtonModifier : byte
         {
             Norm = 0,
@@ -32,29 +33,33 @@ namespace InnoTecheLearning.Pages
             get => _ButtonMod;
             set
             {
-                _ButtonMod = value;
                 B03.Text = GetMapper(value).Item1.Name;
                 for (int i = 0; i < ButtonRows; i++)
                     for (int j = 0; j < ButtonColumns; j++)
                     {
                         Buttons[i, j].Text = GetMapper(value).Item2[i, j].Name;
                     };
-                if (value.HasFlag(ButtonModifier.Shift))
-                {
-                    Back.Text = "CLR";
-                    Shift.TranslateTo(0, 10, 0);
-                }
-                else
-                {
-                    Back.Text = "←";
-                    Shift.TranslateTo(0, 0, 0);
-                }
-                if (value.HasFlag(ButtonModifier.Alpha)) Alpha.TranslateTo(0, 10, 0);
-                else Alpha.TranslateTo(0, 0, 0);
-                if (value.HasFlag(ButtonModifier.Alt)) Alt.TranslateTo(0, 10, 0);
-                else Alt.TranslateTo(0, 0, 0);
+
+                if ((_ButtonMod ^ value).HasFlag(ButtonModifier.Shift))
+                    if (value.HasFlag(ButtonModifier.Shift))
+                    {
+                        Back.Text = "CLR";
+                        Shift.TranslateTo(0, 10, 0);
+                    }
+                    else
+                    {
+                        Back.Text = "←";
+                        Shift.TranslateTo(0, 0, 0);
+                    }
+                if ((_ButtonMod ^ value).HasFlag(ButtonModifier.Alpha))
+                    Alpha.TranslateTo(0, value.HasFlag(ButtonModifier.Alpha) ? 10 : 0, 0);
+                if ((_ButtonMod ^ value).HasFlag(ButtonModifier.Alt))
+                    Alt.TranslateTo(0, value.HasFlag(ButtonModifier.Alt) ? 10 : 0, 0);
+                _ButtonMod = value;
             }
         }
+#endregion
+        #region Mappers
         static readonly (Part, Part[,]) Invalid = (Empty, Utils.Duplicate(Empty, ButtonRows, ButtonColumns));
         static (Part, Part[,]) GetMapper(ButtonModifier m)
         {
@@ -121,6 +126,7 @@ namespace InnoTecheLearning.Pages
                     { Vector, Vecget, Vecset, Cross, Dot }
                 })
             };
+#endregion
         readonly Button[,] Buttons;
         bool DisplayDecimals = true;
         bool DoEvaluate = true;
@@ -155,6 +161,10 @@ namespace InnoTecheLearning.Pages
             #endregion
 
             #region Wiring up
+            In.TextChanged += (sender, e) => 
+            {
+
+            };
             In.Completed += Calculate_Clicked;
 
             Shift.Clicked += ModClicked(ButtonModifier.Shift);
