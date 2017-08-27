@@ -161,10 +161,6 @@ namespace InnoTecheLearning.Pages
             #endregion
 
             #region Wiring up
-            In.TextChanged += (sender, e) => 
-            {
-
-            };
             In.Completed += Calculate_Clicked;
 
             Shift.Clicked += ModClicked(ButtonModifier.Shift);
@@ -226,7 +222,6 @@ Globals:
         }
 
         #region Talking to the Engine
-        public static List<Jint.Runtime.Debugger.BreakPoint> Breakpoints = new List<Jint.Runtime.Debugger.BreakPoint>();
         async Task Eval()
         {
             Out.Text = await (await Current).Evaluate(string.Concat(
