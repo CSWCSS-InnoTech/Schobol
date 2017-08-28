@@ -13,37 +13,37 @@ namespace InnoTecheLearning
         {
             public delegate void ButtonOnClick(ref Button sender, EventArgs e);
             public static Button Button(Text Text, Action OnClick,
-                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                 Color BackColor = default, Color TextColor = default) =>
                 Button(Text, (ref Button sender, EventArgs e) => OnClick(), BackColor, TextColor);
             public static Button Button(Text Text, Action OnClick, Size Size,
-                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                 Color BackColor = default, Color TextColor = default) =>
                 Button(Text, (ref Button sender, EventArgs e) => OnClick(), Size,
                     BackColor, TextColor);
             public static Button Button(Text Text, Func<System.Threading.Tasks.Task> OnClickAsync,
-                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                 Color BackColor = default, Color TextColor = default) =>
                 Button(Text, (ref Button sender, EventArgs e) => System.Threading.Tasks.Task.Run(OnClickAsync),
                     BackColor, TextColor);
             public static Button Button(Text Text, Func<System.Threading.Tasks.Task> OnClickAsync, Size Size,
-                 Color BackColor = default(Color), Color TextColor = default(Color)) =>
+                 Color BackColor = default, Color TextColor = default) =>
                 Button(Text, (ref Button sender, EventArgs e) => System.Threading.Tasks.Task.Run(OnClickAsync), Size, 
                     BackColor, TextColor);
             public static Button Button(Text Text, ButtonOnClick OnClick, Color BackColor =
-                default(Color), Color TextColor = default(Color))
+                default, Color TextColor = default)
             {
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.Silver;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
                 Button Button = new Button { Text = Text, TextColor = TextColor, BackgroundColor = BackColor };
                 Button.Clicked += (sender, e) => { OnClick(ref Button, e); };
                 return Button;
             }
             public static Button Button(Text Text, ButtonOnClick OnClick, Size Size,
-                 Color BackColor = default(Color), Color TextColor = default(Color))
+                 Color BackColor = default, Color TextColor = default)
             {
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.Silver;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
                 Button Button = new Button
                 {
@@ -60,11 +60,11 @@ namespace InnoTecheLearning
             {   public ExpressionEventArgs(Expressions Expression) : base() { this.Expression = Expression; }
                 public Expressions Expression { get; } }
             public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick, 
-                Color BackColor = default(Color), Color TextColor = default(Color))
+                Color BackColor = default, Color TextColor = default)
             {
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.Silver;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
                 Button Button = new Button { Text = Expression.AsString(),
                     TextColor = TextColor, BackgroundColor = BackColor };
@@ -72,11 +72,11 @@ namespace InnoTecheLearning
                 return Button;
             }
             public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick, 
-                Size Size, Color BackColor = default(Color), Color TextColor = default(Color))
+                Size Size, Color BackColor = default, Color TextColor = default)
             {
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.Silver;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
                 Button Button = new Button
                 {
@@ -90,11 +90,11 @@ namespace InnoTecheLearning
                 return Button;
             }
             public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick,
-                Text Text, Color BackColor = default(Color), Color TextColor = default(Color))
+                Text Text, Color BackColor = default, Color TextColor = default)
             {
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.Silver;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
                 Button Button = new Button
                 {
@@ -106,11 +106,11 @@ namespace InnoTecheLearning
                 return Button;
             }
             public static Button Button(Expressions Expression, EventHandler<ExpressionEventArgs> OnClick,
-                Text Text, Size Size, Color BackColor = default(Color), Color TextColor = default(Color))
+                Text Text, Size Size, Color BackColor = default, Color TextColor = default)
             {
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.Silver;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
                 Button Button = new Button
                 {
@@ -174,7 +174,7 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.Fill
                 };
             }
-            public static Label FormattedLabel(FormattedString Text, Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
+            public static Label FormattedLabel(FormattedString Text, Color BackColor = default, NamedSize Size = NamedSize.Default)
             {
                 return new Label
                 {
@@ -186,12 +186,12 @@ namespace InnoTecheLearning
                     HorizontalOptions = LayoutOptions.Fill
                 };
             }
-            public static Label BoldLabel(Text Text, Color TextColor = default(Color), 
-                Color BackColor = default(Color), NamedSize Size = NamedSize.Default)
+            public static Label BoldLabel(Text Text, Color TextColor = default, 
+                Color BackColor = default, NamedSize Size = NamedSize.Default)
             {
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Black;
-                if (TextColor == default(Color))
+                if (TextColor == default)
                     TextColor = Color.Default;
                 return new Label
                 {
@@ -258,10 +258,10 @@ namespace InnoTecheLearning
                     };
                 }
             }
-            public static StackLayout ChangelogView(Main Instance, Color BackColor = default(Color))
+            public static StackLayout ChangelogView(Main Instance, Color BackColor = default)
             {
                 ScrollView Changelog = Create.Changelog;
-                if (BackColor == default(Color))
+                if (BackColor == default)
                     BackColor = Color.White;
                 return new StackLayout
                 {
@@ -412,7 +412,7 @@ namespace InnoTecheLearning
                 return Return;
             }
             public static Entry Entry(Text Text, Text Placeholder, Func<string> ReadOnly = null, Keyboard Keyboard = null,
-                Color TextColor = default(Color), Color PlaceholderColor = default(Color), Color BackColor = default(Color))
+                Color TextColor = default, Color PlaceholderColor = default, Color BackColor = default)
             {
                 Entry Return = new Entry
                 {
@@ -420,15 +420,15 @@ namespace InnoTecheLearning
                     Placeholder = Placeholder,
                     Keyboard = Keyboard ?? Keyboard.Default,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    TextColor = TextColor == default(Color) ? Color.Black : TextColor,
-                    PlaceholderColor = PlaceholderColor == default(Color) ? Color.Silver : PlaceholderColor,
-                    BackgroundColor = BackColor == default(Color) ? Color.Default : BackColor
+                    TextColor = TextColor == default ? Color.Black : TextColor,
+                    PlaceholderColor = PlaceholderColor == default ? Color.Silver : PlaceholderColor,
+                    BackgroundColor = BackColor == default ? Color.Default : BackColor
                 };
                 if(ReadOnly!= null) Return.TextChanged += TextChanged(ReadOnly);
                 return Return;
             }
             public static Slider Slider(EventHandler<ValueChangedEventArgs> ValueChanged, 
-               int Minimum = 0, int Maximum = 100, int Position = 100, Color BackColor = default(Color))
+               int Minimum = 0, int Maximum = 100, int Position = 100, Color BackColor = default)
             {
                 var Return = new Slider { Minimum = Minimum, Maximum = Maximum, Value = Position,
                     BackgroundColor = BackColor, HorizontalOptions = LayoutOptions.FillAndExpand };

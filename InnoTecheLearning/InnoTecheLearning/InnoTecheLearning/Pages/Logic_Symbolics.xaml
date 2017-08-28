@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Name="Page"
+<TabbedPage x:Name="Page"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="InnoTecheLearning.Pages.Logic_Symbolics"
              xmlns:local="clr-namespace:InnoTecheLearning"
-             Title="eLearn Logic (Symbolics)" StyleId="eLearn Logic (Symbolics)">
-    <ContentPage.Content>
+             Title="eLearn Logic (Symbolics)" 
+            StyleId="eLearn Logic (Symbolics)">
+    <ContentPage Title="Calculator">
         <StackLayout BackgroundColor="White">
             <Entry x:Name="In" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
             <!--RowDefinitions="1,1,1,1,1,1" ColumnDefinitions="{local:GridColumn 1,1,1,1,1}"-->
@@ -72,5 +73,14 @@
                 <Button x:Name="OutCopy" Text="Copy" />
             </StackLayout>
         </StackLayout>
-    </ContentPage.Content>
-</ContentPage>
+    </ContentPage>
+    <ContentPage Title="History">
+        <ListView>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text=""/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage>
+</TabbedPage>

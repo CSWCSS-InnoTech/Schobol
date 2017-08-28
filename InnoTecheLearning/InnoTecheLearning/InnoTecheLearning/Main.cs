@@ -353,22 +353,22 @@ namespace InnoTecheLearning
                     Calculator_Cursor++;
                 };
         public void Append(Grid.IGridList<View> List, Expressions Expression,
-            Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            Color BackColor = default, Color TextColor = default) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), BackColor, TextColor));
         public void Append(Grid.IGridList<View> List, Expressions Expression,
-            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            int Left, int Top, Color BackColor = default, Color TextColor = default) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), BackColor, TextColor), Left, Top);
         public void Append(Grid.IGridList<View> List, Expressions Expression,
-            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            int Left, int Right, int Top, int Bottom, Color BackColor = default, Color TextColor = default) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), BackColor, TextColor), Left, Right, Top, Bottom);
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            Color BackColor = default, Color TextColor = default) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor));
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            int Left, int Top, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            int Left, int Top, Color BackColor = default, Color TextColor = default) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Top);
         public void Append(Grid.IGridList<View> List, Expressions Expression, Text Name,
-            int Left, int Right, int Top, int Bottom, Color BackColor = default(Color), Color TextColor = default(Color)) =>
+            int Left, int Right, int Top, int Bottom, Color BackColor = default, Color TextColor = default) =>
             List.Add(Button(Expression, Append_MethodGen(Expression), Name, BackColor, TextColor), Left, Right, Top, Bottom);
         #endregion
         public StackLayout Calculator

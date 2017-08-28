@@ -13,7 +13,7 @@ using Xamarin.Forms.Xaml;
 namespace InnoTecheLearning.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Skip)]
-    public partial class Logic_Symbolics : ContentPage
+    public partial class Logic_Symbolics : TabbedPage
     {
         //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate
         //Number suffix reference: http://stackoverflow.com/questions/7898310/using-regex-to-balance-match-parenthesis
@@ -134,7 +134,7 @@ namespace InnoTecheLearning.Pages
         {
             #region Declarations
             InitializeComponent();
-
+            
             Buttons = new Button[ButtonRows, ButtonColumns]
             {
                 { B10, B11, B12, B13, B14 },
@@ -190,26 +190,11 @@ namespace InnoTecheLearning.Pages
             Out.Focused += (sender, e) => Out.Unfocus();
             OutCopy.Clicked += (sender, e) => Utils.ClipboardText = Out.Text;
 
+
             /*
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
             Debug.Clicked += Debug_Clicked;
             */
-#if false
-            Current.GetAwaiter().OnCompleted(() => Current.Result.Break += (sender, e) =>
-            {
-                Device.BeginInvokeOnMainThread(() => DisplayAlert("Jint Breakpoint Reached",
-$@"Current Statement:
-{e.CurrentStatement.Location.Source}
-Call Stack:
-{e.CallStack}
-Locals:
-{e.Locals.Select(x => x.ToString()).Aggregate((prev, current) => $"{prev}\n{current}")}
-Globals:
-{e.Globals.Select(x => x.ToString()).Aggregate((prev, current) => $"{prev}\n{current}")}",
-"Continue"));
-                return Jint.Runtime.Debugger.StepMode.None;
-            });
-#endif
             #endregion
         }
 
@@ -246,21 +231,6 @@ Globals:
             await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
             return Return;
         });
-#if false
-        ValueTask<Engine> Current = CreateEngineAsync();
-        static ValueTask<Engine> CreateEngineAsync() => new ValueTask<Engine>(() =>
-            new Engine()
-#warning Workaround for https://bugzilla.xamarin.com/show_bug.cgi?id=58995, used at nerdamer.core.js:7501
-                .SetValue("___AND", new System.Func<double, double, int>((x, y) => (int)x & (int)y))
-                .Execute(Utils.Resources.GetString("nerdamer.core.js"))
-                .Execute(Utils.Resources.GetString("Algebra.js"))
-                .Execute(Utils.Resources.GetString("Calculus.js"))
-                .Execute(Utils.Resources.GetString("Solve.js"))
-                .Execute(Utils.Resources.GetString("Extra.js"))
-                .Execute("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')")
-                .With((ref Engine x) => x.BreakPoints.AddRange(Breakpoints))
-        );
-#endif
         #endregion
     }
 }
