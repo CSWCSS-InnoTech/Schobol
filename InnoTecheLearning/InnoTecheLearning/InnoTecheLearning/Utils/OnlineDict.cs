@@ -72,7 +72,7 @@ namespace InnoTecheLearning
                 [DataMember] public string url;
                 [DataMember] public List<Result> results;
 
-                public IEnumerable<Entry> data = default(IEnumerable<Entry>);
+                public IEnumerable<Entry> data = default;
                 public override IEnumerable<Entry> Entries =>
                     data == default(IEnumerable<Entry>) ?
                     data = results.Select(r => new Entry(r.headword, r.part_of_speech, r.senses.Single().translation)) : data;

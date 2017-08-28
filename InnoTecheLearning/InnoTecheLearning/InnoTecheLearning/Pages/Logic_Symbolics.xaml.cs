@@ -207,7 +207,7 @@ namespace InnoTecheLearning.Pages
         }
 
         #region Talking to the Engine
-        async Task Eval()
+        async ValueTask<Utils.Unit> Eval()
         {
             Out.Text = await (await Current).Evaluate(string.Concat(
                 "try{",
@@ -216,6 +216,7 @@ namespace InnoTecheLearning.Pages
                     DisplayDecimals ? ".text()" : ".toString()",
                 "}catch(e){'", Utils.Error, "'+(e.message?e.message:e)}"
                 ));
+            return Utils.Unit.Default;
         }
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
 
@@ -231,6 +232,11 @@ namespace InnoTecheLearning.Pages
             await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
             return Return;
         });
+
+        ValueTask<string> History
+        {
+            get { async ValueTask<string> Return() => await (await Current).Evaluate("nerdamer."); return Return(); }
+        }
         #endregion
     }
 }
