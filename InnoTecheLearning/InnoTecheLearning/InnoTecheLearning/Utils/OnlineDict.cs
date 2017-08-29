@@ -21,14 +21,14 @@ namespace InnoTecheLearning
     {
         //http://json2csharp.com/
         //public ([^ ]+) ([^ ]+) { get; set; }
-        //[DataMember] public $1 $2;
+        //public $1 $2;
         public static class OnlineDict
         {
-            [DataContract] public struct Entry
+            public struct Entry
             {
-                [DataMember] public string Headword;
-                [DataMember] public string PoS; //Or Pinyin
-                [DataMember] public string Translation;
+                public string Headword;
+                public string PoS; //Or Pinyin
+                public string Translation;
                 public Entry(string Headword, string PoS, string Translation)
                 {
                     this.Headword = Headword;
@@ -36,41 +36,41 @@ namespace InnoTecheLearning
                     this.Translation = Translation;
                 }
             }
-            [DataContract] public abstract class DictionaryResponse
+            public abstract class DictionaryResponse
             {
                 internal DictionaryResponse() { }
                 public abstract IEnumerable<Entry> Entries { get; }
             }
-            [DataContract] public sealed class PearsonDictionaryResponse : DictionaryResponse
+            public sealed class PearsonDictionaryResponse : DictionaryResponse
             {
                 public sealed class Sens
                 {
-                    [DataMember] public string translation;
-                    [DataMember] public string synonym;
-                    [DataMember] public string lexical_unit;
+                    public string translation;
+                    public string synonym;
+                    public string lexical_unit;
                 }
 
                 public sealed class Result
                 {
-                    [DataMember] public List<string> datasets;
-                    [DataMember] public string headword;
-                    [DataMember] public string id;
-                    [DataMember] public string part_of_speech;
-                    [DataMember] public List<Sens> senses;
-                    [DataMember] public string url;
+                    public List<string> datasets;
+                    public string headword;
+                    public string id;
+                    public string part_of_speech;
+                    public List<Sens> senses;
+                    public string url;
 
                     public override bool Equals(object obj) => obj is Result R ? R.id == id : false;
                     public override int GetHashCode() => unchecked(headword.GetHashCode() / id.GetHashCode() - url.GetHashCode());
                     public static bool operator ==(Result R1, Result R2) => R1.id == R2.id;
                     public static bool operator !=(Result R1, Result R2) => R1.id != R2.id;
                 }
-                [DataMember] public int status;
-                [DataMember] public int offset;
-                [DataMember] public int limit;
-                [DataMember] public int count;
-                [DataMember] public int total;
-                [DataMember] public string url;
-                [DataMember] public List<Result> results;
+                public int status;
+                public int offset;
+                public int limit;
+                public int count;
+                public int total;
+                public string url;
+                public List<Result> results;
 
                 public IEnumerable<Entry> data = default;
                 public override IEnumerable<Entry> Entries =>
@@ -78,41 +78,41 @@ namespace InnoTecheLearning
                     data = results.Select(r => new Entry(r.headword, r.part_of_speech, r.senses.Single().translation)) : data;
             }
 
-            [DataContract] public sealed class PearsonDictionaryIDResponse
+            public sealed class PearsonDictionaryIDResponse
             {
                 public sealed class GramaticalInfo
                 {
-                    [DataMember] public string type;
+                    public string type;
                 }
 
                 public sealed class Pronunciation
                 {
-                    [DataMember] public string ipa;
-                    [DataMember] public string kk;
+                    public string ipa;
+                    public string kk;
                 }
 
                 public sealed class Sens
                 {
-                    [DataMember] public string translation;
-                    [DataMember] public string lexical_unit;
+                    public string translation;
+                    public string lexical_unit;
                 }
 
                 public sealed class Result
                 {
-                    [DataMember] public List<string> datasets;
-                    [DataMember] public GramaticalInfo gramatical_info;
-                    [DataMember] public string headword;
-                    [DataMember] public string id;
-                    [DataMember] public string part_of_speech;
-                    [DataMember] public List<Pronunciation> pronunciations;
-                    [DataMember] public List<Sens> senses;
-                    [DataMember] public string url;
+                    public List<string> datasets;
+                    public GramaticalInfo gramatical_info;
+                    public string headword;
+                    public string id;
+                    public string part_of_speech;
+                    public List<Pronunciation> pronunciations;
+                    public List<Sens> senses;
+                    public string url;
                 }
-                [DataMember] public int status;
-                [DataMember] public string type;
-                [DataMember] public string id;
-                [DataMember] public string url;
-                [DataMember] public Result result;
+                public int status;
+                public string type;
+                public string id;
+                public string url;
+                public Result result;
             }
 
             public sealed class PedosaResponse : DictionaryResponse
@@ -135,11 +135,8 @@ namespace InnoTecheLearning
                 return Data;
             }
 
-            public static T JsonDeserialize<T>(string Data)
-            {
-                using (var ms = new MemoryStream(UTF8.GetBytes(Data)))
-                    return (T)new DataContractJsonSerializer(typeof(T)).ReadObject(ms);
-            }
+            public static T JsonDeserialize<T>(string Data) =>
+                Newtonsoft.Json.JsonConvert.DeserializeObject<T>(Data);
 
             public static PedosaResponse
                 PedosaDeserialize(string Data, string Headword)

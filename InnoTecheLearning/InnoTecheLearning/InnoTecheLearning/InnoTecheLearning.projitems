@@ -57,7 +57,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Text.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Unit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Utils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ValueTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Change.log" />

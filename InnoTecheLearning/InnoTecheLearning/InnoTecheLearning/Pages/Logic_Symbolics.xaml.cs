@@ -221,7 +221,8 @@ namespace InnoTecheLearning.Pages
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
 
         ValueTask<Utils.SymbolicsEngine> Current = CreateEngineAsync();
-        static ValueTask<Utils.SymbolicsEngine> CreateEngineAsync() => new ValueTask<Utils.SymbolicsEngine>(async () =>
+        static ValueTask<Utils.SymbolicsEngine> CreateEngineAsync() => new ValueTask<Utils.SymbolicsEngine>(
+            Task.Run(async () =>
         {
             var Return = new Utils.SymbolicsEngine();
             await Return.Evaluate(Utils.Resources.GetString("nerdamer.core.js"));
@@ -231,11 +232,17 @@ namespace InnoTecheLearning.Pages
             await Return.Evaluate(Utils.Resources.GetString("Extra.js"));
             await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
             return Return;
-        });
+        }));
 
-        ValueTask<string> History
+        ValueTask<Dictionary<string, string>> History
         {
-            get { async ValueTask<string> Return() => await (await Current).Evaluate("nerdamer."); return Return(); }
+            get
+            {
+                async ValueTask<Dictionary<string, string>> Return() => 
+                    Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>
+                        (await (await Current).Evaluate("nerdamer.getVars()"));
+                return Return();
+            }
         }
         #endregion
     }
