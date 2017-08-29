@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Console.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Create.Images.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Dictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\HeldPress.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageResourceExtension.cs" />
