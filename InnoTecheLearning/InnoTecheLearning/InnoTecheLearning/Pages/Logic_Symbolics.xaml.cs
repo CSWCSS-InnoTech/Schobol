@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using EventHandler = System.EventHandler;
@@ -58,7 +59,7 @@ namespace InnoTecheLearning.Pages
                 _ButtonMod = value;
             }
         }
-#endregion
+        #endregion
         #region Mappers
         static readonly (Part, Part[,]) Invalid = (Empty, Utils.Duplicate(Empty, ButtonRows, ButtonColumns));
         static (Part, Part[,]) GetMapper(ButtonModifier m)
@@ -126,7 +127,7 @@ namespace InnoTecheLearning.Pages
                     { Vector, Vecget, Vecset, Cross, Dot }
                 })
             };
-#endregion
+        #endregion
         readonly Button[,] Buttons;
         bool DisplayDecimals = true;
         bool DoEvaluate = true;
@@ -134,7 +135,7 @@ namespace InnoTecheLearning.Pages
         {
             #region Declarations
             InitializeComponent();
-            
+
             Buttons = new Button[ButtonRows, ButtonColumns]
             {
                 { B10, B11, B12, B13, B14 },
@@ -143,15 +144,16 @@ namespace InnoTecheLearning.Pages
                 { B40, B41, B42, B43, B44 },
                 { B50, B51, B52, B53, B54 }
             };
+            History = CreateHistoryAsync();
             EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) => ButtonMod ^= Modifier;
             EventHandler ButtonClicked = (sender, e) =>
             {
                 var (x, y) = Utils.IndicesOf(Buttons, (Button)sender);
-                In.Text += 
+                In.Text +=
                     x == -1 && y == -1 ? GetMapper(ButtonMod).Item1.FullName : GetMapper(ButtonMod).Item2[x, y].FullName;
                 ButtonMod = ButtonModifier.Norm;
             };
-            EventHandler ButtonLongPressed = (sender, e) => 
+            EventHandler ButtonLongPressed = (sender, e) =>
             {
                 var button = (Button)sender;
                 var (x, y) = Utils.IndicesOf(Buttons, button);
@@ -220,7 +222,7 @@ namespace InnoTecheLearning.Pages
         }
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
 
-        ValueTask<Utils.SymbolicsEngine> Current = CreateEngineAsync();
+        readonly ValueTask<Utils.SymbolicsEngine> Current = CreateEngineAsync();
         static ValueTask<Utils.SymbolicsEngine> CreateEngineAsync() => new ValueTask<Utils.SymbolicsEngine>(
             Task.Run(async () =>
         {
@@ -234,17 +236,34 @@ namespace InnoTecheLearning.Pages
             return Return;
         }));
 
-        
-        ValueTask<Dictionary<string, string>> History
-        {
-            get
-            {
-                async ValueTask<Dictionary<string, string>> Return() => 
-                    Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>
-                        (await (await Current).Evaluate("nerdamer.getVars()"));
-                return Return();
-            }
-        }
+        readonly ValueTask<ObservableDictionary<string, string>> History;
+        ValueTask<ObservableDictionary<string, string>> CreateHistoryAsync() =>
+            new ValueTask<ObservableDictionary<string, string>>(
+                Task.Run(async () =>
+                    {
+                        var Return =
+                            Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableDictionary<string, string>>
+                            (await (await Current).Evaluate("nerdamer.getVars()"));
+                        Return.CollectionChanged += (sender, e) =>
+                        {
+                            switch (e.Action)
+                            {
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                                    break;
+                                default:
+                                    break;
+                            }
+                        };
+                        return Return;
+                    }));
         #endregion
     }
 }
