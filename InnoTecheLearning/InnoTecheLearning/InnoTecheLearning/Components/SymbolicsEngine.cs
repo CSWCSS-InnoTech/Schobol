@@ -12,15 +12,25 @@ namespace InnoTecheLearning
 #if false
         {
             Jint.Engine _Engine = new Jint.Engine();
-            public Task<string> Evaluate(string JavaScript) =>
-                Task.Run(() => _Engine.Execute(JavaScript).GetCompletionValue().ToString());
-        }
+            public ValueTask<string> Evaluate(string JavaScript)
+            {
+                EvaluateCalling(this, EventArgs.Empty);
+                var Return = new ValueTask<string>(Task.Run(() => 
+                    _Engine.Execute(JavaScript).GetCompletionValue().ToString()));
+                Return.GetAwaiter().OnCompleted(() => EvaluateCalled(this, EventArgs.Empty));
+                return Return;
+            }
 #elif __IOS__
         {
             JavaScriptCore.JSContext _Engine = new JavaScriptCore.JSContext();
-            public Task<string> Evaluate(string JavaScript) =>
-                Task.Run(() => _Engine.EvaluateScript(JavaScript).ToString());
-        }
+            public ValueTask<string> Evaluate(string JavaScript)
+            {
+                EvaluateCalling(this, EventArgs.Empty);
+                var Return = new ValueTask<string>(Task.Run(() => 
+                    _Engine.EvaluateScript(JavaScript).ToString()));
+                Return.GetAwaiter().OnCompleted(() => EvaluateCalled(this, EventArgs.Empty));
+                return Return;
+            }
 #elif __ANDROID__
         {
             /// <summary>
@@ -48,6 +58,7 @@ namespace InnoTecheLearning
                 });
             public async ValueTask<string> Evaluate(string JavaScript)
             {
+                EvaluateCalling(this, EventArgs.Empty);
                 var completion = new TaskCompletionSource<string>();
                 await _Ready.Task;
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
@@ -66,7 +77,9 @@ namespace InnoTecheLearning
                         _Engine.LoadUrl($"javascript:eval({EncodeJavascript(JavaScript)})");
                     });
                 }
-                return await completion.Task;
+                var Result = await completion.Task;
+                EvaluateCalled(this, EventArgs.Empty);
+                return Result;
             }
             class Callback : Java.Lang.Object, Android.Webkit.IValueCallback
             {
@@ -96,13 +109,20 @@ namespace InnoTecheLearning
                     return result;
                 }
             }
-        }
 #else
         {
             Jint.Engine _Engine = new Jint.Engine();
-            public Task<string> Evaluate(string JavaScript) =>
-                Task.Run(() => _Engine.Execute(JavaScript).GetCompletionValue().ToString());
-        }
+            public ValueTask<string> Evaluate(string JavaScript)
+            {
+                EvaluateCalling(this, EventArgs.Empty);
+                var Return = new ValueTask<string>(Task.Run(() => 
+                    _Engine.Execute(JavaScript).GetCompletionValue().ToString()));
+                Return.GetAwaiter().OnCompleted(() => EvaluateCalled(this, EventArgs.Empty));
+                return Return;
+            }
 #endif
+            public event EventHandler EvaluateCalling = (sender, e) => { };
+            public event EventHandler EvaluateCalled = (sender, e) => { };
+        }
     }
 }

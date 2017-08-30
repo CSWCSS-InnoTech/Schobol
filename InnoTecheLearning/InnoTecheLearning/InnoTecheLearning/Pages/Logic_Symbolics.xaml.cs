@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#undef DEBUG_SYMBOLICS
+
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -133,7 +135,7 @@ namespace InnoTecheLearning.Pages
         bool DoEvaluate = true;
         public Logic_Symbolics()
         {
-            #region Declarations
+            #region Field Initializers
             InitializeComponent();
 
             Buttons = new Button[ButtonRows, ButtonColumns]
@@ -144,7 +146,10 @@ namespace InnoTecheLearning.Pages
                 { B40, B41, B42, B43, B44 },
                 { B50, B51, B52, B53, B54 }
             };
-            History = CreateHistoryAsync();
+            Vars = CreateVarsAsync();
+            //Current.GetAwaiter().OnCompleted(() => Current.Result.EvaluateCalled += (sender, e) => OnPropertyChanged(nameof(Current)));
+            #endregion
+            #region Declarations
             EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) => ButtonMod ^= Modifier;
             EventHandler ButtonClicked = (sender, e) =>
             {
@@ -185,7 +190,9 @@ namespace InnoTecheLearning.Pages
                 }
 
             Calculate.Clicked += Calculate_Clicked;
-            //Utils.LongPress.Register(Calculate, async (sender, e) => Out.Text = await (await Current).Evaluate(In.Text));
+#if DEBUG_SYMBOLICS
+            Utils.LongPress.Register(Calculate, async (sender, e) => Out.Text = await (await Current).Evaluate(In.Text));
+#endif
             Display.Clicked += (sender, e) => Display.Text = (DisplayDecimals = !DisplayDecimals) ? "Display Decimals" : "Display Fractions";
             Evaluate.Clicked += (sender, e) => Evaluate.Text = (DoEvaluate = !DoEvaluate) ? "Evaluate Symbols" : "Keep Symbols";
 
@@ -193,10 +200,10 @@ namespace InnoTecheLearning.Pages
             OutCopy.Clicked += (sender, e) => Utils.ClipboardText = Out.Text;
 
 
-            /*
+#if DEBUG_SYMBOLICS
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
             Debug.Clicked += Debug_Clicked;
-            */
+#endif
             #endregion
         }
 
@@ -211,18 +218,21 @@ namespace InnoTecheLearning.Pages
         #region Talking to the Engine
         async ValueTask<Utils.Unit> Eval()
         {
-            Out.Text = await (await Current).Evaluate(string.Concat(
+            var T = In.Text;
+            History.Add(new KeyValuePair<string, string>(T,
+                Out.Text = await (await Current).Evaluate(string.Concat(
                 "try{",
-                    "nerdamer('", Utils.EncodeJavascript(In.Text, false), "')",
+                    "nerdamer('", Utils.EncodeJavascript(T, false), "')",
                     DoEvaluate ? ".evaluate()" : string.Empty,
                     DisplayDecimals ? ".text()" : ".toString()",
                 "}catch(e){'", Utils.Error, "'+(e.message?e.message:e)}"
-                ));
+                ))));
+            OnPropertyChanged(nameof(HistoryText));
             return Utils.Unit.Default;
         }
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
 
-        readonly ValueTask<Utils.SymbolicsEngine> Current = CreateEngineAsync();
+        ValueTask<Utils.SymbolicsEngine> Current { get; } = CreateEngineAsync();
         static ValueTask<Utils.SymbolicsEngine> CreateEngineAsync() => new ValueTask<Utils.SymbolicsEngine>(
             Task.Run(async () =>
         {
@@ -236,27 +246,44 @@ namespace InnoTecheLearning.Pages
             return Return;
         }));
 
-        readonly ValueTask<ObservableDictionary<string, string>> History;
-        ValueTask<ObservableDictionary<string, string>> CreateHistoryAsync() =>
+        List<KeyValuePair<string, string>> History { get; } = 
+            new List<KeyValuePair<string, string>>();
+        string HistoryText => string.Join("\r\n", History.Select(x => $"{x.Key}|{x.Value}"));
+
+        ValueTask<ObservableDictionary<string, string>> Vars { get; }
+        ValueTask<ObservableDictionary<string, string>> CreateVarsAsync() =>
             new ValueTask<ObservableDictionary<string, string>>(
                 Task.Run(async () =>
                     {
                         var Return =
                             Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableDictionary<string, string>>
                             (await (await Current).Evaluate("nerdamer.getVars()"));
-                        Return.CollectionChanged += (sender, e) =>
+                        Return.CollectionChanged += async (sender, e) =>
                         {
                             switch (e.Action)
                             {
                                 case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                                    foreach(KeyValuePair<string, string> Item in e.NewItems)
+                                        await (await Current).Evaluate(
+                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', '{Utils.EncodeJavascript(Item.Value)}')");
                                     break;
                                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                                    foreach (KeyValuePair<string, string> Item in e.OldItems)
+                                        await (await Current).Evaluate(
+                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', 'delete')");
                                     break;
                                 case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                                    foreach (KeyValuePair<string, string> Item in e.OldItems)
+                                        await (await Current).Evaluate(
+                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', 'delete')");
+                                    foreach (KeyValuePair<string, string> Item in e.NewItems)
+                                        await (await Current).Evaluate(
+                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', '{Utils.EncodeJavascript(Item.Value)}')");
                                     break;
                                 case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
                                     break;
                                 case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                                    await (await Current).Evaluate($"nerdamer.clearVars()");
                                     break;
                                 default:
                                     break;

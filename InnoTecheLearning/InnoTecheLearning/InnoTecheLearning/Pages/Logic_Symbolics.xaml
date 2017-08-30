@@ -75,12 +75,6 @@
         </StackLayout>
     </ContentPage>
     <ContentPage Title="History">
-        <ListView>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text=""/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Label x:Name="History"/>
     </ContentPage>
 </TabbedPage>

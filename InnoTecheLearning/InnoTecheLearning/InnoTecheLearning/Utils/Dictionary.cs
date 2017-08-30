@@ -71,8 +71,8 @@ namespace System.Collections.ObjectModel
                 Dictionary.TryGetValue(key, out TValue value);
                 var removed = Dictionary.Remove(key);
                 if (removed)
-                    //OnCollectionChanged(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, value));
-                    OnCollectionChanged();
+                    OnCollectionChanged(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, value));
+                    //OnCollectionChanged();
 
                 return removed;
             }
@@ -157,7 +157,7 @@ namespace System.Collections.ObjectModel
 
             IEnumerator IEnumerable.GetEnumerator()
             {
-                return ((IEnumerable)Dictionary).GetEnumerator();
+                return Dictionary.GetEnumerator();
             }
 
             #endregion
