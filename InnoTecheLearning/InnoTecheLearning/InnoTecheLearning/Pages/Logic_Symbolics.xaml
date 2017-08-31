@@ -6,11 +6,23 @@
              xmlns:local="clr-namespace:InnoTecheLearning"
              Title="eLearn Logic (Symbolics)" 
             StyleId="eLearn Logic (Symbolics)">
-    <ContentPage Title="Calculator">
+    <ContentPage Title="Calculator" x:Name="Calculator">
         <StackLayout BackgroundColor="White">
-            <Entry x:Name="In" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
-            <!--RowDefinitions="1,1,1,1,1,1" ColumnDefinitions="{local:GridColumn 1,1,1,1,1}"-->
+            <StackLayout Orientation="Horizontal">
+                <Button Text="◀" x:Name="Left">
+                    <Button.BackgroundColor>
+                        <OnPlatform x:TypeArguments="Color" Android="Silver" Default="Default"/>
+                    </Button.BackgroundColor>
+                </Button>
+                <Entry x:Name="In" Text="" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
+                <Button Text="▶" x:Name="Right">
+                    <Button.BackgroundColor>
+                        <OnPlatform x:TypeArguments="Color" Android="Silver" Default="Default"/>
+                    </Button.BackgroundColor>
+                </Button>
+            </StackLayout>
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <!--RowDefinitions="1,1,1,1,1,1" ColumnDefinitions="{local:GridColumn 1,1,1,1,1}"-->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -34,7 +46,7 @@
                     <Button x:Name="Back" Text="←" Grid.Row="0" Grid.Column="4"/>
                     <Button x:Name="B10" Text="," Grid.Row="1" Grid.Column="0"/>
                     <Button x:Name="B11" Text="=" Grid.Row="1" Grid.Column="1"/>
-                    <Button x:Name="B12" Text=":=" Grid.Row="1" Grid.Column="2"/>
+                    <Button x:Name="B12" Text="␣" Grid.Row="1" Grid.Column="2"/>
                     <Button x:Name="B13" Text="(" Grid.Row="1" Grid.Column="3"/>
                     <Button x:Name="B14" Text=")" Grid.Row="1" Grid.Column="4"/>
                     <Button x:Name="B20" Text="7" Grid.Row="2" Grid.Column="0"/>
@@ -59,15 +71,13 @@
                     <Button x:Name="B54" Text="i" Grid.Row="5" Grid.Column="4"/>
                 </Grid.Children>
             </Grid>
-            <ScrollView Orientation="Vertical" VerticalOptions="FillAndExpand">
-                <StackLayout Orientation="Vertical">
-                    <Button Text="Evaluate" x:Name="Calculate"/>
-                    <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
-                        <Button HorizontalOptions="FillAndExpand" Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
-                        <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
-                    </StackLayout>
+            <StackLayout Orientation="Vertical">
+                <Button Text="Evaluate" x:Name="Calculate"/>
+                <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
+                    <Button HorizontalOptions="FillAndExpand" Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                    <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
                 </StackLayout>
-            </ScrollView>
+            </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray"/>
                 <Button x:Name="OutCopy" Text="Copy" />
@@ -75,6 +85,15 @@
         </StackLayout>
     </ContentPage>
     <ContentPage Title="History">
-        <Label x:Name="History"/>
+        <StackLayout>
+            <ListView x:Name="HistoryView" VerticalOptions="FillAndExpand">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding .Key}" Detail="{Binding .Value}" DetailColor="SeaGreen" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button x:Name="ClearHistory" Text="Clear History"/>
+        </StackLayout>
     </ContentPage>
 </TabbedPage>

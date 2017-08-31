@@ -72,9 +72,10 @@ namespace InnoTecheLearning.Pages
         static readonly Dictionary<ButtonModifier, (Part, Part[,])> Mappers =
             new Dictionary<ButtonModifier, (Part, Part[,])>
             {
+                //Unassigned: Assign
                 [ButtonModifier.Norm] = (Percent, new Part[ButtonRows, ButtonColumns]
                 {
-                    { Comma, Equation, Assign, LeftRound, RightRound },
+                    { Comma, Equation, Space, LeftRound, RightRound },
                     { D7, D8, D9, Exponent, Factorial },
                     { D4, D5, D6, Multiply, Divide },
                     { D1, D2, D3, Add, Subtract },
@@ -82,10 +83,10 @@ namespace InnoTecheLearning.Pages
                 }),
                 [ButtonModifier.Shift] = (Fib, new Part[ButtonRows, ButtonColumns]
                 {
-                    { Log, Log10, Sqrt, LeftSquare, RightSquare },
-                    { Floor, Ceil, Round, Trunc, Mod },
-                    { Gcd, Lcm, Mean, Mode, Median },
-                    { Expand, DivideFunc, PFactor, Min, Max },
+                    { Sin, Cos, Tan, LeftSquare, RightSquare },
+                    { Asin, Acos, Atan, DivideFunc, Mod },
+                    { Log, Log10, Sqrt, Gcd, Lcm },
+                    { Expand, PFactor, Mean, Mode, Median },
                     { Factor, Roots, Coeffs, Solve, SolveEquations }
                 }),
                 [ButtonModifier.Alpha] = (a, new Part[ButtonRows, ButtonColumns]
@@ -106,18 +107,18 @@ namespace InnoTecheLearning.Pages
                 }),
                 [ButtonModifier.Alt] = (Atan2, new Part[ButtonRows, ButtonColumns]
                 {
-                    { Sin, Asin, Sinh, Asinh, Empty },
-                    { Cos, Acos, Cosh, Acosh, Empty },
-                    { Tan, Atan, Tanh, Atanh, Empty },
-                    { Empty, Sinc, Empty, Empty, Empty },
+                    { Sinh, Cosh, Tanh, Min, Max },
+                    { Asinh, Acosh, Atanh, Empty, Empty },
+                    { Empty, Empty, Empty, Empty, Empty },
+                    { Sinc, Floor, Ceil, Round, Trunc },
                     { Sum, Product, Diff, Integrate, Defint }
                 }),
-                [ButtonModifier.Shift | ButtonModifier.Alt] = (Step, new Part[ButtonRows, ButtonColumns]
+                [ButtonModifier.Shift | ButtonModifier.Alt] = (Si, new Part[ButtonRows, ButtonColumns]
                 {
-                    { Sec, Asec, Sech, Asech, Erf },
-                    { Csc, Acsc, Csch, Acsch, Rect },
-                    { Cot, Acot, Coth, Acoth, Tri },
-                    { Si, Ci, Shi, Chi, Ei },
+                    { Sec, Csc, Cot, Ci, Erf },
+                    { Asec, Acsc, Acot, Shi, Step },
+                    { Sech, Csch, Coth, Chi, Tri },
+                    { Asech, Acsch, Acoth, Ei, Rect },
                     { Laplace, Smpvar, Variance, Smpstdev, Stdev }
                 }),
                 [ButtonModifier.Alt | ButtonModifier.Alpha] = (NotEqual, new Part[ButtonRows, ButtonColumns]
@@ -151,11 +152,55 @@ namespace InnoTecheLearning.Pages
             #endregion
             #region Declarations
             EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) => ButtonMod ^= Modifier;
+            int? IndexNextToCursor(bool Before, int? CursorIndexOverride = null)
+            {
+                var T = In.Text;
+                var Index = CursorIndexOverride ?? T.IndexOf(Utils.Cursor);
+                if (Index == -1)
+                {
+                    return null;
+                }
+                var Splitted = Splitter.Matches(T);
+                int LengthIterated = 0;
+                foreach (System.Text.RegularExpressions.Match M in Splitted)
+                {
+                    if (Before && LengthIterated + M.Length >= Index)
+                    {
+                        return LengthIterated;
+                    }
+                    else if (!Before && LengthIterated > Index)
+                    {
+                        return LengthIterated + M.Length;
+                    }
+                    LengthIterated += M.Length;
+                }
+                return Index;
+            }
+            EventHandler CursorMovePressed(bool MoveLeft) => (sender, e) => 
+            {
+                var OldIndex = In.Text.IndexOf(Utils.Cursor);
+                var NewIndex = IndexNextToCursor(MoveLeft);
+                if (NewIndex == null)
+                {
+                    In.Text = In.Text.Insert(MoveLeft ? In.Text.Length : 0, Utils.Cursor);
+                }
+                else if (MoveLeft)
+                {
+                    In.Text = In.Text.Insert(NewIndex.Value, Utils.Cursor).Remove(OldIndex + 1, 1);
+                    return;
+                }
+                else
+                {
+                    In.Text = In.Text.Insert(NewIndex.Value, Utils.Cursor).Remove(OldIndex, 1);
+                    return;
+                }
+            };
             EventHandler ButtonClicked = (sender, e) =>
             {
                 var (x, y) = Utils.IndicesOf(Buttons, (Button)sender);
-                In.Text +=
-                    x == -1 && y == -1 ? GetMapper(ButtonMod).Item1.FullName : GetMapper(ButtonMod).Item2[x, y].FullName;
+                var ToAdd = x == -1 && y == -1 ? GetMapper(ButtonMod).Item1.FullName : GetMapper(ButtonMod).Item2[x, y].FullName;
+                if (In.Text.Contains(Utils.Cursor)) In.Text = In.Text.Insert(In.Text.IndexOf(Utils.Cursor), ToAdd);
+                else In.Text += ToAdd;
                 ButtonMod = ButtonModifier.Norm;
             };
             EventHandler ButtonLongPressed = (sender, e) =>
@@ -168,15 +213,20 @@ namespace InnoTecheLearning.Pages
             #endregion
 
             #region Wiring up
+            Left.Clicked += CursorMovePressed(true);
             In.Completed += Calculate_Clicked;
+            Right.Clicked += CursorMovePressed(false);
 
             Shift.Clicked += ModClicked(ButtonModifier.Shift);
             Alpha.Clicked += ModClicked(ButtonModifier.Alpha);
             Alt.Clicked += ModClicked(ButtonModifier.Alt);
             Back.Clicked += (sender, e) =>
                 {
+                    var Index = IndexNextToCursor(true);
                     In.Text = !ButtonMod.HasFlag(ButtonModifier.Shift) && In.Text?.Length > 0 ?
-                       In.Text.Remove(In.Text.Length - 1) : string.Empty;
+                            Index == null ? In.Text.Remove(IndexNextToCursor(true, In.Text.Length).Value) : 
+                            In.Text.Remove(Index.Value, In.Text.IndexOf(Utils.Cursor) - Index.Value)
+                        : string.Empty;
                     ButtonMod = ButtonModifier.Norm;
                 };
 
@@ -199,11 +249,24 @@ namespace InnoTecheLearning.Pages
             Out.Focused += (sender, e) => Out.Unfocus();
             OutCopy.Clicked += (sender, e) => Utils.ClipboardText = Out.Text;
 
-
 #if DEBUG_SYMBOLICS
             async void Debug_Clicked(object sender, EventArgs e) => await Eval("{0}");
             Debug.Clicked += Debug_Clicked;
 #endif
+            
+            HistoryView.ItemsSource = History;
+            HistoryView.ItemTapped += async (sender, e) =>
+            {
+                if (!string.IsNullOrEmpty(In.Text))
+                    if (!await DisplayAlert("Discard calculation",
+                        "The current calculation will be discarded.", "Discard", "Cancel")) return;
+                HistoryView.SelectedItem = null;
+                In.Text = ((KeyValuePair<string, string>)e.Item).Key;
+                Out.Text = string.Empty;
+                CurrentPage = Calculator;
+            };
+
+            ClearHistory.Clicked += (sender, e) => History.Clear();
             #endregion
         }
 
@@ -218,7 +281,7 @@ namespace InnoTecheLearning.Pages
         #region Talking to the Engine
         async ValueTask<Utils.Unit> Eval()
         {
-            var T = In.Text;
+            var T = In.Text.Replace(Utils.Cursor, "");
             History.Add(new KeyValuePair<string, string>(T,
                 Out.Text = await (await Current).Evaluate(string.Concat(
                 "try{",
@@ -227,7 +290,6 @@ namespace InnoTecheLearning.Pages
                     DisplayDecimals ? ".text()" : ".toString()",
                 "}catch(e){'", Utils.Error, "'+(e.message?e.message:e)}"
                 ))));
-            OnPropertyChanged(nameof(HistoryText));
             return Utils.Unit.Default;
         }
         async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
@@ -246,9 +308,8 @@ namespace InnoTecheLearning.Pages
             return Return;
         }));
 
-        List<KeyValuePair<string, string>> History { get; } = 
-            new List<KeyValuePair<string, string>>();
-        string HistoryText => string.Join("\r\n", History.Select(x => $"{x.Key}|{x.Value}"));
+        ObservableCollection<KeyValuePair<string, string>> History { get; } = 
+            new ObservableCollection<KeyValuePair<string, string>>() { };
 
         ValueTask<ObservableDictionary<string, string>> Vars { get; }
         ValueTask<ObservableDictionary<string, string>> CreateVarsAsync() =>
