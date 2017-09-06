@@ -1352,22 +1352,33 @@ namespace InnoTecheLearning
             }
         }
         
-        public StackLayout Facial
+        public AbsoluteLayout Facial
         {
             get
             {
-                var Detected = new StackLayout
-                { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand, MinimumHeightRequest = 50 };
+                var Return = new AbsoluteLayout();
+                Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;
                 var cam = new Camera();
                 cam.ProcessingPreview += (sender, e) => 
                 {
+                    for (int i = 0; i < Return.Children.Count; i++)
+                        if (Return.Children[i] is BoxView) Return.Children.RemoveAt(i);
+                    for (int i = 0; i < e.DetectedFaces.Length; i++)
+                        Return.AddPosition(Log(new BoxView
+                        {
+                            WidthRequest = e.DetectedFaces[i].Width,
+                            HeightRequest = e.DetectedFaces[i].Height,
+                            Color = Color.Black,
+                            Margin = new Thickness(5)
+                        }, $"Face Detected: ({e.DetectedFaces[i].Left},{e.DetectedFaces[i].Top})"),
+                        e.DetectedFaces[i].Left, e.DetectedFaces[i].Top, AbsoluteLayoutFlags.None);
+                    Return.ForceLayout();
                 };
-                var Return = new StackLayout { Orientation = StackOrientation.Vertical };
-                Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;
                 Return.Children.Add(
-                    cam.ToView().With((ref View x) => x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand)
+                    cam.ToView().With((ref View x) =>
+                        x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
+                        new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.All
                 );
-                Return.Children.Add(Scroll(Detected));
                 return Return;
             }
         }

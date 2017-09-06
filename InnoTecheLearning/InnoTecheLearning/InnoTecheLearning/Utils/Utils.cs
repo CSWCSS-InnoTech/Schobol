@@ -862,5 +862,13 @@ function Min() { return Math.min.apply(global, arguments); }
             }
             Default?.Invoke();
         }
+
+        public static void StartTimer(TimeSpan Interval, Func<ValueTask<bool>> Callback) =>
+            Device.StartTimer(Interval, () => 
+            {
+                var Task = Callback();
+                Task.GetAwaiter().OnCompleted(() => { if (Task.Result) StartTimer(Interval, Callback); });
+                return false;
+            });
     }
 }
