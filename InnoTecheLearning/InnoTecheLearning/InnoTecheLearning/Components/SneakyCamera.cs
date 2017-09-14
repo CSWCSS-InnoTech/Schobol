@@ -107,7 +107,7 @@ namespace InnoTecheLearning
                         for (int i = 0; i < FacesArray.Length; i++)
                         {
                             var Rect = e.Faces[i].Rect;
-                            FacesArray[i] = new Rectangle(Rect.Left - Metrics.WidthPixels / 2, Rect.Top - Metrics.HeightPixels / 2, Rect.Width(), Rect.Height());
+                            FacesArray[i] = Rectangle.FromLTRB(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
                         }
 #if FEATURE_CAMERA_PREVIEWJPEG
                         Faces = FacesArray;

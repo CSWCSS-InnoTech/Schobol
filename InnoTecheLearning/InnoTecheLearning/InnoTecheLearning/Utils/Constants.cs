@@ -79,28 +79,35 @@ namespace InnoTecheLearning
         public const string AssemblyCulture = "";
         public const bool ComVisible = false;
         public const string ComGuid = "72bdc44f-c588-44f3-b6df-9aace7daafdd";
-#endregion
+        #endregion
 
-#region Numbers
-        public const float RawXMultiplier =
+        #region Numbers
+        public static readonly float RawXMultiplier =
 #if __IOS__
             1
 #elif __ANDROID__
-            1.0f / 3
+/*
+ * 09-14 21:59:05.245 I/MonoDroid(13182): System.TypeInitializationException: The type initializer for 'InnoTecheLearning.Utils' threw an exception. ---> System.ArgumentOutOfRangeException: Debug values
+09-14 21:59:05.245 I/MonoDroid(13182): Parameter name: Hey
+09-14 21:59:05.245 I/MonoDroid(13182): Actual value was (2, 1280, 2, 720, 294.967, 295.563).*/
+            Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.Xdpi /
+                Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.WidthPixels
 #elif NETFX_CORE
             1
 #endif
             ;
 
-        public const float RawYMultiplier =
+        public static readonly float RawYMultiplier =
 #if __IOS__
             1
 #elif __ANDROID__
-            0.5f
+            Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.Ydpi /
+                Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.HeightPixels *
+                Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.Density
 #elif NETFX_CORE
-            1.5f
+            1
 #endif
-            ;
+            * 1.5f;
         #endregion
 
 #region Fonts

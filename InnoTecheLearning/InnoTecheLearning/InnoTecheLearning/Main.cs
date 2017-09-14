@@ -1075,18 +1075,10 @@ namespace InnoTecheLearning
                             {
                                 Stack.Push((
                                   (int)(Math.Floor(e.Current.X *
-                                  CharGrid.RowDefinitions.Count / CharGrid.Width
-#if __ANDROID__
-                                  / 3
-#endif
+                                  CharGrid.RowDefinitions.Count / CharGrid.Width * RawXMultiplier
                                   )).LowerBound(0).UpperBound(Questions[Level].Rows - 1),
                                   (int)(Math.Floor(e.Current.Y *
-                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height
-#if __ANDROID__
-                                  * 0.5
-#elif NETFX_CORE
-                                  * 1.5
-#endif
+                                  CharGrid.ColumnDefinitions.Count / CharGrid.Height * RawYMultiplier
                                   )).LowerBound(0).UpperBound(Questions[Level].Columns - 1)));
                                 //Display.Text = ((CharGrid.Width) / e.Current.X).ToString();
                                 //Display.Text = ((CharGrid.Height) / e.Current.Y).ToString();
@@ -1366,12 +1358,17 @@ namespace InnoTecheLearning
                     for (int i = 0; i < e.DetectedFaces.Length; i++)
                         Return.AddPosition(Log(new BoxView
                         {
-                            WidthRequest = e.DetectedFaces[i].Width,
-                            HeightRequest = e.DetectedFaces[i].Height,
-                            Color = Color.Black,
-                            Margin = new Thickness(5)
+                            Color = Color.Black
                         }, $"Face Detected: ({e.DetectedFaces[i].Left},{e.DetectedFaces[i].Top})"),
+#if __ANDROID__
+                        Rectangle.FromLTRB(
+                        e.DetectedFaces[i].Left / 2000.0 + 0.5,
+                        e.DetectedFaces[i].Top / 2000.0 + 0.5,
+                        e.DetectedFaces[i].Right / 2000.0,
+                        e.DetectedFaces[i].Bottom / 2000.0), AbsoluteLayoutFlags.All);
+#else
                         e.DetectedFaces[i].Left, e.DetectedFaces[i].Top, AbsoluteLayoutFlags.None);
+#endif
                     Return.ForceLayout();
                 };
                 Return.Children.Add(

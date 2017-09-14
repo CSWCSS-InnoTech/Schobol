@@ -122,6 +122,42 @@ namespace InnoTecheLearning
             Layout.Children.Add(View);
         }
         /// <summary>
+        /// Adds a <see cref="View"/> to an <see cref="AbsoluteLayout"/>.
+        /// </summary>
+        /// <param name="Layout">The <see cref="AbsoluteLayout"/> to add the <see cref="View"/> into.</param>
+        /// <param name="View">The <see cref="View"/> to add into the <see cref="AbsoluteLayout"/>.</param>
+        /// <param name="RelativeX">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="RelativeY">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="RelativeWidth">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="RelativeHeight">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="Flags">Options to layout in the <see cref="AbsoluteLayout"/>.</param>
+        public static void AddPosition(this AbsoluteLayout Layout, View View, double RelativeX, double RelativeY,
+            double RelativeWidth, double RelativeHeight,
+            AbsoluteLayoutFlags Flags = AbsoluteLayoutFlags.All)
+        {
+            // PositionProportional flag maps the range (0.0, 1.0) to
+            // the range "flush [left|top]" to "flush [right|bottom]"
+            AbsoluteLayout.SetLayoutFlags(View, Flags);
+            AbsoluteLayout.SetLayoutBounds(View, new Rectangle(RelativeX, RelativeY, RelativeWidth, RelativeHeight));
+            Layout.Children.Add(View);
+        }
+        /// <summary>
+        /// Adds a <see cref="View"/> to an <see cref="AbsoluteLayout"/>.
+        /// </summary>
+        /// <param name="Layout">The <see cref="AbsoluteLayout"/> to add the <see cref="View"/> into.</param>
+        /// <param name="View">The <see cref="View"/> to add into the <see cref="AbsoluteLayout"/>.</param>
+        /// <param name="Relative">Relative to the <see cref="AbsoluteLayout"/>, between 0.0 and 1.0</param>
+        /// <param name="Flags">Options to layout in the <see cref="AbsoluteLayout"/>.</param>
+        public static void AddPosition(this AbsoluteLayout Layout, View View, Rectangle Relative,
+            AbsoluteLayoutFlags Flags = AbsoluteLayoutFlags.All)
+        {
+            // PositionProportional flag maps the range (0.0, 1.0) to
+            // the range "flush [left|top]" to "flush [right|bottom]"
+            AbsoluteLayout.SetLayoutFlags(View, Flags);
+            AbsoluteLayout.SetLayoutBounds(View, Relative);
+            Layout.Children.Add(View);
+        }
+        /// <summary>
         /// Adds a <see cref="View"/> to an <see cref="RelativeLayout"/>, and fills the <see cref="RelativeLayout"/>.
         /// </summary>
         /// <param name="Layout">The <see cref="RelativeLayout"/> to add the <see cref="View"/> into.</param>
