@@ -1031,8 +1031,8 @@ namespace InnoTecheLearning
                     foreach (var Q in Questions[Level].Answers.Random())
                     {
                         Chars[Location.X, Location.Y].Text = Q.ToString();
-                        int Segfault = 0;
-                        RandomMove: if (++Segfault >= 12) goto Distribute;
+                        int SegfaultCounter = 0;
+                        RandomMove: if (++SegfaultCounter >= 12) goto Distribute;
                         switch (Randomizer.Next(1, 4))
                         {
                             case 1: //N
@@ -1056,7 +1056,7 @@ namespace InnoTecheLearning
                             default: //Impossible
                                 goto RandomMove;
                         }
-                        Segfault = 0;
+                        SegfaultCounter = 0;
                     }
                     for (int i = 0; i < Questions[Level].Rows; i++)
                         for (int j = 0; j < Questions[Level].Columns; j++)
@@ -1364,8 +1364,8 @@ namespace InnoTecheLearning
                         Rectangle.FromLTRB(
                         e.DetectedFaces[i].Left / 2000.0 + 0.5,
                         e.DetectedFaces[i].Top / 2000.0 + 0.5,
-                        e.DetectedFaces[i].Right / 2000.0,
-                        e.DetectedFaces[i].Bottom / 2000.0), AbsoluteLayoutFlags.All);
+                        e.DetectedFaces[i].Right / 2000.0 + 0.5,
+                        e.DetectedFaces[i].Bottom / 2000.0 + 0.5), AbsoluteLayoutFlags.All);
 #else
                         e.DetectedFaces[i].Left, e.DetectedFaces[i].Top, AbsoluteLayoutFlags.None);
 #endif
