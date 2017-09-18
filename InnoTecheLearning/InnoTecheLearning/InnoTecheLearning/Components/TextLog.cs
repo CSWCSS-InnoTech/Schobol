@@ -8,15 +8,15 @@ namespace InnoTecheLearning
     partial class Utils
     {
         public static TextLog Logger { get => DebugLog.Default; }
-        /*public static ValueTask<string> ReadAll()
+        /*public static string ReadAll()
         { return Logger.ReadAll(); }*/
-        public static ValueTask<string> Log(string Message) => Logger.Log(Message);
-        public static ValueTask<string> Log(string Message, LogImportance Importance) => Logger.Log(Message, Importance);
-        public static ValueTask<string> Log(string Message, string Format) => Logger.Log(Message, Format);
-        public static ValueTask<string> Log(string Message, string Format, LogImportance Importance) =>
+        public static string Log(string Message) => Logger.Log(Message);
+        public static string Log(string Message, LogImportance Importance) => Logger.Log(Message, Importance);
+        public static string Log(string Message, string Format) => Logger.Log(Message, Format);
+        public static string Log(string Message, string Format, LogImportance Importance) =>
             Logger.Log(Message, Format, Importance);
-        public static ValueTask<string> Log(Exception e) => Logger.Log(e);
-        public static ValueTask<string> Log(Exception e, LogImportance Importance) => Logger.Log(e, Importance);
+        public static string Log(Exception e) => Logger.Log(e);
+        public static string Log(Exception e, LogImportance Importance) => Logger.Log(e, Importance);
 
         public static T Log<T>(T Object) => Logger.Log(Object);
         public static T Log<T>(T Object, LogImportance Importance) => Logger.Log(Object, Importance);
@@ -56,21 +56,21 @@ namespace InnoTecheLearning
             public virtual string Region { get; set; }
             public const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.FFF";
 
-            public abstract ValueTask<string> ReadAll();
-            public virtual ValueTask<string> Log(string Message)
+            public abstract string ReadAll();
+            public virtual string Log(string Message)
             { return Log(Message, LogImportance.I); }
-            public virtual ValueTask<string> Log(string Message, string Format)
+            public virtual string Log(string Message, string Format)
             { return Log(string.Format(Format, Message), LogImportance.I); }
-            public virtual ValueTask<string> Log(Exception e)
+            public virtual string Log(Exception e)
             { return Log(e, LogImportance.E); }
-            public virtual ValueTask<string> Log(Exception e, string Format)
+            public virtual string Log(Exception e, string Format)
             { return Log(string.Format(Format, e), LogImportance.I); }
-            public virtual ValueTask<string> Log(Exception e, LogImportance Importance)
+            public virtual string Log(Exception e, LogImportance Importance)
             { return Log(e.ToString(), Importance); }
-            public virtual ValueTask<string> Log(Exception e, string Format, LogImportance Importance)
+            public virtual string Log(Exception e, string Format, LogImportance Importance)
             { return Log(string.Format(Format, e), Importance); }
-            public abstract ValueTask<string> Log(string Message, LogImportance Importance);
-            public virtual ValueTask<string> Log(string Message, string Format, LogImportance Importance)
+            public abstract string Log(string Message, LogImportance Importance);
+            public virtual string Log(string Message, string Format, LogImportance Importance)
             { return Log(string.Format(Format, Message), Importance); }
 
 
@@ -110,60 +110,41 @@ namespace InnoTecheLearning
         public class FileLog : TextLog
         {
             public static FileLog Default => new FileLog(Temp.GetFile("InnoTecheLearning.log"));
-            public FileLog(string Path) { Init(Path); }
-            public FileLog(string Path, string Region) : this(Path) { this.Region = Region; }
-            string Path;
-            public async void Init(string Path)
+            public FileLog(string Path) => this.Path = Path;
+            public FileLog(string Path, string Region) : this(Path) => this.Region = Region;
+            string Path_;
+            public string Path
             {
-#if __IOS__ || __ANDROID__
-                await Unit.InvokeAsync(() => { if (!File.Exists(Path)) File.Create(Path).Dispose(); });
-#elif NETFX_CORE
-                Path = Path.Replace('/', '\\');
-                try
+                get => Path_;
+                set
                 {
-                    global::Windows.Storage.StorageFile File = await global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path);
+                    try { if (!File.Exists(value)) File.Create(value).Dispose(); } catch { }
+                    Path_ = value;
                 }
-                catch (Exception)
-                {
-                    await (await global::Windows.Storage.StorageFolder.GetFolderFromPathAsync(System.IO.Path.GetDirectoryName(Path)))
-                        .CreateFileAsync(System.IO.Path.GetFileName(Path));  
-                }
-#endif
-                this.Path = Path;
             }
-            public override async ValueTask<string> Log(string Message, LogImportance Importance)
+            public override string Log(string Message, LogImportance Importance)
             {
-#if __IOS__|| __ANDROID__
-                using (StreamWriter Writer = new StreamWriter(Path, true, Encoding.Unicode))
-                { await Writer.WriteLineAsync(Format(DateTime.Now, Importance, Region, Message)); Writer.Flush(); }
-#elif NETFX_CORE
-                global::Windows.Storage.StorageFile File = await global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path);
-                await global::Windows.Storage.FileIO.AppendTextAsync(File, Format(DateTime.Now, Importance, Region, Message),
-                    global::Windows.Storage.Streams.UnicodeEncoding.Utf16LE);
-#endif
+                using(FileStream Stream = new FileStream(Path, FileMode.Append))
+                using (StreamWriter Writer = new StreamWriter(Stream, Encoding.Unicode))
+                { Writer.WriteLine(Format(DateTime.Now, Importance, Region, Message)); Writer.Flush(); }
                 return Message;
             }
-            public override async ValueTask<string> ReadAll()
+            public override string ReadAll()
             {
-#if __IOS__ || __ANDROID__
-                using (StreamReader Reader = new StreamReader(Path, Encoding.Unicode))
-#elif NETFX_CORE
-                global::Windows.Storage.StorageFile File = await global::Windows.Storage.StorageFile.GetFileFromPathAsync(Path);
-                using (Stream Stream = await File.OpenStreamForReadAsync())
+                using (FileStream Stream = new FileStream(Path, FileMode.OpenOrCreate))
                 using (StreamReader Reader = new StreamReader(Stream, Encoding.Unicode))
-#endif
-                return await Reader.ReadToEndAsync(); 
+                    return Reader.ReadToEnd();
             }
         }
         public class DebugLog : TextLog
         {
-            public override ValueTask<string> Log(string Message, LogImportance Importance)
+            public override string Log(string Message, LogImportance Importance = LogImportance.I)
             {
                 System.Diagnostics.Debug.WriteLine(Message, Format(DateTime.Now, Importance, Region));
-                return new ValueTask<string>(Message);
+                return Message;
             }
 
-            public override ValueTask<string> ReadAll() => throw new NotSupportedException("Cannot read logs back from output.");
+            public override string ReadAll() => throw new NotSupportedException("Cannot read logs back from output.");
 
             public static DebugLog Default { get; } = new DebugLog();
         }

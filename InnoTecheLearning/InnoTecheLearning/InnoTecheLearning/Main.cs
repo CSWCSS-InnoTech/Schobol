@@ -95,7 +95,7 @@ namespace InnoTecheLearning
                 Favourites = await Storage.SerializedReadOrCreateOrDefault(Storage.VocabFile, new ObservableCollection<OnlineDict.Entry>());
                 Favourites.CollectionChanged += async (object sender, NotifyCollectionChangedEventArgs e) =>
                     await Storage.SerializedWrite(Storage.VocabFile, Favourites);
-                await Log("AsyncInit completed.");
+                Log("AsyncInit completed.");
             }
             AsyncInit();
             // Accomodate iPhone status bar.
@@ -1356,18 +1356,15 @@ namespace InnoTecheLearning
                     for (int i = 0; i < Return.Children.Count; i++)
                         if (Return.Children[i] is BoxView) Return.Children.RemoveAt(i);
                     for (int i = 0; i < e.DetectedFaces.Length; i++)
-                        Return.AddPosition(Log(new BoxView
+                        Return.AddPosition(new BoxView
                         {
                             Color = Color.Black
-                        }, $"Face Detected: ({e.DetectedFaces[i].Left},{e.DetectedFaces[i].Top})"),
+                        },
+                        e.DetectedFaces[i],
 #if __ANDROID__
-                        Rectangle.FromLTRB(
-                        e.DetectedFaces[i].Left / 2000.0 + 0.5,
-                        e.DetectedFaces[i].Top / 2000.0 + 0.5,
-                        e.DetectedFaces[i].Right / 2000.0 + 0.5,
-                        e.DetectedFaces[i].Bottom / 2000.0 + 0.5), AbsoluteLayoutFlags.All);
+                        AbsoluteLayoutFlags.All);
 #else
-                        e.DetectedFaces[i].Left, e.DetectedFaces[i].Top, AbsoluteLayoutFlags.None);
+                        AbsoluteLayoutFlags.None);
 #endif
                     Return.ForceLayout();
                 };
