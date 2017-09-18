@@ -1348,24 +1348,24 @@ namespace InnoTecheLearning
         {
             get
             {
+                Frame MakeFrame(Frame Inner = null) => 
+                    new Frame
+                    {
+                        BackgroundColor = Color.Transparent,
+                        OutlineColor = Color.FromHex("#F44336"),
+                        Padding = new Thickness(0.5),
+                        Content = Inner
+                    };
                 var Return = new AbsoluteLayout();
                 Return.HorizontalOptions = Return.VerticalOptions = LayoutOptions.FillAndExpand;
                 var cam = new Camera();
                 cam.ProcessingPreview += (sender, e) => 
                 {
                     for (int i = 0; i < Return.Children.Count; i++)
-                        if (Return.Children[i] is BoxView) Return.Children.RemoveAt(i);
+                        if (Return.Children[i] is Frame) Return.Children.RemoveAt(i);
                     for (int i = 0; i < e.DetectedFaces.Length; i++)
-                        Return.AddPosition(new BoxView
-                        {
-                            Color = Color.Black
-                        },
-                        e.DetectedFaces[i],
-#if __ANDROID__
-                        AbsoluteLayoutFlags.All);
-#else
-                        AbsoluteLayoutFlags.None);
-#endif
+                        Return.AddPosition(MakeFrame(MakeFrame(MakeFrame(MakeFrame(MakeFrame())))),
+                        e.DetectedFaces[i], AbsoluteLayoutFlags.None);
                     Return.ForceLayout();
                 };
                 Return.Children.Add(

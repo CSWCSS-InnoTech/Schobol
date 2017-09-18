@@ -5,7 +5,7 @@ namespace InnoTecheLearning
     partial class Utils
     {
 #region Version
-        public const string VersionFull = "0.11.0 Alpha 5"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.11.0 Alpha 6"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.11.0";
         public const string VersionAssemblyFile = "0.11";
         public const string VersionAssemblyInfo = VersionFull;

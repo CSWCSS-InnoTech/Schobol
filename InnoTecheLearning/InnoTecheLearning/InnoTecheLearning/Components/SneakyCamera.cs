@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Numerics;
 using System.Linq;
 using Rectangle = Xamarin.Forms.Rectangle;
 
@@ -37,6 +36,7 @@ namespace InnoTecheLearning
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
             public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
+            int Rotation = 0;
 #pragma warning disable 618 //Reason: Need Android 4 support
 #if FEATURE_CAMERA_PREVIEWJPEG
             private void PreviewHandler(byte[] data, Android.Hardware.Camera camera)
@@ -78,16 +78,16 @@ namespace InnoTecheLearning
                         .DefaultDisplay.Rotation)
                 {
                     case Android.Views.SurfaceOrientation.Rotation0:
-                        cam.SetDisplayOrientation(90);
+                        cam.SetDisplayOrientation(Rotation = 90);
                         break;
                     case Android.Views.SurfaceOrientation.Rotation180:
-                        cam.SetDisplayOrientation(270);
+                        cam.SetDisplayOrientation(Rotation = 270);
                         break;
                     case Android.Views.SurfaceOrientation.Rotation270:
-                        cam.SetDisplayOrientation(180);
+                        cam.SetDisplayOrientation(Rotation = 180);
                         break;
                     case Android.Views.SurfaceOrientation.Rotation90:
-                        cam.SetDisplayOrientation(0);
+                        cam.SetDisplayOrientation(Rotation = 0);
                         break;
                     default:
                         break;
@@ -107,28 +107,30 @@ namespace InnoTecheLearning
                         var FacesArray = new Rectangle[e.Faces.Length];
                         for (int i = 0; i < FacesArray.Length; i++)
                         {
-                            double Transform(int x, string Part)
+                            Android.Graphics.RectF Transform(Android.Graphics.Rect x)
                             {
+                                var y = new Android.Graphics.RectF(x);
                                 //https://developer.android.com/reference/android/hardware/Camera.Face.html#rect
-                                matri matrix = new Matrix();
-                                CameraInfo info = CameraHolder.instance().getCameraInfo()[cameraId];
+                                var matrix = new Android.Graphics.Matrix();
                                 // Need mirror for front camera.
-                                boolean mirror = (info.facing == CameraInfo.CAMERA_FACING_FRONT);
-                                matrix.setScale(mirror ? -1 : 1, 1);
+                                /*
+                                var info = CameraHolder.instance().getCameraInfo()[cameraId];
+                                (info.facing == Android.Hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
+                                */
+                                const bool mirror = false;
+                                matrix.SetScale(mirror ? -1 : 1, 1);
                                 // This is the value for android.hardware.Camera.setDisplayOrientation.
-                                matrix.postRotate(displayOrientation);
+                                matrix.PostRotate(Rotation);
                                 // Camera driver coordinates range from (-1000, -1000) to (1000, 1000).
                                 // UI coordinates range from (0, 0) to (width, height).
-                                matrix.postScale(view.getWidth() / 2000f, view.getHeight() / 2000f);
-                                matrix.postTranslate(view.getWidth() / 2f, view.getHeight() / 2f);
-                                Log(x, $"{Part}: {x} => {y}");
+                                matrix.PostScale(ToDp(Width) / 2000f, ToDp(Height) / 2000f);
+                                matrix.PostTranslate(ToDp(Width) / 2f, ToDp(Height) / 2f);
+                                matrix.MapRect(y);
                                 return y;
                             }
 
-                            var Rect = e.Faces[i].Rect;
-                            FacesArray[i] = Rectangle.FromLTRB(
-                                Transform(Rect.Left, nameof(Rect.Left)), Transform(Rect.Top, nameof(Rect.Top)),
-                                Transform(Rect.Right, nameof(Rect.Right)), Transform(Rect.Bottom, nameof(Rect.Bottom)));
+                            var Rect = Transform(e.Faces[i].Rect);
+                            FacesArray[i] = Rectangle.FromLTRB(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom);
                         }
 #if FEATURE_CAMERA_PREVIEWJPEG
                         Faces = FacesArray;

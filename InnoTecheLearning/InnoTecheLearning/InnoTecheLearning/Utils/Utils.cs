@@ -870,5 +870,12 @@ function Min() { return Math.min.apply(global, arguments); }
                 Task.GetAwaiter().OnCompleted(() => { if (Task.Result) StartTimer(Interval, Callback); });
                 return false;
             });
+
+#if __ANDROID__
+
+        //https://stackoverflow.com/questions/6656540/android-convert-px-to-dp-video-aspect-ratio
+        public static int ToDp(int Px) => (int)Math.Ceiling(Px / Forms.Context.Resources.DisplayMetrics.Density);
+        public static int ToPx(int Dp) => (int)Math.Ceiling(Dp * Forms.Context.Resources.DisplayMetrics.Density);
+#endif
     }
 }
