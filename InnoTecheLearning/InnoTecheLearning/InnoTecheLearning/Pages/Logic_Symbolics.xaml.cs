@@ -36,11 +36,11 @@ namespace InnoTecheLearning.Pages
             get => _ButtonMod;
             set
             {
-                B03.Text = GetMapper(value).Item1.Name;
+                B03.Text = GetMapper(value).Item1.Friendly;
                 for (int i = 0; i < ButtonRows; i++)
                     for (int j = 0; j < ButtonColumns; j++)
                     {
-                        Buttons[i, j].Text = GetMapper(value).Item2[i, j].Name;
+                        Buttons[i, j].Text = GetMapper(value).Item2[i, j].Friendly;
                     };
 
                 if ((_ButtonMod ^ value).HasFlag(ButtonModifier.Shift))
@@ -198,7 +198,7 @@ namespace InnoTecheLearning.Pages
             EventHandler ButtonClicked = (sender, e) =>
             {
                 var (x, y) = Utils.IndicesOf(Buttons, (Button)sender);
-                var ToAdd = x == -1 && y == -1 ? GetMapper(ButtonMod).Item1.FullName : GetMapper(ButtonMod).Item2[x, y].FullName;
+                var ToAdd = x == -1 && y == -1 ? GetMapper(ButtonMod).Item1.Name : GetMapper(ButtonMod).Item2[x, y].Name;
                 if (In.Text.Contains(Utils.Cursor)) In.Text = In.Text.Insert(In.Text.IndexOf(Utils.Cursor), ToAdd);
                 else In.Text += ToAdd;
                 ButtonMod = ButtonModifier.Norm;
@@ -285,7 +285,7 @@ namespace InnoTecheLearning.Pages
             History.Add(new KeyValuePair<string, string>(T,
                 Out.Text = await (await Current).Evaluate(string.Concat(
                 "try{",
-                    "nerdamer('", Utils.EncodeJavascript(T, false), "')",
+                    "nerdamer('", Utils.EncodeJavascript(T, false), "', undefined, 'expand')",
                     DoEvaluate ? ".evaluate()" : string.Empty,
                     DisplayDecimals ? ".text()" : ".toString()",
                 "}catch(e){'", Utils.Error, "'+(e.message?e.message:e)}"

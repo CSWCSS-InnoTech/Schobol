@@ -9,28 +9,30 @@ namespace InnoTecheLearning
     {
         public struct NerdamerPart
         {
-            public NerdamerPart(string Name, string FullName = null)
-            {
-                this.Name = Name;
-                this.FullName = FullName ?? Name; 
-                DescriptionContent = DescriptionTitle = null;
-            }
+            public NerdamerPart(string Name, string Friendly = null) : this(Name, null, null, Friendly) { }
             public NerdamerPart(string Name, string DescriptionTitle, 
-                string DescriptionContent, string FullName = null)
+                string DescriptionContent, string Friendly = null)
             {
                 this.Name = Name;
-                this.FullName = FullName ?? Name;
                 this.DescriptionTitle = DescriptionTitle;
                 this.DescriptionContent = DescriptionContent;
+                this.Friendly = Friendly ?? (Name.Length > 1 ? Name.TrimEnd('(') : Name);
             }
 
             public string Name { get; }
             public string DescriptionTitle { get; }
             public string DescriptionContent { get; }
-            public string FullName { get; }
+            public string Friendly { get; }
 
+            /*
+        0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+U+00Bx          x²  x³                      x¹                      
+U+207x  x⁰  xⁱ          x⁴  x⁵  x⁶  x⁷  x⁸  x⁹  x⁺  x⁻  x⁼  x⁽  x⁾  xⁿ
+U+208x  x₀  x₁  x₂  x₃  x₄  x₅  x₆  x₇  x₈  x₉  x₊  x₋  x₌  x₍  x₎  
+U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ  xₜ
+ªºⱽⱼ◌ͣ◌ͤ◌ͥ◌ͦ◌ͧ◌ͨ◌ͩ◌ͪ◌ͫ◌ͬ◌ͭ◌ͮ◌ͯ ʰʲʳʷʸˡˢˣᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁᵂᵃᵅᵇᵈᵉᵍᵏᵐᵒᵖᵗᵘᵛᵢᵣᵤᵥᵪᵸᶜᶠᶢᶦᶩᶫᶰᶴᶸᶻ*/
             public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty);
-            public static readonly NerdamerPart Space = new NerdamerPart("␣", " ");
+            public static readonly NerdamerPart Space = new NerdamerPart(" ", "␣");
             public static readonly NerdamerPart Percent = new NerdamerPart("%");
             public static readonly NerdamerPart Comma = new NerdamerPart(",");
             public static readonly NerdamerPart LeftSquare = new NerdamerPart("[");
@@ -45,8 +47,8 @@ namespace InnoTecheLearning
             public static readonly NerdamerPart D4 = new NerdamerPart("4");
             public static readonly NerdamerPart D5 = new NerdamerPart("5");
             public static readonly NerdamerPart D6 = new NerdamerPart("6");
-            public static readonly NerdamerPart Multiply = new NerdamerPart("*");
-            public static readonly NerdamerPart Divide = new NerdamerPart("/");
+            public static readonly NerdamerPart Multiply = new NerdamerPart("*", "×");
+            public static readonly NerdamerPart Divide = new NerdamerPart("/", "÷");
             public static readonly NerdamerPart D1 = new NerdamerPart("1");
             public static readonly NerdamerPart D2 = new NerdamerPart("2");
             public static readonly NerdamerPart D3 = new NerdamerPart("3");
@@ -54,16 +56,16 @@ namespace InnoTecheLearning
             public static readonly NerdamerPart Subtract = new NerdamerPart("-", "The subtraction operator", "Input:\n1-1\nOutput:\n0");
             public static readonly NerdamerPart D0 = new NerdamerPart("0");
             public static readonly NerdamerPart Decimal = new NerdamerPart(".");
-            public static readonly NerdamerPart ConstPi = new NerdamerPart("pi");
+            public static readonly NerdamerPart ConstPi = new NerdamerPart("π");
             public static readonly NerdamerPart ConstE = new NerdamerPart("e");
             public static readonly NerdamerPart ConstI = new NerdamerPart("i");
             public static readonly NerdamerPart Equation = new NerdamerPart("=");
             public static readonly NerdamerPart Assign = new NerdamerPart(":=");
-            public static readonly NerdamerPart Log = new NerdamerPart("log(");
-            public static readonly NerdamerPart Log10 = new NerdamerPart("log10(");
+            public static readonly NerdamerPart Log = new NerdamerPart("log(", "logₑ");
+            public static readonly NerdamerPart Log10 = new NerdamerPart("log10(", "log₁₀");
             public static readonly NerdamerPart Min = new NerdamerPart("min(");
             public static readonly NerdamerPart Max = new NerdamerPart("max(");
-            public static readonly NerdamerPart Sqrt = new NerdamerPart("sqrt(");
+            public static readonly NerdamerPart Sqrt = new NerdamerPart("sqrt(", "√‾");
             public static readonly NerdamerPart Floor = new NerdamerPart("floor(");
             public static readonly NerdamerPart Ceil = new NerdamerPart("ceil(");
             public static readonly NerdamerPart Round = new NerdamerPart("round(");
@@ -82,7 +84,7 @@ namespace InnoTecheLearning
             public static readonly NerdamerPart Roots = new NerdamerPart("roots(");
             public static readonly NerdamerPart Coeffs = new NerdamerPart("coeffs(");
             public static readonly NerdamerPart Solve = new NerdamerPart("solve(");
-            public static readonly NerdamerPart SolveEquations = new NerdamerPart("solveEquations(");
+            public static readonly NerdamerPart SolveEquations = new NerdamerPart("solveEquations(", "{");
             public static readonly NerdamerPart a = new NerdamerPart("a");
             public static readonly NerdamerPart b = new NerdamerPart("b");
             public static readonly NerdamerPart c = new NerdamerPart("c");
@@ -137,46 +139,49 @@ namespace InnoTecheLearning
             public static readonly NerdamerPart Z = new NerdamerPart("Z");
             public static readonly NerdamerPart Atan2 = new NerdamerPart("atan2(");
             public static readonly NerdamerPart Sin = new NerdamerPart("sin(");
-            public static readonly NerdamerPart Asin = new NerdamerPart("asin(");
+            public static readonly NerdamerPart Asin = new NerdamerPart("asin(", "sin⁻¹");
             public static readonly NerdamerPart Sinh = new NerdamerPart("sinh(");
-            public static readonly NerdamerPart Asinh = new NerdamerPart("asinh(");
+            public static readonly NerdamerPart Asinh = new NerdamerPart("asinh(", "sinh⁻¹");
             public static readonly NerdamerPart Cos = new NerdamerPart("cos(");
-            public static readonly NerdamerPart Acos = new NerdamerPart("acos(");
+            public static readonly NerdamerPart Acos = new NerdamerPart("acos(", "cos⁻¹");
             public static readonly NerdamerPart Cosh = new NerdamerPart("cosh(");
-            public static readonly NerdamerPart Acosh = new NerdamerPart("acosh(");
+            public static readonly NerdamerPart Acosh = new NerdamerPart("acosh(", "cosh⁻¹");
             public static readonly NerdamerPart Tan = new NerdamerPart("tan(");
-            public static readonly NerdamerPart Atan = new NerdamerPart("atan(");
+            public static readonly NerdamerPart Atan = new NerdamerPart("atan(", "tan⁻¹");
             public static readonly NerdamerPart Tanh = new NerdamerPart("tanh(");
-            public static readonly NerdamerPart Atanh = new NerdamerPart("atanh(");
+            public static readonly NerdamerPart Atanh = new NerdamerPart("atanh(", "tanh⁻¹");
             public static readonly NerdamerPart Sinc = new NerdamerPart("sinc(");
-            public static readonly NerdamerPart Sum = new NerdamerPart("sum(");
-            public static readonly NerdamerPart Product = new NerdamerPart("product(");
-            public static readonly NerdamerPart Diff = new NerdamerPart("diff(");
-            public static readonly NerdamerPart Integrate = new NerdamerPart("integrate(");
-            public static readonly NerdamerPart Defint = new NerdamerPart("defint(");
+            public static readonly NerdamerPart Sum = new NerdamerPart("sum(", "∑");
+            public static readonly NerdamerPart Product = new NerdamerPart("product(", "∏");
+            public static readonly NerdamerPart Diff = new NerdamerPart("diff(", "d/dx");
+            public static readonly NerdamerPart Integrate = new NerdamerPart("integrate(", "∫");
+            public static readonly NerdamerPart Defint = new NerdamerPart("defint(", "ₐ∫ꚝ");
+            //ꚝ is U+A69D MODIFIER LETTER CYRILLIC SOFT SIGN, used as superscript lowercase letter b
+            //(although displays in VS2017 as white box with ? inside it, 
+            //it works with Android 6+ and Windows 10 at least)
             public static readonly NerdamerPart Step = new NerdamerPart("step(");
             public static readonly NerdamerPart Sec = new NerdamerPart("sec(");
-            public static readonly NerdamerPart Asec = new NerdamerPart("asec(");
+            public static readonly NerdamerPart Asec = new NerdamerPart("asec(", "sec⁻¹");
             public static readonly NerdamerPart Sech = new NerdamerPart("sech(");
-            public static readonly NerdamerPart Asech = new NerdamerPart("asech(");
+            public static readonly NerdamerPart Asech = new NerdamerPart("asech(", "sech⁻¹");
             public static readonly NerdamerPart Erf = new NerdamerPart("erf(");
             public static readonly NerdamerPart Csc = new NerdamerPart("csc(");
-            public static readonly NerdamerPart Acsc = new NerdamerPart("acsc(");
+            public static readonly NerdamerPart Acsc = new NerdamerPart("acsc(", "csc⁻¹");
             public static readonly NerdamerPart Csch = new NerdamerPart("csch(");
-            public static readonly NerdamerPart Acsch = new NerdamerPart("acsch(");
+            public static readonly NerdamerPart Acsch = new NerdamerPart("acsch(", "acsch⁻¹");
             public static readonly NerdamerPart Rect = new NerdamerPart("rect(");
             public static readonly NerdamerPart Cot = new NerdamerPart("cot(");
-            public static readonly NerdamerPart Acot = new NerdamerPart("acot(");
+            public static readonly NerdamerPart Acot = new NerdamerPart("acot(", "cot⁻¹");
             public static readonly NerdamerPart Coth = new NerdamerPart("coth(");
-            public static readonly NerdamerPart Acoth = new NerdamerPart("acoth(");
+            public static readonly NerdamerPart Acoth = new NerdamerPart("acoth(", "coth⁻¹");
             public static readonly NerdamerPart Tri = new NerdamerPart("tri(");
             public static readonly NerdamerPart Si = new NerdamerPart("Si(");
             public static readonly NerdamerPart Ci = new NerdamerPart("Ci(");
             public static readonly NerdamerPart Shi = new NerdamerPart("Shi(");
             public static readonly NerdamerPart Chi = new NerdamerPart("Chi(");
             public static readonly NerdamerPart Ei = new NerdamerPart("Ei(");
-            public static readonly NerdamerPart Laplace = new NerdamerPart("laplace(");
-            public static readonly NerdamerPart Smpvar = new NerdamerPart("smpvar(");
+            public static readonly NerdamerPart Laplace = new NerdamerPart("laplace(", "ℒ");
+            public static readonly NerdamerPart Smpvar = new NerdamerPart("smpvar(", "σ");
             public static readonly NerdamerPart Variance = new NerdamerPart("variance(");
             public static readonly NerdamerPart Smpstdev = new NerdamerPart("smpstdev(");
             public static readonly NerdamerPart Stdev = new NerdamerPart("stdev(");
@@ -203,7 +208,7 @@ namespace InnoTecheLearning
                     typeof(NerdamerPart).GetTypeInfo()
                     .DeclaredFields
                     .Where(x => x.FieldType == typeof(NerdamerPart) && x.Name != nameof(Empty)) //No empty matches
-                    .Select(x => Regex.Escape(((NerdamerPart)x.GetValue(null)).FullName)) //Assuming all fields of type NerdamerPart are static
+                    .Select(x => Regex.Escape(((NerdamerPart)x.GetValue(null)).Name)) //Assuming all fields of type NerdamerPart are static
                     .OrderByDescending(x => x.Length) //Regexes test from left to right; 
                     .Append(".")), RegexOptions.Compiled);                   //e.g. Matches("transpose((i))") => 
                     //No chars left out               //MatchCollection(5) { [transpose(], [(], [i], [)], [)] }
