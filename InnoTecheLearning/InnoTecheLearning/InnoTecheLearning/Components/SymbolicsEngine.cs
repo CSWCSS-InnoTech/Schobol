@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-//[assembly: ExportRenderer(typeof(InnoTecheLearning.Utils.SymbolicsEngine.WebViewer), typeof(InnoTecheLearning.Utils.SymbolicsEngine.WebViewRender))]
+//[assembly: ExportRenderer(typeof(InnoTecheLearning.SymbolicsEngine.WebViewer), typeof(InnoTecheLearning.SymbolicsEngine.WebViewRender))]
 namespace InnoTecheLearning
 {
     partial class Utils
@@ -23,14 +24,9 @@ namespace InnoTecheLearning
 #elif __IOS__
         {
             JavaScriptCore.JSContext _Engine = new JavaScriptCore.JSContext();
-            public ValueTask<string> Evaluate(string JavaScript)
-            {
-                EvaluateCalling(this, EventArgs.Empty);
-                var Return = new ValueTask<string>(Task.Run(() => 
+            public ValueTask<string> Evaluate(string JavaScript) =>
+                new ValueTask<string>(Task.Run(() => 
                     _Engine.EvaluateScript(JavaScript).ToString()));
-                Return.GetAwaiter().OnCompleted(() => EvaluateCalled(this, EventArgs.Empty));
-                return Return;
-            }
 #elif __ANDROID__
         {
             /// <summary>
@@ -58,7 +54,6 @@ namespace InnoTecheLearning
                 });
             public async ValueTask<string> Evaluate(string JavaScript)
             {
-                EvaluateCalling(this, EventArgs.Empty);
                 var completion = new TaskCompletionSource<string>();
                 await _Ready.Task;
                 if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
@@ -77,9 +72,7 @@ namespace InnoTecheLearning
                         _Engine.LoadUrl($"javascript:eval({EncodeJavascript(JavaScript)})");
                     });
                 }
-                var Result = await completion.Task;
-                EvaluateCalled(this, EventArgs.Empty);
-                return Result;
+                return await completion.Task;
             }
             class Callback : Java.Lang.Object, Android.Webkit.IValueCallback
             {
@@ -112,17 +105,90 @@ namespace InnoTecheLearning
 #else
         {
             Jint.Engine _Engine = new Jint.Engine();
-            public ValueTask<string> Evaluate(string JavaScript)
-            {
-                EvaluateCalling(this, EventArgs.Empty);
-                var Return = new ValueTask<string>(Task.Run(() => 
+            public ValueTask<string> Evaluate(string JavaScript) =>
+                new ValueTask<string>(Task.Run(() => 
                     _Engine.Execute(JavaScript).GetCompletionValue().ToString()));
-                Return.GetAwaiter().OnCompleted(() => EvaluateCalled(this, EventArgs.Empty));
+#endif
+
+            #region Singleton Engine
+            public static async ValueTask<string> Eval(string Expression, bool DoEvaluate, bool DisplayDecimals)
+            {
+                var T = Expression.Replace(Cursor, "");
+                string Return;
+                History.Add(new KeyValuePair<string, string>(T,
+                    Return = await (await Current).Evaluate(string.Concat(
+                    "try{",
+                        "nerdamer('", EncodeJavascript(T, false), "', undefined, 'expand')",
+                        DoEvaluate ? ".evaluate()" : string.Empty,
+                        DisplayDecimals ? ".text()" : ".toString()",
+                    "}catch(e){'", Error, "'+(e.message?e.message:e)}"
+                    ))));
                 return Return;
             }
-#endif
-            public event EventHandler EvaluateCalling = (sender, e) => { };
-            public event EventHandler EvaluateCalled = (sender, e) => { };
+
+            public static ValueTask<SymbolicsEngine> Current { get; } = CreateEngineAsync();
+            public static ValueTask<SymbolicsEngine> CreateEngineAsync() => new ValueTask<SymbolicsEngine>(
+                Task.Run(async () =>
+                {
+                    var Return = new SymbolicsEngine();
+                    await Return.Evaluate(Resources.GetString("nerdamer.core.js"));
+                    await Return.Evaluate(Resources.GetString("Algebra.js"));
+                    await Return.Evaluate(Resources.GetString("Calculus.js"));
+                    await Return.Evaluate(Resources.GetString("Solve.js"));
+                    await Return.Evaluate(Resources.GetString("Extra.js"));
+                    await Return.Evaluate("nerdamer.getCore().PARSER.constants['π'] = 'pi'");
+                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    return Return;
+                }));
+
+            public static ObservableCollection<KeyValuePair<string, string>> History { get; } =
+                new ObservableCollection<KeyValuePair<string, string>>() { };
+
+            public static ValueTask<ObservableDictionary<string, string>> Vars { get; } = CreateVarsAsync();
+            public static ValueTask<ObservableDictionary<string, string>> CreateVarsAsync() =>
+                new ValueTask<ObservableDictionary<string, string>>(
+                    Task.Run(async () =>
+                    {
+                        var Return =
+                        Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableDictionary<string, string>>
+                        (await (await Current).Evaluate("nerdamer.getVars()"));
+                        Return.CollectionChanged += async (sender, e) =>
+                        {
+                            switch (e.Action)
+                            {
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                                    foreach (KeyValuePair<string, string> Item in e.NewItems)
+                                        await (await Current).Evaluate(
+                                        $"nerdamer.setVar('{EncodeJavascript(Item.Key)}', '{EncodeJavascript(Item.Value)}')");
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                                    foreach (KeyValuePair<string, string> Item in e.OldItems)
+                                        await (await Current).Evaluate(
+                                        $"nerdamer.setVar('{EncodeJavascript(Item.Key)}', 'delete')");
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
+                                    foreach (KeyValuePair<string, string> Item in e.OldItems)
+                                        await (await Current).Evaluate(
+                                        $"nerdamer.setVar('{EncodeJavascript(Item.Key)}', 'delete')");
+                                    foreach (KeyValuePair<string, string> Item in e.NewItems)
+                                        await (await Current).Evaluate(
+                                        $"nerdamer.setVar('{EncodeJavascript(Item.Key)}', '{EncodeJavascript(Item.Value)}')");
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
+                                    break;
+                                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                                    await (await Current).Evaluate($"nerdamer.clearVars()");
+                                    break;
+                                default:
+                                    break;
+                            }
+                        };
+                        return Return;
+                    }));
+            #endregion
         }
     }
 }

@@ -9,6 +9,7 @@ using EventArgs = System.EventArgs;
 
 using Part = InnoTecheLearning.Utils.NerdamerPart;
 using static InnoTecheLearning.Utils.NerdamerPart;
+using static InnoTecheLearning.Utils.SymbolicsEngine;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -147,8 +148,6 @@ namespace InnoTecheLearning.Pages
                 { B40, B41, B42, B43, B44 },
                 { B50, B51, B52, B53, B54 }
             };
-            Vars = CreateVarsAsync();
-            //Current.GetAwaiter().OnCompleted(() => Current.Result.EvaluateCalled += (sender, e) => OnPropertyChanged(nameof(Current)));
             #endregion
             #region Declarations
             EventHandler ModClicked(ButtonModifier Modifier) => (sender, e) => ButtonMod ^= Modifier;
@@ -210,6 +209,7 @@ namespace InnoTecheLearning.Pages
                 var Part = x == -1 && y == -1 ? GetMapper(ButtonMod).Item1 : GetMapper(ButtonMod).Item2[x, y];
                 if (Part.DescriptionContent != null) DisplayAlert(Part.DescriptionTitle, Part.DescriptionContent, "OK");
             };
+            async void Calculate_Clicked(object sender, EventArgs e) => Out.Text = await Eval(In.Text, DoEvaluate, DisplayDecimals);
             #endregion
 
             #region Wiring up
@@ -277,81 +277,5 @@ namespace InnoTecheLearning.Pages
                 for (int j = 0; j < ButtonColumns; j++)
                     Utils.LongPress.UnregisterAll(Buttons[i, j]);
         }
-
-        #region Talking to the Engine
-        async ValueTask<Utils.Unit> Eval()
-        {
-            var T = In.Text.Replace(Utils.Cursor, "");
-            History.Add(new KeyValuePair<string, string>(T,
-                Out.Text = await (await Current).Evaluate(string.Concat(
-                "try{",
-                    "nerdamer('", Utils.EncodeJavascript(T, false), "', undefined, 'expand')",
-                    DoEvaluate ? ".evaluate()" : string.Empty,
-                    DisplayDecimals ? ".text()" : ".toString()",
-                "}catch(e){'", Utils.Error, "'+(e.message?e.message:e)}"
-                ))));
-            return Utils.Unit.Default;
-        }
-        async void Calculate_Clicked(object sender, EventArgs e) => await Eval();
-
-        ValueTask<Utils.SymbolicsEngine> Current { get; } = CreateEngineAsync();
-        static ValueTask<Utils.SymbolicsEngine> CreateEngineAsync() => new ValueTask<Utils.SymbolicsEngine>(
-            Task.Run(async () =>
-        {
-            var Return = new Utils.SymbolicsEngine();
-            await Return.Evaluate(Utils.Resources.GetString("nerdamer.core.js"));
-            await Return.Evaluate(Utils.Resources.GetString("Algebra.js"));
-            await Return.Evaluate(Utils.Resources.GetString("Calculus.js"));
-            await Return.Evaluate(Utils.Resources.GetString("Solve.js"));
-            await Return.Evaluate(Utils.Resources.GetString("Extra.js"));
-            await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
-            return Return;
-        }));
-
-        ObservableCollection<KeyValuePair<string, string>> History { get; } = 
-            new ObservableCollection<KeyValuePair<string, string>>() { };
-
-        ValueTask<ObservableDictionary<string, string>> Vars { get; }
-        ValueTask<ObservableDictionary<string, string>> CreateVarsAsync() =>
-            new ValueTask<ObservableDictionary<string, string>>(
-                Task.Run(async () =>
-                    {
-                        var Return =
-                            Newtonsoft.Json.JsonConvert.DeserializeObject<ObservableDictionary<string, string>>
-                            (await (await Current).Evaluate("nerdamer.getVars()"));
-                        Return.CollectionChanged += async (sender, e) =>
-                        {
-                            switch (e.Action)
-                            {
-                                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                                    foreach(KeyValuePair<string, string> Item in e.NewItems)
-                                        await (await Current).Evaluate(
-                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', '{Utils.EncodeJavascript(Item.Value)}')");
-                                    break;
-                                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
-                                    foreach (KeyValuePair<string, string> Item in e.OldItems)
-                                        await (await Current).Evaluate(
-                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', 'delete')");
-                                    break;
-                                case System.Collections.Specialized.NotifyCollectionChangedAction.Replace:
-                                    foreach (KeyValuePair<string, string> Item in e.OldItems)
-                                        await (await Current).Evaluate(
-                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', 'delete')");
-                                    foreach (KeyValuePair<string, string> Item in e.NewItems)
-                                        await (await Current).Evaluate(
-                                            $"nerdamer.setVar('{Utils.EncodeJavascript(Item.Key)}', '{Utils.EncodeJavascript(Item.Value)}')");
-                                    break;
-                                case System.Collections.Specialized.NotifyCollectionChangedAction.Move:
-                                    break;
-                                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
-                                    await (await Current).Evaluate($"nerdamer.clearVars()");
-                                    break;
-                                default:
-                                    break;
-                            }
-                        };
-                        return Return;
-                    }));
-        #endregion
     }
 }

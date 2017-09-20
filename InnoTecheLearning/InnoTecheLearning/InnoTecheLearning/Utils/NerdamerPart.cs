@@ -155,10 +155,7 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Product = new NerdamerPart("product(", "∏");
             public static readonly NerdamerPart Diff = new NerdamerPart("diff(", "d/dx");
             public static readonly NerdamerPart Integrate = new NerdamerPart("integrate(", "∫");
-            public static readonly NerdamerPart Defint = new NerdamerPart("defint(", "ₐ∫ꚝ");
-            //ꚝ is U+A69D MODIFIER LETTER CYRILLIC SOFT SIGN, used as superscript lowercase letter b
-            //(although displays in VS2017 as white box with ? inside it, 
-            //it works with Android 6+ and Windows 10 at least)
+            public static readonly NerdamerPart Defint = new NerdamerPart("defint(", "ₐ∫ᵇ");
             public static readonly NerdamerPart Step = new NerdamerPart("step(");
             public static readonly NerdamerPart Sec = new NerdamerPart("sec(");
             public static readonly NerdamerPart Asec = new NerdamerPart("asec(", "sec⁻¹");
@@ -181,10 +178,10 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Chi = new NerdamerPart("Chi(");
             public static readonly NerdamerPart Ei = new NerdamerPart("Ei(");
             public static readonly NerdamerPart Laplace = new NerdamerPart("laplace(", "ℒ");
-            public static readonly NerdamerPart Smpvar = new NerdamerPart("smpvar(", "σ");
-            public static readonly NerdamerPart Variance = new NerdamerPart("variance(");
-            public static readonly NerdamerPart Smpstdev = new NerdamerPart("smpstdev(");
-            public static readonly NerdamerPart Stdev = new NerdamerPart("stdev(");
+            public static readonly NerdamerPart Smpvar = new NerdamerPart("smpvar(", "s²");
+            public static readonly NerdamerPart Variance = new NerdamerPart("variance(", "σ²");
+            public static readonly NerdamerPart Smpstdev = new NerdamerPart("smpstdev(", "s");
+            public static readonly NerdamerPart Stdev = new NerdamerPart("stdev(", "σₓ");
             public static readonly NerdamerPart NotEqual = new NerdamerPart("!=");
             public static readonly NerdamerPart LessThan = new NerdamerPart("<");
             public static readonly NerdamerPart LessEqual = new NerdamerPart("<=");
@@ -202,6 +199,15 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Vecset = new NerdamerPart("vecset(");
             public static readonly NerdamerPart Cross = new NerdamerPart("cross(");
             public static readonly NerdamerPart Dot = new NerdamerPart("dot(");
+
+            public static readonly NerdamerPart If = new NerdamerPart("IF(");
+            public static readonly NerdamerPart Div = new NerdamerPart("div(");
+            public static readonly NerdamerPart GammaIncomplete = new NerdamerPart("gamma_incomplete(");
+            public static readonly NerdamerPart Parens = new NerdamerPart("parens(");
+            public static readonly NerdamerPart SetEquation = new NerdamerPart("setEquation(");
+            public static readonly NerdamerPart Sign = new NerdamerPart("sign(");
+            public static readonly NerdamerPart ZScore = new NerdamerPart("zscore(", "zₓ");
+
 
             public static readonly Regex Splitter =
                 new Regex(string.Join("|",

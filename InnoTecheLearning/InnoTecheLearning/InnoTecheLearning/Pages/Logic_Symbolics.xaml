@@ -7,6 +7,16 @@
              Title="eLearn Logic (Symbolics)" 
             StyleId="eLearn Logic (Symbolics)">
     <ContentPage Title="Calculator" x:Name="Calculator">
+        <ContentPage.Resources>
+            <ResourceDictionary>
+                <Style TargetType="Button">
+                    <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                    <Setter Property="VerticalOptions" Value="FillAndExpand" />
+                    <Setter Property="BackgroundColor" Value="#616161" />
+                    <Setter Property="TextColor" Value="#E0E0E0" />
+                </Style>
+            </ResourceDictionary>
+        </ContentPage.Resources>
         <StackLayout BackgroundColor="White">
             <StackLayout Orientation="Horizontal">
                 <Button Text="◀" x:Name="Left">
@@ -39,9 +49,9 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.Children>
-                    <Button x:Name="Shift" Text="Shift" BackgroundColor="Orange" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
-                    <Button x:Name="Alpha" Text="Alpha" BackgroundColor="Red" TextColor="White" Grid.Row="0" Grid.Column="1"/>
-                    <Button x:Name="Alt" Text="Alt" BackgroundColor="Green" TextColor="White" Grid.Row="0" Grid.Column="2"/>
+                    <Button x:Name="Shift" Text="Shift" BackgroundColor="#FF9800" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                    <Button x:Name="Alpha" Text="Alpha" BackgroundColor="#F44336" TextColor="White" Grid.Row="0" Grid.Column="1"/>
+                    <Button x:Name="Alt" Text="Alt" BackgroundColor="#4CAF50" TextColor="White" Grid.Row="0" Grid.Column="2"/>
                     <Button x:Name="B03" Text="%" Grid.Row="0" Grid.Column="3"/>
                     <Button x:Name="Back" Text="←" Grid.Row="0" Grid.Column="4"/>
                     <Button x:Name="B10" Text="," Grid.Row="1" Grid.Column="0"/>
@@ -57,8 +67,8 @@
                     <Button x:Name="B30" Text="4" Grid.Row="3" Grid.Column="0"/>
                     <Button x:Name="B31" Text="5" Grid.Row="3" Grid.Column="1"/>
                     <Button x:Name="B32" Text="6" Grid.Row="3" Grid.Column="2"/>
-                    <Button x:Name="B33" Text="*" Grid.Row="3" Grid.Column="3"/>
-                    <Button x:Name="B34" Text="/" Grid.Row="3" Grid.Column="4"/>
+                    <Button x:Name="B33" Text="×" Grid.Row="3" Grid.Column="3"/>
+                    <Button x:Name="B34" Text="÷" Grid.Row="3" Grid.Column="4"/>
                     <Button x:Name="B40" Text="1" Grid.Row="4" Grid.Column="0"/>
                     <Button x:Name="B41" Text="2" Grid.Row="4" Grid.Column="1"/>
                     <Button x:Name="B42" Text="3" Grid.Row="4" Grid.Column="2"/>
@@ -66,7 +76,7 @@
                     <Button x:Name="B44" Text="-" Grid.Row="4" Grid.Column="4"/>
                     <Button x:Name="B50" Text="0" Grid.Row="5" Grid.Column="0"/>
                     <Button x:Name="B51" Text="." Grid.Row="5" Grid.Column="1"/>
-                    <Button x:Name="B52" Text="pi" Grid.Row="5" Grid.Column="2"/>
+                    <Button x:Name="B52" Text="π" Grid.Row="5" Grid.Column="2"/>
                     <Button x:Name="B53" Text="e" Grid.Row="5" Grid.Column="3"/>
                     <Button x:Name="B54" Text="i" Grid.Row="5" Grid.Column="4"/>
                 </Grid.Children>
@@ -74,8 +84,8 @@
             <StackLayout Orientation="Vertical">
                 <Button Text="Evaluate" x:Name="Calculate"/>
                 <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
-                    <Button HorizontalOptions="FillAndExpand" Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
-                    <Button HorizontalOptions="FillAndExpand" Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                    <Button Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                    <Button Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
                 </StackLayout>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
