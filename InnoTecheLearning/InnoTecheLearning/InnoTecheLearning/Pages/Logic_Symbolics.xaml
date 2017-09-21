@@ -6,33 +6,40 @@
              xmlns:local="clr-namespace:InnoTecheLearning"
              Title="eLearn Logic (Symbolics)" 
             StyleId="eLearn Logic (Symbolics)">
+    <TabbedPage.Resources>
+        <!--(\w+)="(\w+)"
+                <Setter Property="$1" Value="$2" />\r\n-->
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="VerticalOptions" Value="FillAndExpand" />
+                <Setter Property="BackgroundColor" Value="#616161" />
+                <Setter Property="TextColor" Value="#E0E0E0" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+                <Setter Property="BackgroundColor" Value="#BDBDBD" />
+                <Setter Property="TextColor" Value="#212121" />
+                <Setter Property="PlaceholderColor" Value="#9E9E9E" />
+            </Style>
+        </ResourceDictionary>
+    </TabbedPage.Resources>
     <ContentPage Title="Calculator" x:Name="Calculator">
-        <ContentPage.Resources>
-            <ResourceDictionary>
-                <Style TargetType="Button">
-                    <Setter Property="HorizontalOptions" Value="FillAndExpand" />
-                    <Setter Property="VerticalOptions" Value="FillAndExpand" />
-                    <Setter Property="BackgroundColor" Value="#616161" />
-                    <Setter Property="TextColor" Value="#E0E0E0" />
-                </Style>
-            </ResourceDictionary>
-        </ContentPage.Resources>
         <StackLayout BackgroundColor="White">
             <StackLayout Orientation="Horizontal">
-                <Button Text="◀" x:Name="Left">
+                <Button Text="◀" x:Name="Left" HorizontalOptions="Start">
                     <Button.BackgroundColor>
                         <OnPlatform x:TypeArguments="Color" Android="Silver" Default="Default"/>
                     </Button.BackgroundColor>
                 </Button>
                 <Entry x:Name="In" Text="" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Enter expression..." PlaceholderColor="Gray" />
-                <Button Text="▶" x:Name="Right">
+                <Button Text="▶" x:Name="Right" HorizontalOptions="End">
                     <Button.BackgroundColor>
                         <OnPlatform x:TypeArguments="Color" Android="Silver" Default="Default"/>
                     </Button.BackgroundColor>
                 </Button>
             </StackLayout>
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <!--RowDefinitions="1,1,1,1,1,1" ColumnDefinitions="{local:GridColumn 1,1,1,1,1}"-->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
@@ -49,11 +56,12 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.Children>
-                    <Button x:Name="Shift" Text="Shift" BackgroundColor="#FF9800" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
-                    <Button x:Name="Alpha" Text="Alpha" BackgroundColor="#F44336" TextColor="White" Grid.Row="0" Grid.Column="1"/>
-                    <Button x:Name="Alt" Text="Alt" BackgroundColor="#4CAF50" TextColor="White" Grid.Row="0" Grid.Column="2"/>
+                    <!--Device must support Unicode Block Miscellaneous Technical (2300~23F3)-->
+                    <Button x:Name="Shift"  Text="⇧" BackgroundColor="#FFC107" TextColor="Black" Grid.Row="0" Grid.Column="0"/>
+                    <Button x:Name="Alpha" Text="⍺" BackgroundColor="#F44336" TextColor="White" Grid.Row="0" Grid.Column="1"/>
+                    <Button x:Name="Alt" Text="⌥" BackgroundColor="#4CAF50" TextColor="White" Grid.Row="0" Grid.Column="2"/>
                     <Button x:Name="B03" Text="%" Grid.Row="0" Grid.Column="3"/>
-                    <Button x:Name="Back" Text="←" Grid.Row="0" Grid.Column="4"/>
+                    <Button x:Name="Back" Text="⌫" Grid.Row="0" Grid.Column="4"/>
                     <Button x:Name="B10" Text="," Grid.Row="1" Grid.Column="0"/>
                     <Button x:Name="B11" Text="=" Grid.Row="1" Grid.Column="1"/>
                     <Button x:Name="B12" Text="␣" Grid.Row="1" Grid.Column="2"/>
@@ -84,13 +92,13 @@
             <StackLayout Orientation="Vertical">
                 <Button Text="Evaluate" x:Name="Calculate"/>
                 <StackLayout HorizontalOptions="FillAndExpand" Orientation="Horizontal">
-                    <Button Text="Display Decimals" x:Name="Display" BackgroundColor="LightSkyBlue" TextColor="Black"/>
-                    <Button Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="LightSkyBlue" TextColor="Black"/>
+                    <Button Text="Display Decimals" x:Name="Display" BackgroundColor="#4FC3F7" TextColor="Black"/>
+                    <Button Text="Evaluate Symbols" x:Name="Evaluate" BackgroundColor="#4FC3F7" TextColor="Black"/>
                 </StackLayout>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Entry x:Name="Out" HorizontalOptions="FillAndExpand" BackgroundColor="Silver" TextColor="Black" Placeholder="Result" PlaceholderColor="Gray"/>
-                <Button x:Name="OutCopy" Text="Copy" />
+                <Entry x:Name="Out" Placeholder="Result"/>
+                <Button x:Name="OutCopy" Text="Copy" HorizontalOptions="End"/>
             </StackLayout>
         </StackLayout>
     </ContentPage>
@@ -103,7 +111,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button x:Name="ClearHistory" Text="Clear History"/>
+            <Button x:Name="ClearHistory" Text="Clear History" VerticalOptions="End"/>
         </StackLayout>
     </ContentPage>
 </TabbedPage>

@@ -52,7 +52,7 @@ namespace InnoTecheLearning.Pages
                     }
                     else
                     {
-                        Back.Text = "←";
+                        Back.Text = "⌫";
                         Shift.TranslateTo(0, 0, 0);
                     }
                 if ((_ButtonMod ^ value).HasFlag(ButtonModifier.Alpha))

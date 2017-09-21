@@ -36,7 +36,7 @@ namespace InnoTecheLearning
                 if (IsAvailable) OnSurfaceTextureAvailable(SurfaceTexture, Width, Height);
             }
             public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
-            int Rotation = 0;
+            new int Rotation = 0;
 #pragma warning disable 618 //Reason: Need Android 4 support
 #if FEATURE_CAMERA_PREVIEWJPEG
             private void PreviewHandler(byte[] data, Android.Hardware.Camera camera)
