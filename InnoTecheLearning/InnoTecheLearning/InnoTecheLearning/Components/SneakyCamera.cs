@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Android.Hardware;
 using Rectangle = Xamarin.Forms.Rectangle;
 
 namespace InnoTecheLearning
@@ -66,6 +67,12 @@ namespace InnoTecheLearning
                 public void OnPreviewFrame(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
             }
 #endif
+            class CallBack : Java.Lang.Object, Android.Hardware.Camera.IPictureCallback
+            {
+                public CallBack(Action<byte[], Android.Hardware.Camera> callback) => this.callback = callback;
+                Action<byte[], Android.Hardware.Camera> callback;
+                public void OnPictureTaken(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
+            }
             Android.Hardware.Camera cam;
             Android.Hardware.Camera.Parameters param;
             public void OnSurfaceTextureAvailable(Android.Graphics.SurfaceTexture surface, int w, int h)
@@ -163,7 +170,13 @@ namespace InnoTecheLearning
             public void OnSurfaceTextureSizeChanged(Android.Graphics.SurfaceTexture surface, int width, int height) { }
             public void OnSurfaceTextureUpdated(Android.Graphics.SurfaceTexture surface) { }
 
-                        #region IDisposable Support
+            public System.Threading.Tasks.Task<byte[]> TakePicture()
+            {
+                var Source = new System.Threading.Tasks.TaskCompletionSource<byte[]>();
+                cam.TakePicture(null, null, new CallBack((data, camera) => Source.SetResult(data)));
+                return Source.Task;
+            }
+#region IDisposable Support
             private bool disposedValue = false; // To detect redundant calls
 
             protected override void Dispose(bool disposing)
@@ -182,7 +195,7 @@ namespace InnoTecheLearning
                     disposedValue = true;
                 }
             }
-                        #endregion
+#endregion
         }
 
 #elif __IOS__
@@ -239,6 +252,12 @@ namespace InnoTecheLearning
                 session.AddInput(input);
                 session.AddOutput(output);
                 session.StartRunning();
+            }
+            public System.Threading.Tasks.Task<byte[]> TakePicture()
+            {
+                var Source = new System.Threading.Tasks.TaskCompletionSource<byte[]>();
+                var Output = new AVFoundation.AVCapturePhotoOutput();
+                return Source.Task;
             }
             protected override void Dispose(bool disposing)
             {
