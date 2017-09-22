@@ -136,10 +136,11 @@ namespace InnoTecheLearning
                     await Return.Evaluate(Resources.GetString("Calculus.js"));
                     await Return.Evaluate(Resources.GetString("Solve.js"));
                     await Return.Evaluate(Resources.GetString("Extra.js"));
-                    await Return.Evaluate("nerdamer.getCore().PARSER.constants['π'] = 'pi'");
+                    await Return.Evaluate("nerdamer.setVar('π', 'pi')");
+                    //await Return.Evaluate("nerdamer.getCore().PARSER.constants['π'] = 'pi'");
                     await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
-                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
-                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    await Return.Evaluate(@"{var f =nerdamer.getCore().PARSER.functions['sin']; }");
+                    await Return.Evaluate("nerdamer.setFunction('sin', 'x', 'sin_(x*π/180)')");
                     await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
                     return Return;
                 }));

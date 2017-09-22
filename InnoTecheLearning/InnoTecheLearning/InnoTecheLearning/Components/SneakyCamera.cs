@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using Android.Hardware;
 using Rectangle = Xamarin.Forms.Rectangle;
 
 namespace InnoTecheLearning
@@ -67,9 +66,9 @@ namespace InnoTecheLearning
                 public void OnPreviewFrame(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
             }
 #endif
-            class CallBack : Java.Lang.Object, Android.Hardware.Camera.IPictureCallback
+            class PictureCallback : Java.Lang.Object, Android.Hardware.Camera.IPictureCallback
             {
-                public CallBack(Action<byte[], Android.Hardware.Camera> callback) => this.callback = callback;
+                public PictureCallback(Action<byte[], Android.Hardware.Camera> callback) => this.callback = callback;
                 Action<byte[], Android.Hardware.Camera> callback;
                 public void OnPictureTaken(byte[] data, Android.Hardware.Camera camera) => callback(data, camera);
             }
@@ -155,28 +154,35 @@ namespace InnoTecheLearning
 #if FEATURE_CAMERA_PREVIEWJPEG
             Rectangle[] Faces = Array.Empty<Rectangle>();
 #endif
+            bool Destroyed;
             public bool OnSurfaceTextureDestroyed(Android.Graphics.SurfaceTexture surface)
             {
+                Destroyed = true;
 #if FEATURE_CAMERA_PREVIEWJPEG
                 cam?.SetPreviewCallback(null);
 #endif
                 cam?.StopFaceDetection();
                 cam?.StopPreview();
                 cam?.Release();
-
+                Mutex.Dispose();
                 return true;
             }
 
             public void OnSurfaceTextureSizeChanged(Android.Graphics.SurfaceTexture surface, int width, int height) { }
             public void OnSurfaceTextureUpdated(Android.Graphics.SurfaceTexture surface) { }
 
+            System.Threading.Mutex Mutex = new System.Threading.Mutex();
             public System.Threading.Tasks.Task<byte[]> TakePicture()
             {
+                if (Destroyed) return System.Threading.Tasks.Task.FromResult(Array.Empty<byte>());
                 var Source = new System.Threading.Tasks.TaskCompletionSource<byte[]>();
-                cam.TakePicture(null, null, new CallBack((data, camera) => Source.SetResult(data)));
+                Mutex.WaitOne();
+                cam.StartPreview();
+                cam.TakePicture(null, null, new PictureCallback((data, camera) => Source.SetResult(data)));
+                Mutex.ReleaseMutex();
                 return Source.Task;
             }
-#region IDisposable Support
+        #region IDisposable Support
             private bool disposedValue = false; // To detect redundant calls
 
             protected override void Dispose(bool disposing)
@@ -191,11 +197,10 @@ namespace InnoTecheLearning
 
                     // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                     // TODO: set large fields to null.
-
                     disposedValue = true;
                 }
             }
-#endregion
+        #endregion
         }
 
 #elif __IOS__
@@ -257,6 +262,21 @@ namespace InnoTecheLearning
             {
                 var Source = new System.Threading.Tasks.TaskCompletionSource<byte[]>();
                 var Output = new AVFoundation.AVCapturePhotoOutput();
+                Output.CapturePhoto(AVFoundation.AVCapturePhotoSettings.Create(), new PhotoDelegate(
+                    (captureOutput, photoSampleBuffer, previewPhotoSampleBuffer, resolvedSettings,
+                        bracketSettings, error) =>
+                    {
+                        //https://stackoverflow.com/questions/6189409/how-to-get-bytes-from-cmsamplebufferref-to-send-over-network
+                        byte[] ImageToBuffer(CoreMedia.CMSampleBuffer source)
+                        {
+                            CoreMedia.CMBlockBuffer imageBuffer = source.GetDataBuffer();
+                            IntPtr Pointer = (IntPtr)0;
+                            imageBuffer.GetDataPointer(0, out _, out var Length, ref Pointer);
+                            Foundation.NSData data = Foundation.NSData.FromBytesNoCopy(Pointer, Length, false);
+                            return data.AsStream().ReadFully(false);
+                        }
+                        Source.SetResult(ImageToBuffer(photoSampleBuffer));
+                    }));
                 return Source.Task;
             }
             protected override void Dispose(bool disposing)
@@ -266,15 +286,30 @@ namespace InnoTecheLearning
                 session.Dispose();
                 device.Dispose();
             }
-            class BufferDelegate : Foundation.NSObject, AVFoundation.IAVCaptureVideoDataOutputSampleBufferDelegate
+            class PhotoDelegate : AVFoundation.AVCapturePhotoCaptureDelegate
+            {
+                Action<AVFoundation.AVCapturePhotoOutput, CoreMedia.CMSampleBuffer, CoreMedia.CMSampleBuffer,
+                    AVFoundation.AVCaptureResolvedPhotoSettings, AVFoundation.AVCaptureBracketedStillImageSettings,
+                    Foundation.NSError> Handler;
+                public PhotoDelegate(Action<AVFoundation.AVCapturePhotoOutput, CoreMedia.CMSampleBuffer,
+                    CoreMedia.CMSampleBuffer,
+                    AVFoundation.AVCaptureResolvedPhotoSettings, AVFoundation.AVCaptureBracketedStillImageSettings,
+                    Foundation.NSError> Handler) => this.Handler = Handler;
+                public override void DidFinishProcessingPhoto(AVFoundation.AVCapturePhotoOutput captureOutput,
+                    CoreMedia.CMSampleBuffer photoSampleBuffer, CoreMedia.CMSampleBuffer previewPhotoSampleBuffer,
+                    AVFoundation.AVCaptureResolvedPhotoSettings resolvedSettings,
+                    AVFoundation.AVCaptureBracketedStillImageSettings bracketSettings, Foundation.NSError error) =>
+                    Handler(captureOutput, photoSampleBuffer, previewPhotoSampleBuffer, resolvedSettings,
+                        bracketSettings, error);
+            }
+            class BufferDelegate : AVFoundation.AVCaptureVideoDataOutputSampleBufferDelegate
             {
                 Action<AVFoundation.AVCaptureOutput, CoreMedia.CMSampleBuffer, AVFoundation.AVCaptureConnection> Handler;
                 public BufferDelegate(Action<AVFoundation.AVCaptureOutput, CoreMedia.CMSampleBuffer,
                     AVFoundation.AVCaptureConnection> Handler) => this.Handler = Handler;
                 // Delegate routine that is called when a sample buffer was written
-                void DidOutputSampleBuffer(AVFoundation.AVCaptureOutput captureOutput, CoreMedia.CMSampleBuffer sampleBuffer,
+                public override void DidOutputSampleBuffer(AVFoundation.AVCaptureOutput captureOutput, CoreMedia.CMSampleBuffer sampleBuffer,
                     AVFoundation.AVCaptureConnection connection) => Handler?.Invoke(captureOutput, sampleBuffer, connection);
-
             }
         }
 #elif WINDOWS_UWP
@@ -314,18 +349,19 @@ namespace InnoTecheLearning
                     await _mediaCapture?.StartPreviewAsync();
                     _isPreviewing = true;
 
-                    using(var TempFrame = await _mediaCapture?.GetPreviewFrameAsync())
-                    StartTimer(TempFrame?.Duration ?? TimeSpan.FromMilliseconds(40), async () => {
-                        using (var b = await _mediaCapture.GetPreviewFrameAsync())
+                    using (var TempFrame = await _mediaCapture?.GetPreviewFrameAsync())
+                        StartTimer(TempFrame?.Duration ?? TimeSpan.FromMilliseconds(40), async () =>
                         {
-                            var detector = await Windows.Media.FaceAnalysis.FaceDetector.CreateAsync();
-                            var Faces = await detector.DetectFacesAsync(b.SoftwareBitmap);
-                            var FacesArray = new Rectangle[Faces.Count];
-                            for (int i = 0; i < FacesArray.Length; i++)
+                            using (var b = await _mediaCapture.GetPreviewFrameAsync())
                             {
-                                var Box = Faces[i].FaceBox;
-                                FacesArray[i] = new Rectangle(Box.X, Box.Y, Box.Width, Box.Height);
-                            }
+                                var detector = await Windows.Media.FaceAnalysis.FaceDetector.CreateAsync();
+                                var Faces = await detector.DetectFacesAsync(b.SoftwareBitmap);
+                                var FacesArray = new Rectangle[Faces.Count];
+                                for (int i = 0; i < FacesArray.Length; i++)
+                                {
+                                    var Box = Faces[i].FaceBox;
+                                    FacesArray[i] = new Rectangle(Box.X, Box.Y, Box.Width, Box.Height);
+                                }
 #if FEATURE_CAMERA_PREVIEWJPEG
                             using (var ms = new MemoryStream())
                             {
@@ -336,11 +372,11 @@ namespace InnoTecheLearning
                                 try { await encoder.FlushAsync(); } catch { return _isPreviewing; }
                             }
 #else
-                            ProcessingPreview(this, new CameraEventArgs(FacesArray));
+                                ProcessingPreview(this, new CameraEventArgs(FacesArray));
 #endif
-                            return _isPreviewing;
-                        }
-                    });
+                                return _isPreviewing;
+                            }
+                        });
                 }
                 catch (FileLoadException)
                 {
@@ -388,7 +424,20 @@ namespace InnoTecheLearning
                 }
                 return Unit.Default;
             }
+
+
+            public async System.Threading.Tasks.Task<byte[]> TakePicture()
+            {
+                var Source = new System.Threading.Tasks.TaskCompletionSource<byte[]>();
+                using (var Stream = new MemoryStream())
+                {
+                    await _mediaCapture.CapturePhotoToStreamAsync(
+                        Windows.Media.MediaProperties.ImageEncodingProperties.CreateJpeg(), 
+                        Stream.AsRandomAccessStream());
+                    return Stream.ReadFully(true);
+                }
+            }
         }
 #endif
-                        }
-                    }
+    }
+}

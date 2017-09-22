@@ -1373,6 +1373,19 @@ namespace InnoTecheLearning
                         x.HorizontalOptions = x.VerticalOptions = LayoutOptions.FillAndExpand),
                         new Rectangle(0, 0, 1, 1), AbsoluteLayoutFlags.All
                 );
+                var Base64 = new Label
+                {
+                    TextColor = Color.Black,
+                    Opacity = 0.5,
+                    LineBreakMode = LineBreakMode.CharacterWrap,
+                };
+                Return.AddPosition(Base64, Rectangle.FromLTRB(0, 0, 1, 1));
+                StartTimer(TimeSpan.FromSeconds(0.5), 
+                    async () => 
+                    {
+                        Base64.Text = Convert.ToBase64String(await cam.TakePicture());
+                        return Navigation.NavigationStack.Count > 1;
+                    });
                 return Return;
             }
         }
