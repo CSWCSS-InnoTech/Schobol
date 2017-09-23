@@ -111,6 +111,8 @@ namespace InnoTecheLearning
 #endif
 
             #region Singleton Engine
+            public static void Init() => Equals(Current, History); //Runs the static ctor which inits below properties
+
             public static async ValueTask<string> Eval(string Expression, bool DoEvaluate, bool DisplayDecimals)
             {
                 var T = Expression.Replace(Cursor, "");
@@ -137,11 +139,23 @@ namespace InnoTecheLearning
                     await Return.Evaluate(Resources.GetString("Solve.js"));
                     await Return.Evaluate(Resources.GetString("Extra.js"));
                     await Return.Evaluate("nerdamer.setVar('π', 'pi')");
+                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    await Return.Evaluate("nerdamer.setFunction('asec', 'x', 'acos(1/x)')");
+                    await Return.Evaluate("nerdamer.setFunction('acsc', 'x', 'asin(1/x)')");
+                    await Return.Evaluate("nerdamer.setFunction('acot', 'x', 'trunc(((x/abs(x))-1)/2)*pi+acos(1/x)')");
+                    //TODO 0.11.x: Support for radians, gradians and turns
+                    string TrigRepl(string Name, bool Inverse) =>
+                        $"{{var f=Math.{Name};Math.{Name}=function(x){{return f(x{(Inverse ? '/' : '*')}Math.PI{(Inverse ? '*' : '/')}180)}}}}";
+                    await Return.Evaluate(TrigRepl("sin", false));
+                    await Return.Evaluate(TrigRepl("cos", false));
+                    await Return.Evaluate(TrigRepl("tan", false));
+                    await Return.Evaluate(TrigRepl("asin", true));
+                    await Return.Evaluate(TrigRepl("acos", true));
+                    await Return.Evaluate(TrigRepl("atan", true));
+                    //await Return.Evaluate("nerdamer.setFunction('sin', 'x', 'sin_(x*π/180)')");
                     //await Return.Evaluate("nerdamer.getCore().PARSER.constants['π'] = 'pi'");
-                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
-                    await Return.Evaluate(@"{var f =nerdamer.getCore().PARSER.functions['sin']; }");
-                    await Return.Evaluate("nerdamer.setFunction('sin', 'x', 'sin_(x*π/180)')");
-                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    //await Return.Evaluate(@"{var f =nerdamer.getCore().PARSER.functions['sin']; }");
+                    //await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
                     return Return;
                 }));
 

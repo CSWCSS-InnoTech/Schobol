@@ -87,6 +87,7 @@ namespace InnoTecheLearning
         public Main()
         {
             Log("Main.ctor()");
+            SymbolicsEngine.Init();
             //throw new Java.Lang.Throwable("Can a java throwable be logged?");
             //Wire this up on start in every project: Exceptions.RegisterHandlers();
             //if (Instance != null) throw new InvalidOperationException("Can only have one instance of the main screen.");

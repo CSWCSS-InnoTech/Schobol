@@ -9,6 +9,7 @@ namespace InnoTecheLearning
     {
         public struct NerdamerPart
         {
+            //(string 
             public NerdamerPart(string Name, string Friendly = null) : this(Name, null, null, Friendly) { }
             public NerdamerPart(string Name, string DescriptionTitle, 
                 string DescriptionContent, string Friendly = null)

@@ -19,6 +19,7 @@ namespace InnoTecheLearning.Droid
         protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
+            Xamarin.Forms.Forms.Init(this, bundle); //Sometimes Android bypasses the slash activity so be safe
             LoadApplication(new App());
             Current = this;
 		}
