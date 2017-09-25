@@ -10,16 +10,32 @@ namespace InnoTecheLearning
         public struct NerdamerPart
         {
             //(string 
-            public NerdamerPart(string Name, string Friendly = null) : this(Name, null, null, Friendly) { }
-            public NerdamerPart(string Name, (string FullName, string Description,
+            public NerdamerPart(string Name, string Friendly = null) : this(Name, default, Friendly) { }
+            public NerdamerPart(string Name, (string Spoken, string Description, string UsageOverride,
                 (string Var, string Description)[] Vars, string[] Examples) Description, string Friendly = null)
             {
                 this.Friendly = Friendly ?? (Name.Length > 1 ? Name.TrimEnd('(') : Name);
                 this.Name = Name;
                 this.DescriptionTitle = 
-                    $"{(Name.Length > 1 ? Name.TrimEnd('(') : Name)} ({this.Friendly}, {Description.FullName})";
-                this.DescriptionContent = $"{Description.Description}";
+                    $"{(Name.Length > 1 ? Name.TrimEnd('(') : Name)} {"(" + new[] { this.Friendly, Description.Spoken }.Aggregate("", (prev, current) => string.IsNullOrEmpty(prev) ? current : string.IsNullOrEmpty(current) ? prev : $"{prev}, {current}") + ")"}";
+                try                                                   //new[]{"", "2", "3", ""} => "(2, 3)"
+                {
+                this.DescriptionContent = 
+                $@"{Description.Description}
+
+Usage:
+    {Description.UsageOverride ?? (Description.Vars.Aggregate(Name, (prev, current) => $"{prev}, {current.Var}")) + ")"}
+Parameters:{Description.Vars.Aggregate("", (prev, current) => $"{prev}\r\n    {current.Var}: {current.Description}")}
+Examples:{Description.Examples.Aggregate("", (prev, current) => $"{prev}\r\n    {current}: {SymbolicsEngine.Current.RunSynchronously().Evaluate(current).RunSynchronously()}")}";
+
+                }
+                catch (System.ArgumentNullException)
+                {
+                    this.DescriptionContent = null;
+                }
             }
+            //public static NerdamerPart FromOperator(string Name, string OpKind, string Description, string[] Examples) =>
+            //    new NerdamerPart(Name, (null, $"The {OpKind} operator", );
 
             public static void Init() => Equals(Empty, Space);
 
@@ -56,8 +72,8 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart D1 = new NerdamerPart("1");
             public static readonly NerdamerPart D2 = new NerdamerPart("2");
             public static readonly NerdamerPart D3 = new NerdamerPart("3");
-            public static readonly NerdamerPart Add = new NerdamerPart("+", "The addition operator", "Input:\n1+1\nOutput:\n2");
-            public static readonly NerdamerPart Subtract = new NerdamerPart("-", "The subtraction operator", "Input:\n1-1\nOutput:\n0");
+            public static readonly NerdamerPart Add = new NerdamerPart("+", ("+", "The addition operator", "x+y", new[] { ("x", "The left hand side variable"), ("y", "The right hand side variable") }, new[] { "1+1", "+4" }));
+            public static readonly NerdamerPart Subtract = new NerdamerPart("-", ("-", "The subtraction operator", "x-y", new[] { ("x", "The left hand side variable"), ("y", "The right hand side variable") }, new[] { "1-1", "-4" }));
             public static readonly NerdamerPart D0 = new NerdamerPart("0");
             public static readonly NerdamerPart Decimal = new NerdamerPart(".");
             public static readonly NerdamerPart ConstPi = new NerdamerPart("π");
