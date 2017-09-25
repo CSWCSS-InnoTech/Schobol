@@ -11,14 +11,17 @@ namespace InnoTecheLearning
         {
             //(string 
             public NerdamerPart(string Name, string Friendly = null) : this(Name, null, null, Friendly) { }
-            public NerdamerPart(string Name, string DescriptionTitle, 
-                string DescriptionContent, string Friendly = null)
+            public NerdamerPart(string Name, (string FullName, string Description,
+                (string Var, string Description)[] Vars, string[] Examples) Description, string Friendly = null)
             {
-                this.Name = Name;
-                this.DescriptionTitle = DescriptionTitle;
-                this.DescriptionContent = DescriptionContent;
                 this.Friendly = Friendly ?? (Name.Length > 1 ? Name.TrimEnd('(') : Name);
+                this.Name = Name;
+                this.DescriptionTitle = 
+                    $"{(Name.Length > 1 ? Name.TrimEnd('(') : Name)} ({this.Friendly}, {Description.FullName})";
+                this.DescriptionContent = $"{Description.Description}";
             }
+
+            public static void Init() => Equals(Empty, Space);
 
             public string Name { get; }
             public string DescriptionTitle { get; }

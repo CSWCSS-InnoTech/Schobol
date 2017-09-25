@@ -111,7 +111,12 @@ namespace InnoTecheLearning
 #endif
 
             #region Singleton Engine
-            public static void Init() => Equals(Current, History); //Runs the static ctor which inits below properties
+            public static void Init() =>
+                Task.Run(() =>
+                {
+                    Equals(Current, History); //Runs the static ctor which inits below properties
+                    NerdamerPart.Init();
+                });
 
             public static async ValueTask<string> Eval(string Expression, bool DoEvaluate, bool DisplayDecimals)
             {
