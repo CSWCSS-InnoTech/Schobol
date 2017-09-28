@@ -5,7 +5,7 @@ namespace InnoTecheLearning
     partial class Utils
     {
 #region Version
-        public const string VersionFull = "0.11.0 Alpha 7"; //0.10.0 (Xamarin Update) Beta 2
+        public const string VersionFull = "0.11.0 Alpha 8"; //0.10.0 (Xamarin Update) Beta 2
         public const string VersionAssembly = "0.11.0";
         public const string VersionAssemblyFile = "0.11";
         public const string VersionAssemblyInfo = VersionFull;
@@ -82,32 +82,9 @@ namespace InnoTecheLearning
         #endregion
 
         #region Numbers
-        public static readonly float RawXMultiplier =
-#if __IOS__
-            1
-#elif __ANDROID__
-/*
- * 09-14 21:59:05.245 I/MonoDroid(13182): System.TypeInitializationException: The type initializer for 'InnoTecheLearning.Utils' threw an exception. ---> System.ArgumentOutOfRangeException: Debug values
-09-14 21:59:05.245 I/MonoDroid(13182): Parameter name: Hey
-09-14 21:59:05.245 I/MonoDroid(13182): Actual value was (2, 1280, 2, 720, 294.967, 295.563).*/
-            Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.Xdpi /
-                Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.WidthPixels
-#elif NETFX_CORE
-            1
-#endif
-            ;
+        public const float RawXMultiplier = 1;
 
-        public static readonly float RawYMultiplier =
-#if __IOS__
-            1
-#elif __ANDROID__
-            Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.Ydpi /
-                Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.HeightPixels *
-                Xamarin.Forms.Forms.Context.Resources.DisplayMetrics.Density
-#elif NETFX_CORE
-            1
-#endif
-            * 1.5f;
+        public const float RawYMultiplier = 1.5f;
         #endregion
 
 #region Fonts

@@ -251,40 +251,36 @@ namespace InnoTecheLearning
                     float[] PrevCoords = { 0f, 0f };
                     //get coordinates of the middle point
                     pm.GetPosTan(pm.Length, PrevCoords, null);
+                    void RaiseEvent(PointerEventArgs.PointerEventType Type) =>
+                        PointerEvent?.Invoke(this, new PointerEventArgs(Type,
+                        new Point(ToDp(PrevCoords[0]), ToDp(PrevCoords[1])),
+                        new Point(ToDp(touchX), ToDp(touchY)), PointerDown));
                     switch (e.Action)
                     {
                         case MotionEventActions.Down:
                             DrawPath.MoveTo(touchX, touchY);
                             PointerDown = true;
                             try { Invalidate(); } catch (ObjectDisposedException) { return false; }
-                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
-                                 PointerEventType.Down, new Point(PrevCoords[0], PrevCoords[1]),
-                                 new Point(touchX,touchY), PointerDown));
+                            RaiseEvent(PointerEventArgs.PointerEventType.Down);
                             break;
                         case MotionEventActions.Move:
                             DrawPath.LineTo(touchX, touchY);
                             try { Invalidate(); } catch (ObjectDisposedException) { return false; }
-                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
-                                 PointerEventType.Move, new Point(PrevCoords[0], PrevCoords[1]),
-                                 new Point(touchX, touchY), PointerDown));
+                            RaiseEvent(PointerEventArgs.PointerEventType.Move);
                             break;
                         case MotionEventActions.Up:
                             DrawCanvas.DrawPath(DrawPath, DrawPaint);
                             DrawPath.Reset();
                             PointerDown = false;
                             try { Invalidate(); } catch (ObjectDisposedException) { return false; }
-                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
-                                 PointerEventType.Up, new Point(PrevCoords[0], PrevCoords[1]),
-                                 new Point(touchX, touchY), PointerDown));
+                            RaiseEvent(PointerEventArgs.PointerEventType.Up);
                             break;
                         case MotionEventActions.Cancel:
                             DrawCanvas.DrawPath(DrawPath, DrawPaint);
                             DrawPath.Reset();
                             PointerDown = false;
                             try { Invalidate(); } catch (ObjectDisposedException) { return false; }
-                            PointerEvent?.Invoke(this, new PointerEventArgs(PointerEventArgs.
-                                 PointerEventType.Cancel, new Point(PrevCoords[0], PrevCoords[1]),
-                                 new Point(touchX, touchY), PointerDown));
+                            RaiseEvent(PointerEventArgs.PointerEventType.Cancel);
                             break;
                         default:
                             return false;

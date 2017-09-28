@@ -70,8 +70,8 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart D4 = new NerdamerPart("4");
             public static readonly NerdamerPart D5 = new NerdamerPart("5");
             public static readonly NerdamerPart D6 = new NerdamerPart("6");
-            public static readonly NerdamerPart Multiply = new NerdamerPart("*", "∙");
-            public static readonly NerdamerPart Divide = new NerdamerPart("/", "⁄");
+            public static readonly NerdamerPart Multiply = new NerdamerPart("*", "×"); //"∙"
+            public static readonly NerdamerPart Divide = new NerdamerPart("/", "÷"); //"⁄"
             public static readonly NerdamerPart D1 = new NerdamerPart("1");
             public static readonly NerdamerPart D2 = new NerdamerPart("2");
             public static readonly NerdamerPart D3 = new NerdamerPart("3");
