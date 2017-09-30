@@ -143,13 +143,14 @@ namespace InnoTecheLearning
                     await Return.Evaluate(Resources.GetString("Calculus.js"));
                     await Return.Evaluate(Resources.GetString("Solve.js"));
                     await Return.Evaluate(Resources.GetString("Extra.js"));
-                    await Return.Evaluate("nerdamer.setVar('π', 'pi')");
-                    await Return.Evaluate("nerdamer.setOperator('°', 'degree', 6, true, false, true, function(s){var _=nerdamer.getCore().PARSER;return _.divide(_.multiply(s.clone(), Math.PI), 180)})");
+                    await Return.Evaluate("nerdamer.setOperator('°', 'degree', 6, true, false, true, function(s){var core = nerdamer.getCore();var _=core.PARSER;return _.divide(_.multiply(s.clone(), new core.Symbol('π')), new core.Symbol(180));})");
                     await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
                     await Return.Evaluate("nerdamer.setFunction('asec', 'x', 'acos(1/x)')");
                     await Return.Evaluate("nerdamer.setFunction('acsc', 'x', 'asin(1/x)')");
-                    await Return.Evaluate("nerdamer.setFunction('acot', 'x', 'trunc(((x/abs(x))-1)/2)*pi+acos(1/x)')");
+                    await Return.Evaluate("nerdamer.setFunction('acot', 'x', 'π/2-atan(x)')");
+                    await Return.Evaluate("nerdamer.setFunction('acsch', 'x', 'log((1+sqrt(1+x^2))/x)')");
                     //TODO 0.11.x: Support for radians, gradians and turns
+                    /*
                     string TrigRepl(string Name, bool Inverse) =>
                         $"{{var f=Math.{Name};Math.{Name}=function(x){{return f(x{(Inverse ? '/' : '*')}Math.PI{(Inverse ? '*' : '/')}180)}}}}";
                     await Return.Evaluate(TrigRepl("sin", false));
@@ -158,6 +159,7 @@ namespace InnoTecheLearning
                     await Return.Evaluate(TrigRepl("asin", true));
                     await Return.Evaluate(TrigRepl("acos", true));
                     await Return.Evaluate(TrigRepl("atan", true));
+                    */
                     //await Return.Evaluate("nerdamer.setFunction('sin', 'x', 'sin_(x*π/180)')");
                     //await Return.Evaluate("nerdamer.getCore().PARSER.constants['π'] = 'pi'");
                     //await Return.Evaluate(@"{var f =nerdamer.getCore().PARSER.functions['sin']; }");

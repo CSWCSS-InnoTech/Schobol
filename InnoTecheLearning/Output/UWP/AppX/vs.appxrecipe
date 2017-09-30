@@ -31,17 +31,17 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-09-28T13:52:09.211</Modified>
+      <Modified>2017-09-30T09:16:18.685</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-09-28T13:52:07.261</Modified>
+      <Modified>2017-09-30T09:16:17.465</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Jint\2.11.10\lib\netstandard1.3\Jint.dll">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Jint\2.11.23\lib\netstandard1.3\Jint.dll">
       <PackagePath>Jint.dll</PackagePath>
-      <Modified>2017-08-10T03:17:44.000</Modified>
+      <Modified>2017-08-30T04:13:40.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Microsoft.CSharp\4.3.0\lib\netcore50\Microsoft.CSharp.dll">
       <PackagePath>Microsoft.CSharp.dll</PackagePath>
@@ -559,21 +559,21 @@
       <PackagePath>System.Xml.XmlSerializer.dll</PackagePath>
       <Modified>2016-06-11T15:15:04.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.266-pre1\lib\uap10.0\Xamarin.Forms.Core.dll">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.282\lib\uap10.0\Xamarin.Forms.Core.dll">
       <PackagePath>Xamarin.Forms.Core.dll</PackagePath>
-      <Modified>2017-08-15T03:48:42.000</Modified>
+      <Modified>2017-09-29T02:43:20.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.266-pre1\lib\uap10.0\Xamarin.Forms.Platform.UAP.dll">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.282\lib\uap10.0\Xamarin.Forms.Platform.UAP.dll">
       <PackagePath>Xamarin.Forms.Platform.UAP.dll</PackagePath>
-      <Modified>2017-08-15T03:48:42.000</Modified>
+      <Modified>2017-09-29T02:43:20.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.266-pre1\lib\uap10.0\Xamarin.Forms.Platform.dll">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.282\lib\uap10.0\Xamarin.Forms.Platform.dll">
       <PackagePath>Xamarin.Forms.Platform.dll</PackagePath>
-      <Modified>2017-08-15T03:48:42.000</Modified>
+      <Modified>2017-09-29T02:43:20.000</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.266-pre1\lib\uap10.0\Xamarin.Forms.Xaml.dll">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.282\lib\uap10.0\Xamarin.Forms.Xaml.dll">
       <PackagePath>Xamarin.Forms.Xaml.dll</PackagePath>
-      <Modified>2017-08-15T03:48:42.000</Modified>
+      <Modified>2017-09-29T02:43:20.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning\InnoTecheLearning.UWP\Assets\E-learning-app-icon.png">
       <PackagePath>Assets\E-learning-app-icon.png</PackagePath>
@@ -853,18 +853,18 @@
       <PackagePath>WinMetadata\Windows.winmd</PackagePath>
       <Modified>2017-08-19T04:13:09.197</Modified>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.266-pre1\lib\uap10.0\Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.UAP.xr.xml">
+    <AppxPackagedFile Include="C:\Users\user\.nuget\packages\Xamarin.Forms\2.4.0.282\lib\uap10.0\Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.UAP.xr.xml">
       <PackagePath>Xamarin.Forms.Platform.UAP\Xamarin.Forms.Platform.UAP.xr.xml</PackagePath>
-      <Modified>2017-08-15T03:48:42.000</Modified>
+      <Modified>2017-09-29T02:43:20.000</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-09-22T15:09:31.374</Modified>
+      <Modified>2017-09-30T07:54:22.636</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-09-28T13:52:09.208</Modified>
+      <Modified>2017-09-30T09:16:18.682</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
