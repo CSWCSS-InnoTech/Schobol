@@ -145,10 +145,10 @@ namespace InnoTecheLearning
                     await Return.Evaluate(Resources.GetString("Extra.js"));
                     await Return.Evaluate("nerdamer.setOperator('°', 'degree', 6, true, false, true, function(s){var core = nerdamer.getCore();var _=core.PARSER;return _.divide(_.multiply(s.clone(), new core.Symbol('π')), new core.Symbol(180));})");
                     await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
-                    await Return.Evaluate("nerdamer.setFunction('asec', 'x', 'acos(1/x)')");
-                    await Return.Evaluate("nerdamer.setFunction('acsc', 'x', 'asin(1/x)')");
-                    await Return.Evaluate("nerdamer.setFunction('acot', 'x', 'π/2-atan(x)')");
-                    await Return.Evaluate("nerdamer.setFunction('acsch', 'x', 'log((1+sqrt(1+x^2))/x)')");
+                    //await Return.Evaluate("nerdamer.setFunction('asec', 'x', 'acos(1/x)')");
+                    //await Return.Evaluate("nerdamer.setFunction('acsc', 'x', 'asin(1/x)')");
+                    //await Return.Evaluate("nerdamer.setFunction('acot', 'x', 'π/2-atan(x)')");
+                    //await Return.Evaluate("nerdamer.setFunction('acsch', 'x', 'log((1+sqrt(1+x^2))/x)')");
                     //TODO 0.11.x: Support for radians, gradians and turns
                     /*
                     string TrigRepl(string Name, bool Inverse) =>

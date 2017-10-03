@@ -25,8 +25,8 @@ namespace InnoTecheLearning
 
 Usage:
     {Description.UsageOverride ?? (Description.Vars.Aggregate(Name, (prev, current) => $"{prev}, {current.Var}")) + ")"}
-Parameters:{Description.Vars.Aggregate("", (prev, current) => $"{prev}\r\n    {current.Var}: {current.Description}")}
-Examples:{Description.Examples.Aggregate("", (prev, current) => $"{prev}\r\n    {current}: {SymbolicsEngine.Current.RunSynchronously().Evaluate($"nerdamer('{current}')").RunSynchronously()}")}";
+Parameters:{Description.Vars?.Aggregate("", (prev, current) => $"{prev}\r\n    {current.Var}: {current.Description}") ?? "\r\n    None"}
+Examples:{Description.Examples.Aggregate("", (prev, current) => $"{prev}\r\n    {current}: {SymbolicsEngine.Current.RunSynchronously().Evaluate($"nerdamer('{current}').text()").RunSynchronously()}")}";
 
                 }
                 catch (System.ArgumentNullException)
@@ -34,12 +34,14 @@ Examples:{Description.Examples.Aggregate("", (prev, current) => $"{prev}\r\n    
                     this.DescriptionContent = null;
                 }
             }
-            public static NerdamerPart FromOperator(string Name, string Spoken, bool Prefix, bool Postfix, string Description, IEnumerable<string> Examples, string UsageOverride = null) =>
-                new NerdamerPart(Name, ($"The {Spoken} operator", Description, UsageOverride ?? $"{(Prefix ? "x" : string.Empty)}{Name}{(Postfix ? "y" : string.Empty)}",
-                    new[] { Prefix ? ("x", "The left hand side expression") : default, Postfix ? ("y", "The right hand side expression") : default }.Where(x => !x.Equals(default)), Examples));
-            public static NerdamerPart FromLiteral(string Name, string Spoken, bool Prefix, bool Postfix, string Description, IEnumerable<string> Examples, string UsageOverride = null) =>
-                new NerdamerPart(Name, ($"The {Spoken} operator", Description, UsageOverride ?? $"{(Prefix ? "x" : string.Empty)}{Name}{(Postfix ? "y" : string.Empty)}",
-                    new[] { Prefix ? ("x", "The left hand side expression") : default, Postfix ? ("y", "The right hand side expression") : default }.Where(x => !x.Equals(default)), Examples));
+
+            public static NerdamerPart FromOperator(string Name, string Spoken, bool Prefix, bool Postfix, string Description, IEnumerable<string> Examples, string UsageOverride = null, string Friendly = null) =>
+                new NerdamerPart(Name, ($"The {Spoken} operator", Description, UsageOverride ?? $"{(Postfix ? "x" : string.Empty)}{Name}{(Prefix ? "y" : string.Empty)}",
+                    new[] { Postfix ? ("x", "The left hand side expression") : default, Prefix ? ("y", "The right hand side expression") : default }.Where(x => !x.Equals(default)), Examples), Friendly);
+            public static NerdamerPart FromLiteral(string Name, string Spoken, string Description, string Friendly = null, IEnumerable<string> Examples = null) =>
+                new NerdamerPart(Name, (Spoken, Description, Name, null, Examples ?? new[] { Name, "3" + Name, Name + "/2" }), Friendly);
+            public static NerdamerPart FromDigit(char Digit) => FromLiteral(Digit.ToString(), $"The digit {Digit}", $"Denotes the digit with the value {Digit}.");
+
             public static void Init() => Equals(Empty, Space);
 
             public string Name { get; }
@@ -55,28 +57,28 @@ U+208x  x₀  x₁  x₂  x₃  x₄  x₅  x₆  x₇  x₈  x₉  x₊  x₋  
 U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ  xₜ
 ªºⱽⱼ◌ͣ◌ͤ◌ͥ◌ͦ◌ͧ◌ͨ◌ͩ◌ͪ◌ͫ◌ͬ◌ͭ◌ͮ◌ͯ ʰʲʳʷʸˡˢˣᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁᵂᵃᵅᵇᵈᵉᵍᵏᵐᵒᵖᵗᵘᵛᵢᵣᵤᵥᵪᵸᶜᶠᶢᶦᶩᶫᶰᶴᶸᶻ*/
             public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty);
-            public static readonly NerdamerPart Space = new NerdamerPart(" ", "␣");
-            public static readonly NerdamerPart Percent = new NerdamerPart("%");
-            public static readonly NerdamerPart Comma = new NerdamerPart(",");
-            public static readonly NerdamerPart LeftSquare = new NerdamerPart("[");
-            public static readonly NerdamerPart RightSquare = new NerdamerPart("]");
-            public static readonly NerdamerPart LeftRound = new NerdamerPart("(");
-            public static readonly NerdamerPart RightRound = new NerdamerPart(")");
-            public static readonly NerdamerPart D7 = new NerdamerPart("7");
-            public static readonly NerdamerPart D8 = new NerdamerPart("8");
-            public static readonly NerdamerPart D9 = new NerdamerPart("9");
-            public static readonly NerdamerPart Exponent = new NerdamerPart("^");
-            public static readonly NerdamerPart Factorial = new NerdamerPart("!");
-            public static readonly NerdamerPart D4 = new NerdamerPart("4");
-            public static readonly NerdamerPart D5 = new NerdamerPart("5");
-            public static readonly NerdamerPart D6 = new NerdamerPart("6");
-            public static readonly NerdamerPart Multiply = new NerdamerPart("*", "×"); //"∙"
-            public static readonly NerdamerPart Divide = new NerdamerPart("/", "÷"); //"⁄"
-            public static readonly NerdamerPart D1 = new NerdamerPart("1");
-            public static readonly NerdamerPart D2 = new NerdamerPart("2");
-            public static readonly NerdamerPart D3 = new NerdamerPart("3");
+            public static readonly NerdamerPart Space = FromLiteral(" ", "The space bar", "Used for beautifying an expression or denotes implicit multiplication.", "␣", new[] { "3 2", "a     b", "vw x  3   y    z"});
+            public static readonly NerdamerPart Percent = FromOperator("%", "percentage", false, true, "Used for denoting percentages, which is equal to dividing by 100.", new[] { "1%", "a%", "1.3%%" });
+            public static readonly NerdamerPart Comma = FromOperator(",", "comma", true, true, "Separates a list of values in an argument list or vector.", new[] { "min(2,3,4,5)", "[a,b,4,d]" });
+            public static readonly NerdamerPart LeftSquare = new NerdamerPart("[", ("The left square bracket", "Denotes the opening of a vector (sequence of numbers).", "[a,b,c,d...]", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.")}, new[] { "[1]", "[1,2,3,4]", "[4,3,2]+[2,3,4]", "[7,7,7]/[6,8,9]" }));
+            public static readonly NerdamerPart RightSquare = new NerdamerPart("]", ("The right square bracket", "Denotes the closing of a vector (sequence of numbers).", "[a,b,c,d...]", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "[a]", "[a,1,c,56]", "[c,s,w]-[c,s,s]", "[h,o,n,g]*[k,o,n,g]" }));
+            public static readonly NerdamerPart LeftRound = new NerdamerPart("(", ("The left round bracket", "Denotes implicit multiplication, the opening of an expression that should be evaluated first, or an argument list to be passed into a function.", "(e)\r\n    f(a,b,c,d...)", new[] { ("e", "Any expression."), ("a,b,c,d...", "Any number of expressions, separated by the comma."), ("f", "Any function that accepts argument lists this long.") }, new[] { "(1)", "(4+5)*7", "(54)(32)", "gcd(1,2)" }));
+            public static readonly NerdamerPart RightRound = new NerdamerPart(")", ("The right round bracket", "Denotes implicit multiplication, the closing of an expression that should be evaluated first, or an argument list to be passed into a function.", "(e)\r\n    f(a,b,c,d...)", new[] { ("e", "Any expression."), ("a,b,c,d...", "Any number of expressions, separated by the comma."), ("f", "Any function that accepts argument lists this long.") }, new[] { "(a)", "(((((((7)))))))", "(c)(d)", "gcd(x,y)" }));
+            public static readonly NerdamerPart D7 = FromDigit('7');
+            public static readonly NerdamerPart D8 = FromDigit('8');
+            public static readonly NerdamerPart D9 = FromDigit('9');
+            public static readonly NerdamerPart Exponent = FromOperator("^", "exponentiation", true, true, "Raises the left expression to the right-expressionth power", new[] { "2^3", "(6/5)^3", "5^a*5^b", "x^c/x^d" });
+            public static readonly NerdamerPart Factorial = FromOperator("!", "factorial", false, true, "Calculates the factorial (product of all the integers less than or equal to the left expression if it is an integer) or the double factorial (NOT twice the factorial, but product of all the odd integers less than or equal to the left expression if it is an odd integer, and vice versa for even integers).", new[] { "5!", "0!", "(-5)!", "5.3!", "6!!", "(-6)!!"});
+            public static readonly NerdamerPart D4 = FromDigit('4');
+            public static readonly NerdamerPart D5 = FromDigit('5');
+            public static readonly NerdamerPart D6 = FromDigit('6');
+            public static readonly NerdamerPart Multiply = FromOperator("*", "multiplication", true, true, "Multiplies two expressions together.", new[] { "2*4*6", "9*55*34", "a*b*7*(5+7)" }, null, "×"); //"∙"
+            public static readonly NerdamerPart Divide = FromOperator("/", "division", true, true, "Divides two expressions from each other. For algebraic polynomial long division, use the divide function.", new[] { "7/3/4/5", "a/b/c/d", "a/(5+x)" }, null, "÷"); //"⁄"
+            public static readonly NerdamerPart D1 = FromDigit('1');
+            public static readonly NerdamerPart D2 = FromDigit('2');
+            public static readonly NerdamerPart D3 = FromDigit('3');
             public static readonly NerdamerPart Add = FromOperator("+", "addition", true, true, "Adds two expressions together, or denotes a positive expression.", new[] { "1+1", "+4", "5+j+a" }, "x+y\n    +y");
-            public static readonly NerdamerPart Subtract = FromOperator("-", "subtraction", true, true, "Subtracts two expressions, or denotes a negative expression.", new[] { "1-1", "-4", "-5-j-a" }, "x-y\n    -y");
+            public static readonly NerdamerPart Subtract = FromOperator("-", "subtraction", true, true, "Subtracts two expressions from each other, or denotes a negative expression.", new[] { "1-1", "-4", "-5-j-a" }, "x-y\n    -y");
             public static readonly NerdamerPart D0 = new NerdamerPart("0");
             public static readonly NerdamerPart Decimal = new NerdamerPart(".");
             public static readonly NerdamerPart ConstPi = new NerdamerPart("π");
