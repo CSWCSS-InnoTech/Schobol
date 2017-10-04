@@ -125,7 +125,7 @@ namespace InnoTecheLearning
                 History.Add(new KeyValuePair<string, string>(T,
                     Return = await (await Current).Evaluate(string.Concat(
                     "try{",
-                        "nerdamer('", EncodeJavascript(T, false), "', undefined, 'expand')",
+                        "nerdamer('", EncodeJavascript(T, false), "', undefined, 'expand.')", //To not ruin pfactor
                         DoEvaluate ? ".evaluate()" : string.Empty,
                         DisplayDecimals ? ".text()" : ".toString()",
                     "}catch(e){'", Error, "'+(e.message?e.message:e)}"

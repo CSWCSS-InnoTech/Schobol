@@ -73,16 +73,16 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart D5 = FromDigit('5');
             public static readonly NerdamerPart D6 = FromDigit('6');
             public static readonly NerdamerPart Multiply = FromOperator("*", "multiplication", true, true, "Multiplies two expressions together.", new[] { "2*4*6", "9*55*34", "a*b*7*(5+7)" }, null, "×"); //"∙"
-            public static readonly NerdamerPart Divide = FromOperator("/", "division", true, true, "Divides two expressions from each other. For algebraic polynomial long division, use the divide function.", new[] { "7/3/4/5", "a/b/c/d", "a/(5+x)" }, null, "÷"); //"⁄"
+            public static readonly NerdamerPart Divide = FromOperator("/", "division", true, true, "Divides two expressions from each other, or denotes a fraction. For algebraic polynomial long division, use the divide function.", new[] { "7/3", "7/3/4/5", "a/b/c/d", "a/(5+x)" }, null, "÷"); //"⁄"
             public static readonly NerdamerPart D1 = FromDigit('1');
             public static readonly NerdamerPart D2 = FromDigit('2');
             public static readonly NerdamerPart D3 = FromDigit('3');
             public static readonly NerdamerPart Add = FromOperator("+", "addition", true, true, "Adds two expressions together, or denotes a positive expression.", new[] { "1+1", "+4", "5+j+a" }, "x+y\n    +y");
             public static readonly NerdamerPart Subtract = FromOperator("-", "subtraction", true, true, "Subtracts two expressions from each other, or denotes a negative expression.", new[] { "1-1", "-4", "-5-j-a" }, "x-y\n    -y");
-            public static readonly NerdamerPart D0 = new NerdamerPart("0");
-            public static readonly NerdamerPart Decimal = new NerdamerPart(".");
-            public static readonly NerdamerPart ConstPi = new NerdamerPart("π");
-            public static readonly NerdamerPart ConstE = new NerdamerPart("e");
+            public static readonly NerdamerPart D0 = FromDigit('0');
+            public static readonly NerdamerPart Decimal = new NerdamerPart(".", ("The decimal dot", "The dot which separates a number into an integer part and a decimal part.", "a.b", new[] { ("a", "Any combination of 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9."), ("b", "Any combination of 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9.") }, new[] { "1.92", "1.2222222222222", "22222222222222.1", "00012345.6789000" }));
+            public static readonly NerdamerPart ConstPi = FromLiteral("π", "The mathematical constant pi", "The length of the circumference of a circle with diameter 1 ≈ 3.14159265358979.");
+            public static readonly NerdamerPart ConstE = FromLiteral("e", "The mathematical constant e", "the limit of (1 + 1/n)ⁿ as n approaches infinity ≈ 2.71828182845904523536.");
             public static readonly NerdamerPart ConstI = new NerdamerPart("i");
             public static readonly NerdamerPart Degree = new NerdamerPart("°");
             public static readonly NerdamerPart Equation = new NerdamerPart("=");
