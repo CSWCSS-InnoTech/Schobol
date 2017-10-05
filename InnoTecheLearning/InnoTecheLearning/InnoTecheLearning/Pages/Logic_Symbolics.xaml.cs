@@ -207,7 +207,7 @@ namespace InnoTecheLearning.Pages
                 var button = (Button)sender;
                 var (x, y) = Utils.IndicesOf(Buttons, button);
                 var Part = x == -1 && y == -1 ? GetMapper(ButtonMod).Item1 : GetMapper(ButtonMod).Item2[x, y];
-                if (Part.DescriptionContent != null) DisplayAlert(Part.DescriptionTitle, Part.DescriptionContent, "OK");
+                if (Part.DescriptionContent.Value != null) DisplayAlert(Part.DescriptionTitle, Part.DescriptionContent.Value, "OK");
             };
             async void Calculate_Clicked(object sender, EventArgs e) => Out.Text = await Eval(In.Text, DoEvaluate, DisplayDecimals);
             #endregion

@@ -20,18 +20,24 @@ namespace InnoTecheLearning
             {
                 this.Friendly = Friendly ?? Name;
                 this.Name = Name;
-                this.DescriptionTitle = 
-                    $"{Name} {"(" + new[] { (Friendly + "(" == Name ? null : Friendly), Spoken }.Aggregate((prev, current) => string.IsNullOrEmpty(prev) ? current : string.IsNullOrEmpty(current) ? prev : $"{prev}, {current}") + ")"}";
-                try                                                   //new[]{"", "2", "3", ""} => "(2, 3)"
+                this.DescriptionTitle =
+                    $"{(Name.Length > 1 ? Name.TrimEnd('(') : Name)} {"(" + new[] { (Friendly + "(" == Name ? null : Friendly), Spoken }.Aggregate((prev, current) => string.IsNullOrEmpty(prev) ? current : string.IsNullOrEmpty(current) ? prev : $"{prev}, {current}") + ")"}";
+                //new[]{"", "2", "3", ""} => "(2, 3)"
+
+                string Append(string s, char c) => s == null ? null : s + c;
+                this.DescriptionContent = new System.Lazy<string>(() =>
                 {
-                    this.DescriptionContent = 
-                    $@"{Description}{NewLine}{NewLine}Usage:{NewLine}{Tab}{UsageOverride ?? (Vars.Aggregate(Name, (prev, current) => current.Var.ElementAtOrDefault(0) == OptionalChar ? $"{prev}){(prev.Contains(NewLine) ? prev.Substring(prev.LastIndexOf(NewLine) + 1) : NewLine + Tab + prev)}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var.TrimStart(OptionalChar)}" : $"{prev}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var}")) + ")"}{NewLine}Parameters:{Vars?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current.Var}{Separator} {current.Description}") ?? $"{NewLine}{Tab}None"}{NewLine}Examples:{Examples.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current}{Separator} {SymbolicsEngine.Current.RunSynchronously().Evaluate($"nerdamer('{current}'){(Evaluate ? ".evaluate()" : string.Empty)}.text()").RunSynchronously()}")}";
-                }
-                catch (System.ArgumentNullException)
-                {
-                    this.DescriptionContent = null;
-                }
+                    try
+                    {
+                        return $@"{Description}{NewLine}{NewLine}Usage:{NewLine}{Tab}{UsageOverride ?? Append(Vars?.Aggregate(Name, (prev, current) => current.Var.ElementAtOrDefault(0) == OptionalChar ? $"{prev}){(prev.Contains(NewLine) ? prev.Substring(prev.LastIndexOf(NewLine) + 1) : NewLine + Tab + prev)}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var.TrimStart(OptionalChar)}" : $"{prev}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var}"), ')') ?? $"None"}{NewLine}Parameters:{Vars?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current.Var}{Separator} {current.Description}") ?? $"{NewLine}{Tab}None"}{NewLine}Examples:{Examples?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current}{Separator} {SymbolicsEngine.Current.RunSynchronously().Evaluate($"nerdamer('{current}'){(Evaluate ? ".evaluate()" : string.Empty)}.text()").RunSynchronously()}") ?? $"{NewLine}{Tab}None"}";
+                    }
+                    catch (System.ArgumentNullException)
+                    {
+                        return null;
+                    }
+                });
             }
+            
 
             public static NerdamerPart FromOperator(string Name, string Spoken, bool Prefix, bool Postfix, string Description, IEnumerable<string> Examples, string UsageOverride = null, string Friendly = null, bool Evaluate = true) =>
                 new NerdamerPart(Name, $"The {Spoken} operator", Description, UsageOverride ?? $"{(Postfix ? "x" : string.Empty)}{Name}{(Prefix ? "y" : string.Empty)}",
@@ -48,7 +54,7 @@ namespace InnoTecheLearning
 
             public string Name { get; }
             public string DescriptionTitle { get; }
-            public string DescriptionContent { get; }
+            public System.Lazy<string> DescriptionContent { get; }
             public string Friendly { get; }
 
             /*
@@ -58,7 +64,7 @@ U+207x  x⁰  xⁱ          x⁴  x⁵  x⁶  x⁷  x⁸  x⁹  x⁺  x⁻  x⁼
 U+208x  x₀  x₁  x₂  x₃  x₄  x₅  x₆  x₇  x₈  x₉  x₊  x₋  x₌  x₍  x₎  
 U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ  xₜ
 ªºⱽⱼ◌ͣ◌ͤ◌ͥ◌ͦ◌ͧ◌ͨ◌ͩ◌ͪ◌ͫ◌ͬ◌ͭ◌ͮ◌ͯ ʰʲʳʷʸˡˢˣᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁᵂᵃᵅᵇᵈᵉᵍᵏᵐᵒᵖᵗᵘᵛᵢᵣᵤᵥᵪᵸᶜᶠᶢᶦᶩᶫᶰᶴᶸᶻ*/
-            public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty);
+            public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty, "Empty", "An empty slot waiting to be filled with a use.", null, null, null);
             public static readonly NerdamerPart Space = FromLiteral(" ", "The space bar", "Used for beautifying an expression or denotes implicit multiplication.", "␣", new[] { "3 2", "a     b", "vw x  3   y    z"});
             public static readonly NerdamerPart Percent = FromOperator("%", "percentage", false, true, "Used for denoting percentages, which is equal to dividing by 100.", new[] { "1%", "a%", "1.3%%" });
             public static readonly NerdamerPart Comma = FromOperator(",", "comma", true, true, "Separates a list of values in an argument list or vector.", new[] { "min(2,3,4,5)", "[a,b,4,d]" });
@@ -93,7 +99,7 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Log10 = FromFunction("log10", "base 10 logarithm", "A convenient shorthand for log(x, 10).", new[] { ("x", "The expression to calculate the base 10 logarithm for.") }, new[] { "log10(10)", "log10(100)", "log10(1e308)" }, null, "log₁₀");
             public static readonly NerdamerPart Min = FromFunction("min", "minimum", "Calculates the minimum value from a set of expressions.", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "min(1,2,3,π,e)", "min(π,2^2,3.5,10/3)" });
             public static readonly NerdamerPart Max = FromFunction("max", "maximum", "Calculates the maximum value from a set of expressions.", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "max(sqrt(π)+1.5,e^(11/9),10/3,π)", "max(10, 100/10, log10(10^10), sqrt(100))" });
-            public static readonly NerdamerPart Sqrt = new NerdamerPart("sqrt(", "√‾");
+            public static readonly NerdamerPart Sqrt = FromFunction("sqrt", "square root", "Calculates the square root of an expression.", new[] { ("x", "The expression to find the square root for.") }, new[] { "sqrt(2)", "sqrt(3)", "sqrt(1.5)", "sqrt(-23)" }, Friendly: "√‾");
             public static readonly NerdamerPart Floor = new NerdamerPart("floor(");
             public static readonly NerdamerPart Ceil = new NerdamerPart("ceil(");
             public static readonly NerdamerPart Round = new NerdamerPart("round(", "rnd");
