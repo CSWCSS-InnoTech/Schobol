@@ -491,7 +491,7 @@ function Min() { return Math.min.apply(global, arguments); }
                 case Modifier.IntSurd:
                     if (double.IsInfinity(value) || double.IsNaN(value))
                         throw new ArithmeticException(nameof(value) + " is not finite.");
-                    if (value.NearInteger()) return value.ToString() + OnPlatform("√1̅", "√1̅", "√̅1");
+                    if (value.NearInteger()) return value.ToString() + "√" + Overline("1");
                     var Negative = value < 0;
                     // A = AVariable, B = Builder, C = Char
                     if (value > 5000 || value < -5000)
@@ -870,6 +870,30 @@ function Min() { return Math.min.apply(global, arguments); }
                 Task.GetAwaiter().OnCompleted(() => { if (Task.Result) StartTimer(Interval, Callback); });
                 return false;
             });
+
+        public static string Overline(string Text)
+        {
+            var Sb = new System.Text.StringBuilder();
+            foreach (var Char in Text)
+#if WINDOWS_UWP
+                Sb.Append('\x0305').Append(Char);
+#else
+                Sb.Append(Char).Append('\x0305');
+#endif
+            return Sb.ToString();
+        }
+
+        public static System.Text.StringBuilder Overline(System.Text.StringBuilder Sb)
+        {
+            int Length = Sb.Length;
+            for(int i = 0; i < Length; i++)
+#if WINDOWS_UWP
+                Sb.Insert(i * 2, '\x0305');
+#else
+                Sb.Insert(i * 2 + 1, '\x0305');
+#endif
+            return Sb;
+        }
 
 #if __ANDROID__
 
