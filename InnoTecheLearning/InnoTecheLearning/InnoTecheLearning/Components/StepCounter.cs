@@ -73,8 +73,8 @@ namespace InnoTecheLearning
                     if (_stepCounter == null)
                         _stepCounter = new CMStepCounter();
 
-                    return new ValueTask<uint>(async () => 
-                        Steps_ = (uint)await _stepCounter.QueryStepCountAsync(sMidnight, NSDate.Now, _queue));
+                    return new ValueTask<uint>(Task.Run(async () => 
+                        Steps_ = (uint)await _stepCounter.QueryStepCountAsync(sMidnight, NSDate.Now, _queue)));
                 }
             }
             public uint Steps_ { get; private set; }

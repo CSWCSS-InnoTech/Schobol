@@ -25,8 +25,8 @@ namespace InnoTecheLearning
         {
             JavaScriptCore.JSContext _Engine = new JavaScriptCore.JSContext();
             public ValueTask<string> Evaluate(string JavaScript) =>
-                new ValueTask<string>(Task.Run(() => 
-                    _Engine.EvaluateScript(JavaScript).ToString()));
+                new ValueTask<string>(Task.Run(() =>
+                    { lock(_Engine) return _Engine.EvaluateScript(JavaScript).ToString(); }));
 #elif __ANDROID__
         {
             /// <summary>
@@ -107,7 +107,7 @@ namespace InnoTecheLearning
             Jint.Engine _Engine = new Jint.Engine();
             public ValueTask<string> Evaluate(string JavaScript) =>
                 new ValueTask<string>(Task.Run(() => 
-                    _Engine.Execute(JavaScript).GetCompletionValue().ToString()));
+                    { lock(_Engine) return _Engine.Execute(JavaScript).GetCompletionValue().ToString(); }));
 #endif
 
             #region Singleton Engine
@@ -144,7 +144,7 @@ namespace InnoTecheLearning
                     await Return.Evaluate(Resources.GetString("Solve.js"));
                     await Return.Evaluate(Resources.GetString("Extra.js"));
                     await Return.Evaluate("nerdamer.setOperator('°', 'degree', 6, true, false, true, function(s){var core = nerdamer.getCore();var _=core.PARSER;return _.divide(_.multiply(s.clone(), new core.Symbol('π')), new core.Symbol(180));})");
-                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
+                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a * b)/ gcd(a, b) ')");
                     //await Return.Evaluate("nerdamer.setFunction('asec', 'x', 'acos(1/x)')");
                     //await Return.Evaluate("nerdamer.setFunction('acsc', 'x', 'asin(1/x)')");
                     //await Return.Evaluate("nerdamer.setFunction('acot', 'x', 'π/2-atan(x)')");

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace InnoTecheLearning
 {
@@ -18,18 +19,24 @@ namespace InnoTecheLearning
             public NerdamerPart(string Name, string Spoken, string Description, string UsageOverride,
                 IEnumerable<(string Var, string Description)> Vars, IEnumerable<string> Examples, string Friendly = null, bool Evaluate = true)
             {
+                string Prepend(char c, string s) => string.IsNullOrEmpty(s) ? s : c + s;
+                string Append(string s, char c) => string.IsNullOrEmpty(s) ? s : s + c;
                 this.Friendly = Friendly ?? Name;
                 this.Name = Name;
                 this.DescriptionTitle =
-                    $"{(Name.Length > 1 ? Name.TrimEnd('(') : Name)} {"(" + new[] { (Friendly + "(" == Name ? null : Friendly), Spoken }.Aggregate((prev, current) => string.IsNullOrEmpty(prev) ? current : string.IsNullOrEmpty(current) ? prev : $"{prev}, {current}") + ")"}";
+                    $"{(Name.Length > 1 ? Name.TrimEnd('(') : Name)} {Append(Prepend('(', new[] { (Friendly + "(" == Name ? null : Friendly), Spoken }.Aggregate((prev, current) => string.IsNullOrEmpty(prev) ? current : string.IsNullOrEmpty(current) ? prev : $"{prev}, {current}")), ')')}";
                 //new[]{"", "2", "3", ""} => "(2, 3)"
 
-                string Append(string s, char c) => s == null ? null : s + c;
-                this.DescriptionContent = new System.Lazy<string>(() =>
+                this.DescriptionContent = new System.Lazy<Task<string>>(async () =>
                 {
                     try
                     {
-                        return $@"{Description}{NewLine}{NewLine}Usage:{NewLine}{Tab}{UsageOverride ?? Append(Vars?.Aggregate(Name, (prev, current) => current.Var.ElementAtOrDefault(0) == OptionalChar ? $"{prev}){(prev.Contains(NewLine) ? prev.Substring(prev.LastIndexOf(NewLine) + 1) : NewLine + Tab + prev)}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var.TrimStart(OptionalChar)}" : $"{prev}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var}"), ')') ?? $"None"}{NewLine}Parameters:{Vars?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current.Var}{Separator} {current.Description}") ?? $"{NewLine}{Tab}None"}{NewLine}Examples:{Examples?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current}{Separator} {SymbolicsEngine.Current.RunSynchronously().Evaluate($"nerdamer('{current}'){(Evaluate ? ".evaluate()" : string.Empty)}.text()").RunSynchronously()}") ?? $"{NewLine}{Tab}None"}";
+                        return $"{Description}{NewLine}{NewLine}Usage:{NewLine}{Tab}" +
+                        (UsageOverride ?? Append(Vars?.Aggregate(Name, (prev, current) => current.Var.ElementAtOrDefault(0) == OptionalChar ? $"{prev}){(prev.Contains(NewLine) ? prev.Substring(prev.LastIndexOf(NewLine) + 1) : NewLine + Tab + prev)}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var.TrimStart(OptionalChar)}" : $"{prev}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var}"), ')') ?? "None") +
+                        $"{NewLine}Parameters:" + 
+                        (Vars?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current.Var}{Separator} {current.Description}") ?? $"{NewLine}{Tab}None") +
+                        $"{NewLine}Examples:" +
+                        (Examples?.Zip(await Task.WhenAll(Examples.Select(async x => await (await SymbolicsEngine.Current).Evaluate($"nerdamer('{x}'){(Evaluate ? ".evaluate()" : string.Empty)}.text()"))), (In, Out) => (In, Out)).Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current.In}{Separator} {current.Out}") ?? $"{NewLine}{Tab}None");
                     }
                     catch (System.ArgumentNullException)
                     {
@@ -46,15 +53,16 @@ namespace InnoTecheLearning
                 new NerdamerPart(Name, Spoken, Description, Name, null, Examples ?? new[] { Name, "3" + Name, Name + "/2" }, Friendly, Evaluate);
             public static NerdamerPart FromDigit(char Digit) => FromLiteral(Digit.ToString(), $"The digit {Digit}", $"Denotes the digit with the value {Digit}.");
             public static NerdamerPart FromFunction(string Name, string Spoken, string Description,
-                IEnumerable<(string Var, string Description)> Vars, IEnumerable<string> Examples, string UsageOverride = null, string Friendly = null, bool Evaluate = true) =>
+                IEnumerable<(string Var, string Description)> Vars, IEnumerable<string> Examples, string Friendly = null, bool Evaluate = true) =>
                 new NerdamerPart(Name + '(', $"The {Spoken} function", Description, null, Vars, Examples, Friendly ?? Name, Evaluate);
             public static string Optional(string VarName) => OptionalChar + VarName;
+            public static string ForPhone(string Phone, string Else) => Xamarin.Forms.Device.Idiom == Xamarin.Forms.TargetIdiom.Phone ? Phone : Else;
 
             public static void Init() => Equals(Empty, Space);
 
             public string Name { get; }
             public string DescriptionTitle { get; }
-            public System.Lazy<string> DescriptionContent { get; }
+            public System.Lazy<Task<string>> DescriptionContent { get; }
             public string Friendly { get; }
 
             /*
@@ -64,9 +72,9 @@ U+207x  x⁰  xⁱ          x⁴  x⁵  x⁶  x⁷  x⁸  x⁹  x⁺  x⁻  x⁼
 U+208x  x₀  x₁  x₂  x₃  x₄  x₅  x₆  x₇  x₈  x₉  x₊  x₋  x₌  x₍  x₎  
 U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ  xₜ
 ªºⱽⱼ◌ͣ◌ͤ◌ͥ◌ͦ◌ͧ◌ͨ◌ͩ◌ͪ◌ͫ◌ͬ◌ͭ◌ͮ◌ͯ ʰʲʳʷʸˡˢˣᴬᴮᴰᴱᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁᵂᵃᵅᵇᵈᵉᵍᵏᵐᵒᵖᵗᵘᵛᵢᵣᵤᵥᵪᵸᶜᶠᶢᶦᶩᶫᶰᶴᶸᶻ*/
-            public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty, "Empty", "An empty slot waiting to be filled with a use.", null, null, null);
-            public static readonly NerdamerPart Space = FromLiteral(" ", "The space bar", "Used for beautifying an expression or denotes implicit multiplication.", "␣", new[] { "3 2", "a     b", "vw x  3   y    z"});
-            public static readonly NerdamerPart Percent = FromOperator("%", "percentage", false, true, "Used for denoting percentages, which is equal to dividing by 100.", new[] { "1%", "a%", "1.3%%" });
+            public static readonly NerdamerPart Empty = new NerdamerPart(string.Empty, "Empty", "Is an empty slot waiting to be filled with a use.", null, null, null);
+            public static readonly NerdamerPart Space = FromLiteral(" ", "The space bar", "Beautifies an expression or denotes implicit multiplication.", "␣", new[] { "3 2", "a     b", "vw x  3   y    z"});
+            public static readonly NerdamerPart Percent = FromOperator("%", "percentage", false, true, "Denotes percentages, which is equal to dividing by 100.", new[] { "1%", "a%", "1.3%%" });
             public static readonly NerdamerPart Comma = FromOperator(",", "comma", true, true, "Separates a list of values in an argument list or vector.", new[] { "min(2,3,4,5)", "[a,b,4,d]" });
             public static readonly NerdamerPart LeftSquare = new NerdamerPart("[", "The left square bracket", "Denotes the opening of a vector (sequence of expressions).", "[a,b,c,d...]", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.")}, new[] { "[1]", "[1,2,3,4]", "[4,3,2]+[2,3,4]", "[7,7,7]/[6,8,9]" });
             public static readonly NerdamerPart RightSquare = new NerdamerPart("]", "The right square bracket", "Denotes the closing of a vector (sequence of expressions).", "[a,b,c,d...]", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "[a]", "[a,1,c,56]", "[c,s,w]-[c,s,s]", "[h,o,n,g]*[k,o,n,g]" });
@@ -93,20 +101,24 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart ConstE = new NerdamerPart("e", "The mathematical constant e / Scientific E-notation", "Denotes the limit of (1 + 1/n)ⁿ as n approaches infinity ≈ 2.71828182845904523536, or denotes the previous number multiplied by ten raised to the following power.", $"e{NewLine}{Tab}nex", new[] { ("n", "Any combination of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, and the decimal dot (.)."), ("x", "Any combination of 0, 1, 2, 3, 4, 5, 6, 7, 8 and 9.") }, new[] { "e", "3e", "3e3", "34.5e99", "1e1-1e0" });
             public static readonly NerdamerPart ConstI = FromLiteral("i", "The mathematical constant i", "Denotes the imaginary unit = √" + Overline("-1") + ".");
             public static readonly NerdamerPart Degree = FromOperator("°", "degrees", false, true, "Converts an expression in degrees to radians.", new[] { "0°", "1°", "6.4°", "90°", "180°" });
+#warning After https://github.com/jiggzson/nerdamer/issues/213 has been closed, mark this as evaluate
             public static readonly NerdamerPart Equation = FromOperator("=", "equality", true, true, "Denotes that the left and right expressions are equal, and forms an equation. Can be solved using the solve function or the solveEquations function.", new[] { "8=8", "2x=3", "solve(2x=3,x)", "solveEquations([x+y=4,2x+3y=5])" }, Evaluate: false);
             //public static readonly NerdamerPart Assign = new NerdamerPart(":=");
             public static readonly NerdamerPart Log = FromFunction("log", "logarithm", "Calculates the logarithm (a=b^x; b=a^(1/x); x=log(a,b)) with an optional base (defaults to the constant e).", new[] { ("a", "The expression to calculate the logarithm for."), (Optional("b"), "The optional base in which when multiplied by the result, will produce the original expression. Defaults to the constant e.") }, new string[] { "log(9, 3)", "log(e^3)", "log(a^x,a)", "log(2^log(2^3,2),2)" });
-            public static readonly NerdamerPart Log10 = FromFunction("log10", "base 10 logarithm", "A convenient shorthand for log(x, 10).", new[] { ("x", "The expression to calculate the base 10 logarithm for.") }, new[] { "log10(10)", "log10(100)", "log10(1e308)" }, null, "log₁₀");
+            public static readonly NerdamerPart Log10 = FromFunction("log10", "base 10 logarithm", "Is a convenient shorthand for log(x, 10).", new[] { ("x", "The expression to calculate the base 10 logarithm for.") }, new[] { "log10(10)", "log10(100)", "log10(1e308)" }, "log₁₀");
             public static readonly NerdamerPart Min = FromFunction("min", "minimum", "Calculates the minimum value from a set of expressions.", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "min(1,2,3,π,e)", "min(π,2^2,3.5,10/3)" });
             public static readonly NerdamerPart Max = FromFunction("max", "maximum", "Calculates the maximum value from a set of expressions.", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "max(sqrt(π)+1.5,e^(11/9),10/3,π)", "max(10, 100/10, log10(10^10), sqrt(100))" });
-            public static readonly NerdamerPart Sqrt = FromFunction("sqrt", "square root", "Calculates the square root of an expression.", new[] { ("x", "The expression to find the square root for.") }, new[] { "sqrt(2)", "sqrt(3)", "sqrt(1.5)", "sqrt(-23)" }, Friendly: "√‾");
-            public static readonly NerdamerPart Floor = new NerdamerPart("floor(");
-            public static readonly NerdamerPart Ceil = new NerdamerPart("ceil(");
-            public static readonly NerdamerPart Round = new NerdamerPart("round(", "rnd");
-            public static readonly NerdamerPart Trunc = new NerdamerPart("trunc(");
-            public static readonly NerdamerPart Mod = new NerdamerPart("mod(");
-            public static readonly NerdamerPart Gcd = new NerdamerPart("gcd(");
-            public static readonly NerdamerPart Lcm = new NerdamerPart("lcm(");
+            public static readonly NerdamerPart Sqrt = FromFunction("sqrt", "square root", "Calculates the square root of an expression.", new[] { ("x", "The expression to find the square root for.") }, new[] { "sqrt(2)", "sqrt(3)", "sqrt(1.5)", "sqrt(-23)" }, "√‾");
+            public static readonly NerdamerPart Floor = FromFunction("floor", "floor", "Finds the largest integer that is less than or equal to an expression.", new[] { ("x", "The expression to find the floor for.") }, new[] { "floor(7)", "floor(7.3)", "floor(7.7)", "floor(-7.3)", "floor(-7.7)", "floor(i)" }, "⌊x⌋");
+            public static readonly NerdamerPart Ceil = FromFunction("ceil", "ceiling", "Finds the smallest integer that is greater than or equal to an expression.", new[] { ("x", "The expression to find the ceiling for.") }, new[] { "ceil(7)", "ceil(7.3)", "ceil(7.7)", "ceil(-7.3)", "ceil(-7.7)", "ceil(i)" }, "⌈x⌉");
+#warning After https://github.com/jiggzson/nerdamer/issues/291 has been closed, mark this as evaluate
+            public static readonly NerdamerPart Round = FromFunction("round", "round", "Finds the nearest integer or decimal with the specified decimal places of an expression. Rounds half up.", new[] { ("x", "The expression to round."), (Optional("d"), "The optional number of decimal places that the result should have. Defaults to 0.") }, new[] { "round(2.4)", "round(-2.6)", "round(-2.5)", "round(2.51001,1)", "round(-2.51001,2)", "round(2.50001,3)" }, "rnd", false);
+#warning To do: Open an issue of implementing the second argument (number of decimal digits) in trunc (jiggzson is a bit mad right now)
+            public static readonly NerdamerPart Trunc = FromFunction("trunc", "truncate", "Discards all decimal places of an expression.", new[] { ("x", "The expression to truncate decimal places from.") }, new[] { "round(-2.4)", "round(2.6)", "round(-2.5)" });
+            public static readonly NerdamerPart Mod = FromFunction("mod", "modulo", "Calculates the remainder after an expression is divided by another.", new[] { ("x", "The dividend of the division."), ("y", "The divisor of the division.") }, new[] { "mod(1,2)", "mod(-1,2)", "mod(1,-2)", "mod(2.6,1.3)", "mod(1.10,1.09)" });
+#warning To do: Open an issue of implementing variable argument list of lcm and gcd
+            public static readonly NerdamerPart Gcd = FromFunction("gcd", "greatest common divisor", "Calculates the greatest expression that can divide the two expressions with no remainder.", new[] { ("x", "One of the two expressions to calculate the gcd for."), ("y", "Another one of the two expressions to calculate the gcd for.") }, new[] { "gcd(3,4)", "gcd(15,6)", "gcd(x^2,x)", "gcd(x^2+2x+1,x^2+3x+2)", "gcd(18x^5+40x^2+75x^4+98x^3,12x^5+122x^3+60x^2+70x^4)" });
+            public static readonly NerdamerPart Lcm = FromFunction("lcm", "least common multiple", "Calculates the smallest expression that can be divided by the two provided expressions.", new[] { ("x", "One of the two expressions to calculate the lcm for."), ("y", "Another one of the two expressions to calculate the lcm for.") }, new[] { "lcm(3,4)", "lcm(15,6)", "lcm(x^2,x)", "lcm(x+2,3x^2+10x+8)", "lcm(2x^3,x^4)" });
             public static readonly NerdamerPart Mean = new NerdamerPart("mean(", "x̄");
             public static readonly NerdamerPart Mode = new NerdamerPart("mode(", "Mo");
             public static readonly NerdamerPart Median = new NerdamerPart("median(", "x̃");
@@ -175,15 +187,15 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Sin = new NerdamerPart("sin(");
             public static readonly NerdamerPart Asin = new NerdamerPart("asin(", "sin⁻¹"); //sin⁻¹
             public static readonly NerdamerPart Sinh = new NerdamerPart("sinh(");
-            public static readonly NerdamerPart Asinh = new NerdamerPart("asinh(", "ˢⁱⁿʰ⁻¹");
+            public static readonly NerdamerPart Asinh = new NerdamerPart("asinh(", ForPhone("ˢⁱⁿʰ⁻¹", "sinh⁻¹"));
             public static readonly NerdamerPart Cos = new NerdamerPart("cos(");
             public static readonly NerdamerPart Acos = new NerdamerPart("acos(", "cos⁻¹");
             public static readonly NerdamerPart Cosh = new NerdamerPart("cosh(");
-            public static readonly NerdamerPart Acosh = new NerdamerPart("acosh(", "ᶜᵒˢʰ⁻¹");
+            public static readonly NerdamerPart Acosh = new NerdamerPart("acosh(", ForPhone("ᶜᵒˢʰ⁻¹", "cosh⁻¹"));
             public static readonly NerdamerPart Tan = new NerdamerPart("tan(");
             public static readonly NerdamerPart Atan = new NerdamerPart("atan(", "tan⁻¹");
             public static readonly NerdamerPart Tanh = new NerdamerPart("tanh(");
-            public static readonly NerdamerPart Atanh = new NerdamerPart("atanh(", "ᵗᵃⁿʰ⁻¹");
+            public static readonly NerdamerPart Atanh = new NerdamerPart("atanh(", ForPhone("ᵗᵃⁿʰ⁻¹", "tanh⁻¹"));
             public static readonly NerdamerPart Sinc = new NerdamerPart("sinc(");
             public static readonly NerdamerPart Sum = new NerdamerPart("sum(", "∑");
             public static readonly NerdamerPart Product = new NerdamerPart("product(", "∏");
@@ -194,17 +206,17 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Sec = new NerdamerPart("sec(");
             public static readonly NerdamerPart Asec = new NerdamerPart("asec(", "sec⁻¹");
             public static readonly NerdamerPart Sech = new NerdamerPart("sech(");
-            public static readonly NerdamerPart Asech = new NerdamerPart("asech(", "ˢᵉᶜʰ⁻¹");
+            public static readonly NerdamerPart Asech = new NerdamerPart("asech(", ForPhone("ˢᵉᶜʰ⁻¹", "sech⁻¹"));
             public static readonly NerdamerPart Erf = new NerdamerPart("erf(");
             public static readonly NerdamerPart Csc = new NerdamerPart("csc(");
             public static readonly NerdamerPart Acsc = new NerdamerPart("acsc(", "csc⁻¹");
             public static readonly NerdamerPart Csch = new NerdamerPart("csch(");
-            public static readonly NerdamerPart Acsch = new NerdamerPart("acsch(", "ᶜˢᶜʰ⁻¹");
+            public static readonly NerdamerPart Acsch = new NerdamerPart("acsch(", ForPhone("ᶜˢᶜʰ⁻¹", "csch⁻¹"));
             public static readonly NerdamerPart Rect = new NerdamerPart("rect(");
             public static readonly NerdamerPart Cot = new NerdamerPart("cot(");
             public static readonly NerdamerPart Acot = new NerdamerPart("acot(", "cot⁻¹");
             public static readonly NerdamerPart Coth = new NerdamerPart("coth(");
-            public static readonly NerdamerPart Acoth = new NerdamerPart("acoth(", "ᶜᵒᵗʰ⁻¹");
+            public static readonly NerdamerPart Acoth = new NerdamerPart("acoth(", ForPhone("ᶜᵒᵗʰ⁻¹", "coth⁻¹"));
             public static readonly NerdamerPart Tri = new NerdamerPart("tri(");
             public static readonly NerdamerPart Si = new NerdamerPart("Si(");
             public static readonly NerdamerPart Ci = new NerdamerPart("Ci(");
