@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -143,8 +143,6 @@ namespace InnoTecheLearning
                     await Return.Evaluate(Resources.GetString("Calculus.js"));
                     await Return.Evaluate(Resources.GetString("Solve.js"));
                     await Return.Evaluate(Resources.GetString("Extra.js"));
-                    await Return.Evaluate("nerdamer.setOperator('°', 'degree', 6, true, false, true, function(s){var core = nerdamer.getCore();var _=core.PARSER;return _.divide(_.multiply(s.clone(), new core.Symbol('π')), new core.Symbol(180));})");
-                    await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a * b) / gcd(a, b)')");
                     //await Return.Evaluate("nerdamer.set('USE_MULTICHARACTER_VARS', false)");
                     //await Return.Evaluate("nerdamer.setFunction('asec', 'x', 'acos(1/x)')");
                     //await Return.Evaluate("nerdamer.setFunction('acsc', 'x', 'asin(1/x)')");
@@ -162,21 +160,28 @@ namespace InnoTecheLearning
                     await Return.Evaluate(TrigRepl("atan", true));
                     */
                     await Return.Evaluate(@"
-var core = nerdamer.getCore();
-var _ = core.PARSER;
-var Algebra = core.Algebra;
-var factor = Algebra.Factor.factor;
-var customDivide = function(a, b) { 
-    var result = Algebra.div(a, b);
-    var remainder = _.divide(factor(result[1]), factor(a));
-    return _.add(result[0], remainder);
-};
-nerdamer.register({
-    name: 'divide',
-    visible: true,
-    numargs: 2,
-    build: function() { return customDivide; }
-});");
+{
+    var core = nerdamer.getCore();
+    var _ = core.PARSER;
+    nerdamer.setOperator('°', 'degree', 6, true, false, true, function(s) {
+        return _.divide(_.multiply(s.clone(), new core.Symbol('π')), new core.Symbol(180));
+    });
+    nerdamer.setFunction('lcm', ['a', 'b'], '(a * b) / gcd(a, b)');
+ 
+    var Algebra = core.Algebra;
+    var factor = Algebra.Factor.factor;
+    var customDivide = function(a, b) { 
+        var result = Algebra.div(a, b);
+        var remainder = _.divide(factor(result[1]), factor(a));
+        return _.add(result[0], remainder);
+    };
+    nerdamer.register({
+        name: 'divide',
+        visible: true,
+        numargs: 2,
+        build: function() { return customDivide; }
+    });
+}");
                     //await Return.Evaluate("nerdamer.getCore().PARSER.constants['π'] = 'pi'");
                     //await Return.Evaluate(@"{var f =nerdamer.getCore().PARSER.functions['sin']; }");
                     //await Return.Evaluate("nerdamer.setFunction('lcm', ['a', 'b'], '(a / gcd(a, b)) * b')");
