@@ -37,7 +37,7 @@ namespace InnoTecheLearning.Droid
     [Activity(Label = Utils.AssemblyTitle, Theme = "@style/Splash", MainLauncher = true, NoHistory = true,
         ScreenOrientation = ScreenOrientation.SensorPortrait,
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class SplashActivity : global::Xamarin.Forms.Platform.Android.FormsApplicationActivity
+    public class SplashActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         System.Threading.ManualResetEvent Inited = new System.Threading.ManualResetEvent(false);
         protected override void OnCreate(Bundle bundle)

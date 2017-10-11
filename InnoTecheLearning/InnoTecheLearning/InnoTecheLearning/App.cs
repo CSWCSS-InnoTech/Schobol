@@ -19,6 +19,8 @@ namespace InnoTecheLearning
             MainPage = ResourceView;
 #elif DEBUG_INTERACTIVE
             MainPage = InteractiveView;
+#elif false
+            MainPage = new Pages.Main();
 #else
             MainPage = new Main();
 #endif

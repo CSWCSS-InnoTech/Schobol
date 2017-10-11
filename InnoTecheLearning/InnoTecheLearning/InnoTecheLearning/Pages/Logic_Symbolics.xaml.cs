@@ -16,7 +16,7 @@ using Xamarin.Forms.Xaml;
 
 namespace InnoTecheLearning.Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Skip)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Logic_Symbolics : TabbedPage
     {
         //TODO: Add methods from https://help.syncfusion.com/cr/xamarin/calculate

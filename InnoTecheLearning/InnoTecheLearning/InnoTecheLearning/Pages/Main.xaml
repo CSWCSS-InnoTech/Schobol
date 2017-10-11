@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="InnoTecheLearning.Pages.Main">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Image">
+                <Setter Property="WidthRequest" Value="71.5"/>
+                <Setter Property="BackgroundColor" Value="Gray"/>
+            </Style>
+            <Style TargetType="StackLayout">
+                <Setter Property="Orientation" Value="Vertical"/>
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <StackLayout>
+            <Label HorizontalTextAlignment="Center" TextColor="Black">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="Developed by Hadrian Tang Wai To of the
+"/>
+                        <Span Text="Innovative Technology Society of CSWCSS" FontAttributes="Bold"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.Children>
+                    <StackLayout Grid.Row="0" Grid.Column="0">
+                        <Image x:Name="Lingual"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="LINGUAL" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                    <StackLayout Grid.Row="0" Grid.Column="1">
+                        <Image x:Name="Logic"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="LOGIC" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="0">
+                        <Image x:Name="Health"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="HEALTH" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                    <StackLayout Grid.Row="1" Grid.Column="1">
+                        <Image x:Name="Tunes"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="TUNES" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                    <StackLayout Grid.Row="2" Grid.Column="0">
+                        <Image x:Name="Excel"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="EXCEL" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                    <StackLayout Grid.Row="2" Grid.Column="1">
+                        <Image x:Name="Facial"/>
+                        <Label>
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="FACIAL" FontAttributes="Bold"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </StackLayout>
+                </Grid.Children>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

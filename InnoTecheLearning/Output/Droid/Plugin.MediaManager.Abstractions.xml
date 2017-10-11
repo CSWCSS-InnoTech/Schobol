@@ -445,6 +445,11 @@
             The native view where the video should be rendered on
             </summary>
         </member>
+        <member name="P:Plugin.MediaManager.Abstractions.IVideoPlayer.IsReadyRendering">
+            <summary>
+            True when RenderSurface has been initialized and ready for rendering
+            </summary>
+        </member>
         <member name="P:Plugin.MediaManager.Abstractions.IVideoPlayer.AspectMode">
             <summary>
             The aspect mode of the video

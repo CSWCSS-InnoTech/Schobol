@@ -92,6 +92,11 @@
             when audio become noisy, such as the user unplugged headphones
             </summary>
         </member>
+        <member name="P:Plugin.MediaManager.VideoPlayerImplementation.IsReadyRendering">
+            <summary>
+            True when RenderSurface has been initialized and ready for rendering
+            </summary>
+        </member>
         <member name="P:Plugin.MediaManager.RemoteControlBroadcastReceiver.ComponentName">
             <summary>
             gets the class name for the component

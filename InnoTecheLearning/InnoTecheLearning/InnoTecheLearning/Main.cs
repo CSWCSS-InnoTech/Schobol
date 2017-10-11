@@ -75,7 +75,7 @@ namespace InnoTecheLearning
                                 (ref ContentPage x) =>
                                 {
                                     if (Enum.IsDefined(typeof(PageId), Id) && Id != PageId.Uninitialised) x.StyleId = Id.GetTitle();
-                                    x.Title = Title ?? x.StyleId ?? string.Empty;
+                                    x.Title = Title = Title ?? x.StyleId ?? string.Empty;
                                 }),
                             $"Pushing a page, Page title: {Title}..."
                         )
@@ -143,7 +143,7 @@ namespace InnoTecheLearning
 
                              MainScreenItem(
                                  ImageSource(ImageFile.Calculator),
-                                 async () => Switch(
+                                 () => PushAsync(new Pages.Logic_Symbolics())/*Switch(
                                      await DisplayActionSheet(
                                      "Choose Logic mode", "Cancel", null,
                                      "Keypad", "Freeform", "Factor", "Symbolics"),
@@ -153,7 +153,7 @@ namespace InnoTecheLearning
                                      ("Freeform", () => Push(Calculator_Free, PageId.Logic_毲Freeform䫎)),
                                      ("Factor", () => Push(Factorizer, PageId.Logic_毲Factor䫎)),
                                      ("Symbolics", () => PushAsync(new Pages.Logic_Symbolics()))
-                                 ),
+                                 )*/,
                                  BoldLabel("LOGIC")
                             )
                         ), "Generated first row"),
@@ -167,7 +167,7 @@ namespace InnoTecheLearning
 
                             MainScreenItem(
                                 ImageSource(ImageFile.MusicTuner),
-                                () => PushAsync(new Pages.Tunes()),
+                                () => Push(MusicTuner, PageId.Tunes),
                                 BoldLabel("TUNES"))
                             )
                         , "Generated second row"),

@@ -14,7 +14,7 @@ using Plugin.MediaManager.Abstractions.Enums;
 
 namespace InnoTecheLearning.Pages
 {
-	[XamlCompilation(XamlCompilationOptions.Skip)]
+	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Tunes : ContentPage
 	{
         MediaManagerImplementation Player1 = new MediaManagerImplementation();

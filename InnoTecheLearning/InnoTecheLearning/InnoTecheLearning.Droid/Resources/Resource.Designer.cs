@@ -717,7 +717,13 @@ namespace InnoTecheLearning.Droid
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.abc_textfield_search_material = global::InnoTecheLearning.Droid.Resource.Drawable.abc_textfield_search_material;
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.abc_vector_test = global::InnoTecheLearning.Droid.Resource.Drawable.abc_vector_test;
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_hide_password = global::InnoTecheLearning.Droid.Resource.Drawable.avd_hide_password;
+			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_hide_password_1 = global::InnoTecheLearning.Droid.Resource.Drawable.avd_hide_password_1;
+			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_hide_password_2 = global::InnoTecheLearning.Droid.Resource.Drawable.avd_hide_password_2;
+			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_hide_password_3 = global::InnoTecheLearning.Droid.Resource.Drawable.avd_hide_password_3;
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_show_password = global::InnoTecheLearning.Droid.Resource.Drawable.avd_show_password;
+			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_show_password_1 = global::InnoTecheLearning.Droid.Resource.Drawable.avd_show_password_1;
+			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_show_password_2 = global::InnoTecheLearning.Droid.Resource.Drawable.avd_show_password_2;
+			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.avd_show_password_3 = global::InnoTecheLearning.Droid.Resource.Drawable.avd_show_password_3;
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.design_bottom_navigation_item_background = global::InnoTecheLearning.Droid.Resource.Drawable.design_bottom_navigation_item_background;
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.design_fab_background = global::InnoTecheLearning.Droid.Resource.Drawable.design_fab_background;
 			global::Plugin.MediaManager.Forms.Android.Resource.Drawable.design_ic_visibility = global::InnoTecheLearning.Droid.Resource.Drawable.design_ic_visibility;

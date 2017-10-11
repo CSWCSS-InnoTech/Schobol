@@ -41,7 +41,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Dictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Extensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\HeldPress.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\ImageResourceExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\LayoutConverters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MathSolverStack.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\NerdamerPart.cs" />

@@ -236,16 +236,16 @@
       <Version>2.11.23</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-      <Version>5.4.0</Version>
+      <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
     </PackageReference>
     <PackageReference Include="Plugin.MediaManager">
-      <Version>0.4.3</Version>
+      <Version>0.4.5</Version>
     </PackageReference>
     <PackageReference Include="Plugin.MediaManager.Forms">
-      <Version>0.4.3</Version>
+      <Version>0.4.5</Version>
     </PackageReference>
     <PackageReference Include="System.Drawing.Primitives">
       <Version>4.3.0</Version>
