@@ -143,8 +143,12 @@ namespace InnoTecheLearning
                 Log("Added all items into MainScreenRow");
                 if(Dropdown)
                     Device.StartTimer(Device.Idiom != TargetIdiom.Desktop && Animate ? Seconds(1) : Milliseconds(1),
-                    () => { MenuScreenRow.Spacing = MainScreenItems[0].Width;
-                    MenuScreenRow.TranslateTo(0, MainScreenItems[0].Height / 2, 1000, Easing.BounceOut); return false; });
+                    () =>
+                    {
+                        MenuScreenRow.Spacing = MainScreenItems[0].Width;
+                        MenuScreenRow.TranslateTo(0, MainScreenItems[0].Height / 2, 1000, Easing.BounceOut);
+                        return false;
+                    });
                 return MenuScreenRow;
             }
             

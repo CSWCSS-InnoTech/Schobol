@@ -4,13 +4,15 @@
              x:Class="InnoTecheLearning.Pages.Main">
     <ContentPage.Resources>
         <ResourceDictionary>
-            <Style TargetType="Image">
-                <Setter Property="WidthRequest" Value="71.5"/>
-                <Setter Property="BackgroundColor" Value="Gray"/>
-            </Style>
             <Style TargetType="StackLayout">
                 <Setter Property="Orientation" Value="Vertical"/>
                 <Setter Property="HorizontalOptions" Value="CenterAndExpand"/>
+                <Setter Property="VerticalOptions" Value="FillAndExpand"/>
+            </Style>
+            <Style TargetType="Image" BasedOn="StackLayout">
+                <Setter Property="WidthRequest" Value="-1"/><!--71.5-->
+                <Setter Property="BackgroundColor" Value="Gray"/>
+                <Setter Property="Aspect" Value="AspectFit"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -19,8 +21,7 @@
             <Label HorizontalTextAlignment="Center" TextColor="Black">
                 <Label.FormattedText>
                     <FormattedString>
-                        <Span Text="Developed by Hadrian Tang Wai To of the
-"/>
+                        <Span Text="Developed by Hadrian Tang Wai To of the&#x0a;"/>
                         <Span Text="Innovative Technology Society of CSWCSS" FontAttributes="Bold"/>
                     </FormattedString>
                 </Label.FormattedText>

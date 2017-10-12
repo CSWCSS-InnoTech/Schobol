@@ -16,6 +16,11 @@ namespace InnoTecheLearning.Pages
 		{
 			InitializeComponent ();
             Lingual.Source = Utils.Create.ImageSource(Utils.Create.ImageFile.Translate);
-		}
+            Logic.Source = Utils.Create.ImageSource(Utils.Create.ImageFile.Calculator);
+            Health.Source = Utils.Create.ImageSource(Utils.Create.ImageFile.Sports);
+            Tunes.Source = Utils.Create.ImageSource(Utils.Create.ImageFile.MusicTuner);
+            Excel.Source = Utils.Create.ImageSource(Utils.Create.ImageFile.MathSolver);
+            Facial.Source = Utils.Create.ImageSource(Utils.Create.ImageFile.Facial);
+        }
 	}
 }

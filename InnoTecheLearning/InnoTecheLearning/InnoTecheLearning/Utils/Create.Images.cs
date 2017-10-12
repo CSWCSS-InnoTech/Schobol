@@ -7,7 +7,7 @@ namespace InnoTecheLearning
     {
         partial class Create
         {
-            public enum ImageFile : int
+            public enum ImageFile
             {
                 Forum,
                 Translate,
@@ -26,26 +26,28 @@ namespace InnoTecheLearning
                 Facial
             }
 
-            public static string[] ImageFileSelection { get; } =
-                new[]
+            public static System.Collections.ObjectModel.ReadOnlyDictionary<ImageFile, string> 
+                ImageFileSelection { get; } =
+                new System.Collections.ObjectModel.ReadOnlyDictionary<ImageFile, string>(
+                    new System.Collections.Generic.Dictionary<ImageFile, string>
                 {
-                    "forum-message-3.png",
-                    "translator-tool-3.png",
-                    "book-2.png",
-                    "square-root-of-x-mathematical-signs.png",
-                    "square-root-of-x-mathematical-signs.png",
-                    "mathematical-operation.png",
-                    "man-sprinting.png",
-                    "treble-clef-2.png",
-                    "japanese-dragon.png",
-                    "cello-icon.png",
-                    "violin-icon.png",
-                    "8_bit_heart_stock_by_xquatrox-d4r844m.png",
-                    "dragon.jpg",
-                    "dragon.fw.png",
-                    "boy-smiling.png"
-                };
-            public static ImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[(int)File]);
+                    [ImageFile.Forum] = "forum-message-3.png",
+                    [ImageFile.Translate] = "translator-tool-3.png",
+                    [ImageFile.VocabBook] = "book-2.png",
+                    [ImageFile.Calculator] = "square-root-of-x-mathematical-signs.png",
+                    [ImageFile.Calculator_Free] = "square-root-of-x-mathematical-signs.png",
+                    [ImageFile.Factorizer] = "mathematical-operation.png",
+                    [ImageFile.Sports] = "man-sprinting.png",
+                    [ImageFile.MusicTuner] = "treble-clef-2.png",
+                    [ImageFile.MathSolver] = "japanese-dragon.png",
+                    [ImageFile.Cello] = "cello-icon.png",
+                    [ImageFile.Violin] = "violin-icon.png",
+                    [ImageFile.Heart] = "8_bit_heart_stock_by_xquatrox-d4r844m.png",
+                    [ImageFile.Dragon] = "dragon.jpg",
+                    [ImageFile.Dragon_Dead] = "dragon.fw.png",
+                    [ImageFile.Facial] = "boy-smiling.png"
+                });
+            public static ImageSource ImageSource(ImageFile File) => ImageSource(ImageFileSelection[File]);
             public static ImageSource ImageSource(string FileName) => Log(Xamarin.Forms.ImageSource.FromResource
                 (CurrentNamespace + ".Images." + FileName, typeof(Utils)), "ImageSource created: " + FileName);
 
