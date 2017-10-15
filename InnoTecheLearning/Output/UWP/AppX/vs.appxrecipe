@@ -31,13 +31,13 @@
     <AppXManifest Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-10-12T16:38:04.239</Modified>
+      <Modified>2017-10-15T15:35:30.894</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\CSWCSS eLearn Utilities.exe">
       <PackagePath>entrypoint\CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-10-12T16:38:03.831</Modified>
+      <Modified>2017-10-15T15:35:29.816</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\user\.nuget\packages\jint\2.11.23\lib\netstandard1.3\Jint.dll">
       <PackagePath>Jint.dll</PackagePath>
@@ -860,11 +860,11 @@
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\resources.pri">
       <PackagePath>resources.pri</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2017-10-12T16:27:12.936</Modified>
+      <Modified>2017-10-15T09:07:48.197</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\InnoTecheLearning\InnoTecheLearning\Output\UWP\Core\CSWCSS eLearn Utilities.exe">
       <PackagePath>CSWCSS eLearn Utilities.exe</PackagePath>
-      <Modified>2017-10-12T16:38:04.236</Modified>
+      <Modified>2017-10-15T15:35:30.891</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
