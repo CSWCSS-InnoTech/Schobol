@@ -903,5 +903,23 @@ function Min() { return Math.min.apply(global, arguments); }
         public static double ToDp(double Px) => Px / Forms.Context.Resources.DisplayMetrics.Density;
         public static double ToPx(double Dp) => Dp * Forms.Context.Resources.DisplayMetrics.Density;
 #endif
+        public static Task RunOnMainThread(Action action)
+        {
+            var Source = new TaskCompletionSource<Unit>();
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                try { action(); Source.SetResult(Unit.Default); } catch (Exception e) { Source.SetException(e); }
+            });
+            return Source.Task;
+        }
+        public static Task<T> RunOnMainThread<T>(Func<T> func)
+        {
+            var Source = new TaskCompletionSource<T>();
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                try { Source.SetResult(func()); } catch (Exception e) { Source.SetException(e); }
+            });
+            return Source.Task;
+        }
     }
 }

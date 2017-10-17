@@ -104,10 +104,8 @@ namespace InnoTecheLearning
             }
 #else
         {
-            Jint.Engine _Engine = new Jint.Engine();
             public ValueTask<string> Evaluate(string JavaScript) =>
-                new ValueTask<string>(Task.Run(() => 
-                    { lock(_Engine) return _Engine.Execute(JavaScript).GetCompletionValue().ToString(); }));
+                new ValueTask<string>(ChakraHost.ChakraHost.RunScript(JavaScript));
 #endif
 
             #region Singleton Engine
