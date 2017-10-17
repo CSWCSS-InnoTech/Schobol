@@ -45,6 +45,7 @@
     <Debugger>Xamarin</Debugger>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <LangVersion>latest</LangVersion>
+<AndroidSupportedAbis>armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
