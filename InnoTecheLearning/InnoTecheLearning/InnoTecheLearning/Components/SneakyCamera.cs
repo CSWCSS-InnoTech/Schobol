@@ -206,14 +206,21 @@ namespace InnoTecheLearning
 #elif __IOS__
         public class Camera : UIKit.UIImageView
         {
+            public bool Available => device != null;
             public event EventHandler<CameraEventArgs> ProcessingPreview = delegate { };
             AVFoundation.AVCaptureSession session = new AVFoundation.AVCaptureSession()
             {
                 SessionPreset = AVFoundation.AVCaptureSession.PresetMedium
             };
-            AVFoundation.AVCaptureDevice device = AVFoundation.AVCaptureDevice.DefaultDeviceWithMediaType(AVFoundation.AVMediaType.Video);
+            AVFoundation.AVCaptureDevice device = UIKit.UIDevice.CurrentDevice.CheckSystemVersion(10, 0) ?
+        AVFoundation.AVCaptureDevice.GetDefaultDevice(AVFoundation.AVMediaType.Video) :
+#pragma warning disable 618 //Version checked
+        AVFoundation.AVCaptureDevice.DefaultDeviceWithMediaType(AVFoundation.AVMediaType.Video)
+#pragma warning restore 618
+        ;
             public Camera() : base()
             {
+                if (device == null) return;
                 AVFoundation.AVCaptureVideoPreviewLayer captureVideoPreviewLayer = new AVFoundation.AVCaptureVideoPreviewLayer(session)
                 {
                     Frame = Bounds
@@ -261,30 +268,34 @@ namespace InnoTecheLearning
             public System.Threading.Tasks.Task<byte[]> TakePicture()
             {
                 var Source = new System.Threading.Tasks.TaskCompletionSource<byte[]>();
-                var Output = new AVFoundation.AVCapturePhotoOutput();
-                Output.CapturePhoto(AVFoundation.AVCapturePhotoSettings.Create(), new PhotoDelegate(
-                    (captureOutput, photoSampleBuffer, previewPhotoSampleBuffer, resolvedSettings,
-                        bracketSettings, error) =>
-                    {
+                if (device == null) Source.SetResult(null);
+                else
+                {
+                    var Output = new AVFoundation.AVCapturePhotoOutput();
+                    Output.CapturePhoto(AVFoundation.AVCapturePhotoSettings.Create(), new PhotoDelegate(
+                        (captureOutput, photoSampleBuffer, previewPhotoSampleBuffer, resolvedSettings,
+                            bracketSettings, error) =>
+                        {
                         //https://stackoverflow.com/questions/6189409/how-to-get-bytes-from-cmsamplebufferref-to-send-over-network
                         byte[] ImageToBuffer(CoreMedia.CMSampleBuffer source)
-                        {
-                            CoreMedia.CMBlockBuffer imageBuffer = source.GetDataBuffer();
-                            IntPtr Pointer = (IntPtr)0;
-                            imageBuffer.GetDataPointer(0, out _, out var Length, ref Pointer);
-                            Foundation.NSData data = Foundation.NSData.FromBytesNoCopy(Pointer, Length, false);
-                            return data.AsStream().ReadFully(false);
-                        }
-                        Source.SetResult(ImageToBuffer(photoSampleBuffer));
-                    }));
+                            {
+                                CoreMedia.CMBlockBuffer imageBuffer = source.GetDataBuffer();
+                                IntPtr Pointer = (IntPtr)0;
+                                imageBuffer.GetDataPointer(0, out _, out var Length, ref Pointer);
+                                Foundation.NSData data = Foundation.NSData.FromBytesNoCopy(Pointer, Length, false);
+                                return data.AsStream().ReadFully(false);
+                            }
+                            Source.SetResult(ImageToBuffer(photoSampleBuffer));
+                        }));
+                }
                 return Source.Task;
             }
             protected override void Dispose(bool disposing)
             {
-                session.StopRunning();
+                session?.StopRunning();
                 base.Dispose(disposing);
-                session.Dispose();
-                device.Dispose();
+                session?.Dispose();
+                device?.Dispose();
             }
             class PhotoDelegate : AVFoundation.AVCapturePhotoCaptureDelegate
             {

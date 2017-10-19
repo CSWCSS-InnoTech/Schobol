@@ -1384,7 +1384,8 @@ namespace InnoTecheLearning
                 StartTimer(TimeSpan.FromSeconds(0.5), 
                     async () => 
                     {
-                        Base64.Text = Convert.ToBase64String(await cam.TakePicture());
+                        var Photo = await cam.TakePicture();
+                        if (Photo != null) Base64.Text = Convert.ToBase64String(Photo);
                         return Navigation.NavigationStack.Count > 1;
                     });
                 return Return;

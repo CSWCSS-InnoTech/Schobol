@@ -63,8 +63,6 @@
     <MtouchUseLlvm>False</MtouchUseLlvm>
     <MtouchUseThumb>False</MtouchUseThumb>
     <MtouchEnableBitcode>False</MtouchEnableBitcode>
-    <MtouchUseSGen>False</MtouchUseSGen>
-    <MtouchUseRefCounting>False</MtouchUseRefCounting>
     <OptimizePNGs>True</OptimizePNGs>
     <MtouchFloat32>False</MtouchFloat32>
     <BuildIpa>False</BuildIpa>
@@ -84,6 +82,7 @@
     <DocumentationFile>
     </DocumentationFile>
     <DefineConstants>__UNIFIED__;__MOBILE__;__IOS__</DefineConstants>
+<LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
@@ -98,6 +97,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <DefineConstants>__UNIFIED__;__MOBILE__;__IOS__</DefineConstants>
+<LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
     <DebugType>none</DebugType>
@@ -111,6 +111,7 @@
     <CodesignKey>iPhone Distribution</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <DefineConstants>__UNIFIED__;__MOBILE__;__IOS__</DefineConstants>
+<LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>InnoTecheLearning.iOS.Application</StartupObject>

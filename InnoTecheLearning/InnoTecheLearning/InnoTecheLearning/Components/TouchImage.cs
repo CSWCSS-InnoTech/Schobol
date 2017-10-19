@@ -454,7 +454,7 @@ namespace InnoTecheLearning
                         line.Color.SetStroke();
                         line.Path.Stroke();
                     }
-                    DrawEvent(rect);
+                    DrawEvent?.Invoke(rect);
                 }
             }
             public class VESLine
