@@ -32,7 +32,7 @@ namespace InnoTecheLearning
                     try
                     {
                         return $"{Description}{NewLine}{NewLine}Usage:{NewLine}{Tab}" +
-                        (UsageOverride ?? Append(Vars?.Aggregate(Name, (prev, current) => current.Var.FirstOrDefault() == OptionalChar ? $"{prev}){(prev.Contains(NewLine) ? prev.Substring(prev.LastIndexOf(NewLine) + 1) : NewLine + Tab + prev)}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var.TrimStart(OptionalChar)}" : $"{prev}{(prev.EndsWith("(") ? string.Empty : ", ")}{current.Var}"), ')') ?? "None") +
+                        (UsageOverride ?? Append(Vars?.Aggregate(Name, (prev, current) => current.Var.FirstOrDefault() == OptionalChar ? $"{prev}){(prev.Contains(NewLine) ? prev.Substring(prev.LastIndexOf(NewLine, System.StringComparison.Ordinal) + 1) : NewLine + Tab + prev)}{(prev.EndsWith("(", System.StringComparison.Ordinal) ? string.Empty : ", ")}{current.Var.TrimStart(OptionalChar)}" : $"{prev}{(prev.EndsWith("(", System.StringComparison.Ordinal) ? string.Empty : ", ")}{current.Var}"), ')') ?? "None") +
                         $"{NewLine}Parameters:" + 
                         (Vars?.Aggregate("", (prev, current) => $"{prev}{NewLine}{Tab}{current.Var}{Separator} {current.Description}") ?? $"{NewLine}{Tab}None") +
                         $"{NewLine}Examples:" +
@@ -45,7 +45,6 @@ namespace InnoTecheLearning
                 });
             }
             
-
             public static NerdamerPart FromOperator(string Name, string Spoken, bool Prefix, bool Postfix, string Description, IEnumerable<string> Examples, string UsageOverride = null, string Friendly = null, bool Evaluate = true) =>
                 new NerdamerPart(Name, $"The {Spoken} operator", Description, UsageOverride ?? $"{(Postfix ? "x" : string.Empty)}{Name}{(Prefix ? "y" : string.Empty)}",
                     new[] { Postfix ? ("x", "The left hand side expression") : default, Prefix ? ("y", "The right hand side expression") : default }.Where(x => !x.Equals(default)), Examples, Friendly, Evaluate);
@@ -56,6 +55,7 @@ namespace InnoTecheLearning
                 IEnumerable<(string Var, string Description)> Vars, IEnumerable<string> Examples, string Friendly = null, bool Evaluate = true) =>
                 new NerdamerPart(Name + '(', $"The {Spoken} function", Description, null, Vars, Examples, Friendly ?? Name, Evaluate);
             public static NerdamerPart FromVariable(char Variable) => FromLiteral(Variable.ToString(), $"The variable {Variable}", $"Denotes the variable {Variable}. Note that {char.ToUpperInvariant(Variable)} is different from {char.ToLowerInvariant(Variable)}.");
+
             public static string Optional(string VarName) => OptionalChar + VarName;
             public static string ForPhone(string Phone, string Else) => Xamarin.Forms.Device.Idiom == Xamarin.Forms.TargetIdiom.Phone ? Phone : Else;
 
@@ -105,7 +105,7 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
 #warning After https://github.com/jiggzson/nerdamer/issues/213 has been closed, mark this as evaluate
             public static readonly NerdamerPart Equation = FromOperator("=", "equality", true, true, "Denotes that the left and right expressions are equal, and forms an equation. Can be solved using the solve function or the solveEquations function.", new[] { "8=8", "2x=3", "solve(2x=3,x)", "solveEquations([x+y=4,2x+3y=5])" }, Evaluate: false);
             //public static readonly NerdamerPart Assign = new NerdamerPart(":=");
-            public static readonly NerdamerPart Log = FromFunction("log", "logarithm", "Calculates the logarithm (a=b^x; b=a^(1/x); x=log(a,b)) with an optional base (defaults to the constant e).", new[] { ("a", "The expression to calculate the logarithm for."), (Optional("b"), "The optional base in which when multiplied by the result, will produce the original expression. Defaults to the constant e.") }, new string[] { "log(9, 3)", "log(e^3)", "log(a^x,a)", "log(2^log(2^3,2),2)" });
+            public static readonly NerdamerPart Log = FromFunction("log", "logarithm", "Calculates the logarithm (a=b^x; b=a^(1/x); x=log(a,b)) with an optional base (defaults to the constant e).", new[] { ("a", "The antilogarithm (expression to calculate the logarithm for)."), (Optional("b"), "The optional base in which when multiplied by the result, will produce the original expression. Defaults to the constant e.") }, new string[] { "log(9, 3)", "log(e^3)", "log(a^x,a)", "log(2^log(2^3,2),2)" });
             public static readonly NerdamerPart Log10 = FromFunction("log10", "base 10 logarithm", "Is a convenient shorthand for log(x, 10).", new[] { ("x", "The expression to calculate the base 10 logarithm for.") }, new[] { "log10(10)", "log10(100)", "log10(1e308)" }, "log₁₀");
             public static readonly NerdamerPart Min = FromFunction("min", "minimum", "Calculates the minimum value from a set of expressions.", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "min(1,2,3,π,e)", "min(π,2^2,3.5,10/3)" });
             public static readonly NerdamerPart Max = FromFunction("max", "maximum", "Calculates the maximum value from a set of expressions.", new[] { ("a,b,c,d...", "Any number of expressions, separated by the comma.") }, new[] { "max(sqrt(π)+1.5,e^(11/9),10/3,π)", "max(10, 100/10, log10(10^10), sqrt(100))" });
@@ -186,21 +186,21 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
             public static readonly NerdamerPart Z = FromVariable('Z');
             public static readonly NerdamerPart Atan2 = FromFunction("atan2", "2-argument arctangent", "Calculates a number between -pi and pi representing the angle theta of an (x, y) point. This is the counterclockwise angle centred at the origin, measured in radians, between the positive X axis, and the point (x, y). The y-coordinate is passed first because this function is sililar to atan(y/x) but calculates approppriately for different sign combinations of x and y, and/or where x is 0.", new[] { ("y", "The y-coordinate of the point to calculate."), ("x", "The x-coordinate of the point to calculate.") }, new[] { "atan2(2.1,0)", "atan2(-2.1,0)", "atan2(2.1,-2.1)", "atan2(0,-2.1)" }, "atan₂");
             public static readonly NerdamerPart Sin = FromFunction("sin", "sine", "Calculates the ratio of the length of the side that is opposite for the specified angle to the length of the longest side of the triangle (the hypotenuse) in a right-angled triangle.", new[] { ("θ", "The angle to find the sine ratio for.") }, new[] { "sin(0)", "sin(π)", "sin(2π)", "sin(90°)", "sin(30°)" });
-            public static readonly NerdamerPart Asin = FromFunction("asin", "arcus sine", $"Is the inverse sine function. Calculates the corrosponding angle in radians from a sine ratio,{NewLine}e.g. sin(θ) = x; θ = asin(x).", new[] { ("x", "The sine ratio to find the corrosponding angle for.") }, new[] { "asin(0)", "asin(1)", "asin(0.5)" }, "sin⁻¹"); //
+            public static readonly NerdamerPart Asin = FromFunction("asin", "arcus sine", $"Is the inverse sine function. Calculates the corrosponding angle in radians from a sine ratio,{NewLine}e.g. sin(θ) = x; θ = asin(x).", new[] { ("x", "The sine ratio to find the corrosponding angle for.") }, new[] { "asin(0)", "asin(1)", "asin(0.5)", "asin(sqrt(2)/2)", "asin(sqrt(3)/2)" }, "sin⁻¹"); //
             public static readonly NerdamerPart Sinh = FromFunction("sinh", "hyperbolic sine", $"Calculates the hyperbolic sine ratio of the specified hyperbolic angle.{NewLine}sinh(x) = (1-e^(-2x))/(2e^(-x))", new[] { ("x", "The hyperbolic angle to find the hyperbolic sine ratio for.") }, new[] { "sinh(0)", "sinh(π)", "sinh(90°)", "sinh(30°)" });
             public static readonly NerdamerPart Asinh = FromFunction("asinh", "area hyperbolic sine", $"Calculates the corrosponding hyperbolic angle from a hyperbolic sine ratio.{NewLine}asinh(z) = log(z+sqrt(z^2+1))", new[] { ("z", "The hyperbolic sine ratio to find the hyperbolic angle for.") }, new[] { "asinh(0)", "asinh(1)", "asinh(sinh(3))" }, ForPhone("ˢⁱⁿʰ⁻¹", "sinh⁻¹"));
             public static readonly NerdamerPart Cos = FromFunction("cos", "cosine (sine complement)", "Calculates the ratio of the length of the adjacent side to the length of the hypotenuse, so called because it is the sine of the complementary or co-angle, the other non-right angle in a right-angled triangle.", new[] { ("θ", "The angle to find the cosine ratio for.") }, new[] { "cos(0)", "cos(π)", "cos(2π)", "cos(90°)", "cos(30°)" });
-            public static readonly NerdamerPart Acos = new NerdamerPart("acos(", "cos⁻¹");
-            public static readonly NerdamerPart Cosh = new NerdamerPart("cosh(");
-            public static readonly NerdamerPart Acosh = new NerdamerPart("acosh(", ForPhone("ᶜᵒˢʰ⁻¹", "cosh⁻¹"));
-            public static readonly NerdamerPart Tan = new NerdamerPart("tan(");
-            public static readonly NerdamerPart Atan = new NerdamerPart("atan(", "tan⁻¹");
-            public static readonly NerdamerPart Tanh = new NerdamerPart("tanh(");
-            public static readonly NerdamerPart Atanh = new NerdamerPart("atanh(", ForPhone("ᵗᵃⁿʰ⁻¹", "tanh⁻¹"));
-            public static readonly NerdamerPart Sinc = new NerdamerPart("sinc(");
-            public static readonly NerdamerPart Sum = new NerdamerPart("sum(", "∑");
-            public static readonly NerdamerPart Product = new NerdamerPart("product(", "∏");
-            public static readonly NerdamerPart Diff = new NerdamerPart("diff(", "d/dx");
+            public static readonly NerdamerPart Acos = FromFunction("acos", "arcus cosine", $"Is the inverse cosine function. Calculates the corrosponding angle in radians from a cosine ratio,{NewLine}e.g. cos(θ) = x; θ = acos(x).", new[] { ("x", "The sine ratio to find the corrosponding angle for.") }, new[] { "acos(0)", "acos(1)", "acos(0.5)", "acos(sqrt(2)/2)", "acos(sqrt(3)/2)" }, "cos⁻¹");
+            public static readonly NerdamerPart Cosh = FromFunction("cosh", "hyperbolic cosine", $"Calculates the hyperbolic cosine ratio of the specified hyperbolic angle.{NewLine}cosh(x) = (1+e^(-2x))/(2e^(-x))", new[] { ("x", "The hyperbolic angle to find the hyperbolic cosine ratio for.") }, new[] { "cosh(0)", "cosh(π)", "cosh(90°)", "cosh(30°)" });
+            public static readonly NerdamerPart Acosh = FromFunction("acosh", "area hyperbolic cosine", $"Calculates the corrosponding hyperbolic angle from a hyperbolic cosine ratio.{NewLine}asinh(z) = log(z+sqrt(z^2-1))", new[] { ("z", "The hyperbolic cosine ratio to find the hyperbolic angle for.") }, new[] { "acosh(0)", "acosh(1)", "acosh(cosh(3))" }, ForPhone("ᶜᵒˢʰ⁻¹", "cosh⁻¹"));
+            public static readonly NerdamerPart Tan = FromFunction("tan", "tangent", "Calculates the ratio of the length of the opposite side to the length of the adjacent side in a right-angled triangle.", new[] { ("θ", "The angle to find the tangent ratio for.") }, new[] { "tan(0)", "tan(π)", "tan(2π)", "tan(90°)", "tan(30°)" });
+            public static readonly NerdamerPart Atan = FromFunction("atan", "arcus tangent", $"Is the inverse tangent function. Calculates the corrosponding angle in radians from a tangent ratio,{NewLine}e.g. tan(θ) = x; θ = atan(x).", new[] { ("x", "The tangent ratio to find the corrosponding angle for.") }, new[] { "atan(0)", "atan(1)", "atan(0.5)", "atan(sqrt(2)/2)", "atan(sqrt(3)/2)" }, "tan⁻¹");
+            public static readonly NerdamerPart Tanh = FromFunction("tanh", "hyperbolic tangent", $"Calculates the hyperbolic tangent ratio of the specified hyperbolic angle.{NewLine}tanh(x) = (1-e^(-2x))/(1+e^(-2x))", new[] { ("x", "The hyperbolic angle to find the hyperbolic tangent ratio for.") }, new[] { "tanh(0)", "tanh(π)", "tanh(90°)", "tanh(30°)" });
+            public static readonly NerdamerPart Atanh = FromFunction("atanh", "area hyperbolic tangent", $"Calculates the corrosponding hyperbolic angle from a hyperbolic tangent ratio.{NewLine}atanh(z) = 1/2log((1+z)/(1-z))", new[] { ("z", "The hyperbolic tangent ratio to find the hyperbolic angle for.") }, new[] { "atanh(0)", "atanh(1)", "atanh(tanh(3))" }, ForPhone("ᵗᵃⁿʰ⁻¹", "tanh⁻¹"));
+            public static readonly NerdamerPart Sinc = FromFunction("sinc", "unnormalized sine cardinal", "Gives 1 when x is 0 and sin(x)/x otherwise where x is the argument.", new[] { ("x", "The value to calculate the unnormalized sine cardinal for.") }, new[] { "sinc(0)", "sinc(π)", "sinc(π/2)" });
+            public static readonly NerdamerPart Sum = FromFunction("sum", "summation", "Adds an expression for (j-i) times with a given index variable being assigned with (i+k), where i is the given starting value, j is the given ending value, and k is the current number of times that the addition inside this function has been performed.", new[] { ("e", "The expression to add for each time of addition."), ("x", "The index variable being assigned."), ("i", "The starting number of the index variable."), ("j", "The ending number of the index variable.") }, new[] { "sum(x+1,x,1,5)", "sum(x+y,x,1,5)" }, "∑");
+            public static readonly NerdamerPart Product = FromFunction("product", "product", "Multiplies an expression for (j-i) times with a given index variable being assigned with (i+k), where i is the given starting value, j is the given ending value, and k is the current number of times that the multiplication inside this function has been performed.", new[] { ("e", "The expression to multiply for each time of multiplication."), ("x", "The index variable being assigned."), ("i", "The starting number of the index variable."), ("j", "The ending number of the index variable.") }, new[] { "product(x+1,x,1,5)", "product(x+y,x,1,5)" }, "∏");
+            public static readonly NerdamerPart Diff = FromFunction("diff", "differentiate", "Gets the derivative of a function with respect to a given variable.", new[] { ("e", "The expression to calculate the derivative for."), ("x", "The variable with respect to differentiate."), (Optional("n"), "The optional value for the number of derivative. Defaults to 1.") }, new[] { "diff(cos(x)sin(x),x)", "diff([x^2,cos(x),1],x,2)", "diff(x^3+a x^3+x^2,x,2)", "diff((x^2+1)tan(x),x)" }, "d/dx");
             public static readonly NerdamerPart Integrate = new NerdamerPart("integrate(", "∫");
             public static readonly NerdamerPart Defint = new NerdamerPart("defint(", "ₐ∫ᵇ");
             public static readonly NerdamerPart Step = new NerdamerPart("step(");
@@ -262,9 +262,9 @@ U+209x  xₐ  xₑ  xₒ  xₓ  xₔ  xₕ  xₖ   xₗ  xₘ  xₙ   xₚ  xₛ
                     .DeclaredFields
                     .Where(x => x.FieldType == typeof(NerdamerPart) && x.Name != nameof(Empty)) //No empty matches
                     .Select(x => Regex.Escape(((NerdamerPart)x.GetValue(null)).Name)) //Assuming all fields of type NerdamerPart are static
-                    .OrderByDescending(x => x.Length) //Regexes test from left to right; 
-                    .Append(".")), RegexOptions.Compiled);                   //e.g. Matches("transpose((i))") => 
-                    //No chars left out               //MatchCollection(5) { [transpose(], [(], [i], [)], [)] }
+                    .OrderByDescending(x => x.Length)      //Regexes test from left to right; 
+                    .Append(".")), RegexOptions.Compiled); //e.g. Matches("transpose((i))") => 
+                    //No chars left out                    //MatchCollection(5) { [transpose(], [(], [i], [)], [)] }
                     //e.g. Matches("transpose(1234河3守a化)") => 
                     //MatchCollection(11) { [transpose(], [1], [2], [3], [4], [河], [3], [守], [a], [化], [)] }
         }
