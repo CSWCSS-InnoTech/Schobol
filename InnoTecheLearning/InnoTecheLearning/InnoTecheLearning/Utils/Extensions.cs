@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

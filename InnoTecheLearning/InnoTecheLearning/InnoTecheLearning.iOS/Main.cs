@@ -1,6 +1,6 @@
 ﻿using UIKit;
 
-namespace InnoTecheLearning.iOS
+namespace InnoTecheLearnUtilities.iOS
 {
 	public class Application
 	{

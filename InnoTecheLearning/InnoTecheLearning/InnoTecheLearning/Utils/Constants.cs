@@ -1,22 +1,21 @@
 ﻿using System;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {
 #region Version
-        public const string VersionFull = "0.11.0 Alpha 10"; //0.10.0 (Xamarin Update) Beta 2
-        public const string VersionAssembly = "0.11.0";
-        public const string VersionAssemblyFile = "0.11";
-        public const string VersionAssemblyInfo = VersionFull;
+        public const string VersionFull = "0.11.0 Alpha 10"; //For example: 0.10.0 (Xamarin Update) Beta 2
+        public const string VersionAssembly = "0.11.0"; //Corrosponds to AssemblyVersion
+                public const string VersionAssemblyFile = "0.11"; //Corrosponds to AssemblyFileVersion
+        public const string VersionAssemblyInfo = VersionFull; //Corrosponds to AssemblyInformationalVersion
 
 #region VersionFunctions
-        public static string VersionShort
-        { get => (VersionFull.Contains("(") ? 
-                     (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 2)) :
-                     VersionFull)
-                 .Replace(" Alpha ", "a").Replace(" Beta ", "b").Replace(" Release Candidate ", "c"); }
-        public static Version Version
+        public static string VersionShort => (VersionFull.Contains("(") ? 
+             (VersionFull.Remove(VersionFull.IndexOf('(') - 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') + 2)) :
+             VersionFull)
+            .Replace(" Alpha ", "a").Replace(" Beta ", "b").Replace(" Release Candidate ", "c"); //e.g. 0.10.0b2
+        public static Version Version //e.g. CreateVersion(0, 10, 0, VersionStage.Beta, 2)
         {
             get
             {
@@ -28,15 +27,14 @@ namespace InnoTecheLearning
                     IndexOfStage == -1 ? (short)0 : short.Parse(VersionDecomposition[2].Substring(IndexOfStage + 1)));
             }
         }
-        public static string VersionName
-        { get => VersionFull.Contains("(") ? 
+        public static string VersionName => VersionFull.Contains("(") ? 
                  VersionFull.Substring(VersionFull.IndexOf('(') + 1, VersionFull.IndexOf(')') - VersionFull.IndexOf('(') - 1) :
-                 string.Empty; }
-        public static VersionStage VersionState { get => (VersionStage)Version.MajorRevision; }
+                 string.Empty; //e.g. Xamarin Update
+        public static VersionStage VersionState => (VersionStage)Version.MajorRevision; //e.g. VersionStage.Beta
         public static Version CreateVersion(int Major, int Minor, int Build = 0, VersionStage Stage = 0, short Revision = 0) =>
-            new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision);
+            new Version(Major, Minor, Build, (int)Stage * (1 << 16) + Revision); //Version.MajorRevision == Stage, Version.MinorRevision == Revision
 
-        public static VersionStage GetVersionState(this Version Version) { return (VersionStage)Version.MajorRevision; }
+        public static VersionStage GetVersionState(this Version Version) => (VersionStage)Version.MajorRevision;
         public static string ToShort(this Version Version) =>
             Version.ToString(3) +
             (Version.GetVersionState() > VersionStage.Undefined && Version.GetVersionState() < VersionStage.Release ?
@@ -68,7 +66,7 @@ namespace InnoTecheLearning
 #endregion
 
 #region AssemblyInfo
-        public const string AssemblyTitle = "CSWCSS eLearn Utilities";
+        public const string AssemblyTitle = "InnoTech eLearn Utilities";
         public const string AssemblyDescription = "The eLearn Utilities App is an app empowering " +
             "students to learn more efficiently through digitalised learning.";
         public const string AssemblyConfiguration = "";

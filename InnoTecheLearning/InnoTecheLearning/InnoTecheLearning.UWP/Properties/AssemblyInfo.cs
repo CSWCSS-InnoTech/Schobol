@@ -4,14 +4,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle(InnoTecheLearning.Utils.AssemblyTitle)]
-[assembly: AssemblyDescription(InnoTecheLearning.Utils.AssemblyDescription)]
-[assembly: AssemblyConfiguration(InnoTecheLearning.Utils.AssemblyConfiguration)]
-[assembly: AssemblyCompany(InnoTecheLearning.Utils.AssemblyCompany)]
-[assembly: AssemblyProduct(InnoTecheLearning.Utils.AssemblyProduct)]
-[assembly: AssemblyCopyright(InnoTecheLearning.Utils.AssemblyCopyright)]
-[assembly: AssemblyTrademark(InnoTecheLearning.Utils.AssemblyTrademark)]
-[assembly: AssemblyCulture(InnoTecheLearning.Utils.AssemblyCulture)]
+[assembly: AssemblyTitle(InnoTecheLearnUtilities.Utils.AssemblyTitle)]
+[assembly: AssemblyDescription(InnoTecheLearnUtilities.Utils.AssemblyDescription)]
+[assembly: AssemblyConfiguration(InnoTecheLearnUtilities.Utils.AssemblyConfiguration)]
+[assembly: AssemblyCompany(InnoTecheLearnUtilities.Utils.AssemblyCompany)]
+[assembly: AssemblyProduct(InnoTecheLearnUtilities.Utils.AssemblyProduct)]
+[assembly: AssemblyCopyright(InnoTecheLearnUtilities.Utils.AssemblyCopyright)]
+[assembly: AssemblyTrademark(InnoTecheLearnUtilities.Utils.AssemblyTrademark)]
+[assembly: AssemblyCulture(InnoTecheLearnUtilities.Utils.AssemblyCulture)]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -23,8 +23,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion(InnoTecheLearning.Utils.VersionAssembly)]
-[assembly: AssemblyFileVersion(InnoTecheLearning.Utils.VersionAssemblyFile)]
-[assembly: AssemblyInformationalVersion(InnoTecheLearning.Utils.VersionAssemblyInfo)]
-[assembly: ComVisible(InnoTecheLearning.Utils.ComVisible)]
-[assembly: Guid(InnoTecheLearning.Utils.ComGuid)]
+[assembly: AssemblyVersion(InnoTecheLearnUtilities.Utils.VersionAssembly)]
+[assembly: AssemblyFileVersion(InnoTecheLearnUtilities.Utils.VersionAssemblyFile)]
+[assembly: AssemblyInformationalVersion(InnoTecheLearnUtilities.Utils.VersionAssemblyInfo)]
+[assembly: ComVisible(InnoTecheLearnUtilities.Utils.ComVisible)]
+[assembly: Guid(InnoTecheLearnUtilities.Utils.ComGuid)]

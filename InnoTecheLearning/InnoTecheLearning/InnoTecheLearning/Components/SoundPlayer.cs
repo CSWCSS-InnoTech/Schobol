@@ -16,7 +16,7 @@ using Windows.Storage.Streams;
 //using static Windows.ApplicationModel.Package;
 #endif
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {    /// <summary>
      /// Provides an interface for <see cref="SoundPlayer"/> and cross-platform sound playing.
      /// </summary>

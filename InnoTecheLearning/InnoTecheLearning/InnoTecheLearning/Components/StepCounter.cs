@@ -14,7 +14,7 @@ using static Android.Util.Log;
 using Windows.Devices.Sensors;
 #endif
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     public static partial class Utils
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {/// <summary>
 /// A class that provides methods to help run the App.
 /// </summary>

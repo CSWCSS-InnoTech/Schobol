@@ -1,12 +1,12 @@
 ﻿#undef DEBUG_WRITE
 #undef DEBUG_INTERACTIVE
 
-using static InnoTecheLearning.Utils;
+using static InnoTecheLearnUtilities.Utils;
 using Xamarin.Forms;
 
 //[assembly: XamlCompilation (XamlCompilationOptions.Compile)]
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
 	public class App : Application
     {

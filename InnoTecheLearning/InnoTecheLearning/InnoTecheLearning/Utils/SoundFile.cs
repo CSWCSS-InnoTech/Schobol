@@ -4,7 +4,7 @@ using Plugin.MediaManager.Abstractions;
 using Plugin.MediaManager.Abstractions.Enums;
 using Plugin.MediaManager.Abstractions.Implementations;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

@@ -1,4 +1,4 @@
-﻿namespace InnoTecheLearning
+﻿namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

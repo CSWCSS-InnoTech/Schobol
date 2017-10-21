@@ -2,7 +2,7 @@
 using Xamarin.Forms;
 using CultureInfo = System.Globalization.CultureInfo;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

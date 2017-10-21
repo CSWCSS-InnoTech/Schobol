@@ -1,5 +1,5 @@
 ﻿using Xamarin.Forms;
-using InnoTecheLearning;
+using InnoTecheLearnUtilities;
 //using Xamarin.Media;
 #if __IOS__
 using AVFoundation;
@@ -24,7 +24,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Controls; 
 #endif
 [assembly: Dependency(typeof(SoundRecorder))]
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {   /// <summary>
     /// Cross-platform access to <see cref="SoundRecorder"/>.
     /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

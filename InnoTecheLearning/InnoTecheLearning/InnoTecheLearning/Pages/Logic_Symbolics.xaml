@@ -2,8 +2,8 @@
 <TabbedPage x:Name="Page"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="InnoTecheLearning.Pages.Logic_Symbolics"
-             xmlns:local="clr-namespace:InnoTecheLearning"
+             x:Class="InnoTecheLearnUtilities.Pages.Logic_Symbolics"
+             xmlns:local="clr-namespace:InnoTecheLearnUtilities"
              Title="eLearn Logic (Symbolics)" 
             StyleId="eLearn Logic (Symbolics)">
     <TabbedPage.Resources>

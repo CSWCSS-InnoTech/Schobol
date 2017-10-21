@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace InnoTecheLearning.Pages
+namespace InnoTecheLearnUtilities.Pages
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Main : ContentPage

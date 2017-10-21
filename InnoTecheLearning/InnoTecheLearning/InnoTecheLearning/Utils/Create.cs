@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Xamarin.Forms;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     public static partial class Utils
     {

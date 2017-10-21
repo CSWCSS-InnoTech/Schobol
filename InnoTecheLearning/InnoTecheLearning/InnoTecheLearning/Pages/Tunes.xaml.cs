@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using static InnoTecheLearning.Utils.Create;
+using static InnoTecheLearnUtilities.Utils.Create;
 using Plugin.MediaManager;
 using static Plugin.MediaManager.CrossMediaManager;
 using Plugin.MediaManager.Abstractions.Enums;
 
-namespace InnoTecheLearning.Pages
+namespace InnoTecheLearnUtilities.Pages
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class Tunes : ContentPage

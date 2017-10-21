@@ -6,7 +6,7 @@ using Android.OS;
 using Android.Preferences;
 using Android.Content;
 
-namespace InnoTecheLearning.Droid
+namespace InnoTecheLearnUtilities.Droid
 {
 	[Activity (Label = Utils.AssemblyTitle, Theme = "@style/Main", MainLauncher = false, 
         ScreenOrientation = ScreenOrientation.SensorPortrait, HardwareAccelerated = true,

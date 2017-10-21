@@ -1,7 +1,7 @@
 ﻿using System;
 using Xamarin.Forms;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     public static partial class Utils
     {

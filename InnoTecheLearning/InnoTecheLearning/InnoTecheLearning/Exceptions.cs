@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     public static class Exceptions
     {

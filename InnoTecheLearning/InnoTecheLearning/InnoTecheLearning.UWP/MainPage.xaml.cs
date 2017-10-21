@@ -1,6 +1,6 @@
 ﻿// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
-namespace InnoTecheLearning.UWP
+namespace InnoTecheLearnUtilities.UWP
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -10,7 +10,7 @@ namespace InnoTecheLearning.UWP
         public MainPage()
         {
             this.InitializeComponent();
-            LoadApplication(new InnoTecheLearning.App());
+            LoadApplication(new InnoTecheLearnUtilities.App());
         }
     }
 }

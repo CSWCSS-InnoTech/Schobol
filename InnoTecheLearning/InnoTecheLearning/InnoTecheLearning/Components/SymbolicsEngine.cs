@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 
 //[assembly: ExportRenderer(typeof(InnoTecheLearning.SymbolicsEngine.WebViewer), typeof(InnoTecheLearning.SymbolicsEngine.WebViewRender))]
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

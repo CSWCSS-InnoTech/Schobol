@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Rectangle = Xamarin.Forms.Rectangle;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

@@ -11,8 +11,8 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static InnoTecheLearning.Utils;
-using static InnoTecheLearning.Utils.Create;
+using static InnoTecheLearnUtilities.Utils;
+using static InnoTecheLearnUtilities.Utils.Create;
 using Xamarin.Forms;
 #if __IOS__
 using Xamarin.Forms.Platform.iOS;
@@ -22,7 +22,7 @@ using Xamarin.Forms.Platform.Android;
 using Xamarin.Forms.Platform.UWP;
 #endif
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     
     static class PageIdExtensions

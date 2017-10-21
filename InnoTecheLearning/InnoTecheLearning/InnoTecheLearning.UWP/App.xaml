@@ -1,6 +1,6 @@
 ﻿<Application
-    x:Class="InnoTecheLearning.UWP.App"
+    x:Class="InnoTecheLearnUtilities.UWP.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:InnoTecheLearning.UWP"
+    xmlns:local="using:InnoTecheLearnUtilities.UWP"
     RequestedTheme="Light" />

@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     using EventTask = Tuple<SendOrPostCallback, object>;
     using EventQueue = ConcurrentQueue<Tuple<SendOrPostCallback, object>>;

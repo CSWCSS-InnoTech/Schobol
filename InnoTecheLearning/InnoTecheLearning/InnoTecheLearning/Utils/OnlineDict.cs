@@ -15,7 +15,7 @@ using static System.Uri;
     ("Style", "IDE1006:Naming Styles", Justification = "Following JSON model schema from the Pearson Dictionaries API.",
     Scope = "type", Target = "~T:InnoTecheLearning.Utils.PearsonDictionaryIDResponse")]
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

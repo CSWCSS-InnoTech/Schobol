@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

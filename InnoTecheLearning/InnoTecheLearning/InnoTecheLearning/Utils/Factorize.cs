@@ -2,7 +2,7 @@
 using System.Numerics;
 using static System.Double;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

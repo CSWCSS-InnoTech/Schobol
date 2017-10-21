@@ -34,11 +34,11 @@ using Xamarin.Forms.Platform.UWP;
 
 using XColor = Xamarin.Forms.Color;
 using Image = Xamarin.Forms.Image;
-using TouchImage = InnoTecheLearning.Utils.TouchImage;
+using TouchImage = InnoTecheLearnUtilities.Utils.TouchImage;
 
 [assembly: ExportRenderer(typeof(TouchImage), typeof(TouchImage.Renderer))]
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {
@@ -479,7 +479,7 @@ namespace InnoTecheLearning
             }
 #elif NETFX_CORE
             // Original Source: http://www.geekchamp.com/tips/drawing-in-wp7-2-drawing-shapes-with-finger
-            public class DrawView : InnoTecheLearning.DrawView
+            public class DrawView : InnoTecheLearnUtilities.DrawView
             {
                 private DrawView() : base() { }
 

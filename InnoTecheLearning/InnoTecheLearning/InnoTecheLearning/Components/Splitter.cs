@@ -1,7 +1,7 @@
 ﻿using Xamarin.Forms;
 using System.Reflection;
 using System.Linq;
-using static InnoTecheLearning.Utils;
+using static InnoTecheLearnUtilities.Utils;
 #if __IOS__
 using Foundation;
 using UIKit;
@@ -16,7 +16,7 @@ using View = Xamarin.Forms.View;
 using Xamarin.Forms.Platform.UWP;
 #endif
 [assembly: ExportRendererAttribute(typeof(GridSplitter), typeof(GridSplitter.Renderer))]
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {

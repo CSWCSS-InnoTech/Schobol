@@ -15,7 +15,7 @@ namespace ChakraHost
         private static JavaScriptContext context = JavaScriptContext.Invalid;
         private static readonly JavaScriptPromiseContinuationCallback promiseContinuationDelegate = PromiseContinuationCallback;
 
-        static ChakraHost() => InnoTecheLearning.Utils.RunOnMainThread(() => Init());
+        static ChakraHost() => InnoTecheLearnUtilities.Utils.RunOnMainThread(() => Init());
 
         private static void PromiseContinuationCallback(JavaScriptValue task, IntPtr callbackState)
         {
@@ -42,7 +42,7 @@ namespace ChakraHost
         static JavaScriptContext GetContext() { Native.JsGetCurrentContext(out var x); return x; }
         public static System.Threading.Tasks.Task<string> RunScript(string script)
         {
-            return InnoTecheLearning.Utils.RunOnMainThread(Internal);
+            return InnoTecheLearnUtilities.Utils.RunOnMainThread(Internal);
             string Internal()
             {
                 /*

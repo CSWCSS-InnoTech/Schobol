@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 using EventHandler = System.EventHandler;
 using EventArgs = System.EventArgs;
 
-using Part = InnoTecheLearning.Utils.NerdamerPart;
-using static InnoTecheLearning.Utils.NerdamerPart;
-using static InnoTecheLearning.Utils.SymbolicsEngine;
+using Part = InnoTecheLearnUtilities.Utils.NerdamerPart;
+using static InnoTecheLearnUtilities.Utils.NerdamerPart;
+using static InnoTecheLearnUtilities.Utils.SymbolicsEngine;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace InnoTecheLearning.Pages
+namespace InnoTecheLearnUtilities.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Logic_Symbolics : TabbedPage

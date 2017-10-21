@@ -13,7 +13,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 #endif
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     public partial class Utils
     {

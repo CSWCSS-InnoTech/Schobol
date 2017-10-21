@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 
-namespace InnoTecheLearning
+namespace InnoTecheLearnUtilities
 {
     partial class Utils
     {
